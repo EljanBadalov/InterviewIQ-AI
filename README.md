@@ -8,7 +8,7 @@
 - 🌙 Dark mode
 - 📱 Responsive design
 - ⚡ MERN Stack
-- 
+  
 # InterviewIQ AI
 
 > **Practice smarter. Interview with confidence.**
