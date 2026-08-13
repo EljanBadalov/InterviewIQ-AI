@@ -11,6 +11,7 @@
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.10",
+    "@types/multer": "^2.2.0",
     "@types/node": "^26.1.2",
     "tsx": "^4.23.9",
     "typescript": "^7.0.2"
@@ -24,6 +25,8 @@
     "express-validator": "^7.3.2",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.9.1",
-    "morgan": "^1.11.0"
+    "morgan": "^1.11.0",
+    "multer": "^2.2.0",
+    "pdf-parse": "^2.4.5"
   }
 }
