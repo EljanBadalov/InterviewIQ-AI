@@ -72,9 +72,7 @@ export const env: EnvConfig = {
   NODE_ENV: parseNodeEnvironment(process.env.NODE_ENV),
   MONGO_URI: getRequiredEnv('MONGO_URI'),
   JWT_SECRET: getRequiredEnv('JWT_SECRET'),
-  JWT_EXPIRES_IN:
-    process.env.JWT_EXPIRES_IN?.trim() || '7d',
-  GEMINI_API_KEY:
-    process.env.GEMINI_API_KEY?.trim() || undefined,
-  CLIENT_URL: getRequiredEnv('CLIENT_URL'),
+  JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN?.trim() || '7d',
+  GEMINI_API_KEY: process.env.GEMINI_API_KEY?.trim() || undefined,
+  CLIENT_URL: process.env.CLIENT_URL?.trim() || 'http://localhost:5173',
 };

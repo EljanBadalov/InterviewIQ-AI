@@ -165,4 +165,8 @@ const interviewSchema = new Schema<IInterview>(
   }
 );
 
+interviewSchema.index({ user: 1, createdAt: -1 });
+
+interviewSchema.index({ user: 1, status: 1 });
+
 export const Interview = model<IInterview>("Interview", interviewSchema);

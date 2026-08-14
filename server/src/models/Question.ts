@@ -58,4 +58,12 @@ const questionSchema = new Schema<IQuestion>(
   }
 );
 
+// Interview yaradılarkən sualları sürətli filtrləmək üçün Compound Index
+questionSchema.index({
+  category: 1,
+  difficulty: 1,
+  interviewType: 1,
+  isActive: 1,
+});
+
 export const Question = model<IQuestion>("Question", questionSchema);
