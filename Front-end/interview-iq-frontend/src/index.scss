@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  // Əsas rənglər (Şəkildəki bənövşəyi aksentlər)
+  --primary-color: #6C4CF5;
+  --primary-hover: #5638E8;
+  --primary-light: #EEEAFE;
+
+  // Arxa fon rəngləri
+  --bg-dashboard: #F7F8FC; // Dashboard-un açıq boz fonu
+  --bg-card: #FFFFFF;      // Ağ kartlar
+  --bg-landing: #070817;   // Landing səhifəsinin qaranlıq göy/qara fonu
+
+  // Mətn rəngləri
+  --text-main: #151525;
+  --text-secondary: #6B6B7A;
+  --text-light: #FFFFFF;
+
+  // Sərhəd (Border) rəngləri
+  --border-color: #E8E8F0;
+
+  // Status rəngləri (Success, Error və s.)
+  --success-color: #10B981;
+  --warning-color: #F59E0B;
+  --error-color: #EF4444;
+
+  --font-family: 'Inter', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-dashboard);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
