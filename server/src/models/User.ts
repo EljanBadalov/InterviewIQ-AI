@@ -2,13 +2,26 @@ import mongoose, { Model } from "mongoose";
 import bcrypt from "bcryptjs";
 
 export type UserRole = "user" | "admin";
+export type AuthProvider = "local" | "google";
 
 export interface IUser {
   _id?: mongoose.Types.ObjectId;
   fullName: string;
   email: string;
-  password: string;
+  password?: string;
+  googleId?: string;
+  avatar?: string;
+  authProvider: AuthProvider;
   role: UserRole;
+  bookmarks: mongoose.Types.ObjectId[];
+
+  isEmailVerified: boolean;
+  emailVerificationCode?: string;
+  emailVerificationExpires?: Date;
+
+  passwordResetCode?: string;
+  passwordResetExpires?: Date;
+
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -26,6 +39,7 @@ const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>(
       required: true,
       trim: true,
     },
+
     email: {
       type: String,
       required: true,
@@ -33,16 +47,69 @@ const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>(
       lowercase: true,
       trim: true,
     },
+
     password: {
       type: String,
-      required: true,
       minlength: 6,
       select: false,
     },
+
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+
+    avatar: {
+      type: String,
+      trim: true,
+    },
+
+    authProvider: {
+      type: String,
+      enum: ["local", "google"],
+      default: "local",
+    },
+
     role: {
       type: String,
       enum: ["user", "admin"],
       default: "user",
+    },
+
+    bookmarks: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Question",
+        },
+      ],
+      default: [],
+    },
+
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
+
+    emailVerificationCode: {
+      type: String,
+      select: false,
+    },
+
+    emailVerificationExpires: {
+      type: Date,
+      select: false,
+    },
+
+    passwordResetCode: {
+      type: String,
+      select: false,
+    },
+
+    passwordResetExpires: {
+      type: Date,
+      select: false,
     },
   },
   {
@@ -51,15 +118,16 @@ const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>(
 );
 
 userSchema.pre("save", async function () {
-  if (!this.isModified("password")) {
+  if (!this.isModified("password") || !this.password) {
     return;
   }
 
   const salt = await bcrypt.genSalt(10);
 
-  if (this.password) {
-    this.password = await bcrypt.hash(this.password, salt);
-  }
+  this.password = await bcrypt.hash(
+    this.password,
+    salt
+  );
 });
 
 userSchema.methods.comparePassword = async function (
@@ -68,9 +136,16 @@ userSchema.methods.comparePassword = async function (
   if (!this.password) {
     return false;
   }
-  return await bcrypt.compare(candidatePassword, this.password);
+
+  return bcrypt.compare(
+    candidatePassword,
+    this.password
+  );
 };
 
-const User = mongoose.model<IUser, UserModel>("User", userSchema);
+const User = mongoose.model<IUser, UserModel>(
+  "User",
+  userSchema
+);
 
 export { User };

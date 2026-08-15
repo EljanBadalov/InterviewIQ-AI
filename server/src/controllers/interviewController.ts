@@ -1,362 +1,1084 @@
-import { type Request, type Response, type NextFunction } from "express";
-import { Types } from "mongoose";
-import { Question } from "../models/Question";
-import { Interview } from "../models/Interview";
-import { evaluateAnswer, generateFinalReport } from "../services/geminiService";
+import {
+  type Request,
+  type Response,
+  type NextFunction,
+} from "express";
 
-export const createInterviewController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    if (!req.user || !req.user._id) {
-      res.status(401).json({
-        success: false,
-        message: "Not authorized",
-      });
-      return;
-    }
+import mongoose from "mongoose";
 
-    const { category, difficulty, interviewType } = req.body;
+import {
+  Interview,
+  type IInterviewAnswer,
+} from "../models/Interview";
 
-    const formattedCategory = (category as string).toLowerCase().trim();
+import {
+  Question,
+  type QuestionDifficulty,
+  type InterviewType,
+} from "../models/Question";
 
-    const questions = await Question.aggregate([
-      {
-        $match: {
-          category: formattedCategory,
-          difficulty,
-          interviewType,
-          isActive: true,
-        },
-      },
-      {
-        $sample: { size: 5 },
-      },
-    ]);
+import {
+  evaluateInterviewAnswer,
+} from "../services/geminiService";
 
-    if (!questions || questions.length === 0) {
-      res.status(404).json({
-        success: false,
-        message: "No questions available for the selected interview criteria",
-      });
-      return;
-    }
+/* =========================================
+   CONSTANTS
+========================================= */
 
-    const initialAnswers = questions.map((q) => ({
-      question: q._id,
-      questionText: q.text,
-      evaluationStatus: "pending" as const,
-    }));
+const QUESTIONS_PER_INTERVIEW = 4;
 
-    const interview = await Interview.create({
-      user: req.user._id,
-      category: formattedCategory,
-      difficulty,
-      interviewType,
-      answers: initialAnswers,
-    });
+const VALID_DIFFICULTIES: QuestionDifficulty[] = [
+  "beginner",
+  "intermediate",
+  "advanced",
+  "senior",
+];
 
-    const firstQuestion = {
-      questionId: interview.answers[0].question,
-      questionText: interview.answers[0].questionText,
-    };
+const VALID_INTERVIEW_TYPES: InterviewType[] = [
+  "technical",
+  "behavioral",
+];
 
-    res.status(201).json({
-      success: true,
-      message: "Interview started successfully",
-      data: {
-        interviewId: interview._id,
-        status: interview.status,
-        totalQuestions: interview.answers.length,
-        currentQuestionIndex: 0,
-        question: firstQuestion,
-      },
-    });
-  } catch (error) {
-    next(error);
+/* =========================================
+   HELPERS
+========================================= */
+
+const getUserId = (
+  req: Request
+): mongoose.Types.ObjectId | null => {
+  if (!req.user || !req.user._id) {
+    return null;
   }
+
+  return new mongoose.Types.ObjectId(
+    String(req.user._id)
+  );
 };
 
-export const submitAnswerController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    if (!req.user || !req.user._id) {
-      res.status(401).json({
-        success: false,
-        message: "Not authorized",
-      });
-      return;
-    }
+const getParamString = (
+  value: string | string[] | undefined
+): string => {
+  if (Array.isArray(value)) {
+    return value[0] ?? "";
+  }
 
-    const { id } = req.params;
+  return value ?? "";
+};
 
-    if (typeof id !== "string" || !Types.ObjectId.isValid(id)) {
-      res.status(400).json({
-        success: false,
-        message: "Invalid interview ID format",
-      });
-      return;
-    }
+const isValidObjectId = (
+  value: string
+): boolean => {
+  return mongoose.Types.ObjectId.isValid(
+    value
+  );
+};
 
-    const interview = await Interview.findById(id);
+const normalizeCategory = (
+  value: unknown
+): string => {
+  if (typeof value !== "string") {
+    return "";
+  }
 
-    if (!interview) {
-      res.status(404).json({
-        success: false,
-        message: "Interview session not found",
-      });
-      return;
-    }
+  return value
+    .trim()
+    .toLowerCase();
+};
 
-    if (interview.user.toString() !== req.user._id.toString()) {
-      res.status(403).json({
-        success: false,
-        message: "You are not authorized to access this interview session",
-      });
-      return;
-    }
+/* =========================================
+   START INTERVIEW
+========================================= */
 
-    if (interview.status !== "in_progress") {
-      res.status(400).json({
-        success: false,
-        message: `Cannot submit answer. Interview status is '${interview.status}'`,
-      });
-      return;
-    }
-
-    const unansweredIndex = interview.answers.findIndex(
-      (ans) => !ans.answerText || ans.answerText.trim() === ""
-    );
-
-    if (unansweredIndex === -1) {
-      res.status(400).json({
-        success: false,
-        message: "All questions in this interview session have already been answered",
-      });
-      return;
-    }
-
-    const { answerText } = req.body;
-    const currentAnswer = interview.answers[unansweredIndex];
-
-    currentAnswer.answerText = answerText;
-
+export const startInterviewController =
+  async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
-      const aiResult = await evaluateAnswer({
-        questionText: currentAnswer.questionText,
-        answerText,
-        category: interview.category,
-        difficulty: interview.difficulty,
-        interviewType: interview.interviewType,
-      });
+      const userId =
+        getUserId(req);
 
-      currentAnswer.score = aiResult.score;
-      currentAnswer.technicalAccuracy = aiResult.technicalAccuracy;
-      currentAnswer.completeness = aiResult.completeness;
-      currentAnswer.communication = aiResult.communication;
-      currentAnswer.strengths = aiResult.strengths;
-      currentAnswer.weaknesses = aiResult.weaknesses;
-      currentAnswer.feedback = aiResult.feedback;
-      currentAnswer.improvedAnswer = aiResult.improvedAnswer;
-      currentAnswer.followUpQuestion = aiResult.followUpQuestion;
-      currentAnswer.evaluationStatus = "completed";
-    } catch (aiError) {
-      console.error("Gemini AI evaluation error:", aiError);
-      currentAnswer.evaluationStatus = "failed";
-    }
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          message:
+            "Not authorized",
+        });
 
-    await interview.save();
+        return;
+      }
 
-    const nextUnansweredIndex = interview.answers.findIndex(
-      (ans) => !ans.answerText || ans.answerText.trim() === ""
-    );
+      const category =
+        normalizeCategory(
+          req.body.category
+        );
 
-    const submittedEvaluation = {
-      score: currentAnswer.score,
-      technicalAccuracy: currentAnswer.technicalAccuracy,
-      completeness: currentAnswer.completeness,
-      communication: currentAnswer.communication,
-      strengths: currentAnswer.strengths,
-      weaknesses: currentAnswer.weaknesses,
-      feedback: currentAnswer.feedback,
-      improvedAnswer: currentAnswer.improvedAnswer,
-      followUpQuestion: currentAnswer.followUpQuestion,
-      evaluationStatus: currentAnswer.evaluationStatus,
-    };
+      const difficulty =
+        req.body
+          .difficulty as QuestionDifficulty;
 
-    const isAiSuccess = currentAnswer.evaluationStatus === "completed";
+      const interviewType =
+        req.body
+          .interviewType as InterviewType;
 
-    if (nextUnansweredIndex !== -1) {
-      const nextQuestion = interview.answers[nextUnansweredIndex];
+      /* =========================
+         VALIDATION
+      ========================= */
 
-      res.status(200).json({
+      if (!category) {
+        res.status(400).json({
+          success: false,
+          message:
+            "Category is required",
+        });
+
+        return;
+      }
+
+      if (
+        !VALID_DIFFICULTIES.includes(
+          difficulty
+        )
+      ) {
+        res.status(400).json({
+          success: false,
+          message:
+            "Invalid difficulty",
+        });
+
+        return;
+      }
+
+      if (
+        !VALID_INTERVIEW_TYPES.includes(
+          interviewType
+        )
+      ) {
+        res.status(400).json({
+          success: false,
+          message:
+            "Invalid interview type",
+        });
+
+        return;
+      }
+
+      /* =========================
+         RANDOM QUESTIONS
+      ========================= */
+
+      const questions =
+        await Question.aggregate([
+          {
+            $match: {
+              category,
+              difficulty,
+              interviewType,
+              isActive: true,
+            },
+          },
+
+          {
+            $sample: {
+              size:
+                QUESTIONS_PER_INTERVIEW,
+            },
+          },
+
+          {
+            $project: {
+              _id: 1,
+              text: 1,
+              category: 1,
+              difficulty: 1,
+              interviewType: 1,
+            },
+          },
+        ]);
+
+      /* =========================
+         NOT ENOUGH QUESTIONS
+      ========================= */
+
+      if (
+        questions.length <
+        QUESTIONS_PER_INTERVIEW
+      ) {
+        res.status(400).json({
+          success: false,
+
+          message:
+            `Not enough questions available for ${category} / ${difficulty} / ${interviewType}. ` +
+            `Required: ${QUESTIONS_PER_INTERVIEW}, available: ${questions.length}.`,
+        });
+
+        return;
+      }
+
+      /* =========================
+         CREATE SNAPSHOTS
+      ========================= */
+
+      const answerSnapshots:
+        IInterviewAnswer[] =
+        questions.map(
+          (question) => ({
+            question:
+              question._id,
+
+            questionText:
+              question.text,
+
+            evaluationStatus:
+              "pending",
+          })
+        );
+
+      /* =========================
+         CREATE INTERVIEW
+      ========================= */
+
+      const interview =
+        await Interview.create({
+          user: userId,
+
+          category,
+
+          difficulty,
+
+          interviewType,
+
+          status:
+            "in_progress",
+
+          answers:
+            answerSnapshots,
+
+          startedAt:
+            new Date(),
+        });
+
+      const firstQuestion =
+        interview.answers[0];
+
+      if (!firstQuestion) {
+        throw new Error(
+          "Interview was created without questions."
+        );
+      }
+
+      /* =========================
+         RESPONSE
+      ========================= */
+
+      res.status(201).json({
         success: true,
-        message: isAiSuccess
-          ? "Answer submitted and evaluated successfully"
-          : "Answer saved, but AI evaluation failed",
+
+        message:
+          "Interview started successfully",
+
         data: {
-          isCompleted: false,
-          currentQuestionIndex: nextUnansweredIndex,
-          totalQuestions: interview.answers.length,
-          evaluation: submittedEvaluation,
-          nextQuestion: {
-            questionId: nextQuestion.question,
-            questionText: nextQuestion.questionText,
+          interviewId:
+            interview._id,
+
+          status:
+            interview.status,
+
+          totalQuestions:
+            interview.answers
+              .length,
+
+          currentQuestionIndex:
+            0,
+
+          question: {
+            questionId:
+              firstQuestion.question,
+
+            questionText:
+              firstQuestion.questionText,
           },
         },
       });
-      return;
+    } catch (error) {
+      next(error);
     }
+  };
 
-    // Növbəti sual qalmayıbsa -> overallScore hesablanması
-    const validScores = interview.answers
-      .filter((ans) => ans.evaluationStatus === "completed" && typeof ans.score === "number")
-      .map((ans) => ans.score as number);
+/* =========================================
+   SUBMIT ANSWER
+========================================= */
 
-    if (validScores.length > 0) {
-      const totalScore = validScores.reduce((sum, score) => sum + score, 0);
-      interview.overallScore = Math.round(totalScore / validScores.length);
-    }
-
-    // Gemini final report generate etmək üçün məlumatların hazırlanması
-    const reportAnswersInput = interview.answers.map((ans) => ({
-      questionText: ans.questionText,
-      answerText: ans.answerText || "",
-      score: ans.score,
-      technicalAccuracy: ans.technicalAccuracy,
-      completeness: ans.completeness,
-      communication: ans.communication,
-      strengths: ans.strengths,
-      weaknesses: ans.weaknesses,
-      feedback: ans.feedback,
-    }));
-
-    let isReportSuccess = false;
-
+export const submitInterviewAnswerController =
+  async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
-      const finalReportResult = await generateFinalReport({
-        category: interview.category,
-        difficulty: interview.difficulty,
-        interviewType: interview.interviewType,
-        answers: reportAnswersInput,
+      const userId =
+        getUserId(req);
+
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          message:
+            "Not authorized",
+        });
+
+        return;
+      }
+
+      const interviewId =
+        getParamString(
+          req.params.id
+        );
+
+      const {
+        questionId,
+        answerText,
+      } = req.body;
+
+      /* =========================
+         VALIDATION
+      ========================= */
+
+      if (
+        !interviewId ||
+        !isValidObjectId(
+          interviewId
+        )
+      ) {
+        res.status(400).json({
+          success: false,
+          message:
+            "Invalid interview ID",
+        });
+
+        return;
+      }
+
+      if (
+        !questionId ||
+        typeof questionId !==
+          "string" ||
+        !isValidObjectId(
+          questionId
+        )
+      ) {
+        res.status(400).json({
+          success: false,
+          message:
+            "Valid questionId is required",
+        });
+
+        return;
+      }
+
+      if (
+        typeof answerText !==
+          "string" ||
+        answerText.trim().length <
+          10
+      ) {
+        res.status(400).json({
+          success: false,
+
+          message:
+            "Answer must contain at least 10 characters",
+        });
+
+        return;
+      }
+
+      /* =========================
+         LOAD INTERVIEW
+      ========================= */
+
+      const interview =
+        await Interview.findOne({
+          _id: interviewId,
+          user: userId,
+        });
+
+      if (!interview) {
+        res.status(404).json({
+          success: false,
+          message:
+            "Interview not found",
+        });
+
+        return;
+      }
+
+      if (
+        interview.status !==
+        "in_progress"
+      ) {
+        res.status(400).json({
+          success: false,
+
+          message:
+            "This interview is not in progress",
+        });
+
+        return;
+      }
+
+      /* =========================
+         FIND QUESTION
+      ========================= */
+
+      const answerIndex =
+        interview.answers.findIndex(
+          (item) =>
+            String(
+              item.question
+            ) === questionId
+        );
+
+      if (
+        answerIndex === -1
+      ) {
+        res.status(404).json({
+          success: false,
+
+          message:
+            "Question does not belong to this interview",
+        });
+
+        return;
+      }
+
+      const answerDocument =
+        interview.answers[
+          answerIndex
+        ];
+
+      if (!answerDocument) {
+        res.status(404).json({
+          success: false,
+          message:
+            "Question not found",
+        });
+
+        return;
+      }
+
+      /* =========================
+         PREVENT DUPLICATE
+      ========================= */
+
+      if (
+        answerDocument.answerText &&
+        answerDocument
+          .evaluationStatus ===
+          "completed"
+      ) {
+        res.status(409).json({
+          success: false,
+
+          message:
+            "This question has already been answered",
+        });
+
+        return;
+      }
+
+      /* =====================================
+         AI EVALUATION
+      ===================================== */
+
+      let evaluation;
+
+      try {
+        evaluation =
+          await evaluateInterviewAnswer(
+            {
+              category:
+                interview.category,
+
+              difficulty:
+                interview.difficulty,
+
+              interviewType:
+                interview.interviewType,
+
+              question:
+                answerDocument.questionText,
+
+              answer:
+                answerText.trim(),
+            }
+          );
+      } catch (evaluationError) {
+        console.error(
+          "Interview AI evaluation failed:",
+          evaluationError
+        );
+
+        res.status(503).json({
+          success: false,
+
+          message:
+            "AI evaluation could not be completed. Your answer was not skipped. Please submit it again.",
+        });
+
+        return;
+      }
+
+      /* =====================================
+         SAVE ONLY AFTER VALID EVALUATION
+      ===================================== */
+
+      answerDocument.answerText =
+        answerText.trim();
+
+      answerDocument.score =
+        evaluation.score;
+
+      answerDocument.technicalAccuracy =
+        evaluation.technicalAccuracy;
+
+      answerDocument.completeness =
+        evaluation.completeness;
+
+      answerDocument.communication =
+        evaluation.communication;
+
+      answerDocument.strengths =
+        evaluation.strengths;
+
+      answerDocument.weaknesses =
+        evaluation.weaknesses;
+
+      answerDocument.feedback =
+        evaluation.feedback;
+
+      answerDocument.improvedAnswer =
+        evaluation.improvedAnswer;
+
+      answerDocument.followUpQuestion =
+        evaluation.followUpQuestion;
+
+      answerDocument.evaluationStatus =
+        "completed";
+
+      /* =====================================
+         FIND NEXT QUESTION
+      ===================================== */
+
+      let nextQuestionIndex =
+        -1;
+
+      for (
+        let index =
+          answerIndex + 1;
+        index <
+        interview.answers.length;
+        index++
+      ) {
+        const candidate =
+          interview.answers[
+            index
+          ];
+
+        if (
+          candidate &&
+          !candidate.answerText
+        ) {
+          nextQuestionIndex =
+            index;
+
+          break;
+        }
+      }
+
+      if (
+        nextQuestionIndex === -1
+      ) {
+        nextQuestionIndex =
+          interview.answers.findIndex(
+            (candidate) =>
+              !candidate.answerText
+          );
+      }
+
+      const hasNextQuestion =
+        nextQuestionIndex !==
+        -1;
+
+      /* =====================================
+         COMPLETE INTERVIEW
+      ===================================== */
+
+      if (!hasNextQuestion) {
+        const completedScores =
+          interview.answers
+            .map(
+              (item) =>
+                item.score
+            )
+            .filter(
+              (
+                score
+              ): score is number =>
+                typeof score ===
+                "number"
+            );
+
+        const overallScore =
+          completedScores.length >
+          0
+            ? Math.round(
+                completedScores.reduce(
+                  (
+                    total,
+                    score
+                  ) =>
+                    total +
+                    score,
+                  0
+                ) /
+                  completedScores.length
+              )
+            : 0;
+
+        const allStrengths =
+          interview.answers
+            .flatMap(
+              (item) =>
+                item.strengths ??
+                []
+            )
+            .filter(Boolean);
+
+        const allWeaknesses =
+          interview.answers
+            .flatMap(
+              (item) =>
+                item.weaknesses ??
+                []
+            )
+            .filter(Boolean);
+
+        interview.overallScore =
+          overallScore;
+
+        interview.status =
+          "completed";
+
+        interview.completedAt =
+          new Date();
+
+        interview.finalReport = {
+          summary:
+            `Interview completed with an overall score of ${overallScore}%.`,
+
+          strengths: [
+            ...new Set(
+              allStrengths
+            ),
+          ].slice(0, 6),
+
+          improvements: [
+            ...new Set(
+              allWeaknesses
+            ),
+          ].slice(0, 6),
+
+          recommendations: [
+            "Review the questions where your score was lowest.",
+            "Practice explaining your reasoning clearly and concisely.",
+            "Use concrete examples when answering interview questions.",
+          ],
+        };
+
+        await interview.save();
+
+        res.status(200).json({
+          success: true,
+
+          message:
+            "Answer analyzed and interview completed successfully",
+
+          data: {
+            status:
+              "completed",
+
+            completed: true,
+
+            currentQuestionIndex:
+              answerIndex,
+
+            totalQuestions:
+              interview.answers
+                .length,
+
+            evaluation: {
+              score:
+                evaluation.score,
+
+              technicalAccuracy:
+                evaluation.technicalAccuracy,
+
+              completeness:
+                evaluation.completeness,
+
+              communication:
+                evaluation.communication,
+
+              strengths:
+                evaluation.strengths,
+
+              weaknesses:
+                evaluation.weaknesses,
+
+              feedback:
+                evaluation.feedback,
+
+              improvedAnswer:
+                evaluation.improvedAnswer,
+
+              followUpQuestion:
+                evaluation.followUpQuestion,
+            },
+
+            overallScore,
+
+            finalReport:
+              interview.finalReport,
+          },
+        });
+
+        return;
+      }
+
+      /* =====================================
+         NEXT QUESTION
+      ===================================== */
+
+      const nextAnswer =
+        interview.answers[
+          nextQuestionIndex
+        ];
+
+      if (!nextAnswer) {
+        throw new Error(
+          "Next interview question could not be found."
+        );
+      }
+
+      await interview.save();
+
+      res.status(200).json({
+        success: true,
+
+        message:
+          "Answer analyzed successfully",
+
+        data: {
+          status:
+            "in_progress",
+
+          completed: false,
+
+          currentQuestionIndex:
+            nextQuestionIndex,
+
+          totalQuestions:
+            interview.answers
+              .length,
+
+          evaluation: {
+            score:
+              evaluation.score,
+
+            technicalAccuracy:
+              evaluation.technicalAccuracy,
+
+            completeness:
+              evaluation.completeness,
+
+            communication:
+              evaluation.communication,
+
+            strengths:
+              evaluation.strengths,
+
+            weaknesses:
+              evaluation.weaknesses,
+
+            feedback:
+              evaluation.feedback,
+
+            improvedAnswer:
+              evaluation.improvedAnswer,
+
+            followUpQuestion:
+              evaluation.followUpQuestion,
+          },
+
+          nextQuestion: {
+            questionId:
+              nextAnswer.question,
+
+            questionText:
+              nextAnswer.questionText,
+          },
+        },
       });
-
-      interview.finalReport = finalReportResult;
-      interview.status = "completed";
-      interview.completedAt = new Date();
-      isReportSuccess = true;
-    } catch (reportError) {
-      console.error("Gemini final report generation error:", reportError);
-      interview.status = "completed";
-      interview.completedAt = new Date();
+    } catch (error) {
+      next(error);
     }
+  };
 
-    await interview.save();
+/* =========================================
+   GET ONE INTERVIEW
+========================================= */
 
-    res.status(200).json({
-      success: true,
-      message: isReportSuccess
-        ? "All questions answered and interview session completed successfully"
-        : "All questions answered, but final report generation failed",
-      data: {
-        isCompleted: true,
-        status: interview.status,
-        totalQuestions: interview.answers.length,
-        overallScore: interview.overallScore,
-        completedAt: interview.completedAt,
-        evaluation: submittedEvaluation,
-        finalReport: interview.finalReport || null,
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+export const getInterviewController =
+  async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const userId =
+        getUserId(req);
 
-export const getInterviewHistoryController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    if (!req.user || !req.user._id) {
-      res.status(401).json({
-        success: false,
-        message: "Not authorized",
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          message:
+            "Not authorized",
+        });
+
+        return;
+      }
+
+      const interviewId =
+        getParamString(
+          req.params.id
+        );
+
+      if (
+        !interviewId ||
+        !isValidObjectId(
+          interviewId
+        )
+      ) {
+        res.status(400).json({
+          success: false,
+          message:
+            "Invalid interview ID",
+        });
+
+        return;
+      }
+
+      const interview =
+        await Interview.findOne({
+          _id: interviewId,
+          user: userId,
+        });
+
+      if (!interview) {
+        res.status(404).json({
+          success: false,
+          message:
+            "Interview not found",
+        });
+
+        return;
+      }
+
+      const currentIndex =
+        interview.status ===
+        "completed"
+          ? Math.max(
+              interview.answers
+                .length - 1,
+              0
+            )
+          : interview.answers.findIndex(
+              (item) =>
+                !item.answerText
+            );
+
+      const safeIndex =
+        currentIndex >= 0
+          ? currentIndex
+          : 0;
+
+      const currentQuestion =
+        interview.answers[
+          safeIndex
+        ];
+
+      res.status(200).json({
+        success: true,
+
+        data: {
+          interviewId:
+            interview._id,
+
+          category:
+            interview.category,
+
+          difficulty:
+            interview.difficulty,
+
+          interviewType:
+            interview.interviewType,
+
+          status:
+            interview.status,
+
+          totalQuestions:
+            interview.answers
+              .length,
+
+          currentQuestionIndex:
+            safeIndex,
+
+          overallScore:
+            interview.overallScore,
+
+          finalReport:
+            interview.finalReport,
+
+          question:
+            currentQuestion
+              ? {
+                  questionId:
+                    currentQuestion.question,
+
+                  questionText:
+                    currentQuestion.questionText,
+                }
+              : null,
+        },
       });
-      return;
+    } catch (error) {
+      next(error);
     }
+  };
 
-    const interviews = await Interview.find({ user: req.user._id })
-      .sort({ createdAt: -1 })
-      .select("_id category difficulty interviewType status overallScore startedAt completedAt createdAt");
+/* =========================================
+   GET ALL USER INTERVIEWS
+========================================= */
 
-    res.status(200).json({
-      success: true,
-      count: interviews.length,
-      data: {
-        interviews,
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+export const getInterviewsController =
+  async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const userId =
+        getUserId(req);
 
-export const getInterviewByIdController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    if (!req.user || !req.user._id) {
-      res.status(401).json({
-        success: false,
-        message: "Not authorized",
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          message:
+            "Not authorized",
+        });
+
+        return;
+      }
+
+      const interviews =
+        await Interview.find({
+          user: userId,
+        })
+          .sort({
+            createdAt: -1,
+          })
+          .select(
+            "_id category difficulty interviewType status overallScore startedAt completedAt createdAt"
+          );
+
+      res.status(200).json({
+        success: true,
+        data: interviews,
       });
-      return;
+    } catch (error) {
+      next(error);
     }
+  };
 
-    const { id } = req.params;
+/* =========================================
+   DELETE INTERVIEW
+========================================= */
 
-    if (typeof id !== "string" || !Types.ObjectId.isValid(id)) {
-      res.status(400).json({
-        success: false,
-        message: "Invalid interview ID format",
+export const deleteInterviewController =
+  async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const userId =
+        getUserId(req);
+
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          message:
+            "Not authorized",
+        });
+
+        return;
+      }
+
+      const interviewId =
+        getParamString(
+          req.params.id
+        );
+
+      if (
+        !interviewId ||
+        !isValidObjectId(
+          interviewId
+        )
+      ) {
+        res.status(400).json({
+          success: false,
+          message:
+            "Invalid interview ID",
+        });
+
+        return;
+      }
+
+      const interview =
+        await Interview.findOneAndDelete(
+          {
+            _id: interviewId,
+            user: userId,
+          }
+        );
+
+      if (!interview) {
+        res.status(404).json({
+          success: false,
+          message:
+            "Interview not found",
+        });
+
+        return;
+      }
+
+      res.status(200).json({
+        success: true,
+
+        message:
+          "Interview deleted successfully",
       });
-      return;
+    } catch (error) {
+      next(error);
     }
-
-    const interview = await Interview.findById(id);
-
-    if (!interview) {
-      res.status(404).json({
-        success: false,
-        message: "Interview session not found",
-      });
-      return;
-    }
-
-    if (interview.user.toString() !== req.user._id.toString()) {
-      res.status(403).json({
-        success: false,
-        message: "You are not authorized to access this interview session",
-      });
-      return;
-    }
-
-    res.status(200).json({
-      success: true,
-      data: {
-        interview,
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+  };

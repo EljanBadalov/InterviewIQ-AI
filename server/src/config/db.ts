@@ -9,6 +9,8 @@ export const connectDB = async (): Promise<void> => {
       `✅ MongoDB connected successfully: ${connection.connection.host}`
     );
   } catch (error) {
+    console.dir(error, { depth: 10 });
+
     if (error instanceof Error) {
       console.error(
         `❌ MongoDB connection failed: ${error.message}`

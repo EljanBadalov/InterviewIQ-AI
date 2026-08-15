@@ -58,7 +58,6 @@ const questionSchema = new Schema<IQuestion>(
   }
 );
 
-// Interview yaradılarkən sualları sürətli filtrləmək üçün Compound Index
 questionSchema.index({
   category: 1,
   difficulty: 1,

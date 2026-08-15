@@ -1,316 +1,506 @@
-import { GoogleGenAI, Type } from "@google/genai";
-import { env } from "../config/env";
-import type { QuestionDifficulty, InterviewType } from "../models/Question";
+import { GoogleGenAI } from "@google/genai";
 
-export interface IAIEvaluation {
+const GEMINI_API_KEY =
+  process.env.GEMINI_API_KEY;
+
+if (!GEMINI_API_KEY) {
+  throw new Error(
+    "GEMINI_API_KEY is not defined"
+  );
+}
+
+const GEMINI_MODEL =
+  process.env.GEMINI_MODEL ||
+  "gemini-3.6-flash";
+
+export const geminiAI =
+  new GoogleGenAI({
+    apiKey: GEMINI_API_KEY,
+  });
+
+const wait = (
+  milliseconds: number
+): Promise<void> => {
+  return new Promise(
+    (resolve) => {
+      setTimeout(
+        resolve,
+        milliseconds
+      );
+    }
+  );
+};
+
+export const generateContentWithRetry =
+  async (
+    ai: GoogleGenAI,
+    request: Parameters<
+      typeof ai.models.generateContent
+    >[0],
+    maxAttempts = 3
+  ) => {
+    let lastError:
+      unknown = null;
+
+    for (
+      let attempt = 1;
+      attempt <= maxAttempts;
+      attempt++
+    ) {
+      try {
+        console.log(
+          `Gemini request attempt ${attempt}/${maxAttempts}`
+        );
+
+        const response =
+          await ai.models.generateContent(
+            request
+          );
+
+        console.log(
+          `Gemini request succeeded on attempt ${attempt}`
+        );
+
+        return response;
+      } catch (error) {
+        lastError = error;
+
+        console.error(
+          `Gemini request attempt ${attempt} failed:`,
+          error
+        );
+
+        if (
+          attempt <
+          maxAttempts
+        ) {
+          const delay =
+            attempt *
+            1500;
+
+          console.log(
+            `Retrying Gemini request in ${delay}ms...`
+          );
+
+          await wait(
+            delay
+          );
+        }
+      }
+    }
+
+    if (
+      lastError instanceof Error
+    ) {
+      throw lastError;
+    }
+
+    throw new Error(
+      "Gemini request failed after all retry attempts"
+    );
+  };
+
+export interface EvaluateInterviewAnswerInput {
+  category: string;
+  difficulty: string;
+  interviewType: string;
+  question: string;
+  answer: string;
+}
+
+export interface InterviewEvaluation {
   score: number;
+
   technicalAccuracy: number;
   completeness: number;
   communication: number;
+
   strengths: string[];
   weaknesses: string[];
+
   feedback: string;
   improvedAnswer: string;
-  followUpQuestion: string;
+
+  followUpQuestion?: string;
 }
 
-export interface IFinalInterviewReport {
-  summary: string;
-  strengths: string[];
-  improvements: string[];
-  recommendations: string[];
-}
+const clampScore = (
+  value: unknown,
+  fallback = 0
+): number => {
+  const parsed =
+    Number(value);
 
-export interface IFinalReportAnswerInput {
-  questionText: string;
-  answerText: string;
-  score?: number;
-  technicalAccuracy?: number;
-  completeness?: number;
-  communication?: number;
-  strengths?: string[];
-  weaknesses?: string[];
-  feedback?: string;
-}
-
-export interface GenerateFinalReportParams {
-  category: string;
-  difficulty: QuestionDifficulty;
-  interviewType: InterviewType;
-  answers: IFinalReportAnswerInput[];
-}
-
-// ---------------- Helper / Retry Logic ----------------
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-export const generateContentWithRetry = async (
-  ai: GoogleGenAI,
-  params: Parameters<GoogleGenAI["models"]["generateContent"]>[0],
-  maxRetries = 2
-) => {
-  let attempts = 0;
-
-  while (attempts <= maxRetries) {
-    try {
-      return await ai.models.generateContent(params);
-    } catch (error: unknown) {
-      attempts++;
-
-      let status: number | undefined;
-      let message = "";
-
-      if (error && typeof error === "object") {
-        const errObj = error as Record<string, any>;
-        status = errObj.status || errObj.statusCode || errObj.response?.status;
-        message = typeof errObj.message === "string" ? errObj.message.toLowerCase() : "";
-      }
-
-      const isRateLimit =
-        status === 429 ||
-        message.includes("429") ||
-        message.includes("resource exhausted");
-      const isUnavailable =
-        status === 503 ||
-        message.includes("503") ||
-        message.includes("overloaded") ||
-        message.includes("unavailable");
-
-      const isTransientError = isRateLimit || isUnavailable;
-
-      if (!isTransientError || attempts > maxRetries) {
-        throw error;
-      }
-
-      const delay = attempts * 1000;
-      console.warn(
-        `[Gemini Retry] Transient error (${status || message}). Retrying in ${delay}ms (Attempt ${attempts}/${maxRetries})...`
-      );
-      await sleep(delay);
-    }
+  if (
+    !Number.isFinite(parsed)
+  ) {
+    return fallback;
   }
 
-  throw new Error("Gemini request failed after maximum retry attempts");
+  return Math.max(
+    0,
+    Math.min(
+      100,
+      Math.round(parsed)
+    )
+  );
 };
 
-// ---------------- Schemas ----------------
-const evaluationSchema = {
-  type: Type.OBJECT,
-  properties: {
-    score: {
-      type: Type.INTEGER,
-      description: "Overall evaluation score out of 100",
-      minimum: 0,
-      maximum: 100,
-    },
-    technicalAccuracy: {
-      type: Type.INTEGER,
-      description: "Technical correctness score out of 100",
-      minimum: 0,
-      maximum: 100,
-    },
-    completeness: {
-      type: Type.INTEGER,
-      description: "Completeness of the candidate's response out of 100",
-      minimum: 0,
-      maximum: 100,
-    },
-    communication: {
-      type: Type.INTEGER,
-      description: "Clarity and structure of communication out of 100",
-      minimum: 0,
-      maximum: 100,
-    },
-    strengths: {
-      type: Type.ARRAY,
-      items: { type: Type.STRING },
-      description: "Key strong points in the answer",
-    },
-    weaknesses: {
-      type: Type.ARRAY,
-      items: { type: Type.STRING },
-      description: "Areas where the candidate missed details or gave incorrect info",
-    },
-    feedback: {
-      type: Type.STRING,
-      description: "Constructive overall feedback",
-    },
-    improvedAnswer: {
-      type: Type.STRING,
-      description: "A model answer demonstrating a top-tier candidate response",
-    },
-    followUpQuestion: {
-      type: Type.STRING,
-      description: "A logical follow-up question based on their response",
-    },
-  },
-  required: [
-    "score",
-    "technicalAccuracy",
-    "completeness",
-    "communication",
-    "strengths",
-    "weaknesses",
-    "feedback",
-    "improvedAnswer",
-    "followUpQuestion",
+const toStringValue = (
+  value: unknown
+): string => {
+  if (
+    typeof value !==
+    "string"
+  ) {
+    return "";
+  }
+
+  return value.trim();
+};
+
+const toStringArray = (
+  value: unknown
+): string[] => {
+  if (
+    !Array.isArray(value)
+  ) {
+    return [];
+  }
+
+  return value
+    .filter(
+      (
+        item
+      ): item is string =>
+        typeof item ===
+        "string"
+    )
+    .map((item) =>
+      item.trim()
+    )
+    .filter(Boolean);
+};
+
+const cleanJsonResponse = (
+  value: string
+): string => {
+  return value
+    .trim()
+    .replace(
+      /^```json\s*/i,
+      ""
+    )
+    .replace(
+      /^```\s*/i,
+      ""
+    )
+    .replace(
+      /\s*```$/i,
+      ""
+    )
+    .trim();
+};
+
+const normalizeEvaluation = (
+  raw: unknown
+): InterviewEvaluation => {
+  if (
+    typeof raw !==
+      "object" ||
+    raw === null ||
+    Array.isArray(raw)
+  ) {
+    throw new Error(
+      "Gemini response is not a valid object"
+    );
+  }
+
+  const data =
+    raw as Record<
+      string,
+      unknown
+    >;
+
+  const score =
+    clampScore(
+      data.score,
+      50
+    );
+
+  const technicalAccuracy =
+    clampScore(
+      data.technicalAccuracy,
+      score
+    );
+
+  const completeness =
+    clampScore(
+      data.completeness,
+      score
+    );
+
+  const communication =
+    clampScore(
+      data.communication,
+      score
+    );
+
+  let strengths =
+    toStringArray(
+      data.strengths
+    );
+
+  let weaknesses =
+    toStringArray(
+      data.weaknesses
+    );
+
+  let feedback =
+    toStringValue(
+      data.feedback
+    );
+
+  let improvedAnswer =
+    toStringValue(
+      data.improvedAnswer
+    );
+
+  let followUpQuestion =
+    toStringValue(
+      data.followUpQuestion
+    );
+
+  if (
+    strengths.length === 0
+  ) {
+    strengths = [
+      "The answer addressed the main topic and demonstrated relevant understanding.",
+    ];
+  }
+
+  if (
+    weaknesses.length === 0
+  ) {
+    weaknesses = [
+      "The answer could be improved with additional detail, practical examples, or clearer explanation of trade-offs.",
+    ];
+  }
+
+  if (!feedback) {
+    feedback =
+      "The response demonstrates relevant understanding. It could be improved by providing more specific reasoning, examples, and a clearer structure.";
+  }
+
+  if (!improvedAnswer) {
+    improvedAnswer =
+      "A stronger interview answer would begin with a direct explanation, describe the main concepts step by step, include a practical example, and mention important edge cases or trade-offs.";
+  }
+
+  if (!followUpQuestion) {
+    followUpQuestion =
+      "Can you give a practical example and explain the main trade-offs involved?";
+  }
+
+  return {
+    score,
+    technicalAccuracy,
+    completeness,
+    communication,
+    strengths,
+    weaknesses,
+    feedback,
+    improvedAnswer,
+    followUpQuestion,
+  };
+};
+
+const createPrompt = (
+  input: EvaluateInterviewAnswerInput
+): string => {
+  return `
+You are a professional interviewer for InterviewIQ.
+
+Evaluate the candidate's answer accurately and fairly.
+
+INTERVIEW INFORMATION
+
+Category:
+${input.category}
+
+Difficulty:
+${input.difficulty}
+
+Interview Type:
+${input.interviewType}
+
+QUESTION:
+
+${input.question}
+
+CANDIDATE ANSWER:
+
+${input.answer}
+
+Evaluate the answer using these criteria:
+
+1. score
+Overall answer quality from 0 to 100.
+
+2. technicalAccuracy
+Technical correctness from 0 to 100.
+
+For behavioral interviews, evaluate the correctness
+and relevance of the candidate's reasoning and decisions.
+
+3. completeness
+How completely the candidate answered the question,
+from 0 to 100.
+
+4. communication
+Clarity, structure, professionalism, and explanation
+quality from 0 to 100.
+
+Also return:
+
+- strengths
+- weaknesses
+- feedback
+- improvedAnswer
+- followUpQuestion
+
+DIFFICULTY EXPECTATIONS
+
+Beginner:
+Expect fundamentals and basic understanding.
+
+Intermediate:
+Expect practical knowledge, correct terminology,
+reasonable depth, and useful examples.
+
+Advanced:
+Expect deep understanding, trade-offs,
+edge cases, and production-level reasoning.
+
+Senior:
+Expect architecture-level thinking,
+scalability, trade-offs, risk awareness,
+leadership reasoning, and production experience.
+
+IMPORTANT RULES
+
+- Evaluate only the answer actually provided.
+- Do not automatically give high scores.
+- Penalize incorrect technical claims.
+- Penalize incomplete answers.
+- Penalize vague answers.
+- Reward correct and well-structured explanations.
+- Strengths must be specific.
+- Weaknesses must be constructive.
+- improvedAnswer must be a genuinely stronger answer.
+- followUpQuestion must be relevant.
+- Do not return markdown.
+- Do not return code fences.
+- Return ONLY valid JSON.
+
+Return JSON with exactly these fields:
+
+{
+  "score": 0,
+  "technicalAccuracy": 0,
+  "completeness": 0,
+  "communication": 0,
+  "strengths": [
+    "specific strength"
   ],
+  "weaknesses": [
+    "specific improvement"
+  ],
+  "feedback": "Detailed interview feedback.",
+  "improvedAnswer": "A stronger example answer.",
+  "followUpQuestion": "A relevant follow-up question."
+}
+`.trim();
 };
 
-const finalReportSchema = {
-  type: Type.OBJECT,
-  properties: {
-    summary: {
-      type: Type.STRING,
-      description: "Overall executive summary of the candidate's performance throughout the interview",
-    },
-    strengths: {
-      type: Type.ARRAY,
-      items: { type: Type.STRING },
-      description: "Key technical or behavioral strengths demonstrated across all questions",
-    },
-    improvements: {
-      type: Type.ARRAY,
-      items: { type: Type.STRING },
-      description: "Critical areas where the candidate showed weakness or knowledge gaps",
-    },
-    recommendations: {
-      type: Type.ARRAY,
-      items: { type: Type.STRING },
-      description: "Actionable recommendations and study topics for future preparation",
-    },
-  },
-  required: ["summary", "strengths", "improvements", "recommendations"],
-};
+const runEvaluation =
+  async (
+    input: EvaluateInterviewAnswerInput
+  ): Promise<InterviewEvaluation> => {
+    const response =
+      await generateContentWithRetry(
+        geminiAI,
+        {
+          model:
+            GEMINI_MODEL,
 
-// ---------------- Service Functions ----------------
-export const evaluateAnswer = async ({
-  questionText,
-  answerText,
-  category,
-  difficulty,
-  interviewType,
-}: {
-  questionText: string;
-  answerText: string;
-  category: string;
-  difficulty: QuestionDifficulty;
-  interviewType: InterviewType;
-}): Promise<IAIEvaluation> => {
-  if (!env.GEMINI_API_KEY) {
-    throw new Error("GEMINI_API_KEY is not configured in environment variables");
-  }
+          contents:
+            createPrompt(
+              input
+            ),
 
-  const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
+          config: {
+            responseMimeType:
+              "application/json",
+          },
+        }
+      );
 
-  const systemInstruction = `
-    You are an expert technical interviewer evaluating candidate answers.
-    Your task is to analyze the user's response objectively, fairly, and constructively based on the context provided.
-    Always return your assessment strictly according to the requested JSON schema.
-  `;
+    const rawText =
+      response.text;
 
-  const prompt = `
-    Context:
-    - Domain/Category: ${category}
-    - Difficulty Level: ${difficulty}
-    - Interview Type: ${interviewType}
+    if (
+      !rawText ||
+      !rawText.trim()
+    ) {
+      throw new Error(
+        "Gemini returned an empty response"
+      );
+    }
 
-    Question Asked:
-    "${questionText}"
+    const cleanedText =
+      cleanJsonResponse(
+        rawText
+      );
 
-    Candidate's Answer:
-    "${answerText}"
+    let parsed:
+      unknown;
 
-    Evaluate the answer provided above. Provide scores (0 to 100), key strengths, weaknesses, feedback, a model improved answer, and a follow-up question.
-  `;
+    try {
+      parsed =
+        JSON.parse(
+          cleanedText
+        );
+    } catch (error) {
+      console.error(
+        "Gemini JSON parse failed:"
+      );
 
-  const response = await generateContentWithRetry(ai, {
-    model: "gemini-3.6-flash",
-    contents: prompt,
-    config: {
-      systemInstruction,
-      responseMimeType: "application/json",
-      responseSchema: evaluationSchema,
-      temperature: 0.2,
-    },
-  });
+      console.error(
+        rawText
+      );
 
-  const responseText = response.text;
+      throw new Error(
+        "Gemini returned invalid JSON"
+      );
+    }
 
-  if (!responseText) {
-    throw new Error("Empty response received from Gemini API");
-  }
+    return normalizeEvaluation(
+      parsed
+    );
+  };
 
-  const evaluation: IAIEvaluation = JSON.parse(responseText);
+export const evaluateInterviewAnswer =
+  async (
+    input: EvaluateInterviewAnswerInput
+  ): Promise<InterviewEvaluation> => {
+    return runEvaluation(
+      input
+    );
+  };
 
-  return evaluation;
-};
-
-export const generateFinalReport = async ({
-  category,
-  difficulty,
-  interviewType,
-  answers,
-}: GenerateFinalReportParams): Promise<IFinalInterviewReport> => {
-  if (!env.GEMINI_API_KEY) {
-    throw new Error("GEMINI_API_KEY is not configured in environment variables");
-  }
-
-  const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
-
-  const formattedAnswersText = answers
-    .map((ans, index) => {
-      return `
-Question #${index + 1}:
-- Question: ${ans.questionText}
-- Answer: ${ans.answerText || "No answer provided"}
-- Score: ${ans.score ?? "N/A"}
-- Technical Accuracy: ${ans.technicalAccuracy ?? "N/A"}
-- Completeness: ${ans.completeness ?? "N/A"}
-- Communication: ${ans.communication ?? "N/A"}
-- Strengths: ${ans.strengths?.join(", ") || "None"}
-- Weaknesses: ${ans.weaknesses?.join(", ") || "None"}
-- Feedback: ${ans.feedback || "None"}
-`;
-    })
-    .join("\n-----------------------------------\n");
-
-  const systemInstruction = `
-    You are a senior technical interviewer and hiring expert. 
-    Your task is to analyze the entire interview performance of a candidate based on all individual question responses and evaluations provided.
-    Provide a comprehensive overall assessment including an executive summary, main overall strengths, critical areas for improvement, and actionable learning recommendations.
-    Always return your report strictly according to the requested JSON schema.
-  `;
-
-  const prompt = `
-Context:
-- Category/Domain: ${category}
-- Difficulty Level: ${difficulty}
-- Interview Type: ${interviewType}
-
-Full Interview Performance Data:
-${formattedAnswersText}
-
-Analyze the candidate's performance across all questions and generate a comprehensive final interview report.
-  `;
-
-  const response = await generateContentWithRetry(ai, {
-    model: "gemini-3.6-flash",
-    contents: prompt,
-    config: {
-      systemInstruction,
-      responseMimeType: "application/json",
-      responseSchema: finalReportSchema,
-      temperature: 0.2,
-    },
-  });
-
-  const responseText = response.text;
-
-  if (!responseText) {
-    throw new Error("Empty response received from Gemini API during final report generation");
-  }
-
-  const finalReport: IFinalInterviewReport = JSON.parse(responseText);
-
-  return finalReport;
+export default {
+  geminiAI,
+  generateContentWithRetry,
+  evaluateInterviewAnswer,
 };
