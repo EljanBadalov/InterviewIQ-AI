@@ -27,7 +27,7 @@ import {
 import axios from "axios";
 
 import apiClient from "../../../api/apiClient";
-import "./InterviewSessionPage.scss";
+import "./interviewSessionPage.scss";
 
 /* =========================================
    TYPES
