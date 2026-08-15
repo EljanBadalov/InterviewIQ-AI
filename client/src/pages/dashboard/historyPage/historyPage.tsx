@@ -10,7 +10,7 @@ import {
   FiTarget,
 } from "react-icons/fi";
 import apiClient from "../../../api/apiClient";
-import "./HistoryPage.scss";
+import "./historyPage.scss";
 
 interface ScoreProgressionItem {
   interviewId: string;
