@@ -19,7 +19,7 @@ import {
 import axios from "axios";
 
 import apiClient from "../../../api/apiClient";
-import "./settingsPage.scss";
+import "./SettingsPage.scss";
 
 interface ProfileData {
   id: string;
