@@ -154,7 +154,7 @@ const LandingPage = () => {
               AI-powered interview preparation
             </div>
 
-            <h1>
+            <h1 className="header-text">
               Practice smarter.
               <br />
               Interview with
