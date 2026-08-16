@@ -1,8 +1,13 @@
-import React from "react";
+import React, {
+  useEffect,
+  useState,
+} from "react";
+
 import {
   Outlet,
   NavLink,
   Link,
+  useLocation,
   useNavigate,
 } from "react-router-dom";
 
@@ -14,57 +19,206 @@ import {
   FiBookmark,
   FiSettings,
   FiLogOut,
+  FiMenu,
+  FiX,
 } from "react-icons/fi";
 
-import { clearAuthSession } from "../utils/authStorage";
+import {
+  clearAuthSession,
+} from "../utils/authStorage";
 
 import "./DashboardLayout.scss";
 
 const DashboardLayout: React.FC = () => {
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
-  const storedUser = localStorage.getItem(
-    "interviewiq_user"
-  );
+  const location =
+    useLocation();
 
-  const user = storedUser
-    ? JSON.parse(storedUser)
-    : null;
+  const [
+    mobileMenuOpen,
+    setMobileMenuOpen,
+  ] =
+    useState(false);
+
+  const storedUser =
+    localStorage.getItem(
+      "interviewiq_user"
+    );
+
+  let user: {
+    fullName?: string;
+    email?: string;
+  } | null = null;
+
+  try {
+    user =
+      storedUser
+        ? JSON.parse(
+            storedUser
+          )
+        : null;
+  } catch {
+    user = null;
+  }
 
   const fullName =
-    user?.fullName || "InterviewIQ User";
+    user?.fullName ||
+    "InterviewIQ User";
 
-  const initials = fullName
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map(
-      (part: string) =>
-        part[0]?.toUpperCase()
-    )
-    .join("");
+  const initials =
+    fullName
+      .split(" ")
+      .filter(Boolean)
+      .slice(0, 2)
+      .map(
+        (
+          part: string
+        ) =>
+          part[0]?.toUpperCase()
+      )
+      .join("");
 
-  const handleLogout = () => {
-    clearAuthSession();
-    navigate("/login");
-  };
+  useEffect(
+    () => {
+      setMobileMenuOpen(
+        false
+      );
+    },
+    [location.pathname]
+  );
+
+  useEffect(
+    () => {
+      if (
+        mobileMenuOpen
+      ) {
+        document.body.style.overflow =
+          "hidden";
+      } else {
+        document.body.style.overflow =
+          "";
+      }
+
+      return () => {
+        document.body.style.overflow =
+          "";
+      };
+    },
+    [mobileMenuOpen]
+  );
+
+  const handleLogout =
+    () => {
+      setMobileMenuOpen(
+        false
+      );
+
+      clearAuthSession();
+
+      navigate(
+        "/login"
+      );
+    };
+
+  const closeMobileMenu =
+    () => {
+      setMobileMenuOpen(
+        false
+      );
+    };
 
   return (
     <div className="dashboard-layout">
-      <aside className="sidebar">
-        <div className="sidebar-main">
-          <Link
-            to="/dashboard"
-            className="sidebar-logo"
-          >
-            <div className="logo-icon">
-              IQ
-            </div>
+      <header className="mobile-dashboard-header">
+        <Link
+          to="/dashboard"
+          className="mobile-header-logo"
+          onClick={
+            closeMobileMenu
+          }
+        >
+          <div className="mobile-logo-icon">
+            IQ
+          </div>
 
-            <h2>
-              Interview<span>IQ</span>
-            </h2>
-          </Link>
+          <h2>
+            Interview
+            <span>
+              IQ
+            </span>
+          </h2>
+        </Link>
+
+        <button
+          type="button"
+          className="mobile-menu-button"
+          onClick={() =>
+            setMobileMenuOpen(
+              true
+            )
+          }
+          aria-label="Open navigation menu"
+          aria-expanded={
+            mobileMenuOpen
+          }
+        >
+          <FiMenu />
+        </button>
+      </header>
+
+      <div
+        className={`mobile-sidebar-overlay ${
+          mobileMenuOpen
+            ? "visible"
+            : ""
+        }`}
+        onClick={
+          closeMobileMenu
+        }
+        aria-hidden="true"
+      />
+
+      <aside
+        className={`sidebar ${
+          mobileMenuOpen
+            ? "mobile-open"
+            : ""
+        }`}
+      >
+        <div className="sidebar-main">
+          <div className="sidebar-logo-row">
+            <Link
+              to="/dashboard"
+              className="sidebar-logo"
+              onClick={
+                closeMobileMenu
+              }
+            >
+              <div className="logo-icon">
+                IQ
+              </div>
+
+              <h2>
+                Interview
+                <span>
+                  IQ
+                </span>
+              </h2>
+            </Link>
+
+            <button
+              type="button"
+              className="mobile-sidebar-close"
+              onClick={
+                closeMobileMenu
+              }
+              aria-label="Close navigation menu"
+            >
+              <FiX />
+            </button>
+          </div>
 
           <nav
             className="sidebar-nav"
@@ -77,62 +231,112 @@ const DashboardLayout: React.FC = () => {
             <NavLink
               to="/dashboard"
               end
-              className={({ isActive }) =>
+              onClick={
+                closeMobileMenu
+              }
+              className={({
+                isActive,
+              }) =>
                 `nav-item ${
-                  isActive ? "active" : ""
+                  isActive
+                    ? "active"
+                    : ""
                 }`
               }
             >
               <FiHome />
-              <span>Dashboard</span>
+
+              <span>
+                Dashboard
+              </span>
             </NavLink>
 
             <NavLink
               to="/dashboard/mock-interview"
-              className={({ isActive }) =>
+              onClick={
+                closeMobileMenu
+              }
+              className={({
+                isActive,
+              }) =>
                 `nav-item ${
-                  isActive ? "active" : ""
+                  isActive
+                    ? "active"
+                    : ""
                 }`
               }
             >
               <FiBriefcase />
-              <span>Mock Interview</span>
+
+              <span>
+                Mock Interview
+              </span>
             </NavLink>
 
             <NavLink
               to="/dashboard/resume-analysis"
-              className={({ isActive }) =>
+              onClick={
+                closeMobileMenu
+              }
+              className={({
+                isActive,
+              }) =>
                 `nav-item ${
-                  isActive ? "active" : ""
+                  isActive
+                    ? "active"
+                    : ""
                 }`
               }
             >
               <FiFileText />
-              <span>Resume Analysis</span>
+
+              <span>
+                Resume Analysis
+              </span>
             </NavLink>
 
             <NavLink
               to="/dashboard/history"
-              className={({ isActive }) =>
+              onClick={
+                closeMobileMenu
+              }
+              className={({
+                isActive,
+              }) =>
                 `nav-item ${
-                  isActive ? "active" : ""
+                  isActive
+                    ? "active"
+                    : ""
                 }`
               }
             >
               <FiPieChart />
-              <span>History & Progress</span>
+
+              <span>
+                History & Progress
+              </span>
             </NavLink>
 
             <NavLink
               to="/dashboard/bookmarks"
-              className={({ isActive }) =>
+              onClick={
+                closeMobileMenu
+              }
+              className={({
+                isActive,
+              }) =>
                 `nav-item ${
-                  isActive ? "active" : ""
+                  isActive
+                    ? "active"
+                    : ""
                 }`
               }
             >
               <FiBookmark />
-              <span>Bookmarks</span>
+
+              <span>
+                Bookmarks
+              </span>
             </NavLink>
           </nav>
         </div>
@@ -141,24 +345,37 @@ const DashboardLayout: React.FC = () => {
           <div className="sidebar-tools">
             <NavLink
               to="/dashboard/settings"
-              className={({ isActive }) =>
+              onClick={
+                closeMobileMenu
+              }
+              className={({
+                isActive,
+              }) =>
                 `nav-item ${
-                  isActive ? "active" : ""
+                  isActive
+                    ? "active"
+                    : ""
                 }`
               }
             >
               <FiSettings />
-              <span>Settings</span>
+
+              <span>
+                Settings
+              </span>
             </NavLink>
           </div>
 
           <div className="sidebar-user">
             <div className="user-avatar">
-              {initials || "IQ"}
+              {initials ||
+                "IQ"}
             </div>
 
             <div className="user-details">
-              <strong>{fullName}</strong>
+              <strong>
+                {fullName}
+              </strong>
 
               <span>
                 {user?.email ||
@@ -170,10 +387,15 @@ const DashboardLayout: React.FC = () => {
           <button
             type="button"
             className="nav-item logout-btn"
-            onClick={handleLogout}
+            onClick={
+              handleLogout
+            }
           >
             <FiLogOut />
-            <span>Logout</span>
+
+            <span>
+              Logout
+            </span>
           </button>
         </div>
       </aside>
