@@ -1,0 +1,7129 @@
+import {
+  type IPdfPageLayout,
+} from "./pdfTextService";
+
+/* =========================================================
+   InterviewIQ
+   Deterministic Resume Structured Extraction Service
+
+   IMPORTANT ARCHITECTURE RULE:
+   ---------------------------------------------------------
+   This service DOES NOT use Qwen, Gemini, or any generative AI.
+
+   Its job is only to:
+   1. receive plain text already extracted from the PDF,
+   2. detect common resume sections,
+   3. extract directly visible factual values,
+   4. preserve all original source text in rawSections,
+   5. mark ambiguous/incomplete extraction for user review.
+
+   It MUST NOT:
+   - improve wording,
+   - rewrite achievements,
+   - invent facts,
+   - infer missing employers,
+   - infer missing technologies,
+   - create new projects,
+   - create new skills,
+   - fabricate dates or metrics.
+
+   The public interfaces intentionally stay compatible with the
+   previous Qwen-based structured extraction service so the rest of
+   the backend does not need a new service/file.
+========================================================= */
+
+/* =========================================================
+   PUBLIC TYPES
+========================================================= */
+
+export interface IStructuredResumeContact {
+  fullName: string;
+
+  email: string;
+
+  phone: string;
+
+  location: string;
+
+  linkedin: string;
+
+  github: string;
+
+  website: string;
+}
+
+export interface IStructuredResumeExperience {
+  title: string;
+
+  company: string;
+
+  location: string;
+
+  employmentType: string;
+
+  startDate: string;
+
+  endDate: string;
+
+  isCurrent: boolean;
+
+  description: string;
+
+  bullets: string[];
+
+  technologies: string[];
+}
+
+export interface IStructuredResumeProject {
+  name: string;
+
+  role: string;
+
+  description: string;
+
+  startDate: string;
+
+  endDate: string;
+
+  technologies: string[];
+
+  bullets: string[];
+
+  url: string;
+
+  github: string;
+}
+
+export interface IStructuredResumeEducation {
+  institution: string;
+
+  degree: string;
+
+  field: string;
+
+  location: string;
+
+  startDate: string;
+
+  endDate: string;
+
+  isCurrent: boolean;
+
+  gpa: string;
+
+  coursework: string[];
+
+  achievements: string[];
+}
+
+export type StructuredCertificationStatus =
+  | "active"
+  | "in-progress"
+  | "expired"
+  | "unknown";
+
+export interface IStructuredResumeCertification {
+  name: string;
+
+  issuer: string;
+
+  issueDate: string;
+
+  expirationDate: string;
+
+  credentialId: string;
+
+  credentialUrl: string;
+
+  status:
+    StructuredCertificationStatus;
+}
+
+export interface IStructuredResumeLanguage {
+  language: string;
+
+  level: string;
+}
+
+export interface IStructuredResumeVolunteering {
+  organization: string;
+
+  role: string;
+
+  location: string;
+
+  startDate: string;
+
+  endDate: string;
+
+  isCurrent: boolean;
+
+  description: string;
+
+  bullets: string[];
+}
+
+export interface IStructuredResumeHackathon {
+  name: string;
+
+  organization: string;
+
+  role: string;
+
+  date: string;
+
+  description: string;
+
+  achievements: string[];
+}
+
+export interface IStructuredResumeProfile {
+  contact:
+    IStructuredResumeContact;
+
+  professionalSummary: string;
+
+  skills: string[];
+
+  technicalSkills: string[];
+
+  softSkills: string[];
+
+  experience:
+    IStructuredResumeExperience[];
+
+  projects:
+    IStructuredResumeProject[];
+
+  education:
+    IStructuredResumeEducation[];
+
+  certifications:
+    IStructuredResumeCertification[];
+
+  languages:
+    IStructuredResumeLanguage[];
+
+  volunteering:
+    IStructuredResumeVolunteering[];
+
+  hackathons:
+    IStructuredResumeHackathon[];
+
+  achievements: string[];
+
+  interests: string[];
+
+  rawSections: Array<{
+    title: string;
+
+    content: string;
+  }>;
+
+  extractionStatus:
+    | "completed"
+    | "partial";
+
+  extractionWarnings: string[];
+}
+
+export interface StructuredResumeExtractionParams {
+  resumeText: string;
+
+  /*
+   * Original pdf-parse text BEFORE layout reconstruction.
+   *
+   * This is extremely important for ordinary single-column resumes:
+   * a false-positive column detector can damage an otherwise perfect
+   * text stream. We therefore keep the untouched PDF text as another
+   * extraction candidate.
+   */
+  rawResumeText?: string;
+
+  /*
+   * Optional layout metadata from pdfTextService.
+   *
+   * Single-column resumes continue to use the original stable
+   * deterministic parser. Multi-column/sidebar resumes use the
+   * visual-column parser so unrelated columns are never flattened
+   * into one semantic stream.
+   */
+  layoutPages?:
+    IPdfPageLayout[];
+}
+
+export interface StructuredResumeExtractionResult {
+  profile:
+    IStructuredResumeProfile;
+
+  /*
+   * Kept only for backward compatibility with callers that used
+   * the previous AI-based service. It now contains deterministic
+   * JSON generated by the server, not model output.
+   */
+  rawModelText: string;
+
+  success: boolean;
+
+  warnings: string[];
+
+  /*
+   * Exact text candidate that produced the selected profile.
+   * The scoring layer should use this same text so extraction and
+   * scoring never analyze different representations of the CV.
+   */
+  selectedText: string;
+
+  selectedMode:
+    | "raw-text"
+    | "reconstructed-text"
+    | "layout-aware";
+}
+
+/* =========================================================
+   INTERNAL TYPES
+========================================================= */
+
+type ResumeSectionKey =
+  | "preamble"
+  | "professionalSummary"
+  | "technicalSkills"
+  | "coreSkills"
+  | "softSkills"
+  | "experience"
+  | "projects"
+  | "education"
+  | "certifications"
+  | "languages"
+  | "volunteering"
+  | "hackathons"
+  | "achievements"
+  | "interests"
+  | "unknown";
+
+interface IDetectedSection {
+  key:
+    ResumeSectionKey;
+
+  title: string;
+
+  lines: string[];
+}
+
+interface IDateRange {
+  startDate: string;
+
+  endDate: string;
+
+  isCurrent: boolean;
+
+  matchedText: string;
+}
+
+interface IDatedBlock {
+  lines: string[];
+
+  date:
+    IDateRange | null;
+}
+
+/* =========================================================
+   CONSTANTS
+========================================================= */
+
+const BULLET_PREFIX_RE =
+  /^\s*(?:[-*•●▪◦·‣–—]|\d+[.)])\s*/u;
+
+const EMAIL_RE =
+  /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
+
+const URL_RE =
+  /\b(?:(?:https?:\/\/|www\.)[^\s|]+|(?:linkedin\.com\/[^\s|]+)|(?:github\.com\/[^\s|]+))\b/i;
+
+const LINKEDIN_RE =
+  /\b(?:https?:\/\/)?(?:www\.)?linkedin\.com\/[^\s|]+/i;
+
+const GITHUB_RE =
+  /\b(?:https?:\/\/)?(?:www\.)?github\.com\/[^\s|]+/i;
+
+const PHONE_RE =
+  /(?:\+?\d[\d\s().-]{6,}\d)/;
+
+const YEAR_RE =
+  /\b(?:19|20)\d{2}\b/;
+
+const CURRENT_TERMS = [
+  "present",
+  "current",
+  "now",
+  "ongoing",
+  "today",
+  "hazırda",
+  "hazirda",
+  "hazırkı vaxtadək",
+  "hazirki vaxtadek",
+  "davam edir",
+  "devam edir",
+  "indiyədək",
+  "indiyedek",
+];
+
+const PAGE_ARTIFACT_PATTERNS:
+  RegExp[] = [
+    /^[\s\-–—_=]*\d+\s+of\s+\d+[\s\-–—_=]*$/i,
+    /^[\s\-–—_=]*page\s+\d+(?:\s+of\s+\d+)?[\s\-–—_=]*$/i,
+    /^[\s\-–—_=]*\d+\s*\/\s*\d+[\s\-–—_=]*$/,
+  ];
+
+const SECTION_ALIASES:
+  Array<{
+    key: ResumeSectionKey;
+    aliases: string[];
+  }> = [
+    {
+      key:
+        "professionalSummary",
+
+      aliases: [
+        "professional summary",
+        "professional profile",
+        "profile",
+        "summary",
+        "career summary",
+        "about me",
+        "about",
+        "personal profile",
+        "career profile",
+        "objective",
+        "career objective",
+        "peşəkar profil",
+        "pesekar profil",
+        "peşəkar xülasə",
+        "pesekar xulase",
+        "profesyonel özet",
+        "profesyonel profil",
+      ],
+    },
+
+    {
+      key:
+        "technicalSkills",
+
+      aliases: [
+        "technical skills",
+        "technical skill",
+        "technologies",
+        "technology",
+        "tech stack",
+        "texniki bacarıqlar",
+        "texniki bacariqlar",
+        "teknik beceriler",
+      ],
+    },
+
+    {
+      key:
+        "coreSkills",
+
+      aliases: [
+        "core skills",
+        "key skills",
+        "competencies",
+        "core competencies",
+        "əsas səriştələr",
+        "esas serishteler",
+        "əsas səriştələr",
+        "temel yetkinlikler",
+      ],
+    },
+
+    {
+      key:
+        "softSkills",
+
+      aliases: [
+        "soft skills",
+        "strengths",
+        "core strengths",
+        "personal skills",
+        "interpersonal skills",
+        "əsas güclü tərəflər",
+        "esas guclu terefler",
+      ],
+    },
+
+    {
+      key:
+        "experience",
+
+      aliases: [
+        "experience",
+        "work experience",
+        "professional experience",
+        "career history",
+        "work history",
+        "employment history",
+        "employment",
+        "təcrübə",
+        "tecrube",
+        "iş təcrübəsi",
+        "is tecrubesi",
+        "deneyim",
+        "iş deneyimi",
+      ],
+    },
+
+    {
+      key:
+        "projects",
+
+      aliases: [
+        "projects",
+        "project",
+        "personal projects",
+        "selected projects",
+        "layihələr",
+        "layiheler",
+        "projeler",
+      ],
+    },
+
+    {
+      key:
+        "education",
+
+      aliases: [
+        "education",
+        "academic background",
+        "academic history",
+        "educational background",
+        "qualifications",
+        "təhsil",
+        "tehsil",
+        "eğitim",
+        "egitim",
+      ],
+    },
+
+    {
+      key:
+        "certifications",
+
+      aliases: [
+        "certifications",
+        "certificates",
+        "certification",
+        "certifications & training",
+        "certifications and training",
+        "training",
+        "courses",
+        "sertifikatlar",
+        "sertifikatlar & təlimlər",
+        "sertifikatlar ve telimler",
+        "təlim və sertifikatlar",
+        "telim ve sertifikatlar",
+        "təlim və sertifikatlar",
+        "təlimlər",
+        "telimler",
+        "sertifikalar",
+      ],
+    },
+
+    {
+      key:
+        "languages",
+
+      aliases: [
+        "languages",
+        "language",
+        "language skills",
+        "spoken languages",
+        "foreign languages",
+        "dil bilikləri",
+        "dil bilikleri",
+        "dillər",
+        "diller",
+        "yabancı diller",
+      ],
+    },
+
+    {
+      key:
+        "volunteering",
+
+      aliases: [
+        "volunteering",
+        "volunteer experience",
+        "volunteer",
+        "community involvement",
+        "könüllülük",
+        "konulluluk",
+        "könüllü fəaliyyət",
+        "konullu fealiyyet",
+        "gönüllülük",
+      ],
+    },
+
+    {
+      key:
+        "hackathons",
+
+      aliases: [
+        "hackathons",
+        "hackathons & competitions",
+        "hackathons and competitions",
+        "competitions",
+        "awards & competitions",
+        "hakatonlar",
+        "hakatonlar & müsabiqələr",
+        "hakatonlar ve musabiqeler",
+        "yarışmalar",
+        "yarislar",
+      ],
+    },
+
+    {
+      key:
+        "achievements",
+
+      aliases: [
+        "achievements",
+        "awards",
+        "accomplishments",
+        "honors",
+        "əsas nailiyyətlər",
+        "esas nailiyyetler",
+        "nailiyyətlər",
+        "nailiyyetler",
+        "başarılar",
+      ],
+    },
+
+    {
+      key:
+        "interests",
+
+      aliases: [
+        "interests",
+        "hobbies",
+        "interests & hobbies",
+        "maraqlar",
+        "hobbilər",
+        "hobbiler",
+        "ilgi alanları",
+      ],
+    },
+  ];
+
+const KNOWN_ROLE_WORDS = [
+  "developer",
+  "engineer",
+  "designer",
+  "manager",
+  "specialist",
+  "analyst",
+  "intern",
+  "internship",
+  "trainee",
+  "volunteer",
+  "assistant",
+  "consultant",
+  "administrator",
+  "technician",
+  "programmer",
+  "researcher",
+  "coordinator",
+  "student",
+  "stajçı",
+  "stajci",
+  "mütəxəssis",
+  "mutexessis",
+  "proqramçı",
+  "proqramci",
+  "mühəndis",
+  "muhendis",
+];
+
+/* =========================================================
+   GENERIC HELPERS
+========================================================= */
+
+const cleanText = (
+  value: unknown
+): string => {
+  if (
+    typeof value !==
+    "string"
+  ) {
+    return "";
+  }
+
+  return value
+    .replace(
+      /\u00a0/g,
+      " "
+    )
+    .replace(
+      /\r\n/g,
+      "\n"
+    )
+    .replace(
+      /\r/g,
+      "\n"
+    )
+    .replace(
+      /[ \t]+/g,
+      " "
+    )
+    .replace(
+      /\n{3,}/g,
+      "\n\n"
+    )
+    .trim();
+};
+
+const cleanSingleLineText = (
+  value: unknown
+): string => {
+  return cleanText(
+    value
+  )
+    .replace(
+      /\s+/g,
+      " "
+    )
+    .trim();
+};
+
+const uniqueStrings = (
+  values: unknown
+): string[] => {
+  if (
+    !Array.isArray(
+      values
+    )
+  ) {
+    return [];
+  }
+
+  const seen =
+    new Set<string>();
+
+  const result:
+    string[] = [];
+
+  for (
+    const value
+    of values
+  ) {
+    const cleaned =
+      cleanSingleLineText(
+        value
+      );
+
+    if (!cleaned) {
+      continue;
+    }
+
+    const key =
+      cleaned
+        .toLowerCase();
+
+    if (
+      seen.has(
+        key
+      )
+    ) {
+      continue;
+    }
+
+    seen.add(
+      key
+    );
+
+    result.push(
+      cleaned
+    );
+  }
+
+  return result;
+};
+
+const isPageArtifact = (
+  value: string
+): boolean => {
+  const cleaned =
+    cleanSingleLineText(
+      value
+    );
+
+  return PAGE_ARTIFACT_PATTERNS.some(
+    (
+      pattern
+    ) =>
+      pattern.test(
+        cleaned
+      )
+  );
+};
+
+const stripBulletPrefix = (
+  value: string
+): string => {
+  return cleanSingleLineText(
+    value.replace(
+      BULLET_PREFIX_RE,
+      ""
+    )
+  );
+};
+
+const isBulletLine = (
+  value: string
+): boolean => {
+  return BULLET_PREFIX_RE.test(
+    value
+  );
+};
+
+const normalizeHeadingText = (
+  value: string
+): string => {
+  return cleanSingleLineText(
+    value
+  )
+    .toLowerCase()
+    .replace(
+      /[:：]+$/u,
+      ""
+    )
+    .replace(
+      /[|]+$/g,
+      ""
+    )
+    .trim();
+};
+
+const normalizeComparableText = (
+  value: string
+): string => {
+  return cleanSingleLineText(
+    value
+  )
+    .toLowerCase()
+    .replace(
+      /[–—−]/g,
+      "-"
+    )
+    .replace(
+      /[“”]/g,
+      '"'
+    )
+    .replace(
+      /[‘’]/g,
+      "'"
+    )
+    .replace(
+      /\s+/g,
+      " "
+    )
+    .trim();
+};
+
+const splitCommaSeparated = (
+  value: string
+): string[] => {
+  return uniqueStrings(
+    cleanSingleLineText(
+      value
+    )
+      .split(
+        /\s*[,;]\s*/
+      )
+      .map(
+        (
+          item
+        ) =>
+          item.trim()
+      )
+  );
+};
+
+const splitPipeSeparated = (
+  value: string
+): string[] => {
+  return uniqueStrings(
+    cleanSingleLineText(
+      value
+    )
+      .split(
+        /\s*\|\s*/
+      )
+      .map(
+        (
+          item
+        ) =>
+          item.trim()
+      )
+  );
+};
+
+const removeSurroundingParentheses = (
+  value: string
+): string => {
+  const cleaned =
+    cleanSingleLineText(
+      value
+    );
+
+  if (
+    cleaned.startsWith(
+      "("
+    ) &&
+    cleaned.endsWith(
+      ")"
+    )
+  ) {
+    return cleaned
+      .slice(
+        1,
+        -1
+      )
+      .trim();
+  }
+
+  return cleaned;
+};
+
+const isCurrentText = (
+  value: string
+): boolean => {
+  const normalized =
+    normalizeComparableText(
+      value
+    );
+
+  return CURRENT_TERMS.some(
+    (
+      term
+    ) =>
+      normalized.includes(
+        normalizeComparableText(
+          term
+        )
+      )
+  );
+};
+
+/* =========================================================
+   DATE EXTRACTION
+========================================================= */
+
+const findYearTokens = (
+  value: string
+): string[] => {
+  return value.match(
+    /\b(?:19|20)\d{2}\b/g
+  ) || [];
+};
+
+const findDateRange = (
+  value: string
+): IDateRange | null => {
+  const cleaned =
+    cleanSingleLineText(
+      value
+    );
+
+  if (!cleaned) {
+    return null;
+  }
+
+  const monthToken =
+    "(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?|Yanvar|Fevral|Mart|Aprel|May|İyun|Iyun|İyul|Iyul|Avqust|Sentyabr|Oktyabr|Noyabr|Dekabr)";
+
+  const yearToken =
+    "(?:19|20)\\d{2}";
+
+  const datedToken =
+    `(?:${monthToken}\\.?\\s+${yearToken}|${yearToken})`;
+
+  const currentToken =
+    "(?:Present|Current|Now|Ongoing|Today|Hazırda|Hazirda|Hazırkı vaxtadək|Hazirki vaxtadek|Davam edir|Devam edir|Indiyədək|Indiyedek)";
+
+  const rangeRe =
+    new RegExp(
+      `(${datedToken})\\s*[-–—]\\s*(${datedToken}|${currentToken})`,
+      "i"
+    );
+
+  const rangeMatch =
+    cleaned.match(
+      rangeRe
+    );
+
+  if (
+    rangeMatch
+  ) {
+    const startDate =
+      cleanSingleLineText(
+        rangeMatch[1] ||
+        ""
+      );
+
+    const endDate =
+      cleanSingleLineText(
+        rangeMatch[2] ||
+        ""
+      );
+
+    return {
+      startDate,
+      endDate,
+      isCurrent:
+        isCurrentText(
+          endDate
+        ),
+      matchedText:
+        cleanSingleLineText(
+          rangeMatch[0]
+        ),
+    };
+  }
+
+  /*
+   * A single standalone month/year or year is useful for
+   * projects, certificates, hackathons and education.
+   * We intentionally match only the date token itself so
+   * surrounding factual text is never consumed as a date.
+   */
+  const singleRe =
+    new RegExp(
+      `\\b(${datedToken})\\b`,
+      "i"
+    );
+
+  const singleMatch =
+    cleaned.match(
+      singleRe
+    );
+
+  if (
+    singleMatch
+  ) {
+    const token =
+      cleanSingleLineText(
+        singleMatch[1] ||
+        ""
+      );
+
+    return {
+      startDate:
+        token,
+
+      endDate:
+        "",
+
+      isCurrent:
+        false,
+
+      matchedText:
+        token,
+    };
+  }
+
+  return null;
+};
+
+const removeDateText = (
+  value: string,
+  date:
+    IDateRange | null
+): string => {
+  if (
+    !date ||
+    !date.matchedText
+  ) {
+    return cleanSingleLineText(
+      value
+    );
+  }
+
+  return cleanSingleLineText(
+    value
+      .replace(
+        date.matchedText,
+        " "
+      )
+      .replace(
+        /\(\s*\)/g,
+        " "
+      )
+      .replace(
+        /\[\s*\]/g,
+        " "
+      )
+  );
+};
+
+/* =========================================================
+   SECTION DETECTION
+========================================================= */
+
+const detectSectionKey = (
+  value: string
+): ResumeSectionKey | null => {
+  const normalized =
+    normalizeHeadingText(
+      value
+    );
+
+  if (
+    !normalized ||
+    normalized.length >
+      48
+  ) {
+    return null;
+  }
+
+  for (
+    const definition
+    of SECTION_ALIASES
+  ) {
+    if (
+      definition.aliases.some(
+        (
+          alias
+        ) =>
+          normalized ===
+          normalizeHeadingText(
+            alias
+          )
+      )
+    ) {
+      return definition.key;
+    }
+  }
+
+  return null;
+};
+
+const getCanonicalSectionTitle = (
+  key:
+    ResumeSectionKey
+): string => {
+  switch (
+    key
+  ) {
+    case "professionalSummary":
+      return "Professional Summary";
+
+    case "technicalSkills":
+      return "Technical Skills";
+
+    case "coreSkills":
+      return "Core Skills";
+
+    case "softSkills":
+      return "Core Strengths";
+
+    case "experience":
+      return "Experience";
+
+    case "projects":
+      return "Projects";
+
+    case "education":
+      return "Education";
+
+    case "certifications":
+      return "Certifications & Training";
+
+    case "languages":
+      return "Languages";
+
+    case "volunteering":
+      return "Volunteering";
+
+    case "hackathons":
+      return "Hackathons & Competitions";
+
+    case "achievements":
+      return "Achievements";
+
+    case "interests":
+      return "Interests";
+
+    case "preamble":
+      return "Header / Contact";
+
+    default:
+      return "Unclassified";
+  }
+};
+
+const buildCleanLines = (
+  resumeText: string
+): string[] => {
+  return resumeText
+    .replace(
+      /\r/g,
+      "\n"
+    )
+    .split(
+      "\n"
+    )
+    .map(
+      (
+        line
+      ) =>
+        line
+          .replace(
+            /\u00a0/g,
+            " "
+          )
+          .replace(
+            /[ \t]+/g,
+            " "
+          )
+          .trim()
+    )
+    .filter(
+      (
+        line
+      ) =>
+        Boolean(
+          line
+        ) &&
+        !isPageArtifact(
+          line
+        )
+    );
+};
+
+const splitIntoDetectedSections = (
+  lines: string[]
+): IDetectedSection[] => {
+  const sections:
+    IDetectedSection[] = [];
+
+  let current:
+    IDetectedSection = {
+      key:
+        "preamble",
+
+      title:
+        "Header / Contact",
+
+      lines:
+        [],
+    };
+
+  const pushCurrent = (): void => {
+    if (
+      current.lines.length ===
+      0 &&
+      current.key !==
+        "preamble"
+    ) {
+      return;
+    }
+
+    sections.push({
+      ...current,
+
+      lines: [
+        ...current.lines,
+      ],
+    });
+  };
+
+  for (
+    const line
+    of lines
+  ) {
+    const sectionKey =
+      detectSectionKey(
+        line
+      );
+
+    if (
+      sectionKey
+    ) {
+      pushCurrent();
+
+      current = {
+        key:
+          sectionKey,
+
+        title:
+          cleanSingleLineText(
+            line
+          ),
+
+        lines:
+          [],
+      };
+
+      continue;
+    }
+
+    current.lines.push(
+      line
+    );
+  }
+
+  pushCurrent();
+
+  /*
+   * Merge repeated explicit section headings while preserving
+   * source order inside the section.
+   */
+  const merged:
+    IDetectedSection[] = [];
+
+  for (
+    const section
+    of sections
+  ) {
+    const existing =
+      merged.find(
+        (
+          item
+        ) =>
+          item.key ===
+            section.key &&
+          item.key !==
+            "preamble" &&
+          item.key !==
+            "unknown"
+      );
+
+    if (
+      existing
+    ) {
+      existing.lines.push(
+        ...section.lines
+      );
+
+      continue;
+    }
+
+    merged.push({
+      ...section,
+
+      lines: [
+        ...section.lines,
+      ],
+    });
+  }
+
+  return merged;
+};
+
+const getSectionLines = (
+  sections:
+    IDetectedSection[],
+  key:
+    ResumeSectionKey
+): string[] => {
+  return sections
+    .filter(
+      (
+        section
+      ) =>
+        section.key ===
+        key
+    )
+    .flatMap(
+      (
+        section
+      ) =>
+        section.lines
+    );
+};
+
+const isDateRangeLikePhoneCandidate = (
+  value: string
+): boolean => {
+  const cleaned =
+    cleanSingleLineText(
+      value
+    );
+
+  if (!cleaned) {
+    return false;
+  }
+
+  const years =
+    cleaned.match(
+      /\b(?:19|20)\d{2}\b/g
+    ) ||
+    [];
+
+  return (
+    years.length >=
+      2 &&
+    /^[\s()+\-–—./]*(?:19|20)\d{2}[\s()+\-–—./]+(?:19|20)\d{2}[\s()+\-–—./]*$/.test(
+      cleaned
+    )
+  );
+};
+
+const isValidPhoneCandidate = (
+  value: string
+): boolean => {
+  const cleaned =
+    cleanSingleLineText(
+      value
+    );
+
+  if (
+    !cleaned ||
+    isDateRangeLikePhoneCandidate(
+      cleaned
+    )
+  ) {
+    return false;
+  }
+
+  const digits =
+    cleaned.replace(
+      /\D/g,
+      ""
+    );
+
+  return (
+    digits.length >=
+      7 &&
+    digits.length <=
+      15
+  );
+};
+
+const extractSafePhone = (
+  lines: string[]
+): string => {
+  for (
+    const line
+    of lines
+  ) {
+    const candidates =
+      line.match(
+        new RegExp(
+          PHONE_RE.source,
+          "g"
+        )
+      ) ||
+      [];
+
+    for (
+      const candidate
+      of candidates
+    ) {
+      if (
+        isValidPhoneCandidate(
+          candidate
+        )
+      ) {
+        return cleanSingleLineText(
+          candidate
+        );
+      }
+    }
+  }
+
+  return "";
+};
+
+/* =========================================================
+   CONTACT
+========================================================= */
+
+const looksLikePersonName = (
+  value: string
+): boolean => {
+  const cleaned =
+    cleanSingleLineText(
+      value
+    );
+
+  if (
+    !cleaned ||
+    cleaned.length >
+      80 ||
+    EMAIL_RE.test(
+      cleaned
+    ) ||
+    PHONE_RE.test(
+      cleaned
+    ) ||
+    URL_RE.test(
+      cleaned
+    ) ||
+    YEAR_RE.test(
+      cleaned
+    ) ||
+    detectSectionKey(
+      cleaned
+    )
+  ) {
+    return false;
+  }
+
+  const words =
+    cleaned
+      .split(
+        /\s+/
+      )
+      .filter(
+        Boolean
+      )
+      .filter(
+        (
+          line
+        ) =>
+          !isPageArtifact(
+            line
+          )
+      );
+
+  if (
+    words.length <
+      2 ||
+    words.length >
+      5
+  ) {
+    return false;
+  }
+
+  const lower =
+    cleaned
+      .toLowerCase();
+
+  if (
+    KNOWN_ROLE_WORDS.some(
+      (
+        word
+      ) =>
+        lower.includes(
+          word
+        )
+    )
+  ) {
+    return false;
+  }
+
+  return words.every(
+    (
+      word
+    ) =>
+      /^[A-Za-zÀ-ÖØ-öø-ÿƏəĞğÇçŞşİıÖöÜü'’-]+$/u.test(
+        word
+      )
+  );
+};
+
+const extractContact = (
+  preambleLines:
+    string[],
+  allLines:
+    string[],
+  warnings:
+    string[]
+): IStructuredResumeContact => {
+  /*
+   * Multi-column resumes may place CONTACT after a visual sidebar
+   * while the reconstructed source text starts with another column.
+   *
+   * Name still prefers the preamble. Contact values may be recovered
+   * globally because e-mail/phone/URLs have strong deterministic forms.
+   */
+  const nameSearchLines =
+    preambleLines.length >
+      0
+      ? preambleLines
+      : allLines.slice(
+          0,
+          18
+        );
+
+  const globalSearchLines =
+    uniqueStrings([
+      ...nameSearchLines,
+      ...allLines,
+    ]);
+
+  const joined =
+    globalSearchLines.join(
+      " | "
+    );
+
+  const email =
+    joined.match(
+      EMAIL_RE
+    )?.[0] ||
+    "";
+
+  const phone =
+    extractSafePhone(
+      globalSearchLines
+    );
+
+  const linkedin =
+    joined.match(
+      LINKEDIN_RE
+    )?.[0] ||
+    "";
+
+  const github =
+    joined.match(
+      GITHUB_RE
+    )?.[0] ||
+    "";
+
+  const urls =
+    globalSearchLines
+      .flatMap(
+        (
+          line
+        ) =>
+          line.match(
+            new RegExp(
+              URL_RE.source,
+              "ig"
+            )
+          ) ||
+          []
+      )
+      .map(
+        (
+          item
+        ) =>
+          cleanSingleLineText(
+            item
+          )
+      );
+
+  const website =
+    urls.find(
+      (
+        url
+      ) =>
+        !LINKEDIN_RE.test(
+          url
+        ) &&
+        !GITHUB_RE.test(
+          url
+        )
+    ) ||
+    "";
+
+  const fullName =
+    nameSearchLines.find(
+      (
+        line
+      ) =>
+        looksLikePersonName(
+          line
+        )
+    ) ||
+    "";
+
+  const location =
+    globalSearchLines.find(
+      (
+        line
+      ) => {
+        const cleaned =
+          cleanSingleLineText(
+            line
+          );
+
+        if (
+          !cleaned ||
+          cleaned ===
+            fullName ||
+          EMAIL_RE.test(
+            cleaned
+          ) ||
+          PHONE_RE.test(
+            cleaned
+          ) ||
+          URL_RE.test(
+            cleaned
+          ) ||
+          YEAR_RE.test(
+            cleaned
+          ) ||
+          detectSectionKey(
+            cleaned
+          )
+        ) {
+          return false;
+        }
+
+        return (
+          cleaned.length <=
+            60 &&
+          /(?:,\s*[A-Z]{2,3}\b|,\s*[A-Za-zÀ-ÖØ-öø-ÿƏəĞğÇçŞşİıÖöÜü -]{2,}$)/u.test(
+            cleaned
+          )
+        );
+      }
+    ) ||
+    "";
+
+  if (!fullName) {
+    warnings.push(
+      "Candidate full name could not be identified deterministically."
+    );
+  }
+
+  if (!email) {
+    warnings.push(
+      "Candidate email could not be identified deterministically."
+    );
+  }
+
+  return {
+    fullName:
+      cleanSingleLineText(
+        fullName
+      ),
+
+    email:
+      cleanSingleLineText(
+        email
+      ),
+
+    phone:
+      cleanSingleLineText(
+        phone
+      ),
+
+    location:
+      cleanSingleLineText(
+        location
+      ),
+
+    linkedin:
+      cleanSingleLineText(
+        linkedin
+      ),
+
+    github:
+      cleanSingleLineText(
+        github
+      ),
+
+    website:
+      cleanSingleLineText(
+        website
+      ),
+  };
+};
+
+/* =========================================================
+   SIMPLE SECTION LIST PARSING
+========================================================= */
+
+const parseListLines = (
+  lines: string[]
+): string[] => {
+  const result:
+    string[] = [];
+
+  for (
+    const line
+    of lines
+  ) {
+    const cleaned =
+      stripBulletPrefix(
+        line
+      );
+
+    if (!cleaned) {
+      continue;
+    }
+
+    /*
+     * Keep labelled lines intact if they describe a category.
+     * The skill parser handles those separately.
+     */
+    if (
+      cleaned.includes(
+        ":"
+      )
+    ) {
+      result.push(
+        cleaned
+      );
+
+      continue;
+    }
+
+    if (
+      /[,;]/.test(
+        cleaned
+      )
+    ) {
+      result.push(
+        ...splitCommaSeparated(
+          cleaned
+        )
+      );
+
+      continue;
+    }
+
+    result.push(
+      cleaned
+    );
+  }
+
+  return uniqueStrings(
+    result
+  );
+};
+
+const looksLikeSkillCategoryLine = (
+  value: string
+): boolean => {
+  const cleaned =
+    stripBulletPrefix(
+      value
+    );
+
+  if (!cleaned) {
+    return false;
+  }
+
+  return /^(?:programming languages?|frameworks?(?:\s*&\s*libraries)?|libraries|developer tools?|tools|databases?|technical skills?|frontend|backend|technologies?)\s*:/i.test(
+    cleaned
+  );
+};
+
+const parseGlobalSkillCategoryLines = (
+  lines: string[]
+): string[] => {
+  const values:
+    string[] = [];
+
+  for (
+    const line
+    of lines
+  ) {
+    if (
+      !looksLikeSkillCategoryLine(
+        line
+      )
+    ) {
+      continue;
+    }
+
+    const cleaned =
+      stripBulletPrefix(
+        line
+      );
+
+    const colonIndex =
+      cleaned.indexOf(
+        ":"
+      );
+
+    if (
+      colonIndex < 0
+    ) {
+      continue;
+    }
+
+    values.push(
+      ...splitCommaSeparated(
+        cleaned.slice(
+          colonIndex + 1
+        )
+      )
+    );
+  }
+
+  return uniqueStrings(
+    values
+  );
+};
+
+const parseSkillsSection = (
+  lines: string[]
+): {
+  skills: string[];
+  technicalSkills: string[];
+} => {
+  const skills:
+    string[] = [];
+
+  const technicalSkills:
+    string[] = [];
+
+  for (
+    const rawLine
+    of lines
+  ) {
+    const line =
+      stripBulletPrefix(
+        rawLine
+      );
+
+    if (!line) {
+      continue;
+    }
+
+    const colonIndex =
+      line.indexOf(
+        ":"
+      );
+
+    if (
+      colonIndex >
+      0
+    ) {
+      const label =
+        line
+          .slice(
+            0,
+            colonIndex
+          )
+          .trim()
+          .toLowerCase();
+
+      const value =
+        line
+          .slice(
+            colonIndex +
+              1
+          )
+          .trim();
+
+      const items =
+        splitCommaSeparated(
+          value
+        );
+
+      if (
+        /programming|language|framework|library|libraries|database|tool|technology|technologies|frontend|backend|devops|cloud|api/i.test(
+          label
+        )
+      ) {
+        technicalSkills.push(
+          ...items
+        );
+      } else {
+        skills.push(
+          ...items
+        );
+      }
+
+      continue;
+    }
+
+    const items =
+      /[,;]/.test(
+        line
+      )
+        ? splitCommaSeparated(
+            line
+          )
+        : [
+            line,
+          ];
+
+    technicalSkills.push(
+      ...items
+    );
+  }
+
+  return {
+    skills:
+      uniqueStrings(
+        skills
+      ),
+
+    technicalSkills:
+      uniqueStrings(
+        technicalSkills
+      ),
+  };
+};
+
+/* =========================================================
+   DATED BLOCK PARSER
+========================================================= */
+
+const buildDatedBlocks = (
+  lines: string[]
+): IDatedBlock[] => {
+  const cleanedLines =
+    lines
+      .map(
+        (
+          line
+        ) =>
+          cleanSingleLineText(
+            line
+          )
+      )
+      .filter(
+        Boolean
+      )
+      .filter(
+        (
+          line
+        ) =>
+          !isPageArtifact(
+            line
+          )
+      );
+
+  if (
+    cleanedLines.length ===
+    0
+  ) {
+    return [];
+  }
+
+  /*
+   * Deterministic entry segmentation.
+   *
+   * Resume sections commonly use one of these layouts:
+   *
+   *   Title — Company          Jan 2024 - Present
+   *   Description...
+   *
+   * or
+   *
+   *   Title — Company
+   *   Jan 2024 - Present
+   *   Description...
+   *
+   * Every explicit date line/token starts a new entry. If the date
+   * is on its own line, the immediately preceding non-bullet line is
+   * moved into the new entry as its heading.
+   *
+   * This prevents a description from the previous entry becoming the
+   * title of the next Experience / Volunteering / Education /
+   * Certification record.
+   */
+  const blocks:
+    IDatedBlock[] = [];
+
+  let current:
+    IDatedBlock | null =
+      null;
+
+  const pushCurrent = (): void => {
+    if (
+      !current ||
+      current.lines.length ===
+        0
+    ) {
+      current = null;
+
+      return;
+    }
+
+    blocks.push({
+      lines:
+        [...current.lines],
+
+      date:
+        current.date,
+    });
+
+    current = null;
+  };
+
+  const startBlock = (
+    heading: string,
+    date:
+      IDateRange
+  ): void => {
+    pushCurrent();
+
+    current = {
+      lines:
+        heading
+          ? [heading]
+          : [],
+
+      date,
+    };
+  };
+
+  for (
+    let index = 0;
+    index <
+    cleanedLines.length;
+    index +=
+      1
+  ) {
+    const line =
+      cleanedLines[
+        index
+      ] ||
+      "";
+
+    const date =
+      findDateRange(
+        line
+      );
+
+    if (
+      date
+    ) {
+      const withoutDate =
+        removeDateText(
+          line,
+          date
+        );
+
+      /*
+       * Date and heading are on the same source line.
+       */
+      if (
+        withoutDate
+      ) {
+        startBlock(
+          withoutDate,
+          date
+        );
+
+        continue;
+      }
+
+      /*
+       * Standalone date line. Prefer the immediately previous
+       * non-bullet line as the heading for this dated entry.
+       */
+      let recoveredHeading =
+        "";
+
+      if (
+        current &&
+        current.lines.length >
+          0
+      ) {
+        const lastIndex =
+          current.lines.length -
+          1;
+
+        const previous =
+          current.lines[
+            lastIndex
+          ] ||
+          "";
+
+        if (
+          previous &&
+          !isBulletLine(
+            previous
+          ) &&
+          !looksLikeSkillCategoryLine(
+            previous
+          )
+        ) {
+          recoveredHeading =
+            previous;
+
+          current.lines.splice(
+            lastIndex,
+            1
+          );
+
+          if (
+            current.lines.length >
+              0
+          ) {
+            pushCurrent();
+          } else {
+            current = null;
+          }
+        } else {
+          pushCurrent();
+        }
+      } else {
+        pushCurrent();
+      }
+
+      current = {
+        lines:
+          recoveredHeading
+            ? [
+                recoveredHeading,
+              ]
+            : [],
+
+        date,
+      };
+
+      continue;
+    }
+
+    if (!current) {
+      current = {
+        lines:
+          [],
+
+        date:
+          null,
+      };
+    }
+
+    current.lines.push(
+      line
+    );
+  }
+
+  pushCurrent();
+
+  return blocks.filter(
+    (
+      block
+    ) =>
+      block.lines.length >
+      0
+  );
+};
+
+
+/* =========================================================
+   HEADING PARSING
+========================================================= */
+
+const splitRoleAndOrganization = (
+  value: string
+): {
+  role: string;
+  organization: string;
+} => {
+  const cleaned =
+    cleanSingleLineText(
+      value
+    );
+
+  if (!cleaned) {
+    return {
+      role:
+        "",
+      organization:
+        "",
+    };
+  }
+
+  /*
+   * Prefer explicit dash / pipe separators because these are the
+   * most common resume heading forms:
+   *   Front-End Developer — DigitCodex
+   *   Volunteer | RIIB
+   */
+  const explicitSeparators = [
+    /\s+[—–-]\s+/,
+    /\s+\|\s+/,
+    /\s+\bat\b\s+/i,
+  ];
+
+  for (
+    const separator
+    of explicitSeparators
+  ) {
+    const parts =
+      cleaned
+        .split(
+          separator
+        )
+        .map(
+          (
+            part
+          ) =>
+            part.trim()
+        )
+        .filter(
+          Boolean
+        );
+
+    if (
+      parts.length >=
+        2
+    ) {
+      return {
+        role:
+          parts[0] ||
+          "",
+
+        organization:
+          parts
+            .slice(
+              1
+            )
+            .join(
+              " — "
+            ),
+      };
+    }
+  }
+
+  /*
+   * Comma separation is used only when the first part clearly looks
+   * like a role. This avoids splitting organization names that
+   * legitimately contain commas.
+   */
+  const commaParts =
+    cleaned
+      .split(
+        /\s*,\s*/
+      )
+      .filter(
+        Boolean
+      );
+
+  if (
+    commaParts.length >=
+      2
+  ) {
+    const first =
+      commaParts[0] ||
+      "";
+
+    const firstLower =
+      first.toLowerCase();
+
+    if (
+      KNOWN_ROLE_WORDS.some(
+        (
+          word
+        ) =>
+          firstLower.includes(
+            word
+          )
+      )
+    ) {
+      return {
+        role:
+          first,
+
+        organization:
+          commaParts
+            .slice(
+              1
+            )
+            .join(
+              ", "
+            ),
+      };
+    }
+  }
+
+  return {
+    role:
+      cleaned,
+
+    organization:
+      "",
+  };
+};
+
+const splitProjectHeading = (
+  value: string
+): {
+  name: string;
+  technologies: string[];
+} => {
+  const parts =
+    splitPipeSeparated(
+      value
+    );
+
+  if (
+    parts.length ===
+    0
+  ) {
+    return {
+      name:
+        cleanSingleLineText(
+          value
+        ),
+
+      technologies:
+        [],
+    };
+  }
+
+  const name =
+    parts[0] ||
+    "";
+
+  const technologies =
+    parts
+      .slice(
+        1
+      )
+      .flatMap(
+        (
+          part
+        ) =>
+          splitCommaSeparated(
+            part
+          )
+      );
+
+  return {
+    name:
+      cleanSingleLineText(
+        name
+      ),
+
+    technologies:
+      uniqueStrings(
+        technologies
+      ),
+  };
+};
+
+/* =========================================================
+   EXPERIENCE
+========================================================= */
+
+const parseExperience = (
+  lines: string[],
+  warnings: string[]
+): IStructuredResumeExperience[] => {
+  const blocks =
+    buildDatedBlocks(
+      lines
+    );
+
+  const result:
+    IStructuredResumeExperience[] = [];
+
+  blocks.forEach(
+    (
+      block,
+      index
+    ) => {
+      const nonEmptyLines =
+        block.lines
+          .filter(
+            Boolean
+          )
+          .filter(
+            (
+              line
+            ) =>
+              !isPageArtifact(
+                line
+              )
+          );
+
+      if (
+        nonEmptyLines.length ===
+        0
+      ) {
+        return;
+      }
+
+      const heading =
+        stripBulletPrefix(
+          nonEmptyLines[0] ||
+          ""
+        );
+
+      const split =
+        splitRoleAndOrganization(
+          heading
+        );
+
+      const contentLines =
+        nonEmptyLines.slice(
+          1
+        );
+
+      const bullets =
+        contentLines
+          .filter(
+            (
+              line
+            ) =>
+              isBulletLine(
+                line
+              )
+          )
+          .map(
+            stripBulletPrefix
+          );
+
+      const prose =
+        contentLines
+          .filter(
+            (
+              line
+            ) =>
+              !isBulletLine(
+                line
+              )
+          )
+          .map(
+            stripBulletPrefix
+          )
+          .filter(
+            Boolean
+          );
+
+      const description =
+        prose.join(
+          " "
+        );
+
+      if (
+        !split.organization
+      ) {
+        warnings.push(
+          `Experience ${index + 1} company/organization could not be separated confidently from the source heading. User review is recommended.`
+        );
+      }
+
+      result.push({
+        title:
+          split.role,
+
+        company:
+          split.organization,
+
+        location:
+          "",
+
+        employmentType:
+          "",
+
+        startDate:
+          block.date
+            ?.startDate ||
+          "",
+
+        endDate:
+          block.date
+            ?.endDate ||
+          "",
+
+        isCurrent:
+          block.date
+            ?.isCurrent ||
+          false,
+
+        description:
+          cleanText(
+            description
+          ),
+
+        bullets:
+          uniqueStrings(
+            bullets
+          ),
+
+        technologies:
+          [],
+      });
+    }
+  );
+
+  return result;
+};
+
+/* =========================================================
+   PROJECTS
+========================================================= */
+
+const parseProjects = (
+  lines: string[],
+  warnings: string[]
+): IStructuredResumeProject[] => {
+  const blocks =
+    buildDatedBlocks(
+      lines
+    );
+
+  const result:
+    IStructuredResumeProject[] = [];
+
+  blocks.forEach(
+    (
+      block,
+      index
+    ) => {
+      const contentLines =
+        block.lines
+          .filter(
+            Boolean
+          )
+          .filter(
+            (
+              line
+            ) =>
+              !isPageArtifact(
+                line
+              )
+          )
+          .filter(
+            (
+              line
+            ) =>
+              !looksLikeSkillCategoryLine(
+                line
+              )
+          );
+
+      if (
+        contentLines.length ===
+        0
+      ) {
+        return;
+      }
+
+      const heading =
+        stripBulletPrefix(
+          contentLines[0] ||
+          ""
+        );
+
+      const projectHeading =
+        splitProjectHeading(
+          heading
+        );
+
+      const bullets =
+        contentLines
+          .slice(
+            1
+          )
+          .filter(
+            (
+              line
+            ) =>
+              isBulletLine(
+                line
+              )
+          )
+          .map(
+            stripBulletPrefix
+          );
+
+      const description =
+        contentLines
+          .slice(
+            1
+          )
+          .filter(
+            (
+              line
+            ) =>
+              !isBulletLine(
+                line
+              )
+          )
+          .join(
+            " "
+          )
+          .trim();
+
+      const joined =
+        contentLines.join(
+          " "
+        );
+
+      const github =
+        joined.match(
+          GITHUB_RE
+        )?.[0] ||
+        "";
+
+      const urlCandidates =
+        joined.match(
+          new RegExp(
+            URL_RE.source,
+            "ig"
+          )
+        ) ||
+        [];
+
+      const url =
+        urlCandidates.find(
+          (
+            item
+          ) =>
+            !GITHUB_RE.test(
+              item
+            )
+        ) ||
+        "";
+
+      if (
+        !projectHeading.name
+      ) {
+        warnings.push(
+          `Project ${index + 1} name could not be identified deterministically.`
+        );
+      }
+
+      result.push({
+        name:
+          projectHeading.name,
+
+        role:
+          "",
+
+        description:
+          cleanText(
+            description
+          ),
+
+        startDate:
+          block.date
+            ?.startDate ||
+          "",
+
+        endDate:
+          block.date
+            ?.endDate ||
+          "",
+
+        technologies:
+          projectHeading
+            .technologies,
+
+        bullets:
+          uniqueStrings(
+            bullets
+          ),
+
+        url:
+          cleanSingleLineText(
+            url
+          ),
+
+        github:
+          cleanSingleLineText(
+            github
+          ),
+      });
+    }
+  );
+
+  return result;
+};
+
+/* =========================================================
+   EDUCATION
+========================================================= */
+
+const looksLikeDegreeLine = (
+  value: string
+): boolean => {
+  return /\b(?:bachelor|master|associate|degree|diploma|certificate|qualification|bakalavr|magistr|kollec|college|university|universitet|məktəb|mekteb|computer science|information technology|service in transport|tourism)\b/i.test(
+    value
+  );
+};
+
+const splitTrailingLocationFromOrganization = (
+  value: string
+): {
+  name: string;
+  location: string;
+} => {
+  const cleaned =
+    cleanSingleLineText(
+      value
+    );
+
+  if (!cleaned) {
+    return {
+      name:
+        "",
+      location:
+        "",
+    };
+  }
+
+  const parts =
+    cleaned
+      .split(
+        /\s+/
+      )
+      .filter(
+        Boolean
+      );
+
+  if (
+    parts.length <
+    2
+  ) {
+    return {
+      name:
+        cleaned,
+
+      location:
+        "",
+    };
+  }
+
+  const last =
+    parts[
+      parts.length -
+      1
+    ] ||
+    "";
+
+  const prefix =
+    parts
+      .slice(
+        0,
+        -1
+      )
+      .join(
+        " "
+      );
+
+  const organizationLike =
+    /\b(?:university|college|school|academy|institute|institut|universitet|kollec|məktəb|mekteb|akademiya|technest|holberton|training|təlim|telim)\b/i.test(
+      prefix
+    );
+
+  const locationLike =
+    /^[A-Za-zÀ-ÖØ-öø-ÿƏəĞğÇçŞşİıÖöÜü'’-]{2,}$/u.test(
+      last
+    );
+
+  if (
+    organizationLike &&
+    locationLike
+  ) {
+    return {
+      name:
+        prefix,
+
+      location:
+        last,
+    };
+  }
+
+  return {
+    name:
+      cleaned,
+
+    location:
+      "",
+  };
+};
+
+const looksLikeEducationInstitution = (
+  value: string
+): boolean => {
+  const cleaned =
+    cleanSingleLineText(
+      value
+    );
+
+  if (!cleaned) {
+    return false;
+  }
+
+  return /\b(?:university|college|school|academy|institute|institut|universitet|kollec|məktəb|mekteb|akademiya|texnikum)\b/i.test(
+    cleaned
+  );
+};
+
+interface IEducationSourceBlock {
+  institution: string;
+  date: IDateRange | null;
+  details: string[];
+}
+
+const buildEducationSourceBlocks = (
+  lines: string[]
+): IEducationSourceBlock[] => {
+  const sourceLines =
+    lines
+      .map(
+        cleanSingleLineText
+      )
+      .filter(
+        Boolean
+      )
+      .filter(
+        (
+          line
+        ) =>
+          !isPageArtifact(
+            line
+          )
+      );
+
+  const blocks:
+    IEducationSourceBlock[] = [];
+
+  let current:
+    IEducationSourceBlock | null =
+      null;
+
+  const pushCurrent = (): void => {
+    if (
+      current &&
+      current.institution
+    ) {
+      blocks.push({
+        institution:
+          current.institution,
+
+        date:
+          current.date,
+
+        details:
+          [...current.details],
+      });
+    }
+
+    current = null;
+  };
+
+  for (
+    const rawLine
+    of sourceLines
+  ) {
+    const date =
+      findDateRange(
+        rawLine
+      );
+
+    const withoutDate =
+      date
+        ? removeDateText(
+            rawLine,
+            date
+          )
+        : rawLine;
+
+    const cleaned =
+      stripBulletPrefix(
+        withoutDate
+      );
+
+    /*
+     * A line that explicitly looks like an institution always starts
+     * a new education record. This prevents the next college/university
+     * from being stored as the previous record's location.
+     */
+    if (
+      cleaned &&
+      looksLikeEducationInstitution(
+        cleaned
+      )
+    ) {
+      pushCurrent();
+
+      current = {
+        institution:
+          cleaned,
+
+        date,
+
+        details:
+          [],
+      };
+
+      continue;
+    }
+
+    /*
+     * A standalone date belongs to the current institution. If there
+     * is no current institution, ignore it instead of attaching it to
+     * a later record.
+     */
+    if (
+      date &&
+      !cleaned
+    ) {
+      if (current) {
+        current.date =
+          date;
+      }
+
+      continue;
+    }
+
+    if (!current) {
+      /*
+       * Unknown preamble inside Education. Do not invent an institution.
+       */
+      continue;
+    }
+
+    if (
+      date &&
+      !current.date
+    ) {
+      current.date =
+        date;
+    }
+
+    if (cleaned) {
+      current.details.push(
+        cleaned
+      );
+    }
+  }
+
+  pushCurrent();
+
+  return blocks;
+};
+
+const parseEducation = (
+  lines: string[],
+  warnings: string[]
+): IStructuredResumeEducation[] => {
+  const blocks =
+    buildEducationSourceBlocks(
+      lines
+    );
+
+  return blocks.map(
+    (
+      block,
+      index
+    ) => {
+      const institutionParts =
+        splitTrailingLocationFromOrganization(
+          block.institution
+        );
+
+      let degree =
+        "";
+
+      let field =
+        "";
+
+      let location =
+        institutionParts.location;
+
+      let gpa =
+        "";
+
+      const coursework:
+        string[] = [];
+
+      const achievements:
+        string[] = [];
+
+      for (
+        const rawLine
+        of block.details
+      ) {
+        const line =
+          stripBulletPrefix(
+            rawLine
+          );
+
+        if (!line) {
+          continue;
+        }
+
+        const gpaMatch =
+          line.match(
+            /\bGPA\s*[:\-]?\s*([0-9.]+(?:\s*\/\s*[0-9.]+)?)/i
+          );
+
+        if (
+          gpaMatch
+        ) {
+          gpa =
+            cleanSingleLineText(
+              gpaMatch[1] ||
+              ""
+            );
+
+          continue;
+        }
+
+        if (
+          /^relevant coursework\s*:/i.test(
+            line
+          )
+        ) {
+          coursework.push(
+            ...splitCommaSeparated(
+              line.replace(
+                /^relevant coursework\s*:/i,
+                ""
+              )
+            )
+          );
+
+          continue;
+        }
+
+        if (!degree) {
+          const commaParts =
+            line
+              .split(
+                /\s*,\s*/
+              )
+              .filter(
+                Boolean
+              );
+
+          degree =
+            commaParts[0] ||
+            line;
+
+          if (
+            commaParts.length >
+              1
+          ) {
+            field =
+              commaParts
+                .slice(
+                  1
+                )
+                .join(
+                  ", "
+                );
+          }
+
+          continue;
+        }
+
+        /*
+         * Location is accepted only when it is a short place-like
+         * standalone line and does not itself look like another school.
+         */
+        if (
+          !location &&
+          line.length <=
+            40 &&
+          !YEAR_RE.test(
+            line
+          ) &&
+          !looksLikeEducationInstitution(
+            line
+          ) &&
+          !isBulletLine(
+            rawLine
+          )
+        ) {
+          location =
+            line;
+
+          continue;
+        }
+
+        achievements.push(
+          line
+        );
+      }
+
+      if (
+        !block.institution
+      ) {
+        warnings.push(
+          `Education ${index + 1} institution could not be identified deterministically.`
+        );
+      }
+
+      return {
+        institution:
+          institutionParts.name,
+
+        degree,
+
+        field,
+
+        location,
+
+        startDate:
+          block.date
+            ?.startDate ||
+          "",
+
+        endDate:
+          block.date
+            ?.endDate ||
+          "",
+
+        isCurrent:
+          block.date
+            ?.isCurrent ||
+          false,
+
+        gpa,
+
+        coursework:
+          uniqueStrings(
+            coursework
+          ),
+
+        achievements:
+          uniqueStrings(
+            achievements
+          ),
+      };
+    }
+  );
+};
+
+/* =========================================================
+   CERTIFICATIONS / TRAINING
+========================================================= */
+
+const inferCertificationStatusFromSource = (
+  value: string
+): StructuredCertificationStatus => {
+  const normalized =
+    normalizeComparableText(
+      value
+    );
+
+  if (
+    /expired|müddəti bitib|muddeti bitib/i.test(
+      normalized
+    )
+  ) {
+    return "expired";
+  }
+
+  if (
+    /in progress|ongoing|currently studying|preparing|expected|hazırda|hazirda|davam edir/i.test(
+      normalized
+    )
+  ) {
+    return "in-progress";
+  }
+
+  return "unknown";
+};
+
+const parseCertifications = (
+  lines: string[]
+): IStructuredResumeCertification[] => {
+  const sourceLines =
+    lines
+      .map(
+        cleanSingleLineText
+      )
+      .filter(
+        Boolean
+      )
+      .filter(
+        (
+          line
+        ) =>
+          !isPageArtifact(
+            line
+          )
+      );
+
+  interface ICertBlock {
+    heading: string;
+    date: IDateRange | null;
+    details: string[];
+  }
+
+  const looksLikeTrainingProvider = (
+    value: string
+  ): boolean => {
+    const cleaned =
+      cleanSingleLineText(
+        value
+      );
+
+    if (!cleaned) {
+      return false;
+    }
+
+    return /\b(?:school|academy|college|university|institute|institut|bootcamp|course|training|technest|holberton|coursera|edx|udemy|freecodecamp|odin project|məktəb|mekteb|akademiya|kollec|universitet|təlim|telim)\b/i.test(
+      cleaned
+    );
+  };
+
+  const blocks:
+    ICertBlock[] = [];
+
+  let current:
+    ICertBlock | null =
+      null;
+
+  const pushCurrent = (): void => {
+    if (
+      current &&
+      current.heading
+    ) {
+      blocks.push({
+        heading:
+          current.heading,
+
+        date:
+          current.date,
+
+        details:
+          [...current.details],
+      });
+    }
+
+    current = null;
+  };
+
+  for (
+    const rawLine
+    of sourceLines
+  ) {
+    const date =
+      findDateRange(
+        rawLine
+      );
+
+    const withoutDate =
+      date
+        ? removeDateText(
+            rawLine,
+            date
+          )
+        : rawLine;
+
+    const cleaned =
+      stripBulletPrefix(
+        withoutDate
+      );
+
+    /*
+     * IMPORTANT:
+     * Training sections often use:
+     *
+     *   Holberton School Azerbaijan Baku
+     *   Computer Science (Web Development) - Scholarship Recipient  2025
+     *
+     * The second line is NOT a new certification. It is the program
+     * belonging to the provider above.
+     */
+    if (
+      date &&
+      cleaned &&
+      current &&
+      !current.date &&
+      looksLikeTrainingProvider(
+        current.heading
+      )
+    ) {
+      current.details.push(
+        cleaned
+      );
+
+      current.date =
+        date;
+
+      continue;
+    }
+
+    /*
+     * Date + text normally starts a new independent certificate when
+     * there is no open provider waiting for its program.
+     */
+    if (
+      date &&
+      cleaned
+    ) {
+      pushCurrent();
+
+      current = {
+        heading:
+          cleaned,
+
+        date,
+
+        details:
+          [],
+      };
+
+      continue;
+    }
+
+    /*
+     * Standalone date belongs only to the currently open item.
+     */
+    if (
+      date &&
+      !cleaned
+    ) {
+      if (current) {
+        current.date =
+          date;
+      }
+
+      continue;
+    }
+
+    if (!cleaned) {
+      continue;
+    }
+
+    /*
+     * Once a dated item is complete, the next non-bullet line starts
+     * the next provider/certificate.
+     */
+    if (
+      current &&
+      current.date &&
+      !isBulletLine(
+        rawLine
+      )
+    ) {
+      pushCurrent();
+
+      current = {
+        heading:
+          cleaned,
+
+        date:
+          null,
+
+        details:
+          [],
+      };
+
+      continue;
+    }
+
+    if (!current) {
+      current = {
+        heading:
+          cleaned,
+
+        date:
+          null,
+
+        details:
+          [],
+      };
+
+      continue;
+    }
+
+    /*
+     * Before the date appears, following lines belong to the current
+     * provider as program/field/details.
+     */
+    current.details.push(
+      cleaned
+    );
+  }
+
+  pushCurrent();
+
+  const allSourceDates =
+    sourceLines
+      .map(
+        (
+          line
+        ) =>
+          findDateRange(
+            line
+          )
+      )
+      .filter(
+        (
+          value
+        ): value is IDateRange =>
+          Boolean(
+            value
+          )
+      )
+      .map(
+        (
+          value
+        ) => ({
+          startDate:
+            value.startDate,
+
+          endDate:
+            value.endDate,
+        })
+      );
+
+  const usedDateKeys =
+    new Set<string>(
+      blocks
+        .filter(
+          (
+            block
+          ) =>
+            Boolean(
+              block.date
+            )
+        )
+        .map(
+          (
+            block
+          ) =>
+            `${block.date?.startDate || ""}|${block.date?.endDate || ""}`
+        )
+    );
+
+  const unusedSourceDates =
+    allSourceDates.filter(
+      (
+        date
+      ) =>
+        !usedDateKeys.has(
+          `${date.startDate}|${date.endDate}`
+        )
+    );
+
+  let recoveryIndex =
+    0;
+
+  return blocks.map(
+    (
+      block
+    ) => {
+      const pipeParts =
+        splitPipeSeparated(
+          block.heading
+        );
+
+      const rawName =
+        pipeParts[0] ||
+        block.heading;
+
+      const providerParts =
+        splitTrailingLocationFromOrganization(
+          rawName
+        );
+
+      const name =
+        providerParts.location
+          ? `${providerParts.name} (${providerParts.location})`
+          : providerParts.name;
+
+      const explicitIssuer =
+        pipeParts.length >
+          1
+          ? pipeParts
+              .slice(
+                1
+              )
+              .join(
+                " | "
+              )
+          : "";
+
+      const programDetail =
+        block.details.find(
+          (
+            item
+          ) =>
+            !URL_RE.test(
+              item
+            ) &&
+            !/credential\s+id/i.test(
+              item
+            )
+        ) ||
+        "";
+
+      const issuer =
+        explicitIssuer ||
+        programDetail;
+
+      const fullText =
+        block.details.join(
+          " "
+        );
+
+      const credentialUrl =
+        fullText.match(
+          URL_RE
+        )?.[0] ||
+        "";
+
+      const credentialId =
+        fullText.match(
+          /credential\s+id\s*[:#-]?\s*([A-Za-z0-9._-]+)/i
+        )?.[1] ||
+        "";
+
+      let issueDate =
+        block.date
+          ?.startDate ||
+        "";
+
+      let expirationDate =
+        block.date
+          ?.endDate ||
+        "";
+
+      /*
+       * Recover only an explicit unused date from the same
+       * Training/Certifications source section. No year is invented.
+       */
+      if (
+        !issueDate &&
+        recoveryIndex <
+        unusedSourceDates.length
+      ) {
+        const recovered =
+          unusedSourceDates[
+            recoveryIndex
+          ];
+
+        recoveryIndex +=
+          1;
+
+        issueDate =
+          recovered
+            ?.startDate ||
+          "";
+
+        expirationDate =
+          recovered
+            ?.endDate ||
+          "";
+      }
+
+      return {
+        name:
+          cleanSingleLineText(
+            name
+          ),
+
+        issuer:
+          cleanSingleLineText(
+            issuer
+          ),
+
+        issueDate:
+          cleanSingleLineText(
+            issueDate
+          ),
+
+        expirationDate:
+          cleanSingleLineText(
+            expirationDate
+          ),
+
+        credentialId:
+          cleanSingleLineText(
+            credentialId
+          ),
+
+        credentialUrl:
+          cleanSingleLineText(
+            credentialUrl
+          ),
+
+        status:
+          inferCertificationStatusFromSource(
+            [
+              block.heading,
+              ...block.details,
+            ].join(
+              " "
+            )
+          ),
+      };
+    }
+  );
+};
+
+/* =========================================================
+   LANGUAGES
+========================================================= */
+
+const parseLanguageToken = (
+  value: string
+): IStructuredResumeLanguage | null => {
+  const cleaned =
+    stripBulletPrefix(
+      value
+    );
+
+  if (!cleaned) {
+    return null;
+  }
+
+  if (
+    /programming\s+languages?/i.test(
+      cleaned
+    )
+  ) {
+    return null;
+  }
+
+  const colonIndex =
+    cleaned.indexOf(
+      ":"
+    );
+
+  if (
+    colonIndex >
+      0
+  ) {
+    return {
+      language:
+        cleanSingleLineText(
+          cleaned.slice(
+            0,
+            colonIndex
+          )
+        ),
+
+      level:
+        cleanSingleLineText(
+          cleaned.slice(
+            colonIndex +
+              1
+          )
+        ),
+    };
+  }
+
+  const parenthetical =
+    cleaned.match(
+      /^(.+?)\s*\((.+)\)$/
+    );
+
+  if (
+    parenthetical
+  ) {
+    return {
+      language:
+        cleanSingleLineText(
+          parenthetical[1] ||
+          ""
+        ),
+
+      level:
+        cleanSingleLineText(
+          parenthetical[2] ||
+          ""
+        ),
+    };
+  }
+
+  const cefrMatch =
+    cleaned.match(
+      /^(.+?)\s+(A1|A2|B1|B2|C1|C2)$/i
+    );
+
+  if (
+    cefrMatch
+  ) {
+    return {
+      language:
+        cleanSingleLineText(
+          cefrMatch[1] ||
+          ""
+        ),
+
+      level:
+        cleanSingleLineText(
+          cefrMatch[2] ||
+          ""
+        ).toUpperCase(),
+    };
+  }
+
+  const dashMatch =
+    cleaned.match(
+      /^(.+?)\s*[-–—]\s*(.+)$/
+    );
+
+  if (
+    dashMatch
+  ) {
+    return {
+      language:
+        cleanSingleLineText(
+          dashMatch[1] ||
+          ""
+        ),
+
+      level:
+        cleanSingleLineText(
+          dashMatch[2] ||
+          ""
+        ),
+    };
+  }
+
+  return {
+    language:
+      cleaned,
+
+    level:
+      "",
+  };
+};
+
+const parseLanguages = (
+  lines: string[]
+): IStructuredResumeLanguage[] => {
+  const tokens =
+    lines
+      .flatMap(
+        (
+          line
+        ) => {
+          const cleaned =
+            cleanSingleLineText(
+              line
+            );
+
+          if (!cleaned) {
+            return [];
+          }
+
+          /*
+           * "Azerbaijani (Native), Turkish (...), English (...)"
+           */
+          return cleaned
+            .split(
+              /,(?=\s*[A-Za-zÀ-ÖØ-öø-ÿƏəĞğÇçŞşİıÖöÜü])/u
+            )
+            .map(
+              (
+                item
+              ) =>
+                item.trim()
+            )
+            .filter(
+              Boolean
+            );
+        }
+      );
+
+  const result:
+    IStructuredResumeLanguage[] = [];
+
+  for (
+    const token
+    of tokens
+  ) {
+    const parsed =
+      parseLanguageToken(
+        token
+      );
+
+    if (
+      parsed &&
+      parsed.language
+    ) {
+      result.push(
+        parsed
+      );
+    }
+  }
+
+  const seen =
+    new Set<string>();
+
+  return result.filter(
+    (
+      item
+    ) => {
+      const key =
+        `${item.language.toLowerCase()}|${item.level.toLowerCase()}`;
+
+      if (
+        seen.has(
+          key
+        )
+      ) {
+        return false;
+      }
+
+      seen.add(
+        key
+      );
+
+      return true;
+    }
+  );
+};
+
+/* =========================================================
+   VOLUNTEERING
+========================================================= */
+
+const parseVolunteering = (
+  lines: string[],
+  warnings: string[]
+): IStructuredResumeVolunteering[] => {
+  const blocks =
+    buildDatedBlocks(
+      lines
+    );
+
+  const result:
+    IStructuredResumeVolunteering[] = [];
+
+  blocks.forEach(
+    (
+      block,
+      index
+    ) => {
+      const contentLines =
+        block.lines
+          .filter(
+            Boolean
+          )
+          .filter(
+            (
+              line
+            ) =>
+              !isPageArtifact(
+                line
+              )
+          );
+
+      if (
+        contentLines.length ===
+        0
+      ) {
+        return;
+      }
+
+      const heading =
+        stripBulletPrefix(
+          contentLines[0] ||
+          ""
+        );
+
+      const split =
+        splitRoleAndOrganization(
+          heading
+        );
+
+      const body =
+        contentLines.slice(
+          1
+        );
+
+      const bullets =
+        body
+          .filter(
+            isBulletLine
+          )
+          .map(
+            stripBulletPrefix
+          );
+
+      const description =
+        body
+          .filter(
+            (
+              line
+            ) =>
+              !isBulletLine(
+                line
+              )
+          )
+          .map(
+            stripBulletPrefix
+          )
+          .filter(
+            Boolean
+          )
+          .join(
+            " "
+          );
+
+      if (
+        !split.organization
+      ) {
+        warnings.push(
+          `Volunteering ${index + 1} organization could not be separated confidently from the source heading. User review is recommended.`
+        );
+      }
+
+      result.push({
+        organization:
+          split.organization,
+
+        role:
+          split.role,
+
+        location:
+          "",
+
+        startDate:
+          block.date
+            ?.startDate ||
+          "",
+
+        endDate:
+          block.date
+            ?.endDate ||
+          "",
+
+        isCurrent:
+          block.date
+            ?.isCurrent ||
+          false,
+
+        description:
+          cleanText(
+            description
+          ),
+
+        bullets:
+          uniqueStrings(
+            bullets
+          ),
+      });
+    }
+  );
+
+  return result;
+};
+
+/* =========================================================
+   HACKATHONS / COMPETITIONS
+========================================================= */
+
+const parseHackathons = (
+  lines: string[]
+): IStructuredResumeHackathon[] => {
+  const blocks =
+    buildDatedBlocks(
+      lines
+    );
+
+  return blocks
+    .map(
+      (
+        block
+      ) => {
+        const contentLines =
+          block.lines.filter(
+            Boolean
+          );
+
+        const heading =
+          stripBulletPrefix(
+            contentLines[0] ||
+            ""
+          );
+
+        const split =
+          splitRoleAndOrganization(
+            heading
+          );
+
+        const achievements =
+          contentLines
+            .slice(
+              1
+            )
+            .filter(
+              isBulletLine
+            )
+            .map(
+              stripBulletPrefix
+            );
+
+        const description =
+          contentLines
+            .slice(
+              1
+            )
+            .filter(
+              (
+                line
+              ) =>
+                !isBulletLine(
+                  line
+                )
+            )
+            .join(
+              " "
+            )
+            .trim();
+
+        return {
+          name:
+            split.organization ||
+            split.role,
+
+          organization:
+            split.organization
+              ? ""
+              : "",
+
+          role:
+            split.organization
+              ? split.role
+              : "",
+
+          date:
+            block.date
+              ?.startDate ||
+            "",
+
+          description:
+            cleanText(
+              description
+            ),
+
+          achievements:
+            uniqueStrings(
+              achievements
+            ),
+        };
+      }
+    )
+    .filter(
+      (
+        item
+      ) =>
+        Boolean(
+          item.name ||
+          item.description ||
+          item.achievements.length
+        )
+    );
+};
+
+/* =========================================================
+   RAW SECTIONS
+========================================================= */
+
+const buildRawSections = (
+  sections:
+    IDetectedSection[],
+  fullResumeText: string
+): Array<{
+  title: string;
+  content: string;
+}> => {
+  const rawSections =
+    sections
+      .filter(
+        (
+          section
+        ) =>
+          section.lines.length >
+            0
+      )
+      .map(
+        (
+          section
+        ) => ({
+          title:
+            section.title ||
+            getCanonicalSectionTitle(
+              section.key
+            ),
+
+          content:
+            cleanText(
+              section.lines.join(
+                "\n"
+              )
+            ),
+        })
+      )
+      .filter(
+        (
+          section
+        ) =>
+          Boolean(
+            section.content
+          )
+      );
+
+  rawSections.unshift({
+    title:
+      "__FULL_RESUME_SOURCE__",
+
+    content:
+      cleanText(
+        fullResumeText
+      ),
+  });
+
+  return rawSections;
+};
+
+const removeExtractionArtifacts = (
+  values: string[]
+): string[] => {
+  return uniqueStrings(
+    values.filter(
+      (
+        value
+      ) =>
+        !isPageArtifact(
+          value
+        )
+    )
+  );
+};
+
+const sanitizeStructuredProfileArtifacts = (
+  profile:
+    IStructuredResumeProfile
+): IStructuredResumeProfile => {
+  profile.skills =
+    removeExtractionArtifacts(
+      profile.skills
+    );
+
+  profile.technicalSkills =
+    removeExtractionArtifacts(
+      profile.technicalSkills
+    );
+
+  profile.softSkills =
+    removeExtractionArtifacts(
+      profile.softSkills
+    );
+
+  profile.achievements =
+    removeExtractionArtifacts(
+      profile.achievements
+    );
+
+  profile.interests =
+    removeExtractionArtifacts(
+      profile.interests
+    );
+
+  profile.experience =
+    profile.experience.map(
+      (
+        item
+      ) => ({
+        ...item,
+
+        bullets:
+          removeExtractionArtifacts(
+            item.bullets
+          ),
+      })
+    );
+
+  profile.projects =
+    profile.projects
+      .filter(
+        (
+          item
+        ) =>
+          !isPageArtifact(
+            item.name
+          )
+      )
+      .map(
+        (
+          item
+        ) => ({
+          ...item,
+
+          bullets:
+            removeExtractionArtifacts(
+              item.bullets
+            ),
+
+          technologies:
+            removeExtractionArtifacts(
+              item.technologies
+            ),
+        })
+      );
+
+  profile.education =
+    profile.education.map(
+      (
+        item
+      ) => ({
+        ...item,
+
+        coursework:
+          removeExtractionArtifacts(
+            item.coursework
+          ),
+
+        achievements:
+          removeExtractionArtifacts(
+            item.achievements
+          ),
+      })
+    );
+
+  profile.volunteering =
+    profile.volunteering.map(
+      (
+        item
+      ) => ({
+        ...item,
+
+        bullets:
+          removeExtractionArtifacts(
+            item.bullets
+          ),
+      })
+    );
+
+  profile.hackathons =
+    profile.hackathons.map(
+      (
+        item
+      ) => ({
+        ...item,
+
+        achievements:
+          removeExtractionArtifacts(
+            item.achievements
+          ),
+      })
+    );
+
+  profile.languages =
+    profile.languages.filter(
+      (
+        item
+      ) =>
+        !isPageArtifact(
+          item.language
+        ) &&
+        !isPageArtifact(
+          item.level
+        )
+    );
+
+  return profile;
+};
+
+/* =========================================================
+   SANITY CHECKS
+========================================================= */
+
+const looksLikeSkillsList = (
+  value: string
+): boolean => {
+  const cleaned =
+    cleanSingleLineText(
+      value
+    );
+
+  if (!cleaned) {
+    return false;
+  }
+
+  const lower =
+    cleaned
+      .toLowerCase();
+
+  if (
+    lower.startsWith(
+      "programming languages:"
+    ) ||
+    lower.startsWith(
+      "technical skills:"
+    ) ||
+    lower.startsWith(
+      "frameworks:"
+    ) ||
+    lower.startsWith(
+      "frameworks & libraries:"
+    ) ||
+    lower.startsWith(
+      "developer tools:"
+    ) ||
+    lower.startsWith(
+      "skills:"
+    )
+  ) {
+    return true;
+  }
+
+  const commas =
+    (
+      cleaned.match(
+        /,/g
+      ) ||
+      []
+    ).length;
+
+  return (
+    commas >=
+      4 &&
+    /\b(?:javascript|typescript|react|html|css|python|java|node|bootstrap|tailwind|git|github|mongodb|sql|express)\b/i.test(
+      cleaned
+    )
+  );
+};
+
+const looksLikeDateOnly = (
+  value: string
+): boolean => {
+  const cleaned =
+    cleanSingleLineText(
+      value
+    );
+
+  if (!cleaned) {
+    return false;
+  }
+
+  if (
+    /^(?:19|20)\d{2}$/i.test(
+      cleaned
+    )
+  ) {
+    return true;
+  }
+
+  const date =
+    findDateRange(
+      cleaned
+    );
+
+  return Boolean(
+    date &&
+    normalizeComparableText(
+      cleanSingleLineText(
+        date.matchedText
+      )
+    ) ===
+      normalizeComparableText(
+        cleaned
+      )
+  );
+};
+
+const looksLikeSectionHeading = (
+  value: string
+): boolean => {
+  return Boolean(
+    detectSectionKey(
+      value
+    )
+  );
+};
+
+const buildSanityWarnings = (
+  profile:
+    IStructuredResumeProfile
+): string[] => {
+  const warnings:
+    string[] = [];
+
+  profile.projects.forEach(
+    (
+      project,
+      index
+    ) => {
+      if (
+        project.name &&
+        looksLikeSkillsList(
+          project.name
+        )
+      ) {
+        warnings.push(
+          `Project ${index + 1} has a suspicious project name that appears to contain a skills list. User confirmation is required.`
+        );
+      }
+
+      if (
+        project.name &&
+        looksLikeSectionHeading(
+          project.name
+        )
+      ) {
+        warnings.push(
+          `Project ${index + 1} has a suspicious project name that appears to be a section heading.`
+        );
+      }
+
+      if (
+        project.name &&
+        looksLikeDateOnly(
+          project.name
+        )
+      ) {
+        warnings.push(
+          `Project ${index + 1} has a suspicious project name that appears to be a date.`
+        );
+      }
+
+      if (
+        !project.name &&
+        (
+          project.description ||
+          project.bullets.length >
+            0 ||
+          project.technologies.length >
+            0
+        )
+      ) {
+        warnings.push(
+          `Project ${index + 1} has project content but no verified project name.`
+        );
+      }
+    }
+  );
+
+  profile.experience.forEach(
+    (
+      experience,
+      index
+    ) => {
+      if (
+        !experience.title
+      ) {
+        warnings.push(
+          `Experience ${index + 1} is missing a verified job title.`
+        );
+      }
+
+      if (
+        !experience.company
+      ) {
+        warnings.push(
+          `Experience ${index + 1} is missing a verified company or organization.`
+        );
+      }
+
+      if (
+        experience.title &&
+        looksLikeSectionHeading(
+          experience.title
+        )
+      ) {
+        warnings.push(
+          `Experience ${index + 1} has a suspicious title that appears to be a section heading.`
+        );
+      }
+
+      if (
+        experience.title &&
+        looksLikeDateOnly(
+          experience.title
+        )
+      ) {
+        warnings.push(
+          `Experience ${index + 1} has a suspicious title that appears to be a date.`
+        );
+      }
+
+      if (
+        experience.company &&
+        looksLikeDateOnly(
+          experience.company
+        )
+      ) {
+        warnings.push(
+          `Experience ${index + 1} has a suspicious company value that appears to be a date.`
+        );
+      }
+    }
+  );
+
+  profile.education.forEach(
+    (
+      education,
+      index
+    ) => {
+      if (
+        !education.institution
+      ) {
+        warnings.push(
+          `Education ${index + 1} is missing a verified institution.`
+        );
+      }
+
+      if (
+        education.institution &&
+        looksLikeSectionHeading(
+          education.institution
+        )
+      ) {
+        warnings.push(
+          `Education ${index + 1} has a suspicious institution value that appears to be a section heading.`
+        );
+      }
+
+      if (
+        education.institution &&
+        looksLikeDateOnly(
+          education.institution
+        )
+      ) {
+        warnings.push(
+          `Education ${index + 1} has a suspicious institution value that appears to be a date.`
+        );
+      }
+    }
+  );
+
+  profile.certifications.forEach(
+    (
+      certification,
+      index
+    ) => {
+      if (
+        !certification.name
+      ) {
+        warnings.push(
+          `Certification ${index + 1} is missing a verified certification or training name.`
+        );
+      }
+    }
+  );
+
+  profile.volunteering.forEach(
+    (
+      volunteering,
+      index
+    ) => {
+      if (
+        !volunteering.organization
+      ) {
+        warnings.push(
+          `Volunteering ${index + 1} is missing a verified organization.`
+        );
+      }
+
+      if (
+        !volunteering.role
+      ) {
+        warnings.push(
+          `Volunteering ${index + 1} is missing a verified role.`
+        );
+      }
+    }
+  );
+
+  return warnings;
+};
+
+/* =========================================================
+   DETERMINISTIC SOURCE GROUNDING
+
+   Even though this service no longer uses an AI model, the
+   grounding layer stays as a final safety check and guarantees
+   that extracted factual strings originate from source text.
+========================================================= */
+
+const normalizeForGrounding = (
+  value: string
+): string => {
+  return cleanText(
+    value
+  )
+    .toLowerCase()
+    .replace(
+      /[•●▪◦·]/g,
+      " "
+    )
+    .replace(
+      /[–—−]/g,
+      "-"
+    )
+    .replace(
+      /[“”]/g,
+      '"'
+    )
+    .replace(
+      /[‘’]/g,
+      "'"
+    )
+    .replace(
+      /\s+/g,
+      " "
+    )
+    .trim();
+};
+
+const isGroundedInResumeText = (
+  value: string,
+  resumeText: string
+): boolean => {
+  const candidate =
+    normalizeForGrounding(
+      value
+    );
+
+  if (!candidate) {
+    return true;
+  }
+
+  const source =
+    normalizeForGrounding(
+      resumeText
+    );
+
+  if (
+    source.includes(
+      candidate
+    )
+  ) {
+    return true;
+  }
+
+  const tokens =
+    candidate
+      .split(
+        /[^a-z0-9+#.]+/i
+      )
+      .map(
+        (
+          token
+        ) =>
+          token.trim()
+      )
+      .filter(
+        (
+          token
+        ) =>
+          token.length >=
+          2
+      );
+
+  if (
+    tokens.length ===
+    0
+  ) {
+    return false;
+  }
+
+  if (
+    tokens.length <=
+    6
+  ) {
+    return tokens.every(
+      (
+        token
+      ) =>
+        source.includes(
+          token
+        )
+    );
+  }
+
+  return false;
+};
+
+const keepGroundedString = (
+  value: string,
+  resumeText: string,
+  fieldPath: string,
+  warnings: string[]
+): string => {
+  const cleaned =
+    cleanText(
+      value
+    );
+
+  if (!cleaned) {
+    return "";
+  }
+
+  if (
+    isGroundedInResumeText(
+      cleaned,
+      resumeText
+    )
+  ) {
+    return cleaned;
+  }
+
+  warnings.push(
+    `${fieldPath} could not be verified directly against the source resume text and was removed. User confirmation may be required.`
+  );
+
+  return "";
+};
+
+const keepGroundedSingleLine = (
+  value: string,
+  resumeText: string,
+  fieldPath: string,
+  warnings: string[]
+): string => {
+  return cleanSingleLineText(
+    keepGroundedString(
+      value,
+      resumeText,
+      fieldPath,
+      warnings
+    )
+  );
+};
+
+const keepGroundedList = (
+  values: string[],
+  resumeText: string,
+  fieldPath: string,
+  warnings: string[]
+): string[] => {
+  return values.filter(
+    (
+      value,
+      index
+    ) => {
+      if (
+        isGroundedInResumeText(
+          value,
+          resumeText
+        )
+      ) {
+        return true;
+      }
+
+      warnings.push(
+        `${fieldPath}[${index}] could not be verified directly against the source resume text and was removed.`
+      );
+
+      return false;
+    }
+  );
+};
+
+const applyDeterministicSourceGrounding = (
+  profile:
+    IStructuredResumeProfile,
+  resumeText: string
+): IStructuredResumeProfile => {
+  const warnings = [
+    ...profile
+      .extractionWarnings,
+  ];
+
+  profile.contact.fullName =
+    keepGroundedSingleLine(
+      profile.contact
+        .fullName,
+      resumeText,
+      "contact.fullName",
+      warnings
+    );
+
+  profile.contact.email =
+    keepGroundedSingleLine(
+      profile.contact
+        .email,
+      resumeText,
+      "contact.email",
+      warnings
+    );
+
+  profile.contact.phone =
+    keepGroundedSingleLine(
+      profile.contact
+        .phone,
+      resumeText,
+      "contact.phone",
+      warnings
+    );
+
+  profile.contact.location =
+    keepGroundedSingleLine(
+      profile.contact
+        .location,
+      resumeText,
+      "contact.location",
+      warnings
+    );
+
+  profile.contact.linkedin =
+    keepGroundedSingleLine(
+      profile.contact
+        .linkedin,
+      resumeText,
+      "contact.linkedin",
+      warnings
+    );
+
+  profile.contact.github =
+    keepGroundedSingleLine(
+      profile.contact
+        .github,
+      resumeText,
+      "contact.github",
+      warnings
+    );
+
+  profile.contact.website =
+    keepGroundedSingleLine(
+      profile.contact
+        .website,
+      resumeText,
+      "contact.website",
+      warnings
+    );
+
+  profile.professionalSummary =
+    keepGroundedString(
+      profile
+        .professionalSummary,
+      resumeText,
+      "professionalSummary",
+      warnings
+    );
+
+  profile.skills =
+    keepGroundedList(
+      profile.skills,
+      resumeText,
+      "skills",
+      warnings
+    );
+
+  profile.technicalSkills =
+    keepGroundedList(
+      profile
+        .technicalSkills,
+      resumeText,
+      "technicalSkills",
+      warnings
+    );
+
+  profile.softSkills =
+    keepGroundedList(
+      profile
+        .softSkills,
+      resumeText,
+      "softSkills",
+      warnings
+    );
+
+  profile.experience =
+    profile.experience.map(
+      (
+        item,
+        index
+      ) => ({
+        ...item,
+
+        title:
+          keepGroundedSingleLine(
+            item.title,
+            resumeText,
+            `experience[${index}].title`,
+            warnings
+          ),
+
+        company:
+          keepGroundedSingleLine(
+            item.company,
+            resumeText,
+            `experience[${index}].company`,
+            warnings
+          ),
+
+        location:
+          keepGroundedSingleLine(
+            item.location,
+            resumeText,
+            `experience[${index}].location`,
+            warnings
+          ),
+
+        employmentType:
+          keepGroundedSingleLine(
+            item
+              .employmentType,
+            resumeText,
+            `experience[${index}].employmentType`,
+            warnings
+          ),
+
+        startDate:
+          keepGroundedSingleLine(
+            item.startDate,
+            resumeText,
+            `experience[${index}].startDate`,
+            warnings
+          ),
+
+        endDate:
+          keepGroundedSingleLine(
+            item.endDate,
+            resumeText,
+            `experience[${index}].endDate`,
+            warnings
+          ),
+
+        description:
+          keepGroundedString(
+            item.description,
+            resumeText,
+            `experience[${index}].description`,
+            warnings
+          ),
+
+        bullets:
+          keepGroundedList(
+            item.bullets,
+            resumeText,
+            `experience[${index}].bullets`,
+            warnings
+          ),
+
+        technologies:
+          keepGroundedList(
+            item
+              .technologies,
+            resumeText,
+            `experience[${index}].technologies`,
+            warnings
+          ),
+      })
+    );
+
+  profile.projects =
+    profile.projects.map(
+      (
+        item,
+        index
+      ) => ({
+        ...item,
+
+        name:
+          keepGroundedSingleLine(
+            item.name,
+            resumeText,
+            `projects[${index}].name`,
+            warnings
+          ),
+
+        role:
+          keepGroundedSingleLine(
+            item.role,
+            resumeText,
+            `projects[${index}].role`,
+            warnings
+          ),
+
+        description:
+          keepGroundedString(
+            item.description,
+            resumeText,
+            `projects[${index}].description`,
+            warnings
+          ),
+
+        startDate:
+          keepGroundedSingleLine(
+            item.startDate,
+            resumeText,
+            `projects[${index}].startDate`,
+            warnings
+          ),
+
+        endDate:
+          keepGroundedSingleLine(
+            item.endDate,
+            resumeText,
+            `projects[${index}].endDate`,
+            warnings
+          ),
+
+        technologies:
+          keepGroundedList(
+            item
+              .technologies,
+            resumeText,
+            `projects[${index}].technologies`,
+            warnings
+          ),
+
+        bullets:
+          keepGroundedList(
+            item.bullets,
+            resumeText,
+            `projects[${index}].bullets`,
+            warnings
+          ),
+
+        url:
+          keepGroundedSingleLine(
+            item.url,
+            resumeText,
+            `projects[${index}].url`,
+            warnings
+          ),
+
+        github:
+          keepGroundedSingleLine(
+            item.github,
+            resumeText,
+            `projects[${index}].github`,
+            warnings
+          ),
+      })
+    );
+
+  profile.education =
+    profile.education.map(
+      (
+        item,
+        index
+      ) => ({
+        ...item,
+
+        institution:
+          keepGroundedSingleLine(
+            item.institution,
+            resumeText,
+            `education[${index}].institution`,
+            warnings
+          ),
+
+        degree:
+          keepGroundedSingleLine(
+            item.degree,
+            resumeText,
+            `education[${index}].degree`,
+            warnings
+          ),
+
+        field:
+          keepGroundedSingleLine(
+            item.field,
+            resumeText,
+            `education[${index}].field`,
+            warnings
+          ),
+
+        location:
+          keepGroundedSingleLine(
+            item.location,
+            resumeText,
+            `education[${index}].location`,
+            warnings
+          ),
+
+        startDate:
+          keepGroundedSingleLine(
+            item.startDate,
+            resumeText,
+            `education[${index}].startDate`,
+            warnings
+          ),
+
+        endDate:
+          keepGroundedSingleLine(
+            item.endDate,
+            resumeText,
+            `education[${index}].endDate`,
+            warnings
+          ),
+
+        gpa:
+          keepGroundedSingleLine(
+            item.gpa,
+            resumeText,
+            `education[${index}].gpa`,
+            warnings
+          ),
+
+        coursework:
+          keepGroundedList(
+            item.coursework,
+            resumeText,
+            `education[${index}].coursework`,
+            warnings
+          ),
+
+        achievements:
+          keepGroundedList(
+            item
+              .achievements,
+            resumeText,
+            `education[${index}].achievements`,
+            warnings
+          ),
+      })
+    );
+
+  profile.certifications =
+    profile.certifications.map(
+      (
+        item,
+        index
+      ) => ({
+        ...item,
+
+        name:
+          keepGroundedSingleLine(
+            item.name,
+            resumeText,
+            `certifications[${index}].name`,
+            warnings
+          ),
+
+        issuer:
+          keepGroundedSingleLine(
+            item.issuer,
+            resumeText,
+            `certifications[${index}].issuer`,
+            warnings
+          ),
+
+        issueDate:
+          keepGroundedSingleLine(
+            item.issueDate,
+            resumeText,
+            `certifications[${index}].issueDate`,
+            warnings
+          ),
+
+        expirationDate:
+          keepGroundedSingleLine(
+            item
+              .expirationDate,
+            resumeText,
+            `certifications[${index}].expirationDate`,
+            warnings
+          ),
+
+        credentialId:
+          keepGroundedSingleLine(
+            item
+              .credentialId,
+            resumeText,
+            `certifications[${index}].credentialId`,
+            warnings
+          ),
+
+        credentialUrl:
+          keepGroundedSingleLine(
+            item
+              .credentialUrl,
+            resumeText,
+            `certifications[${index}].credentialUrl`,
+            warnings
+          ),
+      })
+    );
+
+  profile.languages =
+    profile.languages.map(
+      (
+        item,
+        index
+      ) => ({
+        ...item,
+
+        language:
+          keepGroundedSingleLine(
+            item.language,
+            resumeText,
+            `languages[${index}].language`,
+            warnings
+          ),
+
+        level:
+          keepGroundedSingleLine(
+            item.level,
+            resumeText,
+            `languages[${index}].level`,
+            warnings
+          ),
+      })
+    );
+
+  profile.volunteering =
+    profile.volunteering.map(
+      (
+        item,
+        index
+      ) => ({
+        ...item,
+
+        organization:
+          keepGroundedSingleLine(
+            item
+              .organization,
+            resumeText,
+            `volunteering[${index}].organization`,
+            warnings
+          ),
+
+        role:
+          keepGroundedSingleLine(
+            item.role,
+            resumeText,
+            `volunteering[${index}].role`,
+            warnings
+          ),
+
+        location:
+          keepGroundedSingleLine(
+            item.location,
+            resumeText,
+            `volunteering[${index}].location`,
+            warnings
+          ),
+
+        startDate:
+          keepGroundedSingleLine(
+            item.startDate,
+            resumeText,
+            `volunteering[${index}].startDate`,
+            warnings
+          ),
+
+        endDate:
+          keepGroundedSingleLine(
+            item.endDate,
+            resumeText,
+            `volunteering[${index}].endDate`,
+            warnings
+          ),
+
+        description:
+          keepGroundedString(
+            item.description,
+            resumeText,
+            `volunteering[${index}].description`,
+            warnings
+          ),
+
+        bullets:
+          keepGroundedList(
+            item.bullets,
+            resumeText,
+            `volunteering[${index}].bullets`,
+            warnings
+          ),
+      })
+    );
+
+  profile.hackathons =
+    profile.hackathons.map(
+      (
+        item,
+        index
+      ) => ({
+        ...item,
+
+        name:
+          keepGroundedSingleLine(
+            item.name,
+            resumeText,
+            `hackathons[${index}].name`,
+            warnings
+          ),
+
+        organization:
+          keepGroundedSingleLine(
+            item
+              .organization,
+            resumeText,
+            `hackathons[${index}].organization`,
+            warnings
+          ),
+
+        role:
+          keepGroundedSingleLine(
+            item.role,
+            resumeText,
+            `hackathons[${index}].role`,
+            warnings
+          ),
+
+        date:
+          keepGroundedSingleLine(
+            item.date,
+            resumeText,
+            `hackathons[${index}].date`,
+            warnings
+          ),
+
+        description:
+          keepGroundedString(
+            item.description,
+            resumeText,
+            `hackathons[${index}].description`,
+            warnings
+          ),
+
+        achievements:
+          keepGroundedList(
+            item
+              .achievements,
+            resumeText,
+            `hackathons[${index}].achievements`,
+            warnings
+          ),
+      })
+    );
+
+  profile.achievements =
+    keepGroundedList(
+      profile
+        .achievements,
+      resumeText,
+      "achievements",
+      warnings
+    );
+
+  profile.interests =
+    keepGroundedList(
+      profile.interests,
+      resumeText,
+      "interests",
+      warnings
+    );
+
+  profile.extractionWarnings =
+    uniqueStrings(
+      warnings
+    );
+
+  if (
+    profile
+      .extractionWarnings
+      .length >
+    0
+  ) {
+    profile.extractionStatus =
+      "partial";
+  }
+
+  return profile;
+};
+
+
+/* =========================================================
+   LAYOUT-AWARE PROFILE EXTRACTION
+========================================================= */
+
+const mergeStringLists = (
+  ...lists:
+    string[][]
+): string[] => {
+  return uniqueStrings(
+    lists.flat()
+  );
+};
+
+const chooseLongestText = (
+  values:
+    string[]
+): string => {
+  return values
+    .map(
+      cleanText
+    )
+    .filter(
+      Boolean
+    )
+    .sort(
+      (
+        a,
+        b
+      ) =>
+        b.length -
+        a.length
+    )[0] ||
+    "";
+};
+
+const chooseFirstNonEmpty = (
+  values:
+    string[]
+): string => {
+  return values
+    .map(
+      cleanSingleLineText
+    )
+    .find(
+      Boolean
+    ) ||
+    "";
+};
+
+const mergeObjectsByKey = <
+  T
+>(
+  values:
+    T[],
+  getKey:
+    (
+      value:
+        T
+    ) => string
+): T[] => {
+  const result:
+    T[] = [];
+
+  const seen =
+    new Set<string>();
+
+  for (
+    const value
+    of values
+  ) {
+    const key =
+      normalizeComparableText(
+        getKey(
+          value
+        )
+      );
+
+    if (!key) {
+      result.push(
+        value
+      );
+
+      continue;
+    }
+
+    if (
+      seen.has(
+        key
+      )
+    ) {
+      continue;
+    }
+
+    seen.add(
+      key
+    );
+
+    result.push(
+      value
+    );
+  }
+
+  return result;
+};
+
+interface ILayoutTextRegion {
+  pageNumber: number;
+
+  columnIndex:
+    number |
+    null;
+
+  text: string;
+
+  source:
+    "column" |
+    "full-width";
+}
+
+const buildLayoutTextRegions = (
+  pages:
+    IPdfPageLayout[]
+): ILayoutTextRegion[] => {
+  const regions:
+    ILayoutTextRegion[] = [];
+
+  for (
+    const page
+    of pages
+  ) {
+    if (
+      !page.lines ||
+      page.lines.length ===
+        0
+    ) {
+      continue;
+    }
+
+    /*
+     * Genuine full-width lines are kept in a separate region.
+     * This commonly contains a centered name/contact header.
+     */
+    const fullWidthLines =
+      page.lines
+        .filter(
+          (
+            line
+          ) =>
+            line.columnIndex ===
+              null
+        )
+        .sort(
+          (
+            a,
+            b
+          ) =>
+            a.y -
+              b.y ||
+            a.x -
+              b.x
+        )
+        .map(
+          (
+            line
+          ) =>
+            cleanSingleLineText(
+              line.text
+            )
+        )
+        .filter(
+          Boolean
+        );
+
+    if (
+      fullWidthLines.length >
+      0
+    ) {
+      regions.push({
+        pageNumber:
+          page.pageNumber,
+
+        columnIndex:
+          null,
+
+        text:
+          fullWidthLines.join(
+            "\n"
+          ),
+
+        source:
+          "full-width",
+      });
+    }
+
+    const maxColumnIndex =
+      Math.max(
+        page.columnCount -
+          1,
+        ...page.lines
+          .map(
+            (
+              line
+            ) =>
+              line.columnIndex ??
+              -1
+          )
+      );
+
+    for (
+      let columnIndex =
+        0;
+      columnIndex <=
+        maxColumnIndex;
+      columnIndex +=
+        1
+    ) {
+      const columnLines =
+        page.lines
+          .filter(
+            (
+              line
+            ) =>
+              line.columnIndex ===
+              columnIndex
+          )
+          .sort(
+            (
+              a,
+              b
+            ) =>
+              a.y -
+                b.y ||
+              a.x -
+                b.x
+          )
+          .map(
+            (
+              line
+            ) =>
+              cleanSingleLineText(
+                line.text
+              )
+          )
+          .filter(
+            Boolean
+          );
+
+      if (
+        columnLines.length ===
+        0
+      ) {
+        continue;
+      }
+
+      regions.push({
+        pageNumber:
+          page.pageNumber,
+
+        columnIndex,
+
+        text:
+          columnLines.join(
+            "\n"
+          ),
+
+        source:
+          "column",
+      });
+    }
+  }
+
+  return regions;
+};
+
+const hasUsableMultiColumnLayout = (
+  pages:
+    IPdfPageLayout[] |
+    undefined
+): pages is IPdfPageLayout[] => {
+  if (
+    !pages ||
+    pages.length ===
+      0
+  ) {
+    return false;
+  }
+
+  return pages.some(
+    (
+      page
+    ) =>
+      page.columnCount >
+        1 &&
+      page.lines.some(
+        (
+          line
+        ) =>
+          line.columnIndex ===
+            0
+      ) &&
+      page.lines.some(
+        (
+          line
+        ) =>
+          line.columnIndex ===
+            1
+      )
+  );
+};
+
+const mergeLayoutProfiles = (
+  profiles:
+    IStructuredResumeProfile[],
+  fullResumeText:
+    string,
+  regions:
+    ILayoutTextRegion[]
+): IStructuredResumeProfile => {
+  const contactProfiles =
+    profiles
+      .map(
+        (
+          profile
+        ) =>
+          profile.contact
+      );
+
+  /*
+   * Prefer a real person-name candidate. Because each visual column
+   * was parsed separately, sidebar role headings can no longer merge
+   * with right-column section headings before this selection happens.
+   */
+  const fullName =
+    chooseFirstNonEmpty(
+      contactProfiles
+        .map(
+          (
+            contact
+          ) =>
+            contact.fullName
+        )
+        .filter(
+          (
+            value
+          ) =>
+            looksLikePersonName(
+              value
+            )
+        )
+    );
+
+  const mergedLanguages =
+    mergeObjectsByKey(
+      profiles.flatMap(
+        (
+          profile
+        ) =>
+          profile.languages
+      ),
+      (
+        item
+      ) =>
+        item.language
+    );
+
+  const merged:
+    IStructuredResumeProfile = {
+      contact: {
+        fullName,
+
+        email:
+          chooseFirstNonEmpty(
+            contactProfiles.map(
+              (
+                contact
+              ) =>
+                contact.email
+            )
+          ),
+
+        phone:
+          chooseFirstNonEmpty(
+            contactProfiles
+              .map(
+                (
+                  contact
+                ) =>
+                  contact.phone
+              )
+              .filter(
+                isValidPhoneCandidate
+              )
+          ),
+
+        location:
+          chooseFirstNonEmpty(
+            contactProfiles.map(
+              (
+                contact
+              ) =>
+                contact.location
+            )
+          ),
+
+        linkedin:
+          chooseFirstNonEmpty(
+            contactProfiles.map(
+              (
+                contact
+              ) =>
+                contact.linkedin
+            )
+          ),
+
+        github:
+          chooseFirstNonEmpty(
+            contactProfiles.map(
+              (
+                contact
+              ) =>
+                contact.github
+            )
+          ),
+
+        website:
+          chooseFirstNonEmpty(
+            contactProfiles.map(
+              (
+                contact
+              ) =>
+                contact.website
+            )
+          ),
+      },
+
+      professionalSummary:
+        chooseLongestText(
+          profiles.map(
+            (
+              profile
+            ) =>
+              profile
+                .professionalSummary
+          )
+        ),
+
+      skills:
+        mergeStringLists(
+          ...profiles.map(
+            (
+              profile
+            ) =>
+              profile.skills
+          )
+        ),
+
+      technicalSkills:
+        mergeStringLists(
+          ...profiles.map(
+            (
+              profile
+            ) =>
+              profile
+                .technicalSkills
+          )
+        ),
+
+      softSkills:
+        mergeStringLists(
+          ...profiles.map(
+            (
+              profile
+            ) =>
+              profile.softSkills
+          )
+        ),
+
+      experience:
+        mergeObjectsByKey(
+          profiles.flatMap(
+            (
+              profile
+            ) =>
+              profile.experience
+          ),
+          (
+            item
+          ) =>
+            [
+              item.title,
+              item.company,
+              item.startDate,
+              item.endDate,
+            ].join(
+              "|"
+            )
+        ),
+
+      projects:
+        mergeObjectsByKey(
+          profiles.flatMap(
+            (
+              profile
+            ) =>
+              profile.projects
+          ),
+          (
+            item
+          ) =>
+            [
+              item.name,
+              item.startDate,
+              item.endDate,
+            ].join(
+              "|"
+            )
+        ),
+
+      education:
+        mergeObjectsByKey(
+          profiles.flatMap(
+            (
+              profile
+            ) =>
+              profile.education
+          ),
+          (
+            item
+          ) =>
+            [
+              item.institution,
+              item.degree,
+              item.startDate,
+              item.endDate,
+            ].join(
+              "|"
+            )
+        ),
+
+      certifications:
+        mergeObjectsByKey(
+          profiles.flatMap(
+            (
+              profile
+            ) =>
+              profile.certifications
+          ),
+          (
+            item
+          ) =>
+            [
+              item.name,
+              item.issuer,
+              item.issueDate,
+            ].join(
+              "|"
+            )
+        ),
+
+      languages:
+        mergedLanguages,
+
+      volunteering:
+        mergeObjectsByKey(
+          profiles.flatMap(
+            (
+              profile
+            ) =>
+              profile.volunteering
+          ),
+          (
+            item
+          ) =>
+            [
+              item.organization,
+              item.role,
+              item.startDate,
+              item.endDate,
+            ].join(
+              "|"
+            )
+        ),
+
+      hackathons:
+        mergeObjectsByKey(
+          profiles.flatMap(
+            (
+              profile
+            ) =>
+              profile.hackathons
+          ),
+          (
+            item
+          ) =>
+            [
+              item.name,
+              item.organization,
+              item.date,
+            ].join(
+              "|"
+            )
+        ),
+
+      achievements:
+        mergeStringLists(
+          ...profiles.map(
+            (
+              profile
+            ) =>
+              profile
+                .achievements
+          )
+        ),
+
+      interests:
+        mergeStringLists(
+          ...profiles.map(
+            (
+              profile
+            ) =>
+              profile.interests
+          )
+        ),
+
+      rawSections: [
+        {
+          title:
+            "__FULL_RESUME_SOURCE__",
+
+          content:
+            cleanText(
+              fullResumeText
+            ),
+        },
+
+        ...regions.map(
+          (
+            region
+          ) => ({
+            title:
+              region.columnIndex ===
+              null
+                ? `__LAYOUT_PAGE_${region.pageNumber}_FULL_WIDTH__`
+                : `__LAYOUT_PAGE_${region.pageNumber}_COLUMN_${region.columnIndex}__`,
+
+            content:
+              region.text,
+          })
+        ),
+      ],
+
+      extractionStatus:
+        "completed",
+
+      extractionWarnings:
+        [],
+    };
+
+  const sanityWarnings =
+    buildSanityWarnings(
+      merged
+    );
+
+  /*
+   * Per-column parsers naturally complain about missing sections that
+   * live in another column. Those warnings are not meaningful after
+   * the profiles have been merged, so only final merged-profile sanity
+   * warnings are retained.
+   */
+  merged.extractionWarnings =
+    uniqueStrings([
+      ...sanityWarnings,
+
+      "Multi-column resume was parsed using visual column boundaries.",
+    ]);
+
+  if (
+    sanityWarnings.length >
+    0
+  ) {
+    merged.extractionStatus =
+      "partial";
+  }
+
+  const sanitized =
+    sanitizeStructuredProfileArtifacts(
+      merged
+    );
+
+  return applyDeterministicSourceGrounding(
+    sanitized,
+    fullResumeText
+  );
+};
+
+const buildLayoutAwareProfile = (
+  resumeText:
+    string,
+  pages:
+    IPdfPageLayout[]
+): IStructuredResumeProfile => {
+  const regions =
+    buildLayoutTextRegions(
+      pages
+    );
+
+  const usableRegions =
+    regions.filter(
+      (
+        region
+      ) =>
+        cleanText(
+          region.text
+        ).length >=
+        3
+    );
+
+  if (
+    usableRegions.length <
+      2
+  ) {
+    return buildDeterministicProfile(
+      resumeText
+    );
+  }
+
+  const profiles =
+    usableRegions.map(
+      (
+        region
+      ) =>
+        buildDeterministicProfile(
+          region.text
+        )
+    );
+
+  return mergeLayoutProfiles(
+    profiles,
+    resumeText,
+    usableRegions
+  );
+};
+
+
+/* =========================================================
+   PROFILE CONSTRUCTION
+========================================================= */
+
+const buildDeterministicProfile = (
+  resumeText: string
+): IStructuredResumeProfile => {
+  const warnings:
+    string[] = [];
+
+  const lines =
+    buildCleanLines(
+      resumeText
+    );
+
+  const sections =
+    splitIntoDetectedSections(
+      lines
+    );
+
+  const preambleLines =
+    getSectionLines(
+      sections,
+      "preamble"
+    );
+
+  const technicalSkillLines =
+    getSectionLines(
+      sections,
+      "technicalSkills"
+    );
+
+  const coreSkillLines =
+    getSectionLines(
+      sections,
+      "coreSkills"
+    );
+
+  const softSkillLines =
+    getSectionLines(
+      sections,
+      "softSkills"
+    );
+
+  const technicalSkillResult =
+    parseSkillsSection(
+      technicalSkillLines
+    );
+
+  const coreSkillResult =
+    parseSkillsSection(
+      coreSkillLines
+    );
+
+  /*
+   * PDF text extraction can occasionally lose a section heading
+   * while preserving category rows such as:
+   * "Programming Languages: JavaScript, Python"
+   * "Frameworks & Libraries: React.js, Next.js"
+   *
+   * Recover only the explicit values written after those labels.
+   * No inference is performed.
+   */
+  const globallyLabelledTechnicalSkills =
+    parseGlobalSkillCategoryLines(
+      lines
+    );
+
+  const professionalSummary =
+    cleanText(
+      getSectionLines(
+        sections,
+        "professionalSummary"
+      ).join(
+        " "
+      )
+    );
+
+  const experienceLines =
+    getSectionLines(
+      sections,
+      "experience"
+    );
+
+  const projectLines =
+    getSectionLines(
+      sections,
+      "projects"
+    );
+
+  const educationLines =
+    getSectionLines(
+      sections,
+      "education"
+    );
+
+  const certificationLines =
+    getSectionLines(
+      sections,
+      "certifications"
+    );
+
+  const languageLines =
+    getSectionLines(
+      sections,
+      "languages"
+    );
+
+  const volunteeringLines =
+    getSectionLines(
+      sections,
+      "volunteering"
+    );
+
+  const hackathonLines =
+    getSectionLines(
+      sections,
+      "hackathons"
+    );
+
+  if (
+    experienceLines.length ===
+      0
+  ) {
+    warnings.push(
+      "No explicit Experience section was detected. If the source CV contains employment history under a non-standard heading, user review is required."
+    );
+  }
+
+  if (
+    educationLines.length ===
+      0
+  ) {
+    warnings.push(
+      "No explicit Education section was detected."
+    );
+  }
+
+  const profile:
+    IStructuredResumeProfile = {
+      contact:
+        extractContact(
+          preambleLines,
+          lines,
+          warnings
+        ),
+
+      professionalSummary,
+
+      skills:
+        uniqueStrings([
+          ...technicalSkillResult
+            .skills,
+
+          ...coreSkillResult
+            .skills,
+        ]),
+
+      technicalSkills:
+        uniqueStrings([
+          ...technicalSkillResult
+            .technicalSkills,
+
+          ...coreSkillResult
+            .technicalSkills,
+
+          ...globallyLabelledTechnicalSkills,
+        ]),
+
+      softSkills:
+        uniqueStrings([
+          ...parseListLines(
+            softSkillLines
+          ),
+        ]),
+
+      experience:
+        parseExperience(
+          experienceLines,
+          warnings
+        ),
+
+      projects:
+        parseProjects(
+          projectLines,
+          warnings
+        ),
+
+      education:
+        parseEducation(
+          educationLines,
+          warnings
+        ),
+
+      certifications:
+        parseCertifications(
+          certificationLines
+        ),
+
+      languages:
+        parseLanguages(
+          languageLines
+        ),
+
+      volunteering:
+        parseVolunteering(
+          volunteeringLines,
+          warnings
+        ),
+
+      hackathons:
+        parseHackathons(
+          hackathonLines
+        ),
+
+      achievements:
+        parseListLines(
+          getSectionLines(
+            sections,
+            "achievements"
+          )
+        ),
+
+      interests:
+        parseListLines(
+          getSectionLines(
+            sections,
+            "interests"
+          )
+        ),
+
+      rawSections:
+        buildRawSections(
+          sections,
+          resumeText
+        ),
+
+      extractionStatus:
+        "completed",
+
+      extractionWarnings:
+        [],
+    };
+
+  const sanityWarnings =
+    buildSanityWarnings(
+      profile
+    );
+
+  profile.extractionWarnings =
+    uniqueStrings([
+      ...warnings,
+      ...sanityWarnings,
+    ]);
+
+  if (
+    profile
+      .extractionWarnings
+      .length >
+    0
+  ) {
+    profile.extractionStatus =
+      "partial";
+  }
+
+  const sanitizedProfile =
+    sanitizeStructuredProfileArtifacts(
+      profile
+    );
+
+  return applyDeterministicSourceGrounding(
+    sanitizedProfile,
+    resumeText
+  );
+};
+
+/* =========================================================
+   PROFILE QUALITY SELECTION
+
+   PDF column detection is probabilistic. A normal single-column CV can
+   sometimes look multi-column because dates, bullets, or aligned labels
+   create separate X clusters.
+
+   To avoid destroying a good single-column parse, when multi-column
+   layout is detected we build BOTH candidates:
+     1) stable plain-text profile
+     2) layout-aware profile
+
+   Then we deterministically keep the profile that preserves more real
+   resume information. This also works in the opposite direction:
+   Canva/sidebar resumes normally score much better with the layout-aware
+   candidate, so that candidate wins.
+========================================================= */
+
+const countProfileBullets = (
+  profile:
+    IStructuredResumeProfile
+): number => {
+  const experienceBullets =
+    profile
+      .experience
+      .reduce(
+        (
+          total,
+          item
+        ) =>
+          total +
+          item
+            .bullets
+            .length,
+        0
+      );
+
+  const projectBullets =
+    profile
+      .projects
+      .reduce(
+        (
+          total,
+          item
+        ) =>
+          total +
+          item
+            .bullets
+            .length,
+        0
+      );
+
+  const volunteerBullets =
+    profile
+      .volunteering
+      .reduce(
+        (
+          total,
+          item
+        ) =>
+          total +
+          item
+            .bullets
+            .length,
+        0
+      );
+
+  return (
+    experienceBullets +
+    projectBullets +
+    volunteerBullets
+  );
+};
+
+const getProfileCompletenessScore = (
+  profile:
+    IStructuredResumeProfile
+): number => {
+  let score =
+    0;
+
+  const contact =
+    profile.contact;
+
+  if (
+    contact.fullName
+  ) {
+    score +=
+      8;
+  }
+
+  if (
+    contact.email
+  ) {
+    score +=
+      4;
+  }
+
+  if (
+    contact.phone
+  ) {
+    score +=
+      3;
+  }
+
+  if (
+    contact.linkedin ||
+    contact.github ||
+    contact.website
+  ) {
+    score +=
+      2;
+  }
+
+  if (
+    profile
+      .professionalSummary
+      .trim()
+      .length >=
+    40
+  ) {
+    score +=
+      12;
+  }
+
+  score +=
+    Math.min(
+      profile
+        .technicalSkills
+        .length,
+      12
+    );
+
+  score +=
+    Math.min(
+      profile
+        .softSkills
+        .length,
+      6
+    );
+
+  score +=
+    Math.min(
+      profile
+        .experience
+        .length *
+        10,
+      40
+    );
+
+  score +=
+    Math.min(
+      profile
+        .projects
+        .length *
+        9,
+      36
+    );
+
+  score +=
+    Math.min(
+      profile
+        .education
+        .length *
+        8,
+      24
+    );
+
+  score +=
+    Math.min(
+      profile
+        .certifications
+        .length *
+        5,
+      20
+    );
+
+  score +=
+    Math.min(
+      profile
+        .volunteering
+        .length *
+        5,
+      20
+    );
+
+  score +=
+    Math.min(
+      profile
+        .hackathons
+        .length *
+        4,
+      12
+    );
+
+  score +=
+    Math.min(
+      profile
+        .languages
+        .length *
+        3,
+      12
+    );
+
+  score +=
+    Math.min(
+      countProfileBullets(
+        profile
+      ) *
+        2,
+      30
+    );
+
+  /*
+   * A partial parse can still be useful, but it should lose a small
+   * amount against a complete candidate with otherwise similar data.
+   */
+  if (
+    profile
+      .extractionStatus ===
+      "partial"
+  ) {
+    score -=
+      8;
+  }
+
+  score -=
+    Math.min(
+      profile
+        .extractionWarnings
+        .length *
+        2,
+      12
+    );
+
+  return score;
+};
+
+const getProfileDiagnosticSummary = (
+  profile:
+    IStructuredResumeProfile
+) => ({
+  quality:
+    getProfileCompletenessScore(
+      profile
+    ),
+
+  status:
+    profile
+      .extractionStatus,
+
+  name:
+    Boolean(
+      profile
+        .contact
+        .fullName
+    ),
+
+  summary:
+    profile
+      .professionalSummary
+      .trim()
+      .length,
+
+  technicalSkills:
+    profile
+      .technicalSkills
+      .length,
+
+  experience:
+    profile
+      .experience
+      .length,
+
+  projects:
+    profile
+      .projects
+      .length,
+
+  education:
+    profile
+      .education
+      .length,
+
+  certifications:
+    profile
+      .certifications
+      .length,
+
+  volunteering:
+    profile
+      .volunteering
+      .length,
+
+  hackathons:
+    profile
+      .hackathons
+      .length,
+
+  languages:
+    profile
+      .languages
+      .length,
+
+  bullets:
+    countProfileBullets(
+      profile
+    ),
+
+  warnings:
+    profile
+      .extractionWarnings
+      .length,
+});
+
+const chooseBestStructuredProfile = ({
+  rawCandidate,
+  reconstructedCandidate,
+  layoutCandidate,
+}: {
+  rawCandidate?:
+    IStructuredResumeProfile;
+
+  reconstructedCandidate:
+    IStructuredResumeProfile;
+
+  layoutCandidate?:
+    IStructuredResumeProfile;
+}): {
+  profile:
+    IStructuredResumeProfile;
+
+  mode:
+    | "raw-text"
+    | "reconstructed-text"
+    | "layout-aware";
+} => {
+  const candidates:
+    Array<{
+      mode:
+        | "raw-text"
+        | "reconstructed-text"
+        | "layout-aware";
+
+      profile:
+        IStructuredResumeProfile;
+
+      quality:
+        number;
+    }> = [];
+
+  if (
+    rawCandidate
+  ) {
+    candidates.push({
+      mode:
+        "raw-text",
+
+      profile:
+        rawCandidate,
+
+      quality:
+        getProfileCompletenessScore(
+          rawCandidate
+        ),
+    });
+  }
+
+  candidates.push({
+    mode:
+      "reconstructed-text",
+
+    profile:
+      reconstructedCandidate,
+
+    quality:
+      getProfileCompletenessScore(
+        reconstructedCandidate
+      ),
+  });
+
+  if (
+    layoutCandidate
+  ) {
+    candidates.push({
+      mode:
+        "layout-aware",
+
+      profile:
+        layoutCandidate,
+
+      quality:
+        getProfileCompletenessScore(
+          layoutCandidate
+        ),
+    });
+  }
+
+  /*
+   * Highest information-preservation score wins.
+   *
+   * Tie-breaking intentionally favors:
+   *   raw-text > reconstructed-text > layout-aware
+   *
+   * because raw text is the least transformed representation and is
+   * normally best for standard single-column ATS resumes.
+   */
+  const priority:
+    Record<
+      "raw-text" |
+      "reconstructed-text" |
+      "layout-aware",
+      number
+    > = {
+      "raw-text":
+        3,
+
+      "reconstructed-text":
+        2,
+
+      "layout-aware":
+        1,
+    };
+
+  candidates.sort(
+    (
+      a,
+      b
+    ) =>
+      b.quality -
+        a.quality ||
+      priority[
+        b.mode
+      ] -
+        priority[
+          a.mode
+        ]
+  );
+
+  const selected =
+    candidates[0];
+
+  if (!selected) {
+    return {
+      profile:
+        reconstructedCandidate,
+
+      mode:
+        "reconstructed-text",
+    };
+  }
+
+  return {
+    profile:
+      selected.profile,
+
+    mode:
+      selected.mode,
+  };
+};
+
+
+/* =========================================================
+   MAIN EXTRACTION
+========================================================= */
+
+export const extractStructuredResume =
+  async ({
+    resumeText,
+    rawResumeText,
+    layoutPages,
+  }: StructuredResumeExtractionParams): Promise<StructuredResumeExtractionResult> => {
+    const cleanedResumeText =
+      cleanText(
+        resumeText
+      );
+
+    const cleanedRawResumeText =
+      cleanText(
+        rawResumeText ||
+        ""
+      );
+
+    if (
+      !cleanedResumeText &&
+      !cleanedRawResumeText
+    ) {
+      throw new Error(
+        "Resume text is required for structured extraction."
+      );
+    }
+
+    console.log(
+      "[Structured Resume] Deterministic extraction START"
+    );
+
+    const startedAt =
+      Date.now();
+
+    const usingLayout =
+      hasUsableMultiColumnLayout(
+        layoutPages
+      );
+
+    const reconstructedProfile =
+      buildDeterministicProfile(
+        cleanedResumeText ||
+        cleanedRawResumeText
+      );
+
+    const rawProfile =
+      cleanedRawResumeText
+        ? buildDeterministicProfile(
+            cleanedRawResumeText
+          )
+        : undefined;
+
+    const layoutProfile =
+      usingLayout
+        ? buildLayoutAwareProfile(
+            cleanedResumeText ||
+              cleanedRawResumeText,
+            layoutPages
+          )
+        : undefined;
+
+    const selection =
+      chooseBestStructuredProfile({
+        rawCandidate:
+          rawProfile,
+
+        reconstructedCandidate:
+          reconstructedProfile,
+
+        layoutCandidate:
+          layoutProfile,
+      });
+
+    const profile =
+      selection.profile;
+
+    const selectedMode =
+      selection.mode;
+
+    const selectedText =
+      selectedMode ===
+        "raw-text"
+        ? cleanedRawResumeText
+        : cleanedResumeText ||
+          cleanedRawResumeText;
+
+    console.log(
+      "[Structured Resume] Candidate comparison",
+      {
+        detectedMultiColumn:
+          usingLayout,
+
+        raw:
+          rawProfile
+            ? getProfileDiagnosticSummary(
+                rawProfile
+              )
+            : null,
+
+        reconstructed:
+          getProfileDiagnosticSummary(
+            reconstructedProfile
+          ),
+
+        layout:
+          layoutProfile
+            ? getProfileDiagnosticSummary(
+                layoutProfile
+              )
+            : null,
+
+        selected:
+          selectedMode,
+      }
+    );
+
+    const warnings =
+      uniqueStrings(
+        profile
+          .extractionWarnings
+      );
+
+    const elapsedMs =
+      Date.now() -
+      startedAt;
+
+    console.log(
+      "[Structured Resume] Deterministic extraction COMPLETE",
+      {
+        elapsedMs,
+
+        mode:
+          selectedMode,
+
+        detectedMultiColumn:
+          usingLayout,
+
+        profileQuality:
+          getProfileCompletenessScore(
+            profile
+          ),
+
+        status:
+          profile
+            .extractionStatus,
+
+        fullName:
+          profile
+            .contact
+            .fullName,
+
+        experienceCount:
+          profile
+            .experience
+            .length,
+
+        projectCount:
+          profile
+            .projects
+            .length,
+
+        educationCount:
+          profile
+            .education
+            .length,
+
+        certificationCount:
+          profile
+            .certifications
+            .length,
+
+        volunteeringCount:
+          profile
+            .volunteering
+            .length,
+
+        hackathonCount:
+          profile
+            .hackathons
+            .length,
+
+        skillCount:
+          profile
+            .skills
+            .length,
+
+        technicalSkillCount:
+          profile
+            .technicalSkills
+            .length,
+
+        softSkillCount:
+          profile
+            .softSkills
+            .length,
+
+        languageCount:
+          profile
+            .languages
+            .length,
+
+        rawSectionCount:
+          profile
+            .rawSections
+            .length,
+
+        warningCount:
+          warnings.length,
+      }
+    );
+
+    return {
+      profile,
+
+      /*
+       * Backward-compatible field. There is no model anymore.
+       */
+      rawModelText:
+        JSON.stringify(
+          profile
+        ),
+
+      success:
+        true,
+
+      warnings,
+
+      selectedText,
+
+      selectedMode,
+    };
+  };
+
+/* =========================================================
+   DEFAULT EXPORT
+========================================================= */
+
+export default {
+  extractStructuredResume,
+};

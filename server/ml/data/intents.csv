@@ -1,0 +1,211 @@
+text,intent
+What is my career goal?,CAREER_GOAL
+Can I realistically become a frontend developer?,CAREER_GOAL
+Am I ready to become a software developer?,CAREER_GOAL
+Is frontend development a realistic career for me?,CAREER_GOAL
+How realistic is my target career?,CAREER_GOAL
+Can I reach my target role?,CAREER_GOAL
+Am I ready for my target career?,CAREER_GOAL
+Evaluate my career goal,CAREER_GOAL
+How close am I to becoming a backend developer?,CAREER_GOAL
+Do I have what it takes for my target role?,CAREER_GOAL
+Is my career target realistic based on my profile?,CAREER_GOAL
+How prepared am I for my target role?,CAREER_GOAL
+Can you evaluate my career direction?,CAREER_GOAL
+What career should I aim for?,CAREER_GOAL
+How suitable am I for the career I want?,CAREER_GOAL
+How am I progressing?,CAREER_PROGRESS
+Am I improving?,CAREER_PROGRESS
+How has my career progress changed?,CAREER_PROGRESS
+Show me my progress,CAREER_PROGRESS
+Have my scores improved?,CAREER_PROGRESS
+How much have I improved?,CAREER_PROGRESS
+Compare my latest results with my previous results,CAREER_PROGRESS
+Is my CV getting better over time?,CAREER_PROGRESS
+Are my interview results improving?,CAREER_PROGRESS
+Show my career development,CAREER_PROGRESS
+What has improved since my last assessment?,CAREER_PROGRESS
+What areas have declined recently?,CAREER_PROGRESS
+How is my professional development going?,CAREER_PROGRESS
+Compare my previous and current performance,CAREER_PROGRESS
+What trends do you see in my career performance?,CAREER_PROGRESS
+Analyze my CV,CV_ANALYSIS
+Can you analyze my resume?,CV_ANALYSIS
+How good is my CV?,CV_ANALYSIS
+What is my CV score?,CV_ANALYSIS
+What is my resume score?,CV_ANALYSIS
+How strong is my resume?,CV_ANALYSIS
+Show me my CV analysis,CV_ANALYSIS
+Can you review my CV scores?,CV_ANALYSIS
+What does my CV analysis say?,CV_ANALYSIS
+How does my resume perform?,CV_ANALYSIS
+Check my ATS score,CV_ANALYSIS
+What are the strengths and weaknesses of my CV?,CV_ANALYSIS
+Give me an overview of my resume analysis,CV_ANALYSIS
+How well is my CV structured?,CV_ANALYSIS
+Tell me about my latest CV analysis,CV_ANALYSIS
+How can I improve my CV?,CV_IMPROVEMENT
+How should I improve my resume?,CV_IMPROVEMENT
+What should I change in my CV?,CV_IMPROVEMENT
+Give me CV improvement suggestions,CV_IMPROVEMENT
+How can I increase my ATS score?,CV_IMPROVEMENT
+What should I fix in my resume?,CV_IMPROVEMENT
+Help me make my CV better,CV_IMPROVEMENT
+What are the biggest problems in my CV?,CV_IMPROVEMENT
+How can I make my resume more competitive?,CV_IMPROVEMENT
+What should I improve first in my CV?,CV_IMPROVEMENT
+Give me recommendations for improving my CV,CV_IMPROVEMENT
+How can I optimize my resume for ATS?,CV_IMPROVEMENT
+What changes would improve my resume score?,CV_IMPROVEMENT
+How can I strengthen the content of my CV?,CV_IMPROVEMENT
+Help me optimize my current resume,CV_IMPROVEMENT
+Can you help me with my career?,GENERAL_CAREER_HELP
+I need career advice,GENERAL_CAREER_HELP
+Can you give me career guidance?,GENERAL_CAREER_HELP
+I need help with my professional career,GENERAL_CAREER_HELP
+What can you help me with?,GENERAL_CAREER_HELP
+How can you help me with my career?,GENERAL_CAREER_HELP
+I need some professional advice,GENERAL_CAREER_HELP
+Can you guide me professionally?,GENERAL_CAREER_HELP
+I am not sure what career help I need,GENERAL_CAREER_HELP
+Help me with my career development,GENERAL_CAREER_HELP
+I need general career support,GENERAL_CAREER_HELP
+What career services can you provide?,GENERAL_CAREER_HELP
+Can you assist me with career planning?,GENERAL_CAREER_HELP
+I have a career question,GENERAL_CAREER_HELP
+Give me some career advice,GENERAL_CAREER_HELP
+Hello,GREETING
+Hi,GREETING
+Hey,GREETING
+Good morning,GREETING
+Good afternoon,GREETING
+Good evening,GREETING
+Hello there,GREETING
+Hi there,GREETING
+Hey there,GREETING
+How are you?,GREETING
+Is anyone there?,GREETING
+Nice to meet you,GREETING
+Hello career assistant,GREETING
+Hi InterviewIQ,GREETING
+Hey I have a question,GREETING
+How did I do in my last interview?,INTERVIEW_FEEDBACK
+Give me feedback on my interview,INTERVIEW_FEEDBACK
+How was my interview performance?,INTERVIEW_FEEDBACK
+What did I do wrong in my interview?,INTERVIEW_FEEDBACK
+What were my interview weaknesses?,INTERVIEW_FEEDBACK
+What were my interview strengths?,INTERVIEW_FEEDBACK
+Review my latest interview,INTERVIEW_FEEDBACK
+What score did I get in my interview?,INTERVIEW_FEEDBACK
+Show me my interview feedback,INTERVIEW_FEEDBACK
+How was my technical interview?,INTERVIEW_FEEDBACK
+What should I learn from my last interview?,INTERVIEW_FEEDBACK
+Analyze my latest interview results,INTERVIEW_FEEDBACK
+How was my communication in the interview?,INTERVIEW_FEEDBACK
+What areas did I struggle with in my interview?,INTERVIEW_FEEDBACK
+Tell me about my latest interview performance,INTERVIEW_FEEDBACK
+Help me prepare for my next interview,INTERVIEW_PREP
+How should I prepare for an interview?,INTERVIEW_PREP
+What should I study before my interview?,INTERVIEW_PREP
+Prepare me for a frontend interview,INTERVIEW_PREP
+What should I practice for my next interview?,INTERVIEW_PREP
+Give me an interview preparation plan,INTERVIEW_PREP
+How can I get ready for my interview?,INTERVIEW_PREP
+What interview topics should I review?,INTERVIEW_PREP
+Help me get interview ready,INTERVIEW_PREP
+What should I focus on before my interview?,INTERVIEW_PREP
+Build an interview prep plan for me,INTERVIEW_PREP
+What technical topics should I practice for interviews?,INTERVIEW_PREP
+How should I prepare based on my previous interview?,INTERVIEW_PREP
+Help me practice for an upcoming interview,INTERVIEW_PREP
+What should I revise before a job interview?,INTERVIEW_PREP
+Which jobs match my CV?,JOB_MATCHING
+Which jobs match my resume?,JOB_MATCHING
+Find jobs that match my skills,JOB_MATCHING
+What jobs am I qualified for?,JOB_MATCHING
+Which available jobs fit my profile?,JOB_MATCHING
+Show me jobs that fit my resume,JOB_MATCHING
+What roles match my experience?,JOB_MATCHING
+Find the best matching jobs for me,JOB_MATCHING
+Which current vacancies match my skills?,JOB_MATCHING
+What is my best job match?,JOB_MATCHING
+Show me my strongest job matches,JOB_MATCHING
+Which vacancy has the highest match score for me?,JOB_MATCHING
+Compare available jobs with my CV,JOB_MATCHING
+Find current jobs that are compatible with my profile,JOB_MATCHING
+Which active positions are the best fit for my resume?,JOB_MATCHING
+How should I search for jobs?,JOB_SEARCH_HELP
+What job search strategy should I use?,JOB_SEARCH_HELP
+How can I find better job opportunities?,JOB_SEARCH_HELP
+Where should I look for jobs?,JOB_SEARCH_HELP
+How should I look for frontend jobs?,JOB_SEARCH_HELP
+What keywords should I use when searching for jobs?,JOB_SEARCH_HELP
+What job titles should I search for?,JOB_SEARCH_HELP
+Help me create a job search strategy,JOB_SEARCH_HELP
+How can I improve my job search?,JOB_SEARCH_HELP
+What is the best way for me to search for jobs?,JOB_SEARCH_HELP
+Which job titles should I type into job boards?,JOB_SEARCH_HELP
+What search terms should I use for job hunting?,JOB_SEARCH_HELP
+How should I approach my job search?,JOB_SEARCH_HELP
+What jobs should I search for based on my profile?,JOB_SEARCH_HELP
+What jobs should I focus on?,JOB_SEARCH_HELP
+What should I do next?,NEXT_STEPS
+What should my next step be?,NEXT_STEPS
+What should I focus on next?,NEXT_STEPS
+What are my next priorities?,NEXT_STEPS
+What should I work on first?,NEXT_STEPS
+Give me my next career steps,NEXT_STEPS
+What should I improve next?,NEXT_STEPS
+What should I do after this?,NEXT_STEPS
+What is the most important thing I should do now?,NEXT_STEPS
+Give me a career action plan,NEXT_STEPS
+What should be my next priority?,NEXT_STEPS
+What should I work on right now?,NEXT_STEPS
+What actions should I take next?,NEXT_STEPS
+Based on my data what should I do next?,NEXT_STEPS
+Give me prioritized next steps,NEXT_STEPS
+Summarize my career profile,PROFILE_SUMMARY
+Give me a summary of my profile,PROFILE_SUMMARY
+What does my profile look like?,PROFILE_SUMMARY
+Tell me about my professional profile,PROFILE_SUMMARY
+What are the main points of my profile?,PROFILE_SUMMARY
+Give me an overview of my career profile,PROFILE_SUMMARY
+Summarize my CV profile,PROFILE_SUMMARY
+What are my main strengths and skills?,PROFILE_SUMMARY
+How would you describe my professional profile?,PROFILE_SUMMARY
+What does InterviewIQ know about my profile?,PROFILE_SUMMARY
+Give me a quick profile summary,PROFILE_SUMMARY
+What are my strongest professional areas?,PROFILE_SUMMARY
+Tell me what my profile says about me,PROFILE_SUMMARY
+Summarize my current qualifications,PROFILE_SUMMARY
+What is my current professional summary?,PROFILE_SUMMARY
+What skills am I missing?,SKILL_GAP
+What are my skill gaps?,SKILL_GAP
+Which skills should I learn?,SKILL_GAP
+What skills do I need to improve?,SKILL_GAP
+Which skills are missing from my CV?,SKILL_GAP
+What technical skills should I add?,SKILL_GAP
+What skills do I need for my target role?,SKILL_GAP
+Which skills are holding me back?,SKILL_GAP
+Show me my missing skills,SKILL_GAP
+What should I learn next?,SKILL_GAP
+Where are my technical skill gaps?,SKILL_GAP
+Which skills would improve my job matches?,SKILL_GAP
+What abilities should I strengthen?,SKILL_GAP
+What skills are employers looking for that I lack?,SKILL_GAP
+Which technical areas should I improve?,SKILL_GAP
+Thank you,THANK_YOU
+Thanks,THANK_YOU
+Thanks for your help,THANK_YOU
+Thank you very much,THANK_YOU
+That helped thanks,THANK_YOU
+Perfect thank you,THANK_YOU
+Great thanks,THANK_YOU
+Appreciate your help,THANK_YOU
+Thanks a lot,THANK_YOU
+That's all thanks,THANK_YOU
+Awesome thank you,THANK_YOU
+Got it thanks,THANK_YOU
+Thank you for explaining,THANK_YOU
+Thanks for the information,THANK_YOU
+Okay thank you,THANK_YOU

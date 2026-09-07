@@ -10,6 +10,10 @@ import type {
 } from "react";
 
 import {
+  useSearchParams,
+} from "react-router-dom";
+
+import {
   FiAlertCircle,
   FiArrowLeft,
   FiArrowRight,
@@ -32,6 +36,8 @@ import {
 import axios from "axios";
 
 import apiClient from "../../../api/apiClient";
+
+import ImproveCVModal from "../../../components/resume/ImproveCVModal";
 
 import "./resumeAnalysisPage.scss";
 
@@ -427,6 +433,18 @@ const ScoreRing = ({
 
 const ResumeAnalysisPage =
   () => {
+    const [
+      improveModalOpen,
+      setImproveModalOpen,
+    ] =
+      useState(false);
+
+    const [
+      searchParams,
+      setSearchParams,
+    ] =
+      useSearchParams();
+
     const inputRef =
       useRef<HTMLInputElement | null>(
         null
@@ -832,6 +850,37 @@ const ResumeAnalysisPage =
           );
         }
       };
+    /* =====================================
+       LOAD ANALYSIS FROM URL
+    ===================================== */
+
+    useEffect(
+      () => {
+        const analysisId =
+          searchParams.get(
+            "analysisId"
+          );
+
+        if (
+          !analysisId
+        ) {
+          return;
+        }
+
+        void openAnalysis(
+          analysisId
+        );
+
+        setSearchParams(
+          {},
+          {
+            replace: true,
+          }
+        );
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      []
+    );
 
     /* =====================================
        DELETE
@@ -887,6 +936,13 @@ const ResumeAnalysisPage =
 
         setError("");
 
+        setSearchParams(
+          {},
+          {
+            replace: true,
+          }
+        );
+
         clearPreview();
 
         if (
@@ -919,17 +975,33 @@ const ResumeAnalysisPage =
           </div>
 
           {result && (
-            <button
-              type="button"
-              className="new-analysis-btn"
-              onClick={
-                newAnalysis
-              }
-            >
-              <FiRefreshCw />
+            <div className="resume-header-actions">
+              <button
+                type="button"
+                className="generate-improved-cv-btn"
+                onClick={() =>
+                  setImproveModalOpen(
+                    true
+                  )
+                }
+              >
+                <FiZap />
 
-              Analyze another resume
-            </button>
+                Generate Improved CV
+              </button>
+
+              <button
+                type="button"
+                className="new-analysis-btn"
+                onClick={
+                  newAnalysis
+                }
+              >
+                <FiRefreshCw />
+
+                Analyze another resume
+              </button>
+            </div>
           )}
         </section>
 
@@ -1597,7 +1669,7 @@ const ResumeAnalysisPage =
 
                       <div>
                         <span>
-                          Skill gaps
+                          Profile enhancement
                         </span>
 
                         <h3>
@@ -1605,6 +1677,10 @@ const ResumeAnalysisPage =
                         </h3>
                       </div>
                     </div>
+
+                    <p className="recommended-skills-description">
+                      Based on your current resume, consider adding these relevant skills to strengthen your profile.
+                    </p>
 
                     <div className="recommended-skills">
                       {result.recommendedSkills.map(
@@ -1679,6 +1755,34 @@ const ResumeAnalysisPage =
             </div>
           </section>
         )}
+
+        <ImproveCVModal
+          open={
+            improveModalOpen
+          }
+          sourceAnalysisId={
+            result
+              ?.analysisId ||
+            result
+              ?._id ||
+            null
+          }
+          sourceFileName={
+            result
+              ?.fileName ||
+            null
+          }
+          onClose={() =>
+            setImproveModalOpen(
+              false
+            )
+          }
+          onCompleted={() => {
+            setImproveModalOpen(
+              false
+            );
+          }}
+        />
       </div>
     );
   };

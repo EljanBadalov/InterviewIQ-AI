@@ -15,8 +15,11 @@ import {
   FiHome,
   FiBriefcase,
   FiFileText,
+  FiSearch,
   FiPieChart,
   FiBookmark,
+  FiMessageCircle,
+  FiZap,
   FiSettings,
   FiLogOut,
   FiMenu,
@@ -296,6 +299,28 @@ const DashboardLayout: React.FC = () => {
             </NavLink>
 
             <NavLink
+              to="/dashboard/jobs"
+              onClick={
+                closeMobileMenu
+              }
+              className={({
+                isActive,
+              }) =>
+                `nav-item ${
+                  isActive
+                    ? "active"
+                    : ""
+                }`
+              }
+            >
+              <FiSearch />
+
+              <span>
+                Job Matching
+              </span>
+            </NavLink>
+
+            <NavLink
               to="/dashboard/history"
               onClick={
                 closeMobileMenu
@@ -336,6 +361,50 @@ const DashboardLayout: React.FC = () => {
 
               <span>
                 Bookmarks
+              </span>
+            </NavLink>
+
+            <NavLink
+              to="/dashboard/career-assistant"
+              onClick={
+                closeMobileMenu
+              }
+              className={({
+                isActive,
+              }) =>
+                `nav-item ${
+                  isActive
+                    ? "active"
+                    : ""
+                }`
+              }
+            >
+              <FiMessageCircle />
+
+              <span>
+                Career Assistant
+              </span>
+            </NavLink>
+
+            <NavLink
+              to="/dashboard/career-automation"
+              onClick={
+                closeMobileMenu
+              }
+              className={({
+                isActive,
+              }) =>
+                `nav-item ${
+                  isActive
+                    ? "active"
+                    : ""
+                }`
+              }
+            >
+              <FiZap />
+
+              <span>
+                Career Automation
               </span>
             </NavLink>
           </nav>

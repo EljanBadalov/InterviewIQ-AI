@@ -1,0 +1,47 @@
+{
+  "model_type": "LogisticRegression",
+  "vectorizer": "TfidfVectorizer",
+  "training_examples": 210,
+  "train_examples": 168,
+  "test_examples": 42,
+  "intent_count": 14,
+  "intents": [
+    "CAREER_GOAL",
+    "CAREER_PROGRESS",
+    "CV_ANALYSIS",
+    "CV_IMPROVEMENT",
+    "GENERAL_CAREER_HELP",
+    "GREETING",
+    "INTERVIEW_FEEDBACK",
+    "INTERVIEW_PREP",
+    "JOB_MATCHING",
+    "JOB_SEARCH_HELP",
+    "NEXT_STEPS",
+    "PROFILE_SUMMARY",
+    "SKILL_GAP",
+    "THANK_YOU"
+  ],
+  "accuracy": 0.7857142857142857,
+  "vocabulary_size": 728,
+  "model_classes": [
+    "CAREER_GOAL",
+    "CAREER_PROGRESS",
+    "CV_ANALYSIS",
+    "CV_IMPROVEMENT",
+    "GENERAL_CAREER_HELP",
+    "GREETING",
+    "INTERVIEW_FEEDBACK",
+    "INTERVIEW_PREP",
+    "JOB_MATCHING",
+    "JOB_SEARCH_HELP",
+    "NEXT_STEPS",
+    "PROFILE_SUMMARY",
+    "SKILL_GAP",
+    "THANK_YOU"
+  ],
+  "artifacts": {
+    "sklearn_model": "intent_model.pkl",
+    "vectorizer": "vectorizer.pkl",
+    "onnx_model": "intent_classifier.onnx"
+  }
+}

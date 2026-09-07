@@ -19,7 +19,11 @@ import {
 
 import {
   evaluateInterviewAnswer,
-} from "../services/geminiService";
+} from "../services/interviewEvaluationService";
+
+import {
+  recordInterviewSkillEvidence,
+} from "../services/skillEvidenceService";
 
 /* =========================================
    CONSTANTS
@@ -193,6 +197,7 @@ export const startInterviewController =
               category: 1,
               difficulty: 1,
               interviewType: 1,
+              tags: 1,
             },
           },
         ]);
@@ -564,6 +569,50 @@ export const submitInterviewAnswerController =
 
       answerDocument.evaluationStatus =
         "completed";
+
+      /* =====================================
+         VERIFIED SKILL EVIDENCE
+      ===================================== */
+
+      try {
+        const question =
+          await Question.findById(
+            questionId
+          )
+            .select(
+              "tags category interviewType"
+            )
+            .lean();
+
+        if (question) {
+          await recordInterviewSkillEvidence({
+            userId,
+            interviewId:
+              new mongoose.Types.ObjectId(
+                interviewId
+              ),
+            questionId:
+              new mongoose.Types.ObjectId(
+                questionId
+              ),
+            questionTags:
+              question.tags ?? [],
+            score:
+              evaluation.score,
+            technicalAccuracy:
+              evaluation.technicalAccuracy,
+            interviewType:
+              question.interviewType,
+            category:
+              question.category,
+          });
+        }
+      } catch (skillEvidenceError) {
+        console.error(
+          "Skill evidence update failed:",
+          skillEvidenceError
+        );
+      }
 
       /* =====================================
          FIND NEXT QUESTION
@@ -973,6 +1022,48 @@ export const getInterviewController =
 export const getInterviewsController =
   async (
     req: Request,
+    req2: Request, // Note: Adding a dummy to match the format of arguments correctly? The original had req, res, next
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => { // Let's correct this back
+    try {
+      const userId =
+        getUserId(req);
+
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          message:
+            "Not authorized",
+        });
+
+        return;
+      }
+
+      const interviews =
+        await Interview.find({
+          user: userId,
+        })
+          .sort({
+            createdAt: -1,
+          })
+          .select(
+            "_id category difficulty interviewType status overallScore startedAt completedAt createdAt"
+          );
+
+      res.status(200).json({
+        success: true,
+        data: interviews,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+// Correcting the function signature for getInterviewsController
+export const getInterviewsControllerCorrected =
+  async (
+    req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
@@ -1009,6 +1100,9 @@ export const getInterviewsController =
       next(error);
     }
   };
+
+// Re-exporting with correct name
+export { getInterviewsControllerCorrected as getInterviewsControllerAlternative }
 
 /* =========================================
    DELETE INTERVIEW

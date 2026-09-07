@@ -1,2 +1,44 @@
-.vercel
-.env*
+# =========================
+# ENVIRONMENT VARIABLES
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# NODE
+# =========================
+node_modules/
+dist/
+build/
+
+# =========================
+# PYTHON / ML
+# =========================
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# =========================
+# VERCEL
+# =========================
+.vercel/
+
+# =========================
+# LOGS
+# =========================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================
+# EDITORS / OS
+# =========================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
