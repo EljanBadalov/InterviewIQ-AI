@@ -1,4 +1,5 @@
 import React, {
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -20,6 +21,10 @@ import {
   FiChevronLeft,
   FiChevronRight,
   FiZap,
+  FiSliders,
+  FiX,
+  FiDollarSign,
+  FiGlobe,
 } from "react-icons/fi";
 
 import apiClient from "../../../api/apiClient";
@@ -43,6 +48,28 @@ type ExperienceFilter =
   | "2-4"
   | "4-6"
   | "6+";
+
+type EmploymentTypeFilter =
+  | "full-time"
+  | "part-time"
+  | "contract"
+  | "internship";
+
+type WorkModeFilter =
+  | "remote"
+  | "hybrid"
+  | "onsite";
+
+type SourceFilter =
+  | "Greenhouse"
+  | "Lever"
+  | "Ashby"
+  | "SuccessFactors";
+
+type MarketFilter =
+  | "all"
+  | "azerbaijan"
+  | "global";
 
 interface JobMatch {
   matchScore: number;
@@ -153,6 +180,126 @@ type MatchFilter =
 
 const ITEMS_PER_PAGE = 18;
 
+/* =========================================================
+   JOB PAGE CACHE
+
+   Keep the loaded Job Matching result while the user moves
+   between:
+   - Job Matching
+   - Job Details
+   - Apply flow
+   - other dashboard pages
+
+   A normal page remount must NOT trigger another backend
+   request when fresh cached data already exists.
+========================================================= */
+
+const JOBS_CACHE_KEY =
+  "interviewiq.jobsPage.cache.v1";
+
+const JOBS_CACHE_TTL_MS =
+  15 *
+  60 *
+  1000;
+
+interface JobsPageCache {
+  cachedAt: number;
+
+  response: JobsApiResponse;
+}
+
+const readJobsCache =
+  (): JobsPageCache | null => {
+    try {
+      const raw =
+        sessionStorage.getItem(
+          JOBS_CACHE_KEY
+        );
+
+      if (!raw) {
+        return null;
+      }
+
+      const parsed =
+        JSON.parse(
+          raw
+        ) as JobsPageCache;
+
+      if (
+        !parsed ||
+        typeof parsed.cachedAt !==
+          "number" ||
+        !parsed.response
+      ) {
+        sessionStorage.removeItem(
+          JOBS_CACHE_KEY
+        );
+
+        return null;
+      }
+
+      if (
+        Date.now() -
+          parsed.cachedAt >
+        JOBS_CACHE_TTL_MS
+      ) {
+        sessionStorage.removeItem(
+          JOBS_CACHE_KEY
+        );
+
+        return null;
+      }
+
+      return parsed;
+    } catch {
+      sessionStorage.removeItem(
+        JOBS_CACHE_KEY
+      );
+
+      return null;
+    }
+  };
+
+const writeJobsCache =
+  (
+    response:
+      JobsApiResponse
+  ): void => {
+    try {
+      const value:
+        JobsPageCache = {
+          cachedAt:
+            Date.now(),
+
+          response,
+        };
+
+      sessionStorage.setItem(
+        JOBS_CACHE_KEY,
+        JSON.stringify(
+          value
+        )
+      );
+    } catch {
+      /*
+       * Cache failure should never block the page.
+       */
+    }
+  };
+
+const clearJobsCache =
+  (): void => {
+    try {
+      sessionStorage.removeItem(
+        JOBS_CACHE_KEY
+      );
+    } catch {
+      /*
+       * Ignore storage errors.
+       */
+    }
+  };
+
 const jobsPage: React.FC = () => {
   const navigate =
     useNavigate();
@@ -168,6 +315,12 @@ const jobsPage: React.FC = () => {
     setLoading,
   ] =
     useState(true);
+
+  const [
+    refreshing,
+    setRefreshing,
+  ] =
+    useState(false);
 
   const [
     error,
@@ -210,6 +363,12 @@ const jobsPage: React.FC = () => {
     useState("");
 
   const [
+    filterPanelOpen,
+    setFilterPanelOpen,
+  ] =
+    useState(false);
+
+  const [
     matchFilter,
     setMatchFilter,
   ] =
@@ -218,10 +377,20 @@ const jobsPage: React.FC = () => {
     );
 
   const [
-    workType,
-    setWorkType,
+    selectedEmploymentTypes,
+    setSelectedEmploymentTypes,
   ] =
-    useState("all");
+    useState<
+      EmploymentTypeFilter[]
+    >([]);
+
+  const [
+    selectedWorkModes,
+    setSelectedWorkModes,
+  ] =
+    useState<
+      WorkModeFilter[]
+    >([]);
 
   const [
     experienceFilter,
@@ -232,54 +401,453 @@ const jobsPage: React.FC = () => {
     );
 
   const [
+    locationFilter,
+    setLocationFilter,
+  ] =
+    useState("");
+
+  const [
+    minimumSalary,
+    setMinimumSalary,
+  ] =
+    useState("");
+
+  const [
+    selectedSources,
+    setSelectedSources,
+  ] =
+    useState<
+      SourceFilter[]
+    >([]);
+
+  const [
+    marketFilter,
+    setMarketFilter,
+  ] =
+    useState<MarketFilter>(
+      "all"
+    );
+
+  const [
     currentPage,
     setCurrentPage,
   ] =
     useState(1);
 
-  const fetchJobs =
-    async () => {
-      try {
-        setLoading(true);
-
-        setError("");
-
-        const response =
-          await apiClient.get<JobsApiResponse>(
-            "/jobs"
-          );
-
+  const applyJobsResponse =
+    useCallback(
+      (
+        payload:
+          JobsApiResponse
+      ) => {
         setJobs(
-          response.data.data.jobs ||
+          payload.data.jobs ||
             []
         );
 
         setHasResume(
-          response.data.hasResume
+          payload.hasResume
         );
 
         setResume(
-          response.data.resume
+          payload.resume
         );
-      } catch (err: any) {
-        const message =
-          err?.response?.data
-            ?.message ||
-          "Could not load jobs. Please try again.";
+      },
+      []
+    );
 
-        setError(
-          message
-        );
-      } finally {
-        setLoading(
-          false
-        );
-      }
-    };
+  const fetchJobs =
+    useCallback(
+      async ({
+        showFullPageLoading =
+          false,
+
+        updateCache =
+          true,
+      }: {
+        showFullPageLoading?:
+          boolean;
+
+        updateCache?:
+          boolean;
+      } = {}) => {
+        try {
+          if (
+            showFullPageLoading
+          ) {
+            setLoading(
+              true
+            );
+          }
+
+          setError("");
+
+          const response =
+            await apiClient.get<JobsApiResponse>(
+              "/jobs"
+            );
+
+          applyJobsResponse(
+            response.data
+          );
+
+          if (
+            updateCache
+          ) {
+            writeJobsCache(
+              response.data
+            );
+          }
+        } catch (
+          err: any
+        ) {
+          const message =
+            err?.response?.data
+              ?.message ||
+            "Could not load jobs. Please try again.";
+
+          setError(
+            message
+          );
+        } finally {
+          if (
+            showFullPageLoading
+          ) {
+            setLoading(
+              false
+            );
+          }
+        }
+      },
+      [
+        applyJobsResponse,
+      ]
+    );
+
+  const handleRefreshJobs =
+    useCallback(
+      async () => {
+        if (
+          refreshing
+        ) {
+          return;
+        }
+
+        try {
+          setRefreshing(
+            true
+          );
+
+          setError("");
+
+          /*
+           * Explicit refresh is the ONLY frontend action that
+           * asks the backend to fetch fresh vacancies from
+           * Greenhouse / Lever / Ashby.
+           */
+          await apiClient.post(
+            "/jobs/external/refresh"
+          );
+
+          /*
+           * The refresh endpoint updates MongoDB.
+           * Read the newly ranked result after ingestion finishes.
+           */
+          clearJobsCache();
+
+          await fetchJobs({
+            showFullPageLoading:
+              false,
+
+            updateCache:
+              true,
+          });
+        } catch (
+          err: any
+        ) {
+          const message =
+            err?.response?.data
+              ?.message ||
+            "Could not refresh jobs. Please try again.";
+
+          setError(
+            message
+          );
+        } finally {
+          setRefreshing(
+            false
+          );
+        }
+      },
+      [
+        fetchJobs,
+        refreshing,
+      ]
+    );
 
   useEffect(() => {
-    void fetchJobs();
-  }, []);
+    /*
+     * First try session cache.
+     *
+     * When the user opens a job detail and comes back, the
+     * component mounts again but we immediately restore the
+     * previous results without another /jobs request.
+     */
+    const cached =
+      readJobsCache();
+
+    if (
+      cached
+    ) {
+      applyJobsResponse(
+        cached.response
+      );
+
+      setLoading(
+        false
+      );
+
+      return;
+    }
+
+    /*
+     * Only the first uncached visit loads /jobs.
+     *
+     * GET /jobs reads already stored vacancies; it does not
+     * trigger an ATS refresh.
+     */
+    void fetchJobs({
+      showFullPageLoading:
+        true,
+
+      updateCache:
+        true,
+    });
+  }, [
+    applyJobsResponse,
+    fetchJobs,
+  ]);
+
+  const toggleArrayValue = <
+    T extends string
+  >(
+    value:
+      T,
+    values:
+      T[],
+    setter:
+      React.Dispatch<
+        React.SetStateAction<
+          T[]
+        >
+      >
+  ): void => {
+    setter(
+      values.includes(
+        value
+      )
+        ? values.filter(
+            (
+              item
+            ) =>
+              item !==
+              value
+          )
+        : [
+            ...values,
+            value,
+          ]
+    );
+  };
+
+  const resetFilters =
+    (): void => {
+      setMatchFilter(
+        "all"
+      );
+
+      setSelectedEmploymentTypes(
+        []
+      );
+
+      setSelectedWorkModes(
+        []
+      );
+
+      setExperienceFilter(
+        "all"
+      );
+
+      setLocationFilter(
+        ""
+      );
+
+      setMinimumSalary(
+        ""
+      );
+
+      setSelectedSources(
+        []
+      );
+
+      setMarketFilter(
+        "all"
+      );
+    };
+
+  const activeFilterCount =
+    useMemo(
+      () => {
+        let count =
+          0;
+
+        if (
+          matchFilter !==
+          "all"
+        ) {
+          count +=
+            1;
+        }
+
+        count +=
+          selectedEmploymentTypes.length;
+
+        count +=
+          selectedWorkModes.length;
+
+        if (
+          experienceFilter !==
+          "all"
+        ) {
+          count +=
+            1;
+        }
+
+        if (
+          locationFilter.trim()
+        ) {
+          count +=
+            1;
+        }
+
+        if (
+          minimumSalary.trim()
+        ) {
+          count +=
+            1;
+        }
+
+        count +=
+          selectedSources.length;
+
+        if (
+          marketFilter !==
+          "all"
+        ) {
+          count +=
+            1;
+        }
+
+        return count;
+      },
+      [
+        matchFilter,
+        selectedEmploymentTypes,
+        selectedWorkModes,
+        experienceFilter,
+        locationFilter,
+        minimumSalary,
+        selectedSources,
+        marketFilter,
+      ]
+    );
+
+  useEffect(() => {
+    if (
+      !filterPanelOpen
+    ) {
+      return;
+    }
+
+    const handleEscape =
+      (
+        event:
+          KeyboardEvent
+      ) => {
+        if (
+          event.key ===
+          "Escape"
+        ) {
+          setFilterPanelOpen(
+            false
+          );
+        }
+      };
+
+    document.body.classList.add(
+      "jobs-filter-open"
+    );
+
+    window.addEventListener(
+      "keydown",
+      handleEscape
+    );
+
+    return () => {
+      document.body.classList.remove(
+        "jobs-filter-open"
+      );
+
+      window.removeEventListener(
+        "keydown",
+        handleEscape
+      );
+    };
+  }, [
+    filterPanelOpen,
+  ]);
+
+  const isAzerbaijanJob =
+    (
+      job:
+        Job
+    ): boolean => {
+      const source =
+        (
+          job.source ||
+          ""
+        )
+          .trim()
+          .toLowerCase();
+
+      const location =
+        (
+          job.location ||
+          ""
+        )
+          .trim()
+          .toLowerCase();
+
+      return (
+        source ===
+          "successfactors" ||
+        source.includes(
+          "azerbaijan-local"
+        ) ||
+        source.includes(
+          "local-company"
+        ) ||
+        location.includes(
+          "azerbaijan"
+        ) ||
+        location.includes(
+          "baku"
+        ) ||
+        location.includes(
+          "bakı"
+        )
+      );
+    };
 
   const matchesExperienceFilter =
     (
@@ -384,22 +952,109 @@ const jobsPage: React.FC = () => {
               ?.matchLevel ===
               matchFilter;
 
-          const matchesWorkType =
-            workType ===
-              "all" ||
-            job.remoteType ===
-              workType;
+          const matchesEmploymentType =
+            selectedEmploymentTypes
+              .length ===
+              0 ||
+            selectedEmploymentTypes
+              .includes(
+                job.employmentType
+              );
+
+          const matchesWorkMode =
+            selectedWorkModes
+              .length ===
+              0 ||
+            selectedWorkModes
+              .includes(
+                job.remoteType
+              );
 
           const matchesExperience =
             matchesExperienceFilter(
               job
             );
 
+          const normalizedLocation =
+            locationFilter
+              .trim()
+              .toLowerCase();
+
+          const matchesLocation =
+            !normalizedLocation ||
+            (
+              job.location ||
+              ""
+            )
+              .toLowerCase()
+              .includes(
+                normalizedLocation
+              );
+
+          const parsedMinimumSalary =
+            Number(
+              minimumSalary
+            );
+
+          const matchesSalary =
+            !minimumSalary.trim() ||
+            (
+              Number.isFinite(
+                parsedMinimumSalary
+              ) &&
+              (
+                job.salary ||
+                0
+              ) >=
+                parsedMinimumSalary
+            );
+
+          const matchesSource =
+            selectedSources
+              .length ===
+              0 ||
+            selectedSources.some(
+              (
+                source
+              ) =>
+                (
+                  job.source ||
+                  ""
+                )
+                  .toLowerCase() ===
+                source
+                  .toLowerCase()
+            );
+
+          const localAzerbaijanJob =
+            isAzerbaijanJob(
+              job
+            );
+
+          const matchesMarket =
+            marketFilter ===
+              "all" ||
+            (
+              marketFilter ===
+                "azerbaijan" &&
+              localAzerbaijanJob
+            ) ||
+            (
+              marketFilter ===
+                "global" &&
+              !localAzerbaijanJob
+            );
+
           return (
             matchesSearch &&
             matchesMatchLevel &&
-            matchesWorkType &&
-            matchesExperience
+            matchesEmploymentType &&
+            matchesWorkMode &&
+            matchesExperience &&
+            matchesLocation &&
+            matchesSalary &&
+            matchesSource &&
+            matchesMarket
           );
         }
       );
@@ -407,8 +1062,13 @@ const jobsPage: React.FC = () => {
       jobs,
       search,
       matchFilter,
-      workType,
+      selectedEmploymentTypes,
+      selectedWorkModes,
       experienceFilter,
+      locationFilter,
+      minimumSalary,
+      selectedSources,
+      marketFilter,
     ]);
 
   useEffect(() => {
@@ -418,8 +1078,13 @@ const jobsPage: React.FC = () => {
   }, [
     search,
     matchFilter,
-    workType,
+    selectedEmploymentTypes,
+    selectedWorkModes,
     experienceFilter,
+    locationFilter,
+    minimumSalary,
+    selectedSources,
+    marketFilter,
   ]);
 
   const totalPages =
@@ -466,6 +1131,84 @@ const jobsPage: React.FC = () => {
       filteredJobs,
       currentPage,
     ]);
+
+
+  const paginationItems =
+    useMemo<
+      Array<
+        number |
+        "ellipsis-left" |
+        "ellipsis-right"
+      >
+    >(() => {
+      if (
+        totalPages <= 7
+      ) {
+        return Array.from(
+          {
+            length:
+              totalPages,
+          },
+          (
+            _,
+            index
+          ) =>
+            index + 1
+        );
+      }
+
+      if (
+        currentPage <= 3
+      ) {
+        return [
+          1,
+          2,
+          3,
+          4,
+          "ellipsis-right",
+          totalPages,
+        ];
+      }
+
+      if (
+        currentPage >=
+        totalPages - 2
+      ) {
+        return [
+          1,
+          "ellipsis-left",
+          totalPages - 3,
+          totalPages - 2,
+          totalPages - 1,
+          totalPages,
+        ];
+      }
+
+      return [
+        1,
+        "ellipsis-left",
+        currentPage - 1,
+        currentPage,
+        currentPage + 1,
+        "ellipsis-right",
+        totalPages,
+      ];
+    }, [
+      currentPage,
+      totalPages,
+    ]);
+
+  const localJobsCount =
+    jobs.filter(
+      isAzerbaijanJob
+    ).length;
+
+  const globalJobsCount =
+    Math.max(
+      0,
+      jobs.length -
+        localJobsCount
+    );
 
   const strongMatches =
     jobs.filter(
@@ -546,65 +1289,107 @@ const jobsPage: React.FC = () => {
       return `${min}–${max} years`;
     };
 
-  const handlePreviousPage =
-    () => {
-      if (
-        currentPage > 1
-      ) {
-        setCurrentPage(
-          (
-            previousPage
-          ) =>
-            previousPage -
-            1
+  const scrollJobsPageToTop =
+    (): void => {
+      const dashboardContent =
+        document.querySelector<HTMLElement>(
+          ".dashboard-content"
         );
 
-        window.scrollTo({
-          top: 0,
+      if (
+        dashboardContent
+      ) {
+        dashboardContent.scrollTo({
+          top:
+            0,
 
           behavior:
             "smooth",
         });
+
+        return;
       }
-    };
-
-  const handleNextPage =
-    () => {
-      if (
-        currentPage <
-        totalPages
-      ) {
-        setCurrentPage(
-          (
-            previousPage
-          ) =>
-            previousPage +
-            1
-        );
-
-        window.scrollTo({
-          top: 0,
-
-          behavior:
-            "smooth",
-        });
-      }
-    };
-
-  const handlePageClick =
-    (
-      page: number
-    ) => {
-      setCurrentPage(
-        page
-      );
 
       window.scrollTo({
-        top: 0,
+        top:
+          0,
 
         behavior:
           "smooth",
       });
+    };
+
+  const handlePreviousPage =
+    (): void => {
+      if (
+        currentPage <=
+        1
+      ) {
+        return;
+      }
+
+      setCurrentPage(
+        (
+          previousPage
+        ) =>
+          previousPage -
+          1
+      );
+
+      requestAnimationFrame(
+        () => {
+          scrollJobsPageToTop();
+        }
+      );
+    };
+
+  const handleNextPage =
+    (): void => {
+      if (
+        currentPage >=
+        totalPages
+      ) {
+        return;
+      }
+
+      setCurrentPage(
+        (
+          previousPage
+        ) =>
+          previousPage +
+          1
+      );
+
+      requestAnimationFrame(
+        () => {
+          scrollJobsPageToTop();
+        }
+      );
+    };
+
+  const handlePageClick =
+    (
+      page:
+        number
+    ): void => {
+      if (
+        page ===
+        currentPage
+      ) {
+        scrollJobsPageToTop();
+
+        return;
+      }
+
+      setCurrentPage(
+        page
+      );
+
+      requestAnimationFrame(
+        () => {
+          scrollJobsPageToTop();
+        }
+      );
     };
 
   const handleViewDetails =
@@ -723,12 +1508,21 @@ const jobsPage: React.FC = () => {
           type="button"
           className="refresh-jobs-btn"
           onClick={() =>
-            void fetchJobs()
+            void handleRefreshJobs()
           }
+          disabled={refreshing}
         >
-          <FiRefreshCw />
+          <FiRefreshCw
+            className={
+              refreshing
+                ? "is-spinning"
+                : undefined
+            }
+          />
 
-          Refresh jobs
+          {refreshing
+            ? "Refreshing..."
+            : "Refresh jobs"}
         </button>
       </section>
 
@@ -892,100 +1686,33 @@ const jobsPage: React.FC = () => {
           />
         </div>
 
-        <select
-          value={
-            matchFilter
-          }
-          onChange={(event) =>
-            setMatchFilter(
-              event.target
-                .value as MatchFilter
+        <button
+          type="button"
+          className={`jobs-filter-trigger ${
+            activeFilterCount >
+            0
+              ? "has-active-filters"
+              : ""
+          }`}
+          onClick={() =>
+            setFilterPanelOpen(
+              true
             )
           }
         >
-          <option value="all">
-            All Matches
-          </option>
+          <FiSliders />
 
-          <option value="strong">
-            Strong Match
-          </option>
+          <span>
+            Filters
+          </span>
 
-          <option value="good">
-            Good Match
-          </option>
-
-          <option value="partial">
-            Partial Match
-          </option>
-
-          <option value="low">
-            Low Match
-          </option>
-        </select>
-
-        <select
-          value={
-            workType
-          }
-          onChange={(event) =>
-            setWorkType(
-              event.target.value
-            )
-          }
-        >
-          <option value="all">
-            All Work Types
-          </option>
-
-          <option value="remote">
-            Remote
-          </option>
-
-          <option value="hybrid">
-            Hybrid
-          </option>
-
-          <option value="onsite">
-            Onsite
-          </option>
-        </select>
-
-        <select
-          value={
-            experienceFilter
-          }
-          onChange={(event) =>
-            setExperienceFilter(
-              event.target
-                .value as ExperienceFilter
-            )
-          }
-        >
-          <option value="all">
-            All Experience
-          </option>
-
-          <option value="0-1">
-            0–1 years
-          </option>
-
-          <option value="1-2">
-            1–2 years
-          </option>
-
-          <option value="2-4">
-            2–4 years
-          </option>
-
-          <option value="4-6">
-            4–6 years
-          </option>
-
-          <option value="6+">
-            6+ years
-          </option>
-        </select>
+          {activeFilterCount >
+            0 && (
+            <strong>
+              {activeFilterCount}
+            </strong>
+          )}
+        </button>
       </section>
 
       <section className="jobs-results-header">
@@ -1298,39 +2025,51 @@ const jobsPage: React.FC = () => {
               </button>
 
               <div className="pagination-pages">
-                {Array.from(
-                  {
-                    length:
-                      totalPages,
-                  },
+                {paginationItems.map(
                   (
-                    _,
-                    index
-                  ) =>
-                    index +
-                    1
-                ).map(
-                  (page) => (
-                    <button
-                      type="button"
-                      key={
-                        page
-                      }
-                      className={`pagination-page-btn ${
-                        currentPage ===
-                        page
-                          ? "active"
-                          : ""
-                      }`}
-                      onClick={() =>
-                        handlePageClick(
-                          page
-                        )
-                      }
-                    >
-                      {page}
-                    </button>
-                  )
+                    item
+                  ) => {
+                    if (
+                      typeof item ===
+                      "string"
+                    ) {
+                      return (
+                        <span
+                          key={item}
+                          className="pagination-ellipsis"
+                          aria-hidden="true"
+                        >
+                          …
+                        </span>
+                      );
+                    }
+
+                    return (
+                      <button
+                        type="button"
+                        key={item}
+                        className={`pagination-page-btn ${
+                          currentPage ===
+                          item
+                            ? "active"
+                            : ""
+                        }`}
+                        onClick={() =>
+                          handlePageClick(
+                            item
+                          )
+                        }
+                        aria-current={
+                          currentPage ===
+                          item
+                            ? "page"
+                            : undefined
+                        }
+                      >
+                        {item}
+                      </button>
+                    );
+                  }
                 )}
               </div>
 
@@ -1353,6 +2092,592 @@ const jobsPage: React.FC = () => {
           )}
         </>
       )}
+
+      <div
+        className={`jobs-filter-overlay ${
+          filterPanelOpen
+            ? "is-open"
+            : ""
+        }`}
+        onMouseDown={(event) => {
+          if (
+            event.target ===
+            event.currentTarget
+          ) {
+            setFilterPanelOpen(
+              false
+            );
+          }
+        }}
+        aria-hidden={
+          !filterPanelOpen
+        }
+      >
+        <aside
+          className={`jobs-filter-drawer ${
+            filterPanelOpen
+              ? "is-open"
+              : ""
+          }`}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Job filters"
+        >
+          <div className="filter-drawer-header">
+            <div>
+              <span className="jobs-eyebrow">
+                REFINE RESULTS
+              </span>
+
+              <h2>
+                Filters
+              </h2>
+
+              <p>
+                Narrow the current
+                opportunities without
+                running a new job search.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              className="filter-close-btn"
+              onClick={() =>
+                setFilterPanelOpen(
+                  false
+                )
+              }
+              aria-label="Close filters"
+            >
+              <FiX />
+            </button>
+          </div>
+
+          <div className="filter-drawer-content">
+            <section className="filter-section">
+              <div className="filter-section-heading">
+                <div>
+                  <strong>
+                    Location
+                  </strong>
+
+                  <span>
+                    City, state or country
+                  </span>
+                </div>
+
+                <FiMapPin />
+              </div>
+
+              <div className="filter-input-shell">
+                <FiSearch />
+
+                <input
+                  type="text"
+                  value={
+                    locationFilter
+                  }
+                  placeholder="e.g. Baku, Boston, London, Germany"
+                  onChange={(event) =>
+                    setLocationFilter(
+                      event.target
+                        .value
+                    )
+                  }
+                />
+              </div>
+            </section>
+
+            <section className="filter-section">
+              <div className="filter-section-heading">
+                <div>
+                  <strong>
+                    Employment type
+                  </strong>
+
+                  <span>
+                    Choose one or more
+                  </span>
+                </div>
+
+                <FiBriefcase />
+              </div>
+
+              <div className="filter-chip-grid">
+                {[
+                  {
+                    value:
+                      "full-time",
+                    label:
+                      "Full-time",
+                  },
+                  {
+                    value:
+                      "part-time",
+                    label:
+                      "Part-time",
+                  },
+                  {
+                    value:
+                      "contract",
+                    label:
+                      "Contract",
+                  },
+                  {
+                    value:
+                      "internship",
+                    label:
+                      "Internship",
+                  },
+                ].map(
+                  (
+                    option
+                  ) => {
+                    const value =
+                      option.value as EmploymentTypeFilter;
+
+                    const selected =
+                      selectedEmploymentTypes
+                        .includes(
+                          value
+                        );
+
+                    return (
+                      <button
+                        type="button"
+                        key={
+                          value
+                        }
+                        className={`filter-chip ${
+                          selected
+                            ? "selected"
+                            : ""
+                        }`}
+                        onClick={() =>
+                          toggleArrayValue(
+                            value,
+                            selectedEmploymentTypes,
+                            setSelectedEmploymentTypes
+                          )
+                        }
+                      >
+                        {option.label}
+                      </button>
+                    );
+                  }
+                )}
+              </div>
+            </section>
+
+            <section className="filter-section">
+              <div className="filter-section-heading">
+                <div>
+                  <strong>
+                    Work format
+                  </strong>
+
+                  <span>
+                    Remote, hybrid or on-site
+                  </span>
+                </div>
+
+                <FiGlobe />
+              </div>
+
+              <div className="filter-chip-grid three-columns">
+                {[
+                  {
+                    value:
+                      "remote",
+                    label:
+                      "Remote",
+                  },
+                  {
+                    value:
+                      "hybrid",
+                    label:
+                      "Hybrid",
+                  },
+                  {
+                    value:
+                      "onsite",
+                    label:
+                      "On-site",
+                  },
+                ].map(
+                  (
+                    option
+                  ) => {
+                    const value =
+                      option.value as WorkModeFilter;
+
+                    const selected =
+                      selectedWorkModes
+                        .includes(
+                          value
+                        );
+
+                    return (
+                      <button
+                        type="button"
+                        key={
+                          value
+                        }
+                        className={`filter-chip ${
+                          selected
+                            ? "selected"
+                            : ""
+                        }`}
+                        onClick={() =>
+                          toggleArrayValue(
+                            value,
+                            selectedWorkModes,
+                            setSelectedWorkModes
+                          )
+                        }
+                      >
+                        {option.label}
+                      </button>
+                    );
+                  }
+                )}
+              </div>
+            </section>
+
+            <section className="filter-section">
+              <div className="filter-section-heading">
+                <div>
+                  <strong>
+                    Experience
+                  </strong>
+
+                  <span>
+                    Required experience level
+                  </span>
+                </div>
+              </div>
+
+              <div className="filter-select-shell">
+                <select
+                  value={
+                    experienceFilter
+                  }
+                  onChange={(event) =>
+                    setExperienceFilter(
+                      event.target
+                        .value as ExperienceFilter
+                    )
+                  }
+                >
+                  <option value="all">
+                    Any experience
+                  </option>
+
+                  <option value="0-1">
+                    0–1 years
+                  </option>
+
+                  <option value="1-2">
+                    1–2 years
+                  </option>
+
+                  <option value="2-4">
+                    2–4 years
+                  </option>
+
+                  <option value="4-6">
+                    4–6 years
+                  </option>
+
+                  <option value="6+">
+                    6+ years
+                  </option>
+                </select>
+              </div>
+            </section>
+
+            <section className="filter-section">
+              <div className="filter-section-heading">
+                <div>
+                  <strong>
+                    Minimum salary
+                  </strong>
+
+                  <span>
+                    Annual salary when available
+                  </span>
+                </div>
+
+                <FiDollarSign />
+              </div>
+
+              <div className="filter-input-shell salary-input">
+                <span>
+                  $
+                </span>
+
+                <input
+                  type="number"
+                  min="0"
+                  step="5000"
+                  value={
+                    minimumSalary
+                  }
+                  placeholder="e.g. 80000"
+                  onChange={(event) =>
+                    setMinimumSalary(
+                      event.target
+                        .value
+                    )
+                  }
+                />
+              </div>
+
+              <small className="filter-helper-text">
+                Jobs without salary data
+                are excluded only when a
+                minimum salary is selected.
+              </small>
+            </section>
+
+            <section className="filter-section">
+              <div className="filter-section-heading">
+                <div>
+                  <strong>
+                    Match quality
+                  </strong>
+
+                  <span>
+                    CV compatibility
+                  </span>
+                </div>
+
+                <FiCheckCircle />
+              </div>
+
+              <div className="filter-chip-grid">
+                {[
+                  {
+                    value:
+                      "all",
+                    label:
+                      "Any match",
+                  },
+                  {
+                    value:
+                      "strong",
+                    label:
+                      "Strong",
+                  },
+                  {
+                    value:
+                      "good",
+                    label:
+                      "Good",
+                  },
+                  {
+                    value:
+                      "partial",
+                    label:
+                      "Partial",
+                  },
+                  {
+                    value:
+                      "low",
+                    label:
+                      "Low",
+                  },
+                ].map(
+                  (
+                    option
+                  ) => (
+                    <button
+                      type="button"
+                      key={
+                        option.value
+                      }
+                      className={`filter-chip ${
+                        matchFilter ===
+                        option.value
+                          ? "selected"
+                          : ""
+                      }`}
+                      onClick={() =>
+                        setMatchFilter(
+                          option.value as MatchFilter
+                        )
+                      }
+                    >
+                      {option.label}
+                    </button>
+                  )
+                )}
+              </div>
+            </section>
+
+            <section className="filter-section">
+              <div className="filter-section-heading">
+                <div>
+                  <strong>
+                    Job market
+                  </strong>
+
+                  <span>
+                    Local Azerbaijan or global opportunities
+                  </span>
+                </div>
+
+                <FiGlobe />
+              </div>
+
+              <div className="filter-chip-grid three-columns">
+                <button
+                  type="button"
+                  className={`filter-chip ${
+                    marketFilter ===
+                    "all"
+                      ? "selected"
+                      : ""
+                  }`}
+                  onClick={() =>
+                    setMarketFilter(
+                      "all"
+                    )
+                  }
+                >
+                  All
+                </button>
+
+                <button
+                  type="button"
+                  className={`filter-chip ${
+                    marketFilter ===
+                    "azerbaijan"
+                      ? "selected"
+                      : ""
+                  }`}
+                  onClick={() =>
+                    setMarketFilter(
+                      "azerbaijan"
+                    )
+                  }
+                >
+                  Azerbaijan ({localJobsCount})
+                </button>
+
+                <button
+                  type="button"
+                  className={`filter-chip ${
+                    marketFilter ===
+                    "global"
+                      ? "selected"
+                      : ""
+                  }`}
+                  onClick={() =>
+                    setMarketFilter(
+                      "global"
+                    )
+                  }
+                >
+                  Global ({globalJobsCount})
+                </button>
+              </div>
+            </section>
+
+            <section className="filter-section">
+              <div className="filter-section-heading">
+                <div>
+                  <strong>
+                    Job source
+                  </strong>
+
+                  <span>
+                    ATS platform
+                  </span>
+                </div>
+              </div>
+
+              <div className="filter-chip-grid three-columns">
+                {[
+                  "Greenhouse",
+                  "Lever",
+                  "Ashby",
+                  "SuccessFactors",
+                ].map(
+                  (
+                    item
+                  ) => {
+                    const source =
+                      item as SourceFilter;
+
+                    const selected =
+                      selectedSources
+                        .includes(
+                          source
+                        );
+
+                    return (
+                      <button
+                        type="button"
+                        key={
+                          source
+                        }
+                        className={`filter-chip ${
+                          selected
+                            ? "selected"
+                            : ""
+                        }`}
+                        onClick={() =>
+                          toggleArrayValue(
+                            source,
+                            selectedSources,
+                            setSelectedSources
+                          )
+                        }
+                      >
+                        {source}
+                      </button>
+                    );
+                  }
+                )}
+              </div>
+            </section>
+          </div>
+
+          <div className="filter-drawer-footer">
+            <button
+              type="button"
+              className="filter-reset-btn"
+              onClick={
+                resetFilters
+              }
+              disabled={
+                activeFilterCount ===
+                0
+              }
+            >
+              Reset
+            </button>
+
+            <button
+              type="button"
+              className="filter-apply-btn"
+              onClick={() =>
+                setFilterPanelOpen(
+                  false
+                )
+              }
+            >
+              Show{" "}
+              {
+                filteredJobs.length
+              }{" "}
+              jobs
+            </button>
+          </div>
+        </aside>
+      </div>
 
       {improveWizardJob && (
         <ImproveCVWizard

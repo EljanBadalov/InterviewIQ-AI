@@ -1,10 +1,20 @@
 import {
   type IJob,
+  type JobExperienceLevel,
 } from "../models/Job";
 
 import {
   type IResumeAnalysis,
 } from "../models/resumeAnalysis";
+
+import {
+  type ICareerSkillProfile,
+  type ICareerSkillProfileItem,
+} from "./careerSkillProfileService";
+
+/* =========================================================
+   TYPES
+========================================================= */
 
 export type JobMatchLevel =
   | "strong"
@@ -14,8 +24,19 @@ export type JobMatchLevel =
 
 export interface IJobMatchBreakdown {
   skills: number;
-  keywords: number;
+
+  roleRelevance: number;
+
   experience: number;
+
+  evidenceConfidence: number;
+
+  /*
+   * Kept for backwards compatibility with existing frontend
+   * components. They are no longer part of the weighted score.
+   */
+  keywords: number;
+
   education: number;
 }
 
@@ -41,8 +62,66 @@ export interface IJobMatchResult {
   breakdown: IJobMatchBreakdown;
 }
 
+export interface IJobMatchOptions {
+  targetRole?: string;
+
+  preferredExperienceLevels?:
+    JobExperienceLevel[];
+}
+
+/* =========================================================
+   CONSTANTS
+========================================================= */
+
+const SCORE_WEIGHTS = {
+  /*
+   * Role alignment must dominate recommendation quality.
+   * A user searching for "Frontend Developer" should not receive
+   * a high score for an unrelated engineering title simply because
+   * React/Python happen to appear in the description.
+   */
+  roleRelevance:
+    0.45,
+
+  skills:
+    0.35,
+
+  experience:
+    0.12,
+
+  evidenceConfidence:
+    0.08,
+} as const;
+
+const ROLE_STOP_WORDS =
+  new Set([
+    "a",
+    "an",
+    "and",
+    "the",
+    "for",
+    "of",
+    "to",
+    "with",
+    "remote",
+    "hybrid",
+    "onsite",
+    "entry",
+    "junior",
+    "jr",
+    "mid",
+    "senior",
+    "sr",
+    "lead",
+  ]);
+
+/* =========================================================
+   NORMALIZATION
+========================================================= */
+
 const normalizeText = (
-  value: string
+  value:
+    string
 ): string => {
   return value
     .toLowerCase()
@@ -57,127 +136,94 @@ const normalizeText = (
     );
 };
 
-const escapeRegExp = (
-  value: string
-): string => {
-  return value.replace(
-    /[.*+?^${}()|[\]\\]/g,
-    "\\$&"
-  );
-};
-
 const normalizeSkill = (
-  value: string
+  value:
+    string
 ): string => {
   const normalized =
-    normalizeText(value);
+    normalizeText(
+      value
+    );
 
-  const aliases: Record<
-    string,
-    string
-  > = {
-    js: "javascript",
+  const aliases:
+    Record<
+      string,
+      string
+    > = {
+    js:
+      "javascript",
+
     javascript:
       "javascript",
 
-    ts: "typescript",
+    ts:
+      "typescript",
+
     typescript:
       "typescript",
 
-    reactjs: "react",
-    "react.js": "react",
-    react: "react",
+    reactjs:
+      "react",
 
-    nodejs: "node.js",
-    "node.js": "node.js",
-    node: "node.js",
+    "react.js":
+      "react",
+
+    react:
+      "react",
+
+    nodejs:
+      "node.js",
+
+    "node.js":
+      "node.js",
+
+    node:
+      "node.js",
 
     expressjs:
       "express",
+
     "express.js":
       "express",
-    express: "express",
 
-    mongodb: "mongodb",
-    mongo: "mongodb",
+    express:
+      "express",
+
+    mongodb:
+      "mongodb",
+
+    mongo:
+      "mongodb",
 
     postgres:
       "postgresql",
+
     postgresql:
       "postgresql",
 
-    aws: "aws",
+    html5:
+      "html",
 
-    "amazon web services":
-      "aws",
+    html:
+      "html",
 
-    gcp: "gcp",
+    css3:
+      "css",
 
-    "google cloud":
-      "gcp",
+    css:
+      "css",
 
-    "google cloud platform":
-      "gcp",
-
-    k8s: "kubernetes",
-    kubernetes:
-      "kubernetes",
-
-    docker: "docker",
-
-    git: "git",
-
-    html5: "html",
-    html: "html",
-
-    css3: "css",
-    css: "css",
-
-    rest: "rest api",
-    restful:
+    rest:
       "rest api",
 
-    "rest api":
+    restful:
       "rest api",
 
     "restful api":
       "rest api",
 
-    api: "rest api",
-
-    ml:
-      "machine learning",
-
-    "machine learning":
-      "machine learning",
-
-    ai:
-      "artificial intelligence",
-
-    "artificial intelligence":
-      "artificial intelligence",
-
-    ui:
-      "ui design",
-
-    "ui design":
-      "ui design",
-
-    ux:
-      "ux design",
-
-    "ux design":
-      "ux design",
-
-    figma: "figma",
-
-    cicd: "ci/cd",
-
-    "ci cd":
-      "ci/cd",
-
-    "ci/cd":
-      "ci/cd",
+    "rest api":
+      "rest api",
 
     nextjs:
       "next.js",
@@ -185,211 +231,287 @@ const normalizeSkill = (
     "next.js":
       "next.js",
 
-    reduxjs:
-      "redux",
+    k8s:
+      "kubernetes",
 
-    redux:
-      "redux",
+    kubernetes:
+      "kubernetes",
 
-    graphql:
-      "graphql",
+    cicd:
+      "ci/cd",
 
-    jest:
-      "jest",
+    "ci cd":
+      "ci/cd",
 
-    python:
-      "python",
+    "ci/cd":
+      "ci/cd",
 
-    numpy:
-      "numpy",
+    "google cloud":
+      "gcp",
 
-    pandas:
-      "pandas",
+    "google cloud platform":
+      "gcp",
 
-    pytorch:
-      "pytorch",
+    gcp:
+      "gcp",
 
-    tensorflow:
-      "tensorflow",
-
-    sklearn:
-      "scikit-learn",
-
-    "scikit learn":
-      "scikit-learn",
-
-    "scikit-learn":
-      "scikit-learn",
-
-    mlops:
-      "mlops",
-
-    nlp:
-      "nlp",
-
-    terraform:
-      "terraform",
-
-    linux:
-      "linux",
-
-    bash:
-      "bash",
-
-    redis:
-      "redis",
-
-    "data structures":
-      "data structures",
-
-    algorithms:
-      "algorithms",
-
-    "system design":
-      "system design",
-
-    "distributed systems":
-      "distributed systems",
-
-    "deep learning":
-      "deep learning",
-
-    transformers:
-      "transformers",
-
-    wireframing:
-      "wireframing",
-
-    prototyping:
-      "prototyping",
-
-    "user research":
-      "user research",
-
-    "product design":
-      "product design",
-
-    "design systems":
-      "design systems",
+    aws:
+      "aws",
   };
 
   return (
-    aliases[normalized] ||
+    aliases[
+      normalized
+    ] ||
     normalized
   );
 };
 
 const uniqueStrings = (
-  values: string[]
+  values:
+    string[]
 ): string[] => {
   return [
     ...new Set(
       values
         .map(
-          (value) =>
+          (
+            value
+          ) =>
             value.trim()
         )
-        .filter(Boolean)
+        .filter(
+          Boolean
+        )
     ),
   ];
 };
 
-const containsExactPhrase = (
-  text: string,
-  phrase: string
-): boolean => {
-  const normalizedText =
-    normalizeText(text);
-
-  const normalizedPhrase =
-    normalizeText(phrase);
-
-  if (
-    !normalizedText ||
-    !normalizedPhrase
-  ) {
-    return false;
-  }
-
-  const escaped =
-    escapeRegExp(
-      normalizedPhrase
-    );
-
-  const regex =
-    new RegExp(
-      `(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`,
-      "i"
-    );
-
-  return regex.test(
-    normalizedText
-  );
-};
-
-const getResumeSkills = (
-  resume:
-    IResumeAnalysis
-): string[] => {
-  return uniqueStrings(
-    resume.skillsDetected.map(
-      normalizeSkill
+const clampScore = (
+  value:
+    number
+): number => {
+  return Math.max(
+    0,
+    Math.min(
+      100,
+      Math.round(
+        value
+      )
     )
   );
 };
 
-const buildPositiveResumeText = (
-  resume:
+/* =========================================================
+   LEGACY RESUME -> LIGHT PROFILE
+========================================================= */
+
+/*
+ * Existing controllers still call:
+ *
+ * calculateJobMatch(resume, job)
+ * rankJobsForResume(resume, jobs)
+ *
+ * We keep those calls working, but convert the resume into a
+ * lightweight SKILL profile. ATS/overall/content/structure/
+ * experience scores are intentionally ignored.
+ */
+const isCareerSkillProfile = (
+  value:
+    ICareerSkillProfile |
     IResumeAnalysis
-): string => {
-  return normalizeText(
-    [
-      resume.summary,
-
-      ...resume.skillsDetected,
-
-      ...resume.strengths,
-    ]
-      .filter(Boolean)
-      .join(" ")
+): value is ICareerSkillProfile => {
+  return (
+    "generatedAt" in
+      value &&
+    "strongestSkills" in
+      value &&
+    "verifiedSkills" in
+      value
   );
 };
 
-const buildNegativeResumeText = (
+const buildProfileFromResume = (
   resume:
     IResumeAnalysis
-): string => {
-  return normalizeText(
-    [
-      ...resume.missingSkills,
+): ICareerSkillProfile => {
+  const seen =
+    new Set<
+      string
+    >();
 
-      ...resume.weaknesses,
+  const skills:
+    ICareerSkillProfileItem[] =
+    [];
 
-      ...resume.atsSuggestions,
+  for (
+    const rawSkill of
+    resume.skillsDetected ??
+    []
+  ) {
+    const normalizedName =
+      normalizeSkill(
+        rawSkill
+      );
 
-      ...resume.formattingFeedback,
+    if (
+      !normalizedName ||
+      seen.has(
+        normalizedName
+      )
+    ) {
+      continue;
+    }
 
-      ...resume.recommendations,
-    ]
-      .filter(Boolean)
-      .join(" ")
-  );
+    seen.add(
+      normalizedName
+    );
+
+    skills.push({
+      name:
+        rawSkill,
+
+      normalizedName,
+
+      skillScore:
+        68,
+
+      confidence:
+        0.62,
+
+      confidenceLabel:
+        "medium",
+
+      level:
+        "beginner",
+
+      evidenceCount:
+        1,
+
+      sources: [
+        "resume",
+      ],
+
+      interviewVerified:
+        false,
+
+      presentInResume:
+        true,
+
+      resumeAnalysisId:
+        resume._id
+          ?.toString(),
+
+      latestEvidenceAt:
+        resume.createdAt,
+    });
+  }
+
+  return {
+    userId:
+      resume.user.toString(),
+
+    resumeAnalysisId:
+      resume._id
+        ?.toString(),
+
+    resumeFileName:
+      resume.fileName,
+
+    skills,
+
+    strongestSkills:
+      skills.slice(
+        0,
+        10
+      ),
+
+    verifiedSkills:
+      [],
+
+    resumeSkills:
+      skills,
+
+    totalSkills:
+      skills.length,
+
+    generatedAt:
+      new Date(),
+  };
 };
+
+const resolveProfile = (
+  value:
+    ICareerSkillProfile |
+    IResumeAnalysis
+): ICareerSkillProfile => {
+  return isCareerSkillProfile(
+    value
+  )
+    ? value
+    : buildProfileFromResume(
+        value
+      );
+};
+
+/* =========================================================
+   SKILL MATCH
+========================================================= */
 
 const calculateSkillMatch = (
-  resume:
-    IResumeAnalysis,
+  profile:
+    ICareerSkillProfile,
   job:
     IJob
 ): {
   score: number;
+
   matched: string[];
+
   missing: string[];
 } => {
-  const resumeSkills =
-    new Set(
-      getResumeSkills(
-        resume
+  const jobSkills =
+    uniqueStrings(
+      job.skills ??
+      []
+    );
+
+  if (
+    jobSkills.length ===
+    0
+  ) {
+    /*
+     * No explicit skill requirements means neutral, not 100.
+     * This prevents poorly-parsed job posts from receiving
+     * an automatic perfect match.
+     */
+    return {
+      score:
+        60,
+
+      matched:
+        [],
+
+      missing:
+        [],
+    };
+  }
+
+  const profileSkillMap =
+    new Map<
+      string,
+      ICareerSkillProfileItem
+    >(
+      profile.skills.map(
+        (
+          skill
+        ) => [
+          normalizeSkill(
+            skill.normalizedName ||
+            skill.name
+          ),
+          skill,
+        ]
       )
     );
 
@@ -399,23 +521,68 @@ const calculateSkillMatch = (
   const missing:
     string[] = [];
 
+  let weightedMatched =
+    0;
+
+  let totalWeight =
+    0;
+
   for (
-    const jobSkill
-    of (job.skills ?? [])
+    const jobSkill of
+    jobSkills
   ) {
     const normalized =
       normalizeSkill(
         jobSkill
       );
 
-    if (
-      resumeSkills.has(
+    const profileSkill =
+      profileSkillMap.get(
         normalized
-      )
+      );
+
+    /*
+     * Each required job skill has equal requirement weight.
+     * If the user has the skill, the contribution depends on
+     * skill strength and evidence confidence.
+     */
+    totalWeight +=
+      1;
+
+    if (
+      profileSkill
     ) {
       matched.push(
         jobSkill
       );
+
+      const strengthFactor =
+        Math.max(
+          0.55,
+          profileSkill.skillScore /
+            100
+        );
+
+      const confidenceFactor =
+        Math.max(
+          0.55,
+          profileSkill.confidence
+        );
+
+      const verificationBonus =
+        profileSkill.interviewVerified
+          ? 0.08
+          : 0;
+
+      weightedMatched +=
+        Math.min(
+          1,
+          strengthFactor *
+            0.72 +
+            confidenceFactor *
+              0.28 +
+            verificationBonus
+        );
     } else {
       missing.push(
         jobSkill
@@ -423,25 +590,18 @@ const calculateSkillMatch = (
     }
   }
 
-  if (
-    (job.skills ?? []).length ===
-    0
-  ) {
-    return {
-      score: 100,
-      matched: [],
-      missing: [],
-    };
-  }
-
   return {
     score:
-      Math.round(
-        (
-          matched.length /
-          (job.skills ?? []).length
-        ) * 100
-      ),
+      totalWeight >
+      0
+        ? clampScore(
+            (
+              weightedMatched /
+              totalWeight
+            ) *
+              100
+          )
+        : 60,
 
     matched:
       uniqueStrings(
@@ -455,30 +615,575 @@ const calculateSkillMatch = (
   };
 };
 
-const calculateKeywordMatch = (
-  resume:
-    IResumeAnalysis,
+/* =========================================================
+   ROLE RELEVANCE
+========================================================= */
+
+const tokenizeRole = (
+  value:
+    string
+): string[] => {
+  return normalizeText(
+    value
+  )
+    .split(
+      /[\s/|,-]+/
+    )
+    .map(
+      (
+        token
+      ) =>
+        token.trim()
+    )
+    .filter(
+      (
+        token
+      ) =>
+        token.length >=
+          2 &&
+        !ROLE_STOP_WORDS.has(
+          token
+        )
+    );
+};
+
+const calculateRoleRelevance = (
+  targetRole:
+    string | undefined,
+  job:
+    IJob
+): number => {
+  if (
+    !targetRole ||
+    !targetRole.trim()
+  ) {
+    return 70;
+  }
+
+  const target =
+    normalizeText(
+      targetRole
+    );
+
+  const title =
+    normalizeText(
+      job.title
+    );
+
+  if (
+    target ===
+    title
+  ) {
+    return 100;
+  }
+
+  if (
+    title.includes(
+      target
+    ) ||
+    target.includes(
+      title
+    )
+  ) {
+    return 96;
+  }
+
+  const targetTokens =
+    tokenizeRole(
+      targetRole
+    );
+
+  const titleTokens =
+    tokenizeRole(
+      job.title
+    );
+
+  if (
+    targetTokens.length ===
+    0 ||
+    titleTokens.length ===
+    0
+  ) {
+    return 25;
+  }
+
+  const titleSet =
+    new Set(
+      titleTokens
+    );
+
+  const overlap =
+    targetTokens.filter(
+      (
+        token
+      ) =>
+        titleSet.has(
+          token
+        )
+    ).length;
+
+  const overlapRatio =
+    overlap /
+    targetTokens.length;
+
+  const targetText =
+    targetTokens.join(
+      " "
+    );
+
+  const titleText =
+    titleTokens.join(
+      " "
+    );
+
+  const isFrontendTarget =
+    /\b(frontend|front-end|react|ui|web)\b/.test(
+      targetText
+    );
+
+  const isBackendTarget =
+    /\b(backend|back-end|node\.js|api|server)\b/.test(
+      targetText
+    );
+
+  const isFullStackTarget =
+    /\b(fullstack|full-stack)\b/.test(
+      targetText
+    );
+
+  const isQaTarget =
+    /\b(qa|quality|tester|testing|sdet)\b/.test(
+      targetText
+    );
+
+  const isDataTarget =
+    /\b(data|analytics|analyst|bi)\b/.test(
+      targetText
+    );
+
+  const isSecurityTarget =
+    /\b(cyber|security|soc)\b/.test(
+      targetText
+    );
+
+  const isDevOpsTarget =
+    /\b(devops|sre|reliability|cloud)\b/.test(
+      targetText
+    );
+
+  const frontendTitle =
+    /\b(frontend|front-end|react|ui)\b/.test(
+      titleText
+    ) ||
+    (
+      /\bweb\b/.test(
+        titleText
+      ) &&
+      /\b(developer|engineer)\b/.test(
+        titleText
+      )
+    );
+
+  const backendTitle =
+    /\b(backend|back-end|api|server|node\.js)\b/.test(
+      titleText
+    );
+
+  const fullStackTitle =
+    /\b(fullstack|full-stack)\b/.test(
+      titleText
+    );
+
+  const qaTitle =
+    /\b(qa|quality|tester|testing|sdet)\b/.test(
+      titleText
+    );
+
+  const dataTitle =
+    /\b(data analyst|analytics|analyst|bi)\b/.test(
+      title
+    );
+
+  const securityTitle =
+    /\b(cyber|security|soc)\b/.test(
+      titleText
+    );
+
+  const devOpsTitle =
+    /\b(devops|sre|site reliability|cloud engineer)\b/.test(
+      title
+    );
+
+  const genericSoftwareTitle =
+    /\bsoftware\b/.test(
+      titleText
+    ) &&
+    /\b(developer|engineer)\b/.test(
+      titleText
+    );
+
+  const unrelatedSpecializedEngineer =
+    /\b(forward deployed|solutions? engineer|sales engineer|support engineer|customer engineer|implementation engineer|field engineer|machine learning|ml engineer|ai engineer|data engineer|security engineer|devops|site reliability|sre|cloud engineer|platform engineer|mobile|ios|android)\b/.test(
+      title
+    );
+
+  /*
+   * Exact role-family rules come before generic token overlap.
+   * This prevents "Forward Deployed Engineer" from being treated
+   * like "Frontend Engineer" just because both contain "Engineer".
+   */
+  if (
+    isFrontendTarget
+  ) {
+    if (
+      frontendTitle
+    ) {
+      return overlapRatio >=
+        0.5
+        ? 94
+        : 90;
+    }
+
+    if (
+      unrelatedSpecializedEngineer
+    ) {
+      return 18;
+    }
+
+    if (
+      fullStackTitle
+    ) {
+      return 68;
+    }
+
+    if (
+      genericSoftwareTitle
+    ) {
+      return 58;
+    }
+
+    return overlap >
+      0
+      ? 45
+      : 15;
+  }
+
+  if (
+    isBackendTarget
+  ) {
+    if (
+      backendTitle
+    ) {
+      return 92;
+    }
+
+    if (
+      fullStackTitle
+    ) {
+      return 70;
+    }
+
+    if (
+      genericSoftwareTitle
+    ) {
+      return 58;
+    }
+
+    return overlap >
+      0
+      ? 45
+      : 15;
+  }
+
+  if (
+    isFullStackTarget
+  ) {
+    if (
+      fullStackTitle
+    ) {
+      return 94;
+    }
+
+    if (
+      frontendTitle ||
+      backendTitle
+    ) {
+      return 70;
+    }
+
+    if (
+      genericSoftwareTitle
+    ) {
+      return 60;
+    }
+
+    return overlap >
+      0
+      ? 45
+      : 15;
+  }
+
+  if (
+    isQaTarget
+  ) {
+    if (
+      qaTitle
+    ) {
+      return 94;
+    }
+
+    return overlap >
+      0
+      ? 50
+      : 15;
+  }
+
+  if (
+    isDataTarget
+  ) {
+    if (
+      dataTitle
+    ) {
+      return 94;
+    }
+
+    return overlap >
+      0
+      ? 50
+      : 15;
+  }
+
+  if (
+    isSecurityTarget
+  ) {
+    if (
+      securityTitle
+    ) {
+      return 94;
+    }
+
+    return overlap >
+      0
+      ? 50
+      : 15;
+  }
+
+  if (
+    isDevOpsTarget
+  ) {
+    if (
+      devOpsTitle
+    ) {
+      return 94;
+    }
+
+    return overlap >
+      0
+      ? 50
+      : 15;
+  }
+
+  if (
+    overlapRatio >=
+    0.75
+  ) {
+    return 90;
+  }
+
+  if (
+    overlapRatio >=
+    0.5
+  ) {
+    return 80;
+  }
+
+  if (
+    overlap >
+    0
+  ) {
+    return 55;
+  }
+
+  if (
+    genericSoftwareTitle &&
+    /\bsoftware\b/.test(
+      target
+    )
+  ) {
+    return 70;
+  }
+
+  return 20;
+};
+
+/* =========================================================
+   EXPERIENCE FIT
+========================================================= */
+
+const calculateExperienceFit = (
+  preferredLevels:
+    JobExperienceLevel[] |
+    undefined,
+  job:
+    IJob
+): number => {
+  if (
+    !preferredLevels ||
+    preferredLevels.length ===
+      0
+  ) {
+    return 75;
+  }
+
+  if (
+    preferredLevels.includes(
+      job.experienceLevel
+    )
+  ) {
+    return 100;
+  }
+
+  if (
+    preferredLevels.includes(
+      "entry"
+    ) &&
+    job.experienceLevel ===
+      "junior"
+  ) {
+    return 85;
+  }
+
+  if (
+    preferredLevels.includes(
+      "junior"
+    ) &&
+    job.experienceLevel ===
+      "entry"
+  ) {
+    return 90;
+  }
+
+  if (
+    preferredLevels.includes(
+      "mid"
+    ) &&
+    job.experienceLevel ===
+      "junior"
+  ) {
+    return 75;
+  }
+
+  return 35;
+};
+
+/* =========================================================
+   EVIDENCE CONFIDENCE
+========================================================= */
+
+const calculateEvidenceConfidence = (
+  profile:
+    ICareerSkillProfile,
+  matchedSkills:
+    string[]
+): number => {
+  if (
+    profile.skills.length ===
+    0
+  ) {
+    return 0;
+  }
+
+  const matchedSet =
+    new Set(
+      matchedSkills.map(
+        normalizeSkill
+      )
+    );
+
+  const relevantSkills =
+    profile.skills.filter(
+      (
+        skill
+      ) =>
+        matchedSet.has(
+          normalizeSkill(
+            skill.normalizedName ||
+            skill.name
+          )
+        )
+    );
+
+  const sourceSkills =
+    relevantSkills.length >
+      0
+      ? relevantSkills
+      : profile.strongestSkills;
+
+  if (
+    sourceSkills.length ===
+    0
+  ) {
+    return 0;
+  }
+
+  const averageConfidence =
+    sourceSkills.reduce(
+      (
+        total,
+        skill
+      ) =>
+        total +
+        skill.confidence *
+          100,
+      0
+    ) /
+    sourceSkills.length;
+
+  const verifiedCount =
+    sourceSkills.filter(
+      (
+        skill
+      ) =>
+        skill.interviewVerified
+    ).length;
+
+  const verificationBonus =
+    Math.min(
+      15,
+      verifiedCount *
+        5
+    );
+
+  return clampScore(
+    averageConfidence +
+      verificationBonus
+  );
+};
+
+/* =========================================================
+   LEGACY KEYWORD OUTPUT
+========================================================= */
+
+const calculateKeywordOutput = (
+  profile:
+    ICareerSkillProfile,
   job:
     IJob
 ): {
-  score: number;
   matched: string[];
+
   missing: string[];
 } => {
-  const positiveText =
-    buildPositiveResumeText(
-      resume
-    );
-
-  const negativeText =
-    buildNegativeResumeText(
-      resume
-    );
-
-  const resumeSkills =
+  const profileSkills =
     new Set(
-      getResumeSkills(
-        resume
+      profile.skills.map(
+        (
+          skill
+        ) =>
+          normalizeSkill(
+            skill.normalizedName ||
+            skill.name
+          )
       )
     );
 
@@ -489,48 +1194,16 @@ const calculateKeywordMatch = (
     string[] = [];
 
   for (
-    const keyword
-    of (job.keywords ?? [])
+    const keyword of
+    job.keywords ??
+    []
   ) {
-    const normalizedKeyword =
-      normalizeText(
-        keyword
-      );
-
-    const normalizedSkill =
-      normalizeSkill(
-        keyword
-      );
-
-    const existsAsSkill =
-      resumeSkills.has(
-        normalizedSkill
-      );
-
-    const existsPositive =
-      containsExactPhrase(
-        positiveText,
-        normalizedKeyword
-      );
-
-    const existsNegative =
-      containsExactPhrase(
-        negativeText,
-        normalizedKeyword
-      );
-
-    const positiveEvidence =
-      existsAsSkill ||
-      existsPositive;
-
-    const negativeOnly =
-      existsNegative &&
-      !existsAsSkill &&
-      !existsPositive;
-
     if (
-      positiveEvidence &&
-      !negativeOnly
+      profileSkills.has(
+        normalizeSkill(
+          keyword
+        )
+      )
     ) {
       matched.push(
         keyword
@@ -542,26 +1215,7 @@ const calculateKeywordMatch = (
     }
   }
 
-  if (
-    (job.keywords ?? []).length ===
-    0
-  ) {
-    return {
-      score: 100,
-      matched: [],
-      missing: [],
-    };
-  }
-
   return {
-    score:
-      Math.round(
-        (
-          matched.length /
-          (job.keywords ?? []).length
-        ) * 100
-      ),
-
     matched:
       uniqueStrings(
         matched
@@ -574,198 +1228,31 @@ const calculateKeywordMatch = (
   };
 };
 
-const estimateResumeExperienceYears = (
-  experienceScore: number
-): number => {
-  const score =
-    Math.max(
-      0,
-      Math.min(
-        100,
-        experienceScore
-      )
-    );
-
-  if (
-    score >= 90
-  ) {
-    return 7;
-  }
-
-  if (
-    score >= 80
-  ) {
-    return 5;
-  }
-
-  if (
-    score >= 65
-  ) {
-    return 3;
-  }
-
-  if (
-    score >= 45
-  ) {
-    return 2;
-  }
-
-  if (
-    score >= 30
-  ) {
-    return 1;
-  }
-
-  return 0;
-};
-
-const calculateExperienceMatch = (
-  resume:
-    IResumeAnalysis,
-  job:
-    IJob
-): number => {
-  const estimatedYears =
-    estimateResumeExperienceYears(
-      resume.experienceScore
-    );
-
-  const min =
-    job.experienceMin;
-
-  const max =
-    job.experienceMax;
-
-  if (
-    estimatedYears >= min &&
-    (
-      max === null ||
-      estimatedYears <= max
-    )
-  ) {
-    return 100;
-  }
-
-  if (
-    estimatedYears >
-    (max ?? min)
-  ) {
-    return 90;
-  }
-
-  if (
-    min === 0
-  ) {
-    return 100;
-  }
-
-  const difference =
-    min -
-    estimatedYears;
-
-  if (
-    difference <= 1
-  ) {
-    return 75;
-  }
-
-  if (
-    difference <= 2
-  ) {
-    return 50;
-  }
-
-  if (
-    difference <= 3
-  ) {
-    return 30;
-  }
-
-  return 10;
-};
-
-const calculateEducationMatch = (
-  resume:
-    IResumeAnalysis,
-  job:
-    IJob
-): number => {
-  if (
-    !(job.education ?? []) ||
-    (job.education ?? []).length ===
-      0
-  ) {
-    return 100;
-  }
-
-  const positiveText =
-    buildPositiveResumeText(
-      resume
-    );
-
-  const exactMatch =
-    (job.education ?? []).some(
-      (education) =>
-        containsExactPhrase(
-          positiveText,
-          education
-        )
-    );
-
-  if (
-    exactMatch
-  ) {
-    return 100;
-  }
-
-  const generalTerms = [
-    "bachelor",
-    "bachelor's",
-    "master",
-    "master's",
-    "degree",
-    "university",
-    "college",
-    "computer science",
-    "information technology",
-    "software engineering",
-    "data science",
-    "mathematics",
-    "statistics",
-    "design",
-  ];
-
-  const generalMatch =
-    generalTerms.some(
-      (term) =>
-        containsExactPhrase(
-          positiveText,
-          term
-        )
-    );
-
-  return generalMatch
-    ? 70
-    : 40;
-};
+/* =========================================================
+   RESULT TEXT
+========================================================= */
 
 const getMatchLevel = (
-  score: number
+  score:
+    number
 ): JobMatchLevel => {
   if (
-    score >= 80
+    score >=
+    80
   ) {
     return "strong";
   }
 
   if (
-    score >= 60
+    score >=
+    65
   ) {
     return "good";
   }
 
   if (
-    score >= 40
+    score >=
+    45
   ) {
     return "partial";
   }
@@ -781,40 +1268,49 @@ const getMatchLabel = (
     level
   ) {
     case "strong":
-      return "Strong match for your CV";
+      return "Strong match for your skill profile";
 
     case "good":
-      return "Good match for your CV";
+      return "Good match for your skill profile";
 
     case "partial":
-      return "Your CV partially matches this job";
+      return "Partial match for your skill profile";
 
     case "low":
-      return "Low match for your CV";
+      return "Low match for your skill profile";
   }
 };
 
 const buildStrengths = (
-  skillScore: number,
-  keywordScore: number,
-  experienceScore: number,
-  educationScore: number,
-  matchedSkills: string[]
+  profile:
+    ICareerSkillProfile,
+  roleScore:
+    number,
+  skillScore:
+    number,
+  evidenceScore:
+    number,
+  matchedSkills:
+    string[]
 ): string[] => {
   const result:
     string[] = [];
 
   if (
-    skillScore >= 80
+    roleScore >=
+    80
   ) {
     result.push(
-      "Your technical skills strongly align with this position."
+      "The vacancy title is strongly aligned with your target role."
     );
-  } else if (
-    skillScore >= 60
+  }
+
+  if (
+    skillScore >=
+    75
   ) {
     result.push(
-      "Your CV contains several of the key skills required for this position."
+      "Your skill profile strongly aligns with the technical requirements."
     );
   }
 
@@ -823,41 +1319,27 @@ const buildStrengths = (
     3
   ) {
     result.push(
-      `You already match ${matchedSkills.length} important skills required by this job.`
+      `Your profile matches ${matchedSkills.length} requested skills.`
     );
   }
 
   if (
-    experienceScore >=
-    80
+    profile.verifiedSkills.length >
+    0 &&
+    evidenceScore >=
+    70
   ) {
     result.push(
-      "Your current experience profile aligns well with this position."
+      "InterviewIQ has verified technical evidence supporting your profile."
     );
   }
 
   if (
-    keywordScore >= 70
+    result.length ===
+    0
   ) {
     result.push(
-      "Your CV contains strong keyword alignment with the job description."
-    );
-  }
-
-  if (
-    educationScore >=
-    80
-  ) {
-    result.push(
-      "Your educational background appears relevant to this position."
-    );
-  }
-
-  if (
-    result.length === 0
-  ) {
-    result.push(
-      "Your profile contains some transferable qualifications for this position."
+      "Your profile contains some relevant skills for this position."
     );
   }
 
@@ -867,11 +1349,9 @@ const buildStrengths = (
 const buildImprovementAreas = (
   missingSkills:
     string[],
-  missingKeywords:
-    string[],
-  experienceScore:
+  roleScore:
     number,
-  educationScore:
+  experienceScore:
     number
 ): string[] => {
   const result:
@@ -882,20 +1362,23 @@ const buildImprovementAreas = (
     0
   ) {
     result.push(
-      `These required skills were not detected in your CV: ${missingSkills.join(
-        ", "
-      )}.`
+      `Skills to strengthen for this role: ${missingSkills
+        .slice(
+          0,
+          6
+        )
+        .join(
+          ", "
+        )}.`
     );
   }
 
   if (
-    missingKeywords.length >
-    0
+    roleScore <
+    60
   ) {
     result.push(
-      `Your CV has limited keyword alignment with: ${missingKeywords
-        .slice(0, 5)
-        .join(", ")}.`
+      "This vacancy title is not closely aligned with your current target role."
     );
   }
 
@@ -904,86 +1387,110 @@ const buildImprovementAreas = (
     60
   ) {
     result.push(
-      "Your current experience profile may be below the expected experience range for this position."
+      "The vacancy's experience level is outside your preferred range."
     );
   }
 
   if (
-    educationScore <
-    70
+    result.length ===
+    0
   ) {
     result.push(
-      "The educational background detected in your CV does not strongly align with this job's preferred education."
-    );
-  }
-
-  if (
-    result.length === 0
-  ) {
-    result.push(
-      "Your CV already aligns well with the major requirements of this position."
+      "Your current skill profile aligns well with the main requirements."
     );
   }
 
   return result;
 };
 
+/* =========================================================
+   MAIN MATCH
+========================================================= */
+
 export const calculateJobMatch = (
-  resume:
+  input:
+    ICareerSkillProfile |
     IResumeAnalysis,
   job:
-    IJob
+    IJob,
+  options:
+    IJobMatchOptions = {}
 ): IJobMatchResult => {
+  const profile =
+    resolveProfile(
+      input
+    );
+
   const skillResult =
     calculateSkillMatch(
-      resume,
+      profile,
       job
+    );
+
+  const roleRelevance =
+    calculateRoleRelevance(
+      options.targetRole,
+      job
+    );
+
+  const experience =
+    calculateExperienceFit(
+      options.preferredExperienceLevels,
+      job
+    );
+
+  const evidenceConfidence =
+    calculateEvidenceConfidence(
+      profile,
+      skillResult.matched
     );
 
   const keywordResult =
-    calculateKeywordMatch(
-      resume,
+    calculateKeywordOutput(
+      profile,
       job
     );
-
-  const experienceScore =
-    calculateExperienceMatch(
-      resume,
-      job
-    );
-
-  const educationScore =
-    calculateEducationMatch(
-      resume,
-      job
-    );
-
-  const weights = {
-    skills: 0.55,
-    keywords: 0.15,
-    experience: 0.2,
-    education: 0.1,
-  };
 
   const rawScore =
+    roleRelevance *
+      SCORE_WEIGHTS.roleRelevance +
     skillResult.score *
-      weights.skills +
-    keywordResult.score *
-      weights.keywords +
-    experienceScore *
-      weights.experience +
-    educationScore *
-      weights.education;
+      SCORE_WEIGHTS.skills +
+    experience *
+      SCORE_WEIGHTS.experience +
+    evidenceConfidence *
+      SCORE_WEIGHTS.evidenceConfidence;
+
+  /*
+   * Role-gating cap:
+   *
+   * Skills can improve a relevant vacancy, but they cannot turn an
+   * unrelated role into a "good" match.
+   */
+  const roleCappedScore =
+    roleRelevance <
+      30
+      ? Math.min(
+          rawScore,
+          34
+        )
+      : roleRelevance <
+          50
+        ? Math.min(
+            rawScore,
+            44
+          )
+        : roleRelevance <
+            65
+          ? Math.min(
+              rawScore,
+              59
+            )
+          : rawScore;
 
   const matchScore =
-    Math.max(
-      0,
-      Math.min(
-        100,
-        Math.round(
-          rawScore
-        )
-      )
+    clampScore(
+      roleCappedScore
     );
 
   const matchLevel =
@@ -1015,55 +1522,67 @@ export const calculateJobMatch = (
 
     strengths:
       buildStrengths(
+        profile,
+        roleRelevance,
         skillResult.score,
-        keywordResult.score,
-        experienceScore,
-        educationScore,
+        evidenceConfidence,
         skillResult.matched
       ),
 
     improvementAreas:
       buildImprovementAreas(
         skillResult.missing,
-        keywordResult.missing,
-        experienceScore,
-        educationScore
+        roleRelevance,
+        experience
       ),
 
     breakdown: {
       skills:
         skillResult.score,
 
-      keywords:
-        keywordResult.score,
+      roleRelevance,
 
-      experience:
-        experienceScore,
+      experience,
+
+      evidenceConfidence,
+
+      keywords:
+        keywordResult.matched.length,
 
       education:
-        educationScore,
+        0,
     },
   };
 };
 
-export const rankJobsForResume = (
-  resume:
-    IResumeAnalysis,
+/* =========================================================
+   RANKING
+========================================================= */
+
+export const rankJobsForProfile = (
+  profile:
+    ICareerSkillProfile,
   jobs:
-    IJob[]
+    IJob[],
+  options:
+    IJobMatchOptions = {}
 ): Array<{
   job: IJob;
+
   match: IJobMatchResult;
 }> => {
   return jobs
     .map(
-      (job) => ({
+      (
+        job
+      ) => ({
         job,
 
         match:
           calculateJobMatch(
-            resume,
-            job
+            profile,
+            job,
+            options
           ),
       })
     )
@@ -1077,4 +1596,32 @@ export const rankJobsForResume = (
         a.match
           .matchScore
     );
+};
+
+/*
+ * Kept so existing controllers compile.
+ * It no longer uses ATS/overall/content/structure scores.
+ */
+export const rankJobsForResume = (
+  resume:
+    IResumeAnalysis,
+  jobs:
+    IJob[]
+): Array<{
+  job: IJob;
+
+  match: IJobMatchResult;
+}> => {
+  return rankJobsForProfile(
+    buildProfileFromResume(
+      resume
+    ),
+    jobs
+  );
+};
+
+export default {
+  calculateJobMatch,
+  rankJobsForProfile,
+  rankJobsForResume,
 };

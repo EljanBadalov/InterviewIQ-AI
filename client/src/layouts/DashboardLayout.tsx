@@ -321,7 +321,7 @@ const DashboardLayout: React.FC = () => {
             </NavLink>
 
             <NavLink
-              to="/dashboard/history"
+              to="/dashboard/performance-progress"
               onClick={
                 closeMobileMenu
               }
@@ -338,7 +338,7 @@ const DashboardLayout: React.FC = () => {
               <FiPieChart />
 
               <span>
-                History & Progress
+                Performance Progress
               </span>
             </NavLink>
 

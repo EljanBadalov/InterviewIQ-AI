@@ -1,6 +1,8 @@
 import {
   Schema,
   model,
+  models,
+  type Model,
   type Types,
 } from "mongoose";
 
@@ -20,6 +22,14 @@ export type JobExperienceLevel =
   | "junior"
   | "mid"
   | "senior";
+
+export type JobSalaryPeriod =
+  | "hour"
+  | "day"
+  | "week"
+  | "month"
+  | "year"
+  | "unknown";
 
 export interface IJob {
   _id?: Types.ObjectId;
@@ -54,9 +64,47 @@ export interface IJob {
 
   education: string[];
 
+  /*
+   * Legacy / display fallback salary.
+   *
+   * Kept for backwards compatibility with existing
+   * frontend and backend code.
+   *
+   * For new external jobs prefer the explicit
+   * salaryMin / salaryMax / salaryPeriod fields.
+   */
   salary: number;
 
+  salaryMin?: number;
+
+  salaryMax?: number;
+
+  salaryCurrency?: string;
+
+  salaryPeriod?: JobSalaryPeriod;
+
+  salaryIsPredicted?: boolean;
+
   source: string;
+
+  externalId?: string;
+
+  /*
+   * Source listing URL.
+   *
+   * Example:
+   * Adzuna listing URL.
+   */
+  externalUrl?: string;
+
+  /*
+   * Preferred direct employer/application URL when
+   * the external source legitimately exposes one.
+   *
+   * If this is unavailable, frontend can fall back
+   * to externalUrl.
+   */
+  applyUrl?: string;
 
   isActive: boolean;
 
@@ -178,6 +226,44 @@ const jobSchema =
         type: Number,
         required: true,
         min: 0,
+        default: 0,
+      },
+
+      salaryMin: {
+        type: Number,
+        min: 0,
+        default: undefined,
+      },
+
+      salaryMax: {
+        type: Number,
+        min: 0,
+        default: undefined,
+      },
+
+      salaryCurrency: {
+        type: String,
+        trim: true,
+        uppercase: true,
+        default: undefined,
+      },
+
+      salaryPeriod: {
+        type: String,
+        enum: [
+          "hour",
+          "day",
+          "week",
+          "month",
+          "year",
+          "unknown",
+        ],
+        default: undefined,
+      },
+
+      salaryIsPredicted: {
+        type: Boolean,
+        default: undefined,
       },
 
       source: {
@@ -185,6 +271,25 @@ const jobSchema =
         required: true,
         default: "InterviewIQ",
         trim: true,
+        index: true,
+      },
+
+      externalId: {
+        type: String,
+        trim: true,
+        default: undefined,
+      },
+
+      externalUrl: {
+        type: String,
+        trim: true,
+        default: undefined,
+      },
+
+      applyUrl: {
+        type: String,
+        trim: true,
+        default: undefined,
       },
 
       isActive: {
@@ -231,8 +336,39 @@ jobSchema.index({
   experienceLevel: 1,
 });
 
-export const Job =
-  model<IJob>(
-    "Job",
-    jobSchema
-  );
+/*
+ * External sources are refreshed repeatedly.
+ * This index prevents the same source vacancy from
+ * being inserted more than once.
+ *
+ * sparse: true keeps old InterviewIQ jobs without an
+ * externalId valid.
+ */
+jobSchema.index(
+  {
+    source: 1,
+    externalId: 1,
+  },
+  {
+    unique: true,
+    sparse: true,
+  }
+);
+
+const Job:
+  Model<IJob> =
+    (
+      models.Job as
+        Model<IJob> |
+        undefined
+    ) ||
+    model<IJob>(
+      "Job",
+      jobSchema
+    );
+
+export {
+  Job,
+};
+
+export default Job;

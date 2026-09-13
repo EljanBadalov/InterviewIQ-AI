@@ -89,6 +89,48 @@ export interface ICareerAutomationTask {
   >;
 }
 
+export type CareerRoadmapRecommendationPriority =
+  | "high"
+  | "medium"
+  | "low";
+
+export type CareerRoadmapRecommendationSource =
+  | "career_profile"
+  | "resume_analysis"
+  | "job_market"
+  | "interview"
+  | "combined"
+  | "career_knowledge"
+  | "qwen"
+  | "fallback"
+  | "system"
+  | string;
+
+export interface ICareerRoadmapRecommendation {
+  title: string;
+
+  whyItMatters?: string;
+
+  whatToLearn: string[];
+
+  action?: string;
+
+  proofOfCompletion?: string;
+
+  priority?:
+    CareerRoadmapRecommendationPriority;
+
+  source?:
+    CareerRoadmapRecommendationSource;
+
+  evidence?: string[];
+
+  metadata?: Record<
+    string,
+    unknown
+  >;
+}
+
 export interface ICareerRoadmapMilestone {
   id: string;
 
@@ -98,16 +140,38 @@ export interface ICareerRoadmapMilestone {
 
   description: string;
 
+  reason?: string;
+
+  category?: string;
+
   status:
     | "not_started"
+    | "pending"
     | "in_progress"
-    | "completed";
+    | "completed"
+    | "skipped";
 
   targetDate?: string;
 
   completedAt?: string;
 
+  readinessScore?: number;
+
   relatedSkills: string[];
+
+  recommendations?:
+    ICareerRoadmapRecommendation[];
+
+  source?:
+    CareerRoadmapRecommendationSource;
+
+  generatedBy?:
+    | "qwen"
+    | "fallback"
+    | "system"
+    | string;
+
+  generatedAt?: string;
 
   metadata?: Record<
     string,
@@ -335,6 +399,24 @@ export interface ICareerAutomationSummary {
   nextDailyPlanAt?: string;
 
   nextJobSearchAt?: string;
+}
+
+export interface ICareerFieldOption {
+  slug: string;
+
+  name: string;
+
+  category: string;
+
+  description: string;
+}
+
+export interface ICareerFieldsResponse {
+  fields:
+    ICareerFieldOption[];
+
+  total:
+    number;
 }
 
 export interface ICreateCareerAutomationPayload {
@@ -636,6 +718,244 @@ export const updateCareerAutomationStatus =
     return data.data;
   };
 
+/* =========================================================
+   CAREER FIELDS
+========================================================= */
+
+export const getCareerFields =
+  async (): Promise<ICareerFieldsResponse> => {
+    const {
+      data,
+    } =
+      await apiClient.get<
+        IApiResponse<ICareerFieldsResponse>
+      >(
+        "/career-automation/fields"
+      );
+
+    return data.data;
+  };
+
+/* =========================================================
+   JOB SEARCH PREFERENCES
+========================================================= */
+
+export interface IUpdateCareerJobPreferencesPayload {
+  targetRole?: string;
+
+  enabled?: boolean;
+
+  locations?: string[];
+
+  workModes?:
+    ICareerJobPreferences["workModes"];
+
+  employmentTypes?:
+    ICareerJobPreferences["employmentTypes"];
+
+  experienceLevels?:
+    ICareerJobPreferences["experienceLevels"];
+
+  minimumMatchScore?: number;
+
+  dailyApplicationTarget?: number;
+
+  notifyOnNewMatches?: boolean;
+
+  notificationMatchThreshold?: number;
+}
+
+export const updateCareerJobPreferences =
+  async (
+    payload:
+      IUpdateCareerJobPreferencesPayload
+  ): Promise<{
+    automation:
+      ICareerAutomation;
+
+    summary:
+      ICareerAutomationSummary | null;
+  }> => {
+    const {
+      data,
+    } =
+      await apiClient.patch<
+        IApiResponse<{
+          automation:
+            ICareerAutomation;
+
+          summary:
+            ICareerAutomationSummary | null;
+        }>
+      >(
+        "/career-automation/job-preferences",
+        payload
+      );
+
+    return data.data;
+  };
+
+/* =========================================================
+   EXTERNAL JOBS
+========================================================= */
+
+export interface IExternalCareerJob {
+  _id: string;
+
+  title: string;
+
+  company: string;
+
+  location: string;
+
+  remoteType:
+    | "onsite"
+    | "hybrid"
+    | "remote";
+
+  employmentType:
+    | "full-time"
+    | "part-time"
+    | "contract"
+    | "internship";
+
+  experienceLevel:
+    | "entry"
+    | "junior"
+    | "mid"
+    | "senior";
+
+  description: string;
+
+  skills: string[];
+
+  salary: number;
+
+  source: string;
+
+  externalId?: string;
+
+  externalUrl?: string;
+
+  postedAt: string;
+}
+
+export interface IExternalCareerJobMatch {
+  job: {
+    _id: string;
+
+    title: string;
+
+    company: string;
+
+    location: string;
+
+    remoteType:
+      | "onsite"
+      | "hybrid"
+      | "remote";
+
+    employmentType:
+      | "full-time"
+      | "part-time"
+      | "contract"
+      | "internship";
+
+    experienceLevel:
+      | "entry"
+      | "junior"
+      | "mid"
+      | "senior";
+
+    description: string;
+
+    skills: string[];
+
+    keywords: string[];
+
+    source: string;
+
+    externalUrl?: string;
+
+    postedAt: string;
+  };
+
+  matchScore: number;
+
+  matchedSkills: string[];
+
+  missingSkills: string[];
+}
+
+export interface IExternalCareerJobMatchesResponse {
+  jobs:
+    IExternalCareerJobMatch[];
+
+  total:
+    number;
+
+  lastJobSearchAt?:
+    string;
+
+  nextJobSearchAt?:
+    string;
+}
+
+export interface IExternalJobRefreshResponse {
+  fetched:
+    number;
+
+  stored:
+    number;
+
+  matched:
+    number;
+
+  jobs:
+    Array<{
+      job:
+        IExternalCareerJob;
+
+      matchScore:
+        number;
+
+      matchedSkills:
+        string[];
+
+      missingSkills:
+        string[];
+    }>;
+}
+
+export const refreshExternalCareerJobs =
+  async (): Promise<IExternalJobRefreshResponse> => {
+    const {
+      data,
+    } =
+      await apiClient.post<
+        IApiResponse<IExternalJobRefreshResponse>
+      >(
+        "/jobs/external/refresh",
+        {}
+      );
+
+    return data.data;
+  };
+
+export const getExternalCareerJobMatches =
+  async (): Promise<IExternalCareerJobMatchesResponse> => {
+    const {
+      data,
+    } =
+      await apiClient.get<
+        IApiResponse<IExternalCareerJobMatchesResponse>
+      >(
+        "/jobs/external/matches"
+      );
+
+    return data.data;
+  };
+
 export default {
   createCareerAutomation,
   getCareerAutomation,
@@ -645,4 +965,10 @@ export default {
   replanCareerAutomation,
   refreshCareerAutomationProgress,
   updateCareerAutomationStatus,
+
+  getCareerFields,
+  updateCareerJobPreferences,
+
+  refreshExternalCareerJobs,
+  getExternalCareerJobMatches,
 };

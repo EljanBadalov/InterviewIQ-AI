@@ -1,4 +1,5 @@
 import {
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -8,32 +9,28 @@ import {
   FiArrowRight,
   FiBriefcase,
   FiCheck,
-  FiCode,
-  FiCpu,
   FiInfo,
-  FiLayers,
-  FiMessageSquare,
   FiPlay,
-  FiServer,
   FiShield,
   FiTarget,
-  FiUsers,
+  FiChevronDown,
+  FiClock,
+  FiList,
+  FiActivity,
+  FiX,
+  FiRefreshCw,
 } from "react-icons/fi";
 
 import axios from "axios";
 
 import apiClient from "../../../api/apiClient";
+
+import {
+  getCareerFields,
+  type ICareerFieldOption,
+} from "../../../api/careerAutomationApi";
+
 import "./mockInterviewPage.scss";
-
-type InterviewType =
-  | "technical"
-  | "behavioral";
-
-type Difficulty =
-  | "beginner"
-  | "intermediate"
-  | "advanced"
-  | "senior";
 
 interface StartInterviewResponse {
   success: boolean;
@@ -45,6 +42,26 @@ interface StartInterviewResponse {
     totalQuestions: number;
     currentQuestionIndex: number;
 
+    roleSlug?: string;
+
+    category?: string;
+
+    difficultyMode?: "adaptive";
+
+    detectedDifficulty?: string;
+
+    stretchDifficulty?: string;
+
+    difficultyScore?: number;
+
+    difficultyReason?: string;
+
+    format?: {
+      technicalQuestions: number;
+      behavioralQuestions: number;
+      totalQuestions: number;
+    };
+
     question: {
       questionId: string;
       questionText: string;
@@ -52,116 +69,116 @@ interface StartInterviewResponse {
   };
 }
 
-interface CategoryOption {
-  id: string;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
+interface InterviewHistoryItem {
+  _id: string;
+
+  category: string;
+
+  difficulty: string;
+
+  interviewType: string;
+
+  status: string;
+
+  overallScore?: number;
+
+  startedAt?: string;
+
+  completedAt?: string;
+
+  createdAt?: string;
 }
 
-interface DifficultyOption {
-  value: Difficulty;
-  title: string;
-  description: string;
-  recommended?: boolean;
+interface InterviewHistoryResponse {
+  success: boolean;
+
+  data: InterviewHistoryItem[];
 }
 
 const START_INTERVIEW_ENDPOINT =
   "/interviews";
 
-const categories: CategoryOption[] = [
-  {
-    id: "frontend",
-    title: "Frontend Developer",
-    description:
-      "HTML, CSS, JavaScript, React, accessibility, performance and browser concepts.",
-    icon: <FiCode />,
-  },
-  {
-    id: "backend",
-    title: "Backend Developer",
-    description:
-      "APIs, databases, authentication, server-side architecture and backend systems.",
-    icon: <FiServer />,
-  },
-  {
-    id: "software-engineering",
-    title: "Software Engineer",
-    description:
-      "Algorithms, software design, testing, architecture and engineering principles.",
-    icon: <FiBriefcase />,
-  },
-  {
-    id: "devops",
-    title: "DevOps Engineer",
-    description:
-      "CI/CD, Docker, Kubernetes, cloud infrastructure, monitoring and deployment.",
-    icon: <FiCpu />,
-  },
-  {
-    id: "ui-ux-design",
-    title: "UI/UX Designer",
-    description:
-      "User research, interaction design, accessibility, usability and design systems.",
-    icon: <FiUsers />,
-  },
-  {
-    id: "machine-learning",
-    title: "Machine Learning Engineer",
-    description:
-      "Machine learning, model training, evaluation, MLOps and production ML systems.",
-    icon: <FiLayers />,
-  },
-];
+const INTERVIEW_HISTORY_ENDPOINT =
+  "/interviews";
 
-const difficulties: DifficultyOption[] = [
-  {
-    value: "beginner",
-    title: "Beginner",
-    description:
-      "Fundamentals and junior-level concepts.",
-  },
-  {
-    value: "intermediate",
-    title: "Intermediate",
-    description:
-      "Practical questions for junior and mid-level roles.",
-    recommended: true,
-  },
-  {
-    value: "advanced",
-    title: "Advanced",
-    description:
-      "Deeper technical concepts and challenging scenarios.",
-  },
-  {
-    value: "senior",
-    title: "Senior",
-    description:
-      "Architecture, trade-offs and leadership-level reasoning.",
-  },
-];
+const normalizeDomainLabel =
+  (
+    value?: string
+  ): string => {
+    const normalized =
+      (
+        value ||
+        "other"
+      )
+        .replace(
+          /[_-]+/g,
+          " "
+        )
+        .trim();
+
+    return normalized
+      .split(" ")
+      .filter(Boolean)
+      .map(
+        (
+          word
+        ) =>
+          word
+            .charAt(0)
+            .toUpperCase() +
+          word.slice(1)
+      )
+      .join(" ");
+  };
 
 const mockInterviewPage = () => {
   const navigate = useNavigate();
 
-  const [category, setCategory] =
-    useState("frontend");
-
   const [
-    interviewType,
-    setInterviewType,
-  ] = useState<InterviewType>(
-    "technical"
-  );
-
-  const [
-    difficulty,
-    setDifficulty,
+    careerRoles,
+    setCareerRoles,
   ] =
-    useState<Difficulty>(
-      "intermediate"
-    );
+    useState<
+      ICareerFieldOption[]
+    >([]);
+
+  const [
+    selectedRoleSlug,
+    setSelectedRoleSlug,
+  ] =
+    useState("");
+
+  const [
+    rolesLoading,
+    setRolesLoading,
+  ] =
+    useState(true);
+
+  const [
+    rolesError,
+    setRolesError,
+  ] =
+    useState("");
+
+  const [
+    interviewHistory,
+    setInterviewHistory,
+  ] =
+    useState<
+      InterviewHistoryItem[]
+    >([]);
+
+  const [
+    historyLoading,
+    setHistoryLoading,
+  ] =
+    useState(true);
+
+  const [
+    historyError,
+    setHistoryError,
+  ] =
+    useState("");
 
   const [loading, setLoading] =
     useState(false);
@@ -169,30 +186,549 @@ const mockInterviewPage = () => {
   const [error, setError] =
     useState("");
 
-  const selectedCategory =
+  const [
+    resumeInterview,
+    setResumeInterview,
+  ] =
+    useState<
+      InterviewHistoryItem |
+      null
+    >(null);
+
+  const [
+    restartLoading,
+    setRestartLoading,
+  ] =
+    useState(false);
+
+  const [
+    restartError,
+    setRestartError,
+  ] =
+    useState("");
+
+  const selectedRole =
     useMemo(
       () =>
-        categories.find(
-          (item) =>
-            item.id === category
-        ) ?? categories[0],
-      [category]
+        careerRoles.find(
+          (
+            item
+          ) =>
+            item.slug ===
+            selectedRoleSlug
+        ) ||
+        careerRoles[0] ||
+        null,
+      [
+        careerRoles,
+        selectedRoleSlug,
+      ]
     );
 
-  const selectedDifficulty =
+  const groupedCareerRoles =
     useMemo(
-      () =>
-        difficulties.find(
-          (item) =>
-            item.value ===
-            difficulty
-        ) ?? difficulties[1],
-      [difficulty]
+      () => {
+        const groups =
+          new Map<
+            string,
+            ICareerFieldOption[]
+          >();
+
+        for (
+          const role
+          of careerRoles
+        ) {
+          const domain =
+            normalizeDomainLabel(
+              role.category
+            );
+
+          const existing =
+            groups.get(
+              domain
+            ) ||
+            [];
+
+          existing.push(
+            role
+          );
+
+          groups.set(
+            domain,
+            existing
+          );
+        }
+
+        return Array.from(
+          groups.entries()
+        )
+          .map(
+            (
+              [
+                domain,
+                roles,
+              ]
+            ) => ({
+              domain,
+
+              roles:
+                [...roles].sort(
+                  (
+                    a,
+                    b
+                  ) =>
+                    a.name.localeCompare(
+                      b.name
+                    )
+                ),
+            })
+          )
+          .sort(
+            (
+              a,
+              b
+            ) =>
+              a.domain.localeCompare(
+                b.domain
+              )
+          );
+      },
+      [
+        careerRoles,
+      ]
     );
+
+  useEffect(
+    () => {
+      let cancelled =
+        false;
+
+      const loadCareerRoles =
+        async () => {
+          try {
+            setRolesLoading(
+              true
+            );
+
+            setRolesError(
+              ""
+            );
+
+            /*
+             * Reuse the exact same DB-backed Career Fields source
+             * already used by Career Automation:
+             *
+             * GET /api/v1/career-automation/fields
+             *
+             * getCareerFields() returns:
+             * {
+             *   fields: [{ slug, name, category, description }],
+             *   total
+             * }
+             */
+            const result =
+              await getCareerFields();
+
+            const cleanRoles =
+              (
+                result.fields ||
+                []
+              )
+                .filter(
+                  (
+                    item
+                  ) =>
+                    Boolean(
+                      item?.slug &&
+                      item?.name
+                    )
+                )
+                .sort(
+                  (
+                    a,
+                    b
+                  ) => {
+                    const categoryCompare =
+                      (
+                        a.category ||
+                        ""
+                      ).localeCompare(
+                        b.category ||
+                        ""
+                      );
+
+                    if (
+                      categoryCompare !==
+                      0
+                    ) {
+                      return categoryCompare;
+                    }
+
+                    return a.name.localeCompare(
+                      b.name
+                    );
+                  }
+                );
+
+            if (
+              cancelled
+            ) {
+              return;
+            }
+
+            setCareerRoles(
+              cleanRoles
+            );
+
+            setSelectedRoleSlug(
+              (
+                current
+              ) => {
+                if (
+                  current &&
+                  cleanRoles.some(
+                    (
+                      role
+                    ) =>
+                      role.slug ===
+                      current
+                  )
+                ) {
+                  return current;
+                }
+
+                return (
+                  cleanRoles[0]
+                    ?.slug ||
+                  ""
+                );
+              }
+            );
+
+            if (
+              cleanRoles.length ===
+              0
+            ) {
+              setRolesError(
+                "No active career fields are available yet."
+              );
+            }
+          } catch (
+            err
+          ) {
+            if (
+              cancelled
+            ) {
+              return;
+            }
+
+            if (
+              axios.isAxiosError(
+                err
+              )
+            ) {
+              setRolesError(
+                err.response?.data
+                  ?.message ||
+                  "Unable to load career fields from the server."
+              );
+            } else {
+              setRolesError(
+                "Unable to load career fields from the server."
+              );
+            }
+
+            setCareerRoles(
+              []
+            );
+
+            setSelectedRoleSlug(
+              ""
+            );
+          } finally {
+            if (
+              !cancelled
+            ) {
+              setRolesLoading(
+                false
+              );
+            }
+          }
+        };
+
+      void loadCareerRoles();
+
+      return () => {
+        cancelled =
+          true;
+      };
+    },
+    []
+  );
+
+  useEffect(
+    () => {
+      let cancelled =
+        false;
+
+      const loadInterviewHistory =
+        async () => {
+          try {
+            setHistoryLoading(
+              true
+            );
+
+            setHistoryError(
+              ""
+            );
+
+            const response =
+              await apiClient.get<InterviewHistoryResponse>(
+                INTERVIEW_HISTORY_ENDPOINT
+              );
+
+            if (
+              cancelled
+            ) {
+              return;
+            }
+
+            const items =
+              Array.isArray(
+                response.data.data
+              )
+                ? response.data.data
+                : [];
+
+            setInterviewHistory(
+              items
+            );
+          } catch (
+            err
+          ) {
+            if (
+              cancelled
+            ) {
+              return;
+            }
+
+            if (
+              axios.isAxiosError(
+                err
+              )
+            ) {
+              setHistoryError(
+                err.response?.data
+                  ?.message ||
+                  "Unable to load interview history."
+              );
+            } else {
+              setHistoryError(
+                "Unable to load interview history."
+              );
+            }
+
+            setInterviewHistory(
+              []
+            );
+          } finally {
+            if (
+              !cancelled
+            ) {
+              setHistoryLoading(
+                false
+              );
+            }
+          }
+        };
+
+      void loadInterviewHistory();
+
+      return () => {
+        cancelled =
+          true;
+      };
+    },
+    []
+  );
+
+  const closeResumeModal =
+    (): void => {
+      if (
+        restartLoading
+      ) {
+        return;
+      }
+
+      setResumeInterview(
+        null
+      );
+
+      setRestartError(
+        ""
+      );
+    };
+
+  const handleContinueInterview =
+    (): void => {
+      if (
+        !resumeInterview
+      ) {
+        return;
+      }
+
+      const interviewId =
+        resumeInterview._id;
+
+      setResumeInterview(
+        null
+      );
+
+      setRestartError(
+        ""
+      );
+
+      navigate(
+        `/dashboard/mock-interview/${interviewId}`
+      );
+    };
+
+  const handleRestartInterview =
+    async (): Promise<void> => {
+      if (
+        !resumeInterview ||
+        restartLoading
+      ) {
+        return;
+      }
+
+      const oldInterview =
+        resumeInterview;
+
+      try {
+        setRestartLoading(
+          true
+        );
+
+        setRestartError(
+          ""
+        );
+
+        /*
+         * Delete the unfinished attempt first, then create
+         * a fresh adaptive interview for the same career field.
+         */
+        await apiClient.delete(
+          `/interviews/${oldInterview._id}`
+        );
+
+        const response =
+          await apiClient.post<StartInterviewResponse>(
+            START_INTERVIEW_ENDPOINT,
+            {
+              roleSlug:
+                oldInterview.category,
+            }
+          );
+
+        const newInterviewId =
+          response.data.data.interviewId;
+
+        if (
+          !newInterviewId
+        ) {
+          throw new Error(
+            "Interview ID was not returned by the server."
+          );
+        }
+
+        setResumeInterview(
+          null
+        );
+
+        navigate(
+          `/dashboard/mock-interview/${newInterviewId}`,
+          {
+            state: {
+              interview:
+                response.data.data,
+
+              careerField:
+                oldInterview.category,
+
+              roleSlug:
+                oldInterview.category,
+
+              difficulty:
+                response.data.data.detectedDifficulty ||
+                "Adaptive",
+
+              difficultyMode:
+                response.data.data.difficultyMode ||
+                "adaptive",
+
+              interviewFormat:
+                response.data.data.format ||
+                {
+                  technicalQuestions:
+                    3,
+
+                  behavioralQuestions:
+                    3,
+
+                  totalQuestions:
+                    6,
+                },
+            },
+          }
+        );
+      } catch (
+        err
+      ) {
+        if (
+          axios.isAxiosError(
+            err
+          )
+        ) {
+          setRestartError(
+            err.response?.data
+              ?.message ||
+              "Unable to restart this interview."
+          );
+        } else if (
+          err instanceof Error
+        ) {
+          setRestartError(
+            err.message
+          );
+        } else {
+          setRestartError(
+            "Unable to restart this interview."
+          );
+        }
+      } finally {
+        setRestartLoading(
+          false
+        );
+      }
+    };
 
   const startInterview =
     async () => {
-      if (loading) {
+      if (
+        loading ||
+        rolesLoading
+      ) {
+        return;
+      }
+
+      if (
+        !selectedRole
+      ) {
+        setError(
+          "Please choose a career field before starting the interview."
+        );
+
         return;
       }
 
@@ -204,9 +740,8 @@ const mockInterviewPage = () => {
           await apiClient.post<StartInterviewResponse>(
             START_INTERVIEW_ENDPOINT,
             {
-              category,
-              difficulty,
-              interviewType,
+              roleSlug:
+                selectedRole.slug,
             }
           );
 
@@ -225,11 +760,31 @@ const mockInterviewPage = () => {
             state: {
               interview:
                 response.data.data,
-              category:
-                selectedCategory.title,
+
+              careerField:
+                selectedRole.name,
+
+              roleSlug:
+                selectedRole.slug,
+
+              careerCategory:
+                selectedRole.category,
+
               difficulty:
-                selectedDifficulty.title,
-              interviewType,
+                response.data.data.detectedDifficulty ||
+                "Adaptive",
+
+              difficultyMode:
+                response.data.data.difficultyMode ||
+                "adaptive",
+
+              interviewFormat:
+                response.data.data.format ||
+                {
+                  technicalQuestions: 3,
+                  behavioralQuestions: 3,
+                  totalQuestions: 6,
+                },
             },
           }
         );
@@ -338,7 +893,7 @@ const mockInterviewPage = () => {
 
               <div>
                 <h2>
-                  Choose a category
+                  Choose a career field
                 </h2>
 
                 <p>
@@ -348,218 +903,369 @@ const mockInterviewPage = () => {
               </div>
             </div>
 
-            <div className="category-grid">
-              {categories.map(
-                (item) => {
-                  const isActive =
-                    category === item.id;
+            <div className="career-role-picker">
+              <div
+                className={`career-role-select-shell ${
+                  rolesError
+                    ? "has-error"
+                    : ""
+                }`}
+              >
+                <FiBriefcase />
 
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      className={`category-card ${
-                        isActive
-                          ? "active"
-                          : ""
-                      }`}
-                      onClick={() =>
-                        setCategory(
-                          item.id
-                        )
-                      }
-                    >
-                      <div className="category-icon">
-                        {item.icon}
-                      </div>
-
-                      <div className="category-copy">
-                        <strong>
-                          {item.title}
-                        </strong>
-
-                        <span>
-                          {
-                            item.description
+                <select
+                  value={
+                    selectedRoleSlug
+                  }
+                  onChange={
+                    (
+                      event
+                    ) =>
+                      setSelectedRoleSlug(
+                        event.target.value
+                      )
+                  }
+                  disabled={
+                    rolesLoading ||
+                    careerRoles.length ===
+                      0
+                  }
+                >
+                  {rolesLoading ? (
+                    <option value="">
+                      Loading career fields...
+                    </option>
+                  ) : careerRoles.length ===
+                    0 ? (
+                    <option value="">
+                      No career fields available
+                    </option>
+                  ) : (
+                    groupedCareerRoles.map(
+                      (
+                        group
+                      ) => (
+                        <optgroup
+                          key={
+                            group.domain
                           }
+                          label={
+                            group.domain
+                          }
+                        >
+                          {group.roles.map(
+                            (
+                              role
+                            ) => (
+                              <option
+                                key={
+                                  role.slug
+                                }
+                                value={
+                                  role.slug
+                                }
+                              >
+                                {
+                                  role.name
+                                }
+                              </option>
+                            )
+                          )}
+                        </optgroup>
+                      )
+                    )
+                  )}
+                </select>
+
+                <FiChevronDown className="career-role-chevron" />
+              </div>
+
+              {rolesError && (
+                <div className="career-role-load-error">
+                  <FiInfo />
+
+                  <span>
+                    {rolesError}
+                  </span>
+                </div>
+              )}
+
+              {selectedRole && (
+                <div className="career-role-selected-card">
+                  <div className="career-role-selected-icon">
+                    <FiBriefcase />
+                  </div>
+
+                  <div className="career-role-selected-copy">
+                    <div className="career-role-selected-top">
+                      <div>
+                        <span>
+                          SELECTED CAREER FIELD
                         </span>
+
+                        <strong>
+                          {selectedRole.name}
+                        </strong>
                       </div>
 
-                      <div className="category-check">
-                        {isActive && (
-                          <FiCheck />
+                      <span className="career-role-domain-badge">
+                        {normalizeDomainLabel(
+                          selectedRole.category
                         )}
-                      </div>
-                    </button>
-                  );
-                }
+                      </span>
+                    </div>
+
+                    {selectedRole.description && (
+                      <p>
+                        {
+                          selectedRole.description
+                        }
+                      </p>
+                    )}
+
+                  </div>
+                </div>
               )}
             </div>
           </div>
 
           <div className="setup-divider" />
 
-          {/* INTERVIEW TYPE */}
+          {/* INTERVIEW HISTORY */}
 
-          <div className="setup-section">
-            <div className="section-heading">
-              <div className="section-number">
-                02
-              </div>
+          <div className="setup-section interview-history-classic">
+            <div className="history-classic-header">
+              <span>
+                HISTORY
+              </span>
 
-              <div>
-                <h2>
-                  Interview type
-                </h2>
+              <h2>
+                Interview History
+              </h2>
 
-                <p>
-                  Choose the style of
-                  interview you want
-                  to practice.
-                </p>
-              </div>
+              <p>
+                All of your mock interview sessions, including unfinished interviews.
+              </p>
             </div>
 
-            <div className="type-grid">
-              <button
-                type="button"
-                className={`type-card ${
-                  interviewType ===
-                  "technical"
-                    ? "active"
-                    : ""
-                }`}
-                onClick={() =>
-                  setInterviewType(
-                    "technical"
-                  )
-                }
-              >
-                <div className="type-icon">
-                  <FiCode />
-                </div>
-
-                <div>
-                  <strong>
-                    Technical
-                  </strong>
+            <div className="history-classic-list">
+              {historyLoading ? (
+                <div className="history-classic-state">
+                  <FiClock />
 
                   <span>
-                    Technical
-                    knowledge,
-                    problem solving
-                    and engineering
-                    concepts.
+                    Loading interview history...
                   </span>
                 </div>
-
-                <div className="type-radio">
-                  <span />
-                </div>
-              </button>
-
-              <button
-                type="button"
-                className={`type-card ${
-                  interviewType ===
-                  "behavioral"
-                    ? "active"
-                    : ""
-                }`}
-                onClick={() =>
-                  setInterviewType(
-                    "behavioral"
-                  )
-                }
-              >
-                <div className="type-icon">
-                  <FiMessageSquare />
-                </div>
-
-                <div>
-                  <strong>
-                    Behavioral
-                  </strong>
+              ) : historyError ? (
+                <div className="history-classic-state error">
+                  <FiInfo />
 
                   <span>
-                    Communication,
-                    teamwork,
-                    situations and
-                    experience-based
-                    questions.
+                    {historyError}
                   </span>
                 </div>
+              ) : interviewHistory.length === 0 ? (
+                <div className="history-classic-state">
+                  <FiList />
 
-                <div className="type-radio">
-                  <span />
+                  <span>
+                    No mock interviews yet.
+                  </span>
                 </div>
-              </button>
-            </div>
-          </div>
+              ) : (
+                interviewHistory.map(
+                  (
+                    interview
+                  ) => {
+                    const dateValue =
+                      interview.completedAt ||
+                      interview.startedAt ||
+                      interview.createdAt;
 
-          <div className="setup-divider" />
+                    const interviewDate =
+                      dateValue
+                        ? new Date(
+                            dateValue
+                          )
+                        : null;
 
-          {/* DIFFICULTY */}
+                    const formattedDate =
+                      interviewDate
+                        ? interviewDate.toLocaleDateString(
+                            undefined,
+                            {
+                              month:
+                                "short",
+                              day:
+                                "numeric",
+                              year:
+                                "numeric",
+                            }
+                          )
+                        : "—";
 
-          <div className="setup-section">
-            <div className="section-heading">
-              <div className="section-number">
-                03
-              </div>
+                    const relativeTime =
+                      interviewDate
+                        ? (() => {
+                            const differenceMs =
+                              Date.now() -
+                              interviewDate.getTime();
 
-              <div>
-                <h2>
-                  Difficulty level
-                </h2>
+                            const days =
+                              Math.max(
+                                0,
+                                Math.floor(
+                                  differenceMs /
+                                    86_400_000
+                                )
+                              );
 
-                <p>
-                  Match the interview
-                  difficulty to your
-                  experience.
-                </p>
-              </div>
-            </div>
+                            if (
+                              days ===
+                              0
+                            ) {
+                              return "Today";
+                            }
 
-            <div className="difficulty-grid">
-              {difficulties.map(
-                (item) => (
-                  <button
-                    key={item.value}
-                    type="button"
-                    className={`difficulty-card ${
-                      difficulty ===
-                      item.value
-                        ? "active"
-                        : ""
-                    }`}
-                    onClick={() =>
-                      setDifficulty(
-                        item.value
-                      )
-                    }
-                  >
-                    <div className="difficulty-top">
-                      <strong>
-                        {item.title}
-                      </strong>
+                            if (
+                              days ===
+                              1
+                            ) {
+                              return "1 day ago";
+                            }
 
-                      {item.recommended && (
-                        <span className="recommended-badge">
-                          Recommended
-                        </span>
-                      )}
-                    </div>
+                            if (
+                              days <
+                              7
+                            ) {
+                              return `${days} days ago`;
+                            }
 
-                    <p>
-                      {
-                        item.description
-                      }
-                    </p>
+                            const weeks =
+                              Math.floor(
+                                days /
+                                  7
+                              );
 
-                    <div className="difficulty-selector">
-                      <span />
-                    </div>
-                  </button>
+                            if (
+                              weeks ===
+                              1
+                            ) {
+                              return "1 week ago";
+                            }
+
+                            return `${weeks} weeks ago`;
+                          })()
+                        : "";
+
+                    const roleLabel =
+                      interview.category
+                        .replace(
+                          /[_-]+/g,
+                          " "
+                        )
+                        .replace(
+                          /\b\w/g,
+                          (
+                            char
+                          ) =>
+                            char.toUpperCase()
+                        );
+
+                    const isInProgress =
+                      interview.status ===
+                      "in_progress";
+
+                    return (
+                      <div
+                        key={
+                          interview._id
+                        }
+                        className={`history-classic-row ${
+                          isInProgress
+                            ? "in-progress"
+                            : ""
+                        }`}
+                      >
+                        <div className="history-classic-icon">
+                          <FiActivity />
+                        </div>
+
+                        <div className="history-classic-copy">
+                          <div className="history-classic-title-row">
+                            <strong>
+                              {roleLabel}
+                            </strong>
+
+                            {isInProgress && (
+                              <span className="history-classic-progress-badge">
+                                In progress
+                              </span>
+                            )}
+                          </div>
+
+                          <div>
+                            <span>
+                              {formattedDate}
+                            </span>
+
+                            {relativeTime && (
+                              <>
+                                <i>
+                                  •
+                                </i>
+
+                                <span>
+                                  {relativeTime}
+                                </span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+
+                        {isInProgress ? (
+                          <button
+                            type="button"
+                            className="history-classic-continue-button"
+                            onClick={() => {
+                              setRestartError(
+                                ""
+                              );
+
+                              setResumeInterview(
+                                interview
+                              );
+                            }}
+                          >
+                            Continue
+                            <FiArrowRight />
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            className="history-classic-result-button"
+                            onClick={() =>
+                              navigate(
+                                `/dashboard/mock-interview/${interview._id}`
+                              )
+                            }
+                          >
+                            <span>
+                              Score
+                            </span>
+
+                            <strong>
+                              {typeof interview.overallScore ===
+                              "number"
+                                ? `${interview.overallScore}%`
+                                : "View"}
+                            </strong>
+                          </button>
+                        )}
+                      </div>
+                    );
+                  }
                 )
               )}
             </div>
@@ -584,9 +1290,7 @@ const mockInterviewPage = () => {
 
             <div className="session-preview">
               <div className="preview-icon">
-                {
-                  selectedCategory.icon
-                }
+                <FiBriefcase />
               </div>
 
               <div>
@@ -596,7 +1300,9 @@ const mockInterviewPage = () => {
 
                 <strong>
                   {
-                    selectedCategory.title
+                    selectedRole
+                      ?.name ||
+                    "Select a career field"
                   }
                 </strong>
               </div>
@@ -605,14 +1311,11 @@ const mockInterviewPage = () => {
             <div className="summary-list">
               <div className="summary-row">
                 <span>
-                  Interview type
+                  Interview format
                 </span>
 
                 <strong>
-                  {interviewType ===
-                  "technical"
-                    ? "Technical"
-                    : "Behavioral"}
+                  3 Technical + 3 Behavioral
                 </strong>
               </div>
 
@@ -622,9 +1325,17 @@ const mockInterviewPage = () => {
                 </span>
 
                 <strong>
-                  {
-                    selectedDifficulty.title
-                  }
+                  Adaptive
+                </strong>
+              </div>
+
+              <div className="summary-row">
+                <span>
+                  Questions
+                </span>
+
+                <strong>
+                  6
                 </strong>
               </div>
 
@@ -642,7 +1353,11 @@ const mockInterviewPage = () => {
             <button
               type="button"
               className="start-interview-btn"
-              disabled={loading}
+              disabled={
+                loading ||
+                rolesLoading ||
+                !selectedRole
+              }
               onClick={() =>
                 void startInterview()
               }
@@ -726,6 +1441,135 @@ const mockInterviewPage = () => {
           </div>
         </aside>
       </section>
+
+      {resumeInterview && (
+        <div
+          className="interview-resume-modal-backdrop"
+          role="presentation"
+          onMouseDown={
+            (
+              event
+            ) => {
+              if (
+                event.target ===
+                event.currentTarget
+              ) {
+                closeResumeModal();
+              }
+            }
+          }
+        >
+          <section
+            className="interview-resume-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="resume-interview-title"
+          >
+            <button
+              type="button"
+              className="interview-resume-modal-close"
+              onClick={
+                closeResumeModal
+              }
+              aria-label="Close"
+              disabled={
+                restartLoading
+              }
+            >
+              <FiX />
+            </button>
+
+            <div className="interview-resume-modal-icon">
+              <FiActivity />
+            </div>
+
+            <span className="interview-resume-modal-eyebrow">
+              UNFINISHED INTERVIEW
+            </span>
+
+            <h2 id="resume-interview-title">
+              Continue where you left off?
+            </h2>
+
+            <p>
+              You already have an unfinished{" "}
+              <strong>
+                {resumeInterview.category
+                  .replace(
+                    /[_-]+/g,
+                    " "
+                  )
+                  .replace(
+                    /\b\w/g,
+                    (
+                      char
+                    ) =>
+                      char.toUpperCase()
+                  )}
+              </strong>{" "}
+              interview. Choose how you want to proceed.
+            </p>
+
+            {restartError && (
+              <div className="interview-resume-modal-error">
+                <FiInfo />
+
+                <span>
+                  {restartError}
+                </span>
+              </div>
+            )}
+
+            <div className="interview-resume-modal-actions">
+              <button
+                type="button"
+                className="interview-resume-restart-button"
+                onClick={() =>
+                  void handleRestartInterview()
+                }
+                disabled={
+                  restartLoading
+                }
+              >
+                <FiRefreshCw
+                  className={
+                    restartLoading
+                      ? "spin"
+                      : ""
+                  }
+                />
+
+                <span>
+                  <strong>
+                    Start over
+                  </strong>
+                </span>
+              </button>
+
+              <button
+                type="button"
+                className="interview-resume-continue-button"
+                onClick={
+                  handleContinueInterview
+                }
+                disabled={
+                  restartLoading
+                }
+              >
+                <FiPlay />
+
+                <span>
+                  <strong>
+                    Continue interview
+                  </strong>
+                </span>
+
+                <FiArrowRight className="interview-resume-action-arrow" />
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
     </div>
   );
 };

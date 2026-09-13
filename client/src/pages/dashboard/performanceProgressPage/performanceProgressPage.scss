@@ -1,0 +1,4004 @@
+.performance-page {
+  width: 100%;
+  min-height: 100%;
+
+  padding:
+    38px
+    46px
+    60px;
+
+  color:
+    #17182a;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.performance-page__header {
+  margin-bottom:
+    30px;
+
+  h1 {
+    margin:
+      6px
+      0
+      8px;
+
+    color:
+      #171827;
+
+    font-size:
+      clamp(
+        32px,
+        3vw,
+        46px
+      );
+
+    line-height:
+      1.08;
+
+    letter-spacing:
+      -1.8px;
+
+    font-weight:
+      800;
+  }
+
+  p {
+    max-width:
+      720px;
+
+    margin:
+      0;
+
+    color:
+      #77798d;
+
+    font-size:
+      15px;
+
+    line-height:
+      1.65;
+  }
+}
+
+.performance-page__eyebrow {
+  color:
+    #6c4dff;
+
+  font-size:
+    12px;
+
+  font-weight:
+    800;
+
+  letter-spacing:
+    2px;
+}
+
+/* =========================================================
+   SNAPSHOT
+========================================================= */
+
+.performance-snapshot {
+  position: relative;
+  overflow: hidden;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(360px, 1.15fr)
+    minmax(320px, 0.85fr)
+    300px;
+
+  align-items: center;
+
+  gap: 36px;
+
+  margin-bottom: 22px;
+
+  padding:
+    32px
+    36px;
+
+  border:
+    1px solid
+    #e6e3f3;
+
+  border-radius: 22px;
+
+  background:
+    radial-gradient(
+      circle at 90% 10%,
+      rgba(113, 76, 255, 0.08),
+      transparent 34%
+    ),
+    rgba(255, 255, 255, 0.94);
+
+  box-shadow:
+    0 10px 30px
+    rgba(45, 37, 90, 0.04);
+
+  &::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 36px;
+
+    width: 72px;
+    height: 3px;
+
+    border-radius:
+      0 0 4px 4px;
+
+    background:
+      linear-gradient(
+        90deg,
+        #704bff,
+        #a26fff
+      );
+  }
+}
+
+/* =========================================================
+   SNAPSHOT LEFT SIDE
+========================================================= */
+
+.performance-snapshot__intro {
+  grid-column: 1;
+  grid-row: 1;
+
+  align-self: center;
+
+  min-width: 0;
+
+  padding-right: 0;
+
+  > span {
+    color: #704dff;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+  }
+
+  h2 {
+    max-width: 430px;
+
+    margin:
+      7px 0 9px;
+
+    color: #1c1d2e;
+
+    font-size: 25px;
+    line-height: 1.22;
+
+    letter-spacing: -0.7px;
+
+    font-weight: 800;
+  }
+
+  p {
+    max-width: 430px;
+
+    margin: 0;
+
+    color: #9192a4;
+
+    font-size: 12px;
+    line-height: 1.65;
+  }
+}
+
+/* =========================================================
+   SCORE / CIRCLE
+========================================================= */
+
+.performance-snapshot__score {
+  grid-column: 2;
+  grid-row: 1;
+
+  justify-self: center;
+  align-self: center;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 22px;
+
+  width: 100%;
+
+  margin: 0;
+}
+
+.performance-score-ring {
+  width: 112px;
+  height: 112px;
+
+  flex:
+    0 0 112px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+
+  border:
+    8px solid
+    #eee9ff;
+
+  border-top-color:
+    #704cff;
+
+  border-right-color:
+    #8a61ff;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 7px 20px
+    rgba(83, 61, 180, 0.06);
+
+  strong {
+    color: #1d1d2f;
+
+    font-size: 26px;
+    line-height: 1;
+
+    font-weight: 800;
+  }
+
+  > span:last-child {
+    margin-top: 6px;
+
+    color: #9a9aaa;
+
+    font-size: 9px;
+    font-weight: 650;
+  }
+}
+
+.performance-score-copy {
+  min-width: 0;
+  max-width: 180px;
+
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  > span:first-child {
+    margin: 0 0 5px;
+
+    color: #9697aa;
+
+    font-size: 11px;
+    line-height: 1.2;
+    font-weight: 800;
+
+    letter-spacing: 0.45px;
+
+    text-transform: uppercase;
+  }
+
+  strong {
+    margin: 0;
+
+    color: #242536;
+
+    font-size: 18px;
+    line-height: 1.2;
+    font-weight: 800;
+  }
+
+  small {
+    max-width: 180px;
+
+    margin: 6px 0 0;
+
+    color: #9697a8;
+
+    font-size: 11px;
+    line-height: 1.45;
+    font-weight: 500;
+  }
+}
+
+/* =========================================================
+   RIGHT STAT CARDS
+========================================================= */
+
+.performance-snapshot__stats {
+  grid-column: 3;
+  grid-row: 1;
+
+  justify-self: end;
+  align-self: center;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 9px;
+
+  width: 300px;
+  max-width: 300px;
+
+  margin: 0;
+  padding: 0;
+
+  border: 0;
+}
+
+.performance-stat {
+  width: 100%;
+  min-width: 0;
+
+  min-height: 60px;
+
+  display: grid;
+
+  grid-template-columns:
+    42px
+    minmax(0, 1fr);
+
+  grid-template-rows:
+    auto
+    auto;
+
+  align-items: center;
+
+  column-gap: 13px;
+
+  padding:
+    10px
+    13px;
+
+  border:
+    1px solid
+    #ebe9f3;
+
+  border-radius: 13px;
+
+  background:
+    rgba(252, 252, 254, 0.9);
+
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    transform 0.18s ease;
+
+  &:hover {
+    border-color:
+      rgba(108, 76, 245, 0.15);
+
+    background: #ffffff;
+
+    transform:
+      translateY(-1px);
+  }
+
+  > div {
+    grid-column: 1;
+    grid-row:
+      1 / 3;
+
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: #f1edff;
+
+    color: #704cff;
+
+    font-size: 15px;
+  }
+
+  > span {
+    grid-column: 2;
+    grid-row: 1;
+
+    align-self: end;
+
+    margin: 0;
+
+    color: #999aaa;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    line-height: 1;
+
+    letter-spacing: 0.35px;
+
+    text-transform: uppercase;
+  }
+
+  strong {
+    grid-column: 2;
+    grid-row: 2;
+
+    align-self: start;
+
+    overflow: hidden;
+
+    margin-top: 4px;
+
+    padding: 0;
+
+    color: #2c2c3e;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    line-height: 1.2;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+/* =========================================================
+   GENERIC CARDS
+========================================================= */
+
+.performance-grid {
+  display:
+    grid;
+
+  gap:
+    22px;
+
+  margin-bottom:
+    22px;
+}
+
+.performance-grid--primary {
+  grid-template-columns: 1fr;
+}
+
+.performance-grid--insights {
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(
+        0,
+        1fr
+      )
+    );
+}
+
+.performance-card {
+  min-width:
+    0;
+
+  border:
+    1px solid
+    #e9e8f2;
+
+  border-radius:
+    20px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.9
+    );
+
+  box-shadow:
+    0
+    8px
+    28px
+    rgba(
+      37,
+      31,
+      75,
+      0.035
+    );
+}
+
+.performance-card__header {
+  display:
+    flex;
+
+  align-items:
+    flex-start;
+
+  justify-content:
+    space-between;
+
+  gap:
+    20px;
+
+  padding:
+    25px
+    26px
+    20px;
+
+  > div:first-child >
+  span {
+    color:
+      #704dff;
+
+    font-size:
+      10px;
+
+    font-weight:
+      800;
+
+    letter-spacing:
+      1.5px;
+  }
+
+  h2 {
+    margin:
+      4px
+      0
+      5px;
+
+    color:
+      #1d1d2d;
+
+    font-size:
+      20px;
+
+    font-weight:
+      800;
+
+    letter-spacing:
+      -0.5px;
+  }
+
+  p {
+    margin:
+      0;
+
+    color:
+      #9293a5;
+
+    font-size:
+      12px;
+
+    line-height:
+      1.5;
+  }
+}
+
+.performance-card__header-icon {
+  width:
+    43px;
+
+  height:
+    43px;
+
+  flex:
+    0
+    0
+    43px;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  border-radius:
+    12px;
+
+  background:
+    #f2eeff;
+
+  color:
+    #6b4cff;
+
+  font-size:
+    19px;
+}
+
+.performance-card__empty {
+  padding:
+    42px
+    25px;
+
+  color:
+    #9697a8;
+
+  font-size:
+    13px;
+
+  text-align:
+    center;
+}
+
+/* =========================================================
+   SCORE TREND
+========================================================= */
+
+.performance-trend-summary {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    space-between;
+
+  gap:
+    16px;
+
+  margin:
+    0
+    26px
+    12px;
+
+  padding:
+    13px
+    14px;
+
+  border:
+    1px solid
+    #eceaf4;
+
+  border-radius:
+    12px;
+
+  background:
+    #fcfcfe;
+
+  > div:first-child {
+    display:
+      flex;
+
+    flex-direction:
+      column;
+
+    span {
+      color:
+        #9a9aaa;
+
+      font-size:
+        8px;
+
+      font-weight:
+        700;
+
+      letter-spacing:
+        0.5px;
+    }
+
+    strong {
+      margin-top:
+        3px;
+
+      color:
+        #323244;
+
+      font-size:
+        12px;
+
+      font-weight:
+        800;
+    }
+  }
+}
+
+.performance-trend-delta {
+  padding:
+    7px
+    10px;
+
+  border-radius:
+    9px;
+
+  font-size:
+    11px;
+
+  font-weight:
+    800;
+
+  &.positive {
+    background:
+      #edf9f4;
+
+    color:
+      #2b9d75;
+  }
+
+  &.negative {
+    background:
+      #fff2f2;
+
+    color:
+      #d05757;
+  }
+
+  &.neutral {
+    background:
+      #f2efff;
+
+    color:
+      #6c4cff;
+  }
+}
+
+.performance-line-chart {
+  padding:
+    4px
+    22px
+    24px;
+
+  svg {
+    width:
+      100%;
+
+    height:
+      245px;
+
+    overflow:
+      visible;
+  }
+}
+
+.performance-chart-grid-line {
+  stroke:
+    #eeedf4;
+
+  stroke-width:
+    1;
+}
+
+.performance-chart-line {
+  fill:
+    none;
+
+  stroke:
+    #704cff;
+
+  stroke-width:
+    4;
+
+  stroke-linecap:
+    round;
+
+  stroke-linejoin:
+    round;
+}
+
+.performance-chart-point {
+  fill:
+    #ffffff;
+
+  stroke:
+    #704cff;
+
+  stroke-width:
+    4;
+}
+
+.performance-chart-score {
+  fill:
+    #6b4cff;
+
+  font-size:
+    13px;
+
+  font-weight:
+    800;
+}
+
+.performance-chart-labels {
+  display:
+    flex;
+
+  justify-content:
+    space-between;
+
+  gap:
+    10px;
+
+  padding:
+    0
+    8px;
+
+  color:
+    #a0a1af;
+
+  font-size:
+    8px;
+}
+
+.performance-chart-loading {
+  padding:
+    10px
+    26px
+    28px;
+}
+
+/* =========================================================
+   SKILLS
+========================================================= */
+
+.performance-skill-list {
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    25px;
+
+  padding:
+    10px
+    26px
+    27px;
+}
+
+.performance-skill__top {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    space-between;
+
+  gap:
+    15px;
+
+  margin-bottom:
+    10px;
+
+  > div {
+    display:
+      flex;
+
+    align-items:
+      center;
+
+    gap:
+      9px;
+
+    > span {
+      width:
+        28px;
+
+      height:
+        28px;
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      justify-content:
+        center;
+
+      border-radius:
+        8px;
+
+      background:
+        #f2eeff;
+
+      color:
+        #704cff;
+
+      font-size:
+        13px;
+    }
+
+    strong {
+      color:
+        #555669;
+
+      font-size:
+        12px;
+
+      font-weight:
+        650;
+    }
+  }
+
+  b {
+    color:
+      #27273a;
+
+    font-size:
+      13px;
+
+    font-weight:
+      800;
+  }
+}
+
+.performance-track {
+  width:
+    100%;
+
+  height:
+    7px;
+
+  overflow:
+    hidden;
+
+  border-radius:
+    999px;
+
+  background:
+    #eeedf4;
+
+  > span {
+    display:
+      block;
+
+    height:
+      100%;
+
+    border-radius:
+      inherit;
+
+    background:
+      linear-gradient(
+        90deg,
+        #7954ff
+        0%,
+        #9e72ff
+        100%
+      );
+  }
+}
+
+/* =========================================================
+   CAREER FIELDS
+========================================================= */
+
+.performance-card--categories {
+  margin-bottom:
+    22px;
+}
+
+.performance-category-grid {
+  display:
+    grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  gap:
+    14px;
+
+  padding:
+    6px
+    26px
+    28px;
+}
+
+.performance-category-card {
+  min-height:
+    90px;
+
+  padding:
+    16px
+    17px;
+
+  border:
+    1px solid
+    #edecf3;
+
+  border-radius:
+    14px;
+
+  background:
+    #fcfcfe;
+}
+
+.performance-category-card__top {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    space-between;
+
+  gap:
+    16px;
+
+  margin-bottom:
+    13px;
+
+  > div {
+    min-width:
+      0;
+
+    display:
+      flex;
+
+    flex-direction:
+      column;
+
+    strong {
+      overflow:
+        hidden;
+
+      color:
+        #38384a;
+
+      font-size:
+        12px;
+
+      font-weight:
+        750;
+
+      text-overflow:
+        ellipsis;
+
+      white-space:
+        nowrap;
+    }
+
+    span {
+      margin-top:
+        3px;
+
+      color:
+        #a0a1af;
+
+      font-size:
+        10px;
+    }
+  }
+
+  b {
+    flex-shrink:
+      0;
+
+    color:
+      #6848f7;
+
+    font-size:
+      16px;
+
+    font-weight:
+      800;
+  }
+}
+
+/* =========================================================
+   INSIGHTS
+========================================================= */
+
+.performance-insight-card {
+  min-height:
+    150px;
+
+  display:
+    flex;
+
+  align-items:
+    flex-start;
+
+  gap:
+    14px;
+
+  padding:
+    21px;
+
+  .performance-insight-card__icon {
+    width:
+      40px;
+
+    height:
+      40px;
+
+    flex:
+      0
+      0
+      40px;
+
+    display:
+      flex;
+
+    align-items:
+      center;
+
+    justify-content:
+      center;
+
+    border-radius:
+      11px;
+
+    background:
+      #f2eeff;
+
+    color:
+      #704cff;
+
+    font-size:
+      17px;
+  }
+
+  > div:last-child {
+    min-width:
+      0;
+  }
+
+  span {
+    color:
+      #704dff;
+
+    font-size:
+      8px;
+
+    font-weight:
+      800;
+
+    letter-spacing:
+      1.1px;
+  }
+
+  h3 {
+    margin:
+      5px
+      0
+      6px;
+
+    color:
+      #2b2b3d;
+
+    font-size:
+      15px;
+
+    font-weight:
+      800;
+  }
+
+  p {
+    margin:
+      0;
+
+    color:
+      #9394a5;
+
+    font-size:
+      10px;
+
+    line-height:
+      1.55;
+  }
+}
+
+/* =========================================================
+   SKELETONS
+========================================================= */
+
+.performance-skeleton {
+  position:
+    relative;
+
+  display:
+    inline-block;
+
+  overflow:
+    hidden;
+
+  border-radius:
+    6px;
+
+  background:
+    #ececf2;
+
+  &::after {
+    content:
+      "";
+
+    position:
+      absolute;
+
+    top:
+      0;
+
+    left:
+      -120%;
+
+    width:
+      100%;
+
+    height:
+      100%;
+
+    background:
+      linear-gradient(
+        90deg,
+        transparent,
+        rgba(
+          255,
+          255,
+          255,
+          0.75
+        ),
+        transparent
+      );
+
+    animation:
+      performance-skeleton-loading
+      1.2s
+      infinite;
+  }
+}
+
+@keyframes performance-skeleton-loading {
+  100% {
+    left:
+      120%;
+  }
+}
+
+.performance-skeleton--score {
+  width:
+    45px;
+
+  height:
+    24px;
+}
+
+.performance-skeleton--text-lg {
+  width:
+    105px;
+
+  height:
+    13px;
+
+  margin-top:
+    4px;
+}
+
+.performance-skeleton--chart {
+  display:
+    block;
+
+  width:
+    100%;
+
+  height:
+    245px;
+
+  border-radius:
+    13px;
+}
+
+.performance-skeleton--category-title {
+  display:
+    block;
+
+  width:
+    135px;
+
+  height:
+    13px;
+
+  margin-bottom:
+    18px;
+}
+
+.performance-skeleton--progress {
+  display:
+    block;
+
+  width:
+    100%;
+
+  height:
+    7px;
+
+  border-radius:
+    999px;
+}
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.performance-error-card {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    18px;
+
+  padding:
+    22px;
+
+  border:
+    1px solid
+    #e7e4f1;
+
+  border-radius:
+    18px;
+
+  background:
+    #ffffff;
+
+  h2 {
+    margin:
+      0
+      0
+      4px;
+
+    font-size:
+      17px;
+  }
+
+  p {
+    margin:
+      0;
+
+    color:
+      #8d8e9f;
+
+    font-size:
+      12px;
+  }
+
+  button {
+    margin-left:
+      auto;
+
+    display:
+      inline-flex;
+
+    align-items:
+      center;
+
+    gap:
+      8px;
+
+    padding:
+      10px
+      16px;
+
+    border:
+      0;
+
+    border-radius:
+      10px;
+
+    background:
+      #6d4aff;
+
+    color:
+      #ffffff;
+
+    font-size:
+      12px;
+
+    font-weight:
+      700;
+
+    cursor:
+      pointer;
+  }
+}
+
+.performance-error-card__icon {
+  width:
+    48px;
+
+  height:
+    48px;
+
+  flex:
+    0
+    0
+    48px;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  border-radius:
+    14px;
+
+  background:
+    #f1edff;
+
+  color:
+    #6f4cff;
+
+  font-size:
+    20px;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (
+  max-width:
+    1280px
+) {
+  .performance-snapshot {
+    grid-template-columns:
+      minmax(320px, 1fr)
+      minmax(300px, 0.8fr);
+
+    gap: 30px;
+  }
+
+  .performance-snapshot__intro {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .performance-snapshot__score {
+    grid-column: 1;
+    grid-row: 2;
+
+    justify-self: start;
+
+    width: auto;
+  }
+
+  .performance-snapshot__stats {
+    grid-column: 2;
+    grid-row: 1 / 3;
+  }
+}
+
+@media (
+  max-width:
+    1100px
+) {
+  .performance-grid--primary {
+    grid-template-columns:
+      1fr;
+  }
+
+  .performance-grid--insights {
+    grid-template-columns:
+      1fr;
+  }
+}
+
+@media (
+  max-width:
+    900px
+) {
+  .performance-page {
+    padding:
+      30px
+      25px
+      50px;
+  }
+
+  
+  .performance-snapshot {
+    grid-template-columns: 1fr;
+
+    gap: 26px;
+  }
+
+  .performance-snapshot__intro,
+  .performance-snapshot__score,
+  .performance-snapshot__stats {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .performance-snapshot__score {
+    justify-self: start;
+
+    width: auto;
+  }
+
+  .performance-snapshot__stats {
+    justify-self: stretch;
+
+    width: 100%;
+    max-width: none;
+  }
+
+
+  .performance-category-grid {
+    grid-template-columns:
+      1fr;
+  
+}
+}
+
+@media (
+  max-width:
+    600px
+) {
+  .performance-page {
+    padding:
+      24px
+      16px
+      40px;
+  }
+
+  .performance-page__header {
+    h1 {
+      font-size:
+        31px;
+
+      letter-spacing:
+        -1px;
+    }
+
+    p {
+      font-size:
+        13px;
+    }
+  }
+
+  .performance-snapshot {
+    padding:
+      25px
+      20px;
+  }
+
+  .performance-snapshot__score {
+    align-items:
+      flex-start;
+
+    flex-direction:
+      column;
+  }
+
+  .performance-card__header {
+    padding:
+      20px
+      18px
+      17px;
+  }
+
+  .performance-category-grid {
+    padding:
+      5px
+      18px
+      21px;
+  }
+
+  .performance-skill-list {
+    padding:
+      8px
+      18px
+      22px;
+  }
+
+  .performance-line-chart {
+    padding-left:
+      10px;
+
+    padding-right:
+      10px;
+  }
+
+  .performance-error-card {
+    align-items:
+      flex-start;
+
+    flex-direction:
+      column;
+
+    button {
+      margin-left:
+        0;
+    }
+  }
+}
+
+
+/* =========================================================
+   PERFORMANCE MOMENTUM CHART
+   Dashboard visual language
+========================================================= */
+
+.performance-card--trend {
+  overflow: hidden;
+}
+
+.performance-momentum-chart {
+  width: 100%;
+  min-width: 0;
+  min-height: 260px;
+
+  display: grid;
+
+  grid-template-columns:
+    34px
+    minmax(0, 1fr);
+
+  gap: 12px;
+
+  padding:
+    5px
+    26px
+    24px;
+}
+
+.performance-momentum-y-axis {
+  height: 210px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+
+  padding: 0;
+
+  color: #9292ad;
+
+  font-size: 10px;
+  font-weight: 500;
+
+  text-align: right;
+}
+
+.performance-momentum-chart-scroll {
+  width: 100%;
+  min-width: 0;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  padding-bottom: 5px;
+
+  scrollbar-width: thin;
+  scrollbar-color:
+    #d8d5e8
+    transparent;
+
+  &::-webkit-scrollbar {
+    height: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 20px;
+
+    background: #d8d5e8;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #c4bfdc;
+  }
+}
+
+.performance-momentum-chart-main {
+  position: relative;
+
+  width: 100%;
+  min-height: 240px;
+
+  flex-shrink: 0;
+
+  svg {
+    display: block;
+
+    width: 100%;
+    height: 210px;
+
+    overflow: visible;
+  }
+}
+
+.performance-momentum-x-axis {
+  width: 100%;
+
+  display: grid;
+
+  margin-top: 8px;
+
+  span {
+    min-width: 0;
+
+    color: #9292ad;
+
+    font-size: 9px;
+    line-height: 1.2;
+
+    text-align: center;
+
+    white-space: nowrap;
+  }
+}
+
+/* =========================================================
+   CHART LOADING SKELETON
+========================================================= */
+
+.performance-momentum-loading-skeleton {
+  width: 100%;
+  min-height: 260px;
+
+  display: grid;
+
+  grid-template-columns:
+    34px
+    minmax(0, 1fr);
+
+  gap: 12px;
+
+  padding:
+    5px
+    26px
+    24px;
+}
+
+.performance-momentum-loading-y-axis {
+  min-height: 240px;
+
+  padding-bottom: 25px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+
+  color: #b0b0bd;
+
+  font-size: 9px;
+}
+
+.performance-momentum-loading-main {
+  position: relative;
+
+  min-width: 0;
+  min-height: 240px;
+
+  overflow: hidden;
+}
+
+.performance-momentum-loading-grid {
+  position: absolute;
+
+  inset:
+    0
+    0
+    25px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  span {
+    display: block;
+
+    width: 100%;
+    height: 1px;
+
+    background:
+      rgba(
+        30,
+        30,
+        55,
+        0.055
+      );
+  }
+}
+
+.performance-momentum-loading-line {
+  position: absolute;
+
+  left: 5%;
+  right: 5%;
+  top: 25%;
+
+  height: 55%;
+
+  opacity: 0.7;
+
+  span {
+    position: absolute;
+
+    height: 7px;
+
+    border-radius: 999px;
+
+    background: #ececf2;
+
+    overflow: hidden;
+
+    &::after {
+      content: "";
+
+      position: absolute;
+
+      top: 0;
+      left: -100%;
+
+      width: 100%;
+      height: 100%;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(
+            255,
+            255,
+            255,
+            0.9
+          ),
+          transparent
+        );
+
+      animation:
+        performanceMomentumSkeleton
+        1.2s
+        ease-in-out
+        infinite;
+    }
+  }
+}
+
+.performance-momentum-loading-line__one {
+  width: 25%;
+
+  left: 0;
+  top: 65%;
+
+  transform:
+    rotate(-9deg);
+}
+
+.performance-momentum-loading-line__two {
+  width: 27%;
+
+  left: 23%;
+  top: 48%;
+
+  transform:
+    rotate(7deg);
+}
+
+.performance-momentum-loading-line__three {
+  width: 26%;
+
+  left: 48%;
+  top: 38%;
+
+  transform:
+    rotate(-12deg);
+}
+
+.performance-momentum-loading-line__four {
+  width: 27%;
+
+  left: 72%;
+  top: 17%;
+
+  transform:
+    rotate(8deg);
+}
+
+.performance-momentum-loading-points {
+  position: absolute;
+
+  inset:
+    0
+    0
+    25px;
+
+  span {
+    position: absolute;
+
+    width: 11px;
+    height: 11px;
+
+    border:
+      3px solid
+      #e8e5f4;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    &:nth-child(1) {
+      left: 4%;
+      top: 66%;
+    }
+
+    &:nth-child(2) {
+      left: 27%;
+      top: 48%;
+    }
+
+    &:nth-child(3) {
+      left: 51%;
+      top: 54%;
+    }
+
+    &:nth-child(4) {
+      left: 74%;
+      top: 28%;
+    }
+
+    &:nth-child(5) {
+      right: 3%;
+      top: 35%;
+    }
+  }
+}
+
+.performance-momentum-loading-x-axis {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 22px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  padding:
+    0
+    14px;
+
+  span {
+    width: 12px;
+    height: 7px;
+
+    border-radius: 4px;
+
+    background: #ececf2;
+  }
+}
+
+@keyframes performanceMomentumSkeleton {
+  100% {
+    left: 100%;
+  }
+}
+
+/* =========================================================
+   CHART RESPONSIVE
+========================================================= */
+
+@media (max-width: 760px) {
+  .performance-momentum-chart,
+  .performance-momentum-loading-skeleton {
+    min-height: 230px;
+
+    grid-template-columns:
+      28px
+      minmax(0, 1fr);
+
+    gap: 8px;
+
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .performance-momentum-y-axis,
+  .performance-momentum-loading-y-axis {
+    min-height: 210px;
+
+    font-size: 9px;
+  }
+
+  .performance-momentum-chart-main,
+  .performance-momentum-loading-main {
+    min-height: 210px;
+  }
+
+  .performance-momentum-chart-main {
+    svg {
+      height: 185px;
+    }
+  }
+
+  .performance-momentum-x-axis {
+    span {
+      font-size: 8px;
+    }
+  }
+}
+
+
+/* =========================================================
+   FULL-WIDTH PERFORMANCE BREAKDOWN
+========================================================= */
+
+.performance-card--skills-full {
+  margin-bottom: 22px;
+  padding-bottom: 20px;
+}
+
+.performance-card--skills-full .performance-skill-list {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+
+  gap: 18px;
+
+  padding:
+    10px
+    26px
+    28px;
+}
+
+.performance-card--skills-full .performance-skill {
+  padding:
+    15px
+    16px;
+
+  border:
+    1px solid
+    #edecf3;
+
+  border-radius:
+    14px;
+
+  background:
+    #fcfcfe;
+}
+
+.performance-card--skills-full .performance-skill__top {
+  margin-bottom: 12px;
+}
+
+.performance-card--trend {
+  width: 100%;
+}
+
+@media (max-width: 1000px) {
+  .performance-card--skills-full .performance-skill-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =========================================================
+   ADVANCED PERFORMANCE ANALYTICS
+========================================================= */
+
+.performance-grid--advanced,
+.performance-grid--development {
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+}
+
+.performance-type-comparison__content {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+  padding: 8px 26px 27px;
+}
+
+.performance-type-score {
+  padding: 15px 16px;
+  border: 1px solid #edecf3;
+  border-radius: 14px;
+  background: #fcfcfe;
+}
+
+.performance-type-score__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+
+  > div {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    strong {
+      color: #343446;
+      font-size: 12px;
+      font-weight: 750;
+    }
+  }
+
+  > b {
+    color: #202033;
+    font-size: 17px;
+    font-weight: 800;
+  }
+}
+
+.performance-type-dot {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  border-radius: 50%;
+}
+
+.performance-type-dot--technical {
+  background: #6c4cf5;
+}
+
+.performance-type-dot--behavioral {
+  background: #67b9ec;
+}
+
+.performance-type-score__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 9px;
+  color: #9394a5;
+  font-size: 9px;
+
+  strong {
+    color: #555669;
+  }
+
+  .positive {
+    color: #299c75;
+    font-weight: 750;
+  }
+
+  .negative {
+    color: #d05757;
+    font-weight: 750;
+  }
+}
+
+.performance-type-comparison__summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 15px;
+  border: 1px solid #e8e4ff;
+  border-radius: 13px;
+  background: #f8f6ff;
+
+  > svg {
+    flex: 0 0 auto;
+    color: #6c4cf5;
+    font-size: 18px;
+  }
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    > span {
+      color: #9694a8;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+    }
+
+    > strong {
+      color: #333345;
+      font-size: 10px;
+      line-height: 1.45;
+      font-weight: 700;
+    }
+  }
+}
+
+.performance-advanced-stats__grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 8px 26px 27px;
+}
+
+.performance-advanced-stat {
+  min-height: 105px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 15px;
+  border: 1px solid #edecf3;
+  border-radius: 14px;
+  background: #fcfcfe;
+
+  > span {
+    color: #999aaa;
+    font-size: 8px;
+    font-weight: 750;
+    letter-spacing: 0.5px;
+  }
+
+  > strong {
+    margin-top: 6px;
+    color: #28283a;
+    font-size: 21px;
+    line-height: 1;
+    font-weight: 800;
+  }
+
+  > small {
+    margin-top: 7px;
+    color: #9b9cab;
+    font-size: 9px;
+    line-height: 1.4;
+  }
+}
+
+.performance-difficulty-card__content {
+  padding: 8px 26px 27px;
+}
+
+.performance-current-level {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 22px;
+  padding: 14px 15px;
+  border: 1px solid #e9e5ff;
+  border-radius: 13px;
+  background: #f8f6ff;
+
+  > span {
+    color: #9493a5;
+    font-size: 8px;
+    font-weight: 750;
+    letter-spacing: 0.55px;
+  }
+
+  > strong {
+    color: #6848f7;
+    font-size: 14px;
+    font-weight: 800;
+  }
+}
+
+.performance-level-stepper {
+  position: relative;
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  margin-bottom: 24px;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 8px;
+    left: 12.5%;
+    right: 12.5%;
+    height: 2px;
+    background: #eceaf3;
+  }
+}
+
+.performance-level-step {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+
+  > span {
+    width: 18px;
+    height: 18px;
+    display: block;
+    border: 4px solid #ffffff;
+    border-radius: 50%;
+    background: #dedce7;
+    box-shadow: 0 0 0 1px #e5e2ee;
+  }
+
+  > strong {
+    color: #a0a1af;
+    font-size: 8px;
+    font-weight: 650;
+  }
+
+  &.reached > span {
+    background: #8a66ff;
+  }
+
+  &.reached > strong {
+    color: #6c4cf5;
+  }
+
+  &.current > span {
+    background: #6848f7;
+    box-shadow: 0 0 0 4px rgba(108, 76, 245, 0.1);
+  }
+
+  &.current > strong {
+    color: #2e2e40;
+    font-weight: 800;
+  }
+}
+
+.performance-difficulty-history {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  > div {
+    min-height: 38px;
+    display: grid;
+    grid-template-columns:
+      70px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 11px;
+    border-radius: 10px;
+    background: #fcfcfe;
+
+    > span {
+      color: #a0a1af;
+      font-size: 8px;
+    }
+
+    > strong {
+      color: #555669;
+      font-size: 9px;
+      font-weight: 700;
+    }
+
+    > b {
+      color: #6848f7;
+      font-size: 10px;
+      font-weight: 800;
+    }
+  }
+}
+
+.performance-weakness-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 8px 26px 27px;
+}
+
+.performance-weakness-item {
+  display: grid;
+  grid-template-columns:
+    28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 11px;
+  min-height: 52px;
+  padding: 10px 12px;
+  border: 1px solid #edecf3;
+  border-radius: 12px;
+  background: #fcfcfe;
+
+  > span {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: #f2eeff;
+    color: #6848f7;
+    font-size: 9px;
+    font-weight: 800;
+  }
+
+  > p {
+    margin: 0;
+    color: #555669;
+    font-size: 9px;
+    line-height: 1.45;
+  }
+
+  > strong {
+    color: #6848f7;
+    font-size: 10px;
+    font-weight: 800;
+  }
+}
+
+@media (max-width: 1100px) {
+  .performance-grid--advanced,
+  .performance-grid--development {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .performance-advanced-stats__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .performance-level-stepper {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+    gap: 15px;
+
+    &::before {
+      display: none;
+    }
+  }
+}
+
+/* =========================================================
+   READABILITY + DYNAMIC INSIGHT POLISH
+========================================================= */
+
+.performance-card__header {
+  p {
+    color: #7f8093;
+    font-size: 13px;
+    line-height: 1.62;
+  }
+
+  > div:first-child > span {
+    font-size: 10px;
+  }
+}
+
+.performance-type-score__top {
+  > div strong {
+    font-size: 13px;
+  }
+
+  > b {
+    font-size: 19px;
+  }
+}
+
+.performance-type-score__meta {
+  color: #76788b;
+  font-size: 11px;
+
+  strong {
+    color: #424456;
+    font-size: 11px;
+  }
+}
+
+.performance-type-comparison__summary {
+  > div {
+    > span {
+      color: #7e7f92;
+      font-size: 9px;
+    }
+
+    > strong {
+      color: #2f3042;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+  }
+}
+
+.performance-advanced-stat {
+  > span {
+    color: #85879a;
+    font-size: 9px;
+  }
+
+  > strong {
+    font-size: 23px;
+  }
+
+  > small {
+    color: #77798c;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+}
+
+.performance-current-level {
+  > span {
+    color: #7f8093;
+    font-size: 9px;
+  }
+
+  > strong {
+    font-size: 16px;
+  }
+}
+
+.performance-level-help {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 20px;
+
+  > span {
+    min-width: 0;
+    padding: 10px 11px;
+    border: 1px solid #efedf6;
+    border-radius: 10px;
+    background: #fcfcfe;
+    color: #3d3e50;
+    font-size: 10px;
+    font-weight: 750;
+
+    > small {
+      display: block;
+      margin-top: 4px;
+      color: #85879a;
+      font-size: 9px;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+  }
+}
+
+.performance-level-step {
+  > strong {
+    color: #77798c;
+    font-size: 10px;
+  }
+}
+
+.performance-difficulty-history {
+  gap: 10px;
+}
+
+.performance-difficulty-history__title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 2px 2px 4px;
+
+  > span {
+    color: #6c4cf5;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+  }
+
+  > small {
+    max-width: 360px;
+    color: #7f8093;
+    font-size: 10px;
+    line-height: 1.45;
+    text-align: right;
+  }
+}
+
+.performance-difficulty-history {
+  > .performance-difficulty-history__row {
+    min-height: 46px;
+    grid-template-columns: 82px minmax(0, 1fr) auto;
+    padding: 10px 12px;
+    border: 1px solid #f0eef5;
+    background: #fcfcfe;
+
+    > span {
+      color: #7f8093;
+      font-size: 10px;
+    }
+
+    > strong {
+      color: #393a4d;
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    > b {
+      font-size: 12px;
+    }
+  }
+}
+
+.performance-weakness-item {
+  > p {
+    color: #4f5063;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  > strong {
+    font-size: 11px;
+  }
+}
+
+.performance-next-priority {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 82px;
+  margin-bottom: 22px;
+  padding: 18px 22px;
+  border-color: #e6e0ff;
+  background: linear-gradient(90deg, #faf8ff 0%, #ffffff 100%);
+}
+
+.performance-next-priority__icon {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #f0ebff;
+  color: #6848f7;
+  font-size: 18px;
+}
+
+.performance-next-priority > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  > span {
+    color: #704dff;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1px;
+  }
+
+  > strong {
+    color: #2e2f42;
+    font-size: 13px;
+    line-height: 1.55;
+    font-weight: 750;
+  }
+}
+
+@media (max-width: 900px) {
+  .performance-level-help {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .performance-difficulty-history__title {
+    flex-direction: column;
+
+    > small {
+      max-width: none;
+      text-align: left;
+    }
+  }
+}
+
+@media (max-width: 560px) {
+  .performance-level-help {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   SNAPSHOT COMPACT LAYOUT
+   Keeps the three groups visually close without large empty gaps.
+========================================================= */
+
+@media (min-width: 1281px) {
+  .performance-snapshot {
+    grid-template-columns:
+      minmax(360px, 430px)
+      minmax(300px, 350px)
+      300px;
+
+    justify-content: center;
+    align-items: center;
+
+    column-gap: 28px;
+  }
+
+  .performance-snapshot__intro {
+    grid-column: 1;
+    grid-row: 1;
+
+    align-self: center;
+
+    padding: 0;
+    margin: 0;
+
+    > span,
+    h2,
+    p {
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    h2 {
+      max-width: 420px;
+    }
+
+    p {
+      max-width: 420px;
+    }
+  }
+
+  .performance-snapshot__score {
+    grid-column: 2;
+    grid-row: 1;
+
+    justify-self: center;
+    align-self: center;
+
+    width: auto;
+    max-width: 350px;
+
+    margin: 0;
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 18px;
+  }
+
+  .performance-score-copy {
+    min-width: 0;
+    max-width: 150px;
+
+    margin: 0;
+    padding: 0;
+
+    > span,
+    strong,
+    small {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+
+  .performance-snapshot__stats {
+    grid-column: 3;
+    grid-row: 1;
+
+    justify-self: center;
+    align-self: center;
+
+    width: 300px;
+    max-width: 300px;
+
+    margin: 0;
+    padding: 0;
+  }
+}
+
+@media (max-width: 1280px) and (min-width: 901px) {
+  .performance-snapshot {
+    grid-template-columns:
+      minmax(320px, 1fr)
+      300px;
+
+    align-items: center;
+
+    column-gap: 28px;
+    row-gap: 22px;
+  }
+
+  .performance-snapshot__intro {
+    grid-column: 1;
+    grid-row: 1;
+
+    padding: 0;
+    margin: 0;
+  }
+
+  .performance-snapshot__score {
+    grid-column: 1;
+    grid-row: 2;
+
+    justify-self: start;
+
+    width: auto;
+
+    margin: 0;
+    padding: 0;
+  }
+
+  .performance-snapshot__stats {
+    grid-column: 2;
+    grid-row: 1 / 3;
+
+    justify-self: end;
+
+    width: 300px;
+    max-width: 300px;
+
+    margin: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .performance-snapshot {
+    grid-template-columns: 1fr;
+
+    gap: 24px;
+  }
+
+  .performance-snapshot__intro,
+  .performance-snapshot__score,
+  .performance-snapshot__stats {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .performance-snapshot__intro {
+    padding: 0;
+    margin: 0;
+  }
+
+  .performance-snapshot__score {
+    justify-self: start;
+
+    width: auto;
+
+    margin: 0;
+    padding: 0;
+  }
+
+  .performance-snapshot__stats {
+    justify-self: stretch;
+
+    width: 100%;
+    max-width: none;
+
+    margin: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .performance-snapshot__score {
+    gap: 14px;
+  }
+
+  .performance-score-copy {
+    max-width: 180px;
+  }
+}
+
+
+/* =========================================================
+   LOWER-PAGE SKELETON SYSTEM
+   Replaces plain loading text with the same shimmer language
+   used by the upper Performance & Progress sections.
+========================================================= */
+
+.performance-copy-skeleton {
+  width: 100%;
+  max-width: 430px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+
+  margin-top: 8px;
+}
+
+.performance-skeleton--copy-line {
+  display: block;
+
+  width: 92%;
+  height: 10px;
+
+  border-radius: 5px;
+}
+
+.performance-skeleton--copy-line-short {
+  width: 64%;
+}
+
+.performance-skeleton--metric-value {
+  display: inline-block;
+
+  width: 44px;
+  height: 18px;
+
+  border-radius: 6px;
+}
+
+.performance-skeleton--meta {
+  display: inline-block;
+
+  width: 78px;
+  height: 9px;
+
+  border-radius: 5px;
+}
+
+.performance-skeleton--meta-small {
+  display: inline-block;
+
+  width: 32px;
+  height: 9px;
+
+  border-radius: 5px;
+}
+
+.performance-skeleton--summary-text {
+  display: block;
+
+  width: min(290px, 88%);
+  height: 11px;
+
+  border-radius: 5px;
+}
+
+.performance-skeleton--advanced-value {
+  display: block;
+
+  width: 58px;
+  height: 23px;
+
+  margin-top: 7px;
+
+  border-radius: 7px;
+}
+
+.performance-skeleton--advanced-copy {
+  display: block;
+
+  width: 78%;
+  height: 9px;
+
+  margin-top: 9px;
+
+  border-radius: 5px;
+}
+
+.performance-skeleton--current-level {
+  display: block;
+
+  width: 92px;
+  height: 16px;
+
+  border-radius: 6px;
+}
+
+.performance-difficulty-history__skeleton {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.performance-skeleton--history-date {
+  width: 44px;
+  height: 8px;
+
+  border-radius: 4px;
+}
+
+.performance-skeleton--history-level {
+  width: 130px;
+  height: 10px;
+
+  border-radius: 5px;
+}
+
+.performance-skeleton--history-score {
+  width: 34px;
+  height: 10px;
+
+  justify-self: end;
+
+  border-radius: 5px;
+}
+
+.performance-weakness-item--skeleton {
+  p {
+    display: none;
+  }
+}
+
+.performance-skeleton--weakness-index {
+  width: 28px !important;
+  height: 28px !important;
+
+  border-radius: 8px !important;
+}
+
+.performance-skeleton--weakness-text {
+  width: 78%;
+  height: 10px;
+
+  border-radius: 5px;
+}
+
+.performance-skeleton--weakness-count {
+  width: 26px;
+  height: 10px;
+
+  border-radius: 5px;
+}
+
+.performance-next-priority__skeleton {
+  width: 100%;
+  max-width: 650px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+
+  margin-top: 5px;
+}
+
+.performance-skeleton--priority-line {
+  display: block;
+
+  width: 90%;
+  height: 11px;
+
+  border-radius: 5px;
+}
+
+.performance-skeleton--priority-line-short {
+  width: 62%;
+}
+
+.performance-insight-card__skeleton {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+
+  margin-top: 7px;
+}
+
+.performance-skeleton--insight-title {
+  display: block;
+
+  width: 118px;
+  height: 16px;
+
+  margin-bottom: 2px;
+
+  border-radius: 6px;
+}
+
+.performance-skeleton--insight-line {
+  display: block;
+
+  width: min(250px, 92%);
+  height: 9px;
+
+  border-radius: 5px;
+}
+
+.performance-skeleton--insight-line-short {
+  width: min(170px, 66%);
+}
+
+/* Prevent empty progress bars from looking like loaded data */
+.performance-type-score .performance-track > span {
+  transition: width 0.25s ease;
+}
+
+/* Keep skeletons visually aligned on smaller screens */
+@media (max-width: 700px) {
+  .performance-copy-skeleton {
+    max-width: 100%;
+  }
+
+  .performance-skeleton--summary-text,
+  .performance-next-priority__skeleton,
+  .performance-insight-card__skeleton {
+    max-width: 100%;
+  }
+}
+
+
+/* =========================================================
+   ROLE-SPECIFIC SKILL PROGRESS
+========================================================= */
+
+.performance-card--role-skills {
+  margin-bottom: 22px;
+
+  overflow: hidden;
+}
+
+.performance-role-skill-header {
+  align-items: flex-start;
+
+  p {
+    max-width: 760px;
+  }
+}
+
+/* =========================================================
+   ROLE SKILL SUMMARY STATS
+========================================================= */
+
+.performance-role-skill-stats {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+
+  gap: 12px;
+
+  padding:
+    6px
+    26px
+    0;
+}
+
+.performance-role-skill-stat {
+  min-width: 0;
+  min-height: 104px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding:
+    15px
+    16px;
+
+  border:
+    1px solid
+    #edecf3;
+
+  border-radius: 14px;
+
+  background: #fcfcfe;
+
+  > span:first-child {
+    color: #9697a8;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 0.55px;
+
+    text-transform: uppercase;
+  }
+
+  > strong {
+    margin-top: 6px;
+
+    color: #29293b;
+
+    font-size: 22px;
+    line-height: 1;
+
+    font-weight: 800;
+  }
+
+  > small {
+    margin-top: 7px;
+
+    color: #9697a8;
+
+    font-size: 10px;
+    line-height: 1.45;
+  }
+}
+
+/* =========================================================
+   AI ROLE-SKILL PRIORITY
+========================================================= */
+
+.performance-role-skill-priority {
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  margin:
+    14px
+    26px
+    0;
+
+  padding:
+    14px
+    15px;
+
+  border:
+    1px solid
+    #e8e4ff;
+
+  border-radius: 13px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #f8f6ff,
+      #fbfaff
+    );
+
+  > svg {
+    flex:
+      0 0 auto;
+
+    color: #6c4cf5;
+
+    font-size: 18px;
+  }
+
+  > div {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+
+    > span {
+      color: #8f8da1;
+
+      font-size: 9px;
+      font-weight: 800;
+
+      letter-spacing: 0.55px;
+    }
+
+    > strong {
+      color: #39384b;
+
+      font-size: 11px;
+      line-height: 1.5;
+
+      font-weight: 700;
+    }
+  }
+}
+
+/* =========================================================
+   ROLE SKILL GRID HEADER
+========================================================= */
+
+.performance-role-skill-section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding:
+    24px
+    26px
+    13px;
+
+  > div:first-child {
+    min-width: 0;
+
+    > span {
+      color: #704dff;
+
+      font-size: 9px;
+      font-weight: 800;
+
+      letter-spacing: 1.2px;
+    }
+
+    h3 {
+      margin:
+        5px
+        0
+        5px;
+
+      color: #29293b;
+
+      font-size: 17px;
+      font-weight: 800;
+
+      letter-spacing: -0.3px;
+    }
+
+    p {
+      max-width: 630px;
+
+      margin: 0;
+
+      color: #9697a8;
+
+      font-size: 10px;
+      line-height: 1.55;
+    }
+  }
+}
+
+.performance-role-skill-legend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+
+  gap: 6px;
+
+  span {
+    padding:
+      5px
+      8px;
+
+    border-radius: 7px;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    &.strong {
+      background:
+        rgba(
+          37,
+          157,
+          111,
+          0.09
+        );
+
+      color: #27805f;
+    }
+
+    &.good {
+      background:
+        rgba(
+          69,
+          130,
+          210,
+          0.09
+        );
+
+      color: #3e77b9;
+    }
+
+    &.developing {
+      background:
+        rgba(
+          108,
+          76,
+          245,
+          0.09
+        );
+
+      color: #6849ef;
+    }
+
+    &.beginner {
+      background:
+        rgba(
+          210,
+          78,
+          78,
+          0.08
+        );
+
+      color: #b44d4d;
+    }
+
+    &.not-assessed {
+      background: #f0f0f4;
+
+      color: #88899b;
+    }
+  }
+}
+
+/* =========================================================
+   ROLE SKILL CARDS
+========================================================= */
+
+.performance-role-skill-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+
+  gap: 11px;
+
+  padding:
+    0
+    26px
+    27px;
+}
+
+.performance-role-skill-card {
+  min-width: 0;
+
+  padding:
+    14px
+    15px;
+
+  border:
+    1px solid
+    #edecf3;
+
+  border-radius: 14px;
+
+  background: #fcfcfe;
+
+  transition:
+    border-color
+    0.18s ease,
+    transform
+    0.18s ease,
+    box-shadow
+    0.18s ease;
+
+  &:hover {
+    transform:
+      translateY(
+        -1px
+      );
+
+    box-shadow:
+      0 8px 20px
+      rgba(
+        45,
+        37,
+        90,
+        0.035
+      );
+  }
+
+  &--strong {
+    border-color:
+      rgba(
+        37,
+        157,
+        111,
+        0.17
+      );
+  }
+
+  &--good {
+    border-color:
+      rgba(
+        69,
+        130,
+        210,
+        0.16
+      );
+  }
+
+  &--developing {
+    border-color:
+      rgba(
+        108,
+        76,
+        245,
+        0.16
+      );
+  }
+
+  &--beginner {
+    border-color:
+      rgba(
+        210,
+        78,
+        78,
+        0.18
+      );
+  }
+
+  &--not_assessed {
+    background: #fafafd;
+  }
+
+  > p {
+    min-height: 33px;
+
+    margin:
+      10px
+      0
+      0;
+
+    color: #9091a2;
+
+    font-size: 10px;
+    line-height: 1.5;
+  }
+}
+
+.performance-role-skill-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  > div {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+
+    > strong {
+      overflow: hidden;
+
+      color: #333345;
+
+      font-size: 12px;
+      font-weight: 800;
+
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+
+  > b {
+    flex-shrink: 0;
+
+    color: #29293b;
+
+    font-size: 17px;
+    font-weight: 800;
+  }
+}
+
+.performance-role-skill-status {
+  width: fit-content;
+
+  padding:
+    4px
+    7px;
+
+  border-radius: 6px;
+
+  font-size: 8px;
+  font-weight: 750;
+
+  &.strong {
+    background:
+      rgba(
+        37,
+        157,
+        111,
+        0.09
+      );
+
+    color: #27805f;
+  }
+
+  &.good {
+    background:
+      rgba(
+        69,
+        130,
+        210,
+        0.09
+      );
+
+    color: #3e77b9;
+  }
+
+  &.developing {
+    background:
+      rgba(
+        108,
+        76,
+        245,
+        0.09
+      );
+
+    color: #6849ef;
+  }
+
+  &.beginner {
+    background:
+      rgba(
+        210,
+        78,
+        78,
+        0.08
+      );
+
+    color: #b44d4d;
+  }
+
+  &.not_assessed {
+    background: #f0f0f4;
+
+    color: #88899b;
+  }
+}
+
+.performance-role-skill-track {
+  margin-top: 12px;
+
+  &.is-empty {
+    background:
+      repeating-linear-gradient(
+        90deg,
+        #ededf3 0,
+        #ededf3 7px,
+        #f8f8fa 7px,
+        #f8f8fa 14px
+      );
+  }
+}
+
+.performance-role-skill-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 6px;
+
+  margin-top: 11px;
+
+  span {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 4px;
+
+    padding:
+      4px
+      6px;
+
+    border-radius: 6px;
+
+    background: #f1f1f5;
+
+    color: #878899;
+
+    font-size: 8px;
+    font-weight: 650;
+
+    &.verified {
+      background:
+        rgba(
+          37,
+          157,
+          111,
+          0.09
+        );
+
+      color: #27805f;
+    }
+
+    svg {
+      font-size: 9px;
+    }
+  }
+}
+
+.performance-role-skill-empty {
+  margin:
+    0
+    26px
+    26px;
+}
+
+/* =========================================================
+   ROLE SKILL SKELETONS
+========================================================= */
+
+.performance-skeleton--role-stat-label {
+  width: 82px;
+  height: 9px;
+
+  border-radius: 5px;
+}
+
+.performance-skeleton--role-stat-value {
+  width: 58px;
+  height: 23px;
+
+  margin-top: 8px;
+
+  border-radius: 7px;
+}
+
+.performance-skeleton--role-stat-copy {
+  width: 78%;
+  height: 9px;
+
+  margin-top: 9px;
+
+  border-radius: 5px;
+}
+
+.performance-skeleton--role-status {
+  width: 78px;
+  height: 18px;
+
+  border-radius: 6px;
+}
+
+.performance-skeleton--role-skill-name {
+  width: 130px;
+  height: 12px;
+
+  border-radius: 5px;
+}
+
+.performance-skeleton--role-skill-score {
+  width: 38px;
+  height: 18px;
+
+  border-radius: 6px;
+}
+
+.performance-role-skill-card__skeleton-copy {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+
+  margin-top: 11px;
+}
+
+.performance-skeleton--role-copy {
+  width: 90%;
+  height: 9px;
+
+  border-radius: 5px;
+}
+
+.performance-skeleton--role-copy-short {
+  width: 63%;
+}
+
+/* =========================================================
+   ROLE SKILL RESPONSIVE
+========================================================= */
+
+@media (
+  max-width:
+    1120px
+) {
+  .performance-role-skill-stats {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .performance-role-skill-grid {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .performance-role-skill-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .performance-role-skill-legend {
+    justify-content: flex-start;
+  }
+}
+
+@media (
+  max-width:
+    650px
+) {
+  .performance-role-skill-stats,
+  .performance-role-skill-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .performance-role-skill-stats {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .performance-role-skill-grid {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .performance-role-skill-priority,
+  .performance-role-skill-empty {
+    margin-left: 18px;
+    margin-right: 18px;
+  }
+
+  .performance-role-skill-section-heading {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}
+
+
+/* =========================================================
+   ROLE SKILL SHOW MORE / HIDE
+========================================================= */
+
+.performance-role-skill-toggle-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding:
+    0
+    26px
+    26px;
+}
+
+.performance-role-skill-toggle {
+  min-width: 142px;
+  min-height: 38px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  padding:
+    9px
+    15px;
+
+  border:
+    1px solid
+    #e2def8;
+
+  border-radius: 10px;
+
+  background:
+    #f8f6ff;
+
+  color:
+    #6548e9;
+
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 750;
+
+  cursor: pointer;
+
+  transition:
+    background
+      0.18s ease,
+    border-color
+      0.18s ease,
+    transform
+      0.18s ease,
+    box-shadow
+      0.18s ease;
+
+  svg {
+    flex:
+      0 0 auto;
+
+    font-size: 14px;
+
+    transition:
+      transform
+      0.18s ease;
+  }
+
+  span {
+    line-height: 1;
+  }
+
+  small {
+    min-width: 24px;
+    height: 20px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding:
+      0
+      6px;
+
+    border-radius: 999px;
+
+    background:
+      rgba(
+        108,
+        76,
+        245,
+        0.1
+      );
+
+    color:
+      #6849ef;
+
+    font-size: 8px;
+    font-weight: 800;
+  }
+
+  &:hover {
+    transform:
+      translateY(
+        -1px
+      );
+
+    border-color:
+      #d5cff8;
+
+    background:
+      #f3f0ff;
+
+    box-shadow:
+      0 6px 16px
+      rgba(
+        81,
+        58,
+        170,
+        0.07
+      );
+  }
+
+  &:active {
+    transform:
+      translateY(
+        0
+      );
+  }
+
+  &:focus-visible {
+    outline:
+      2px solid
+      rgba(
+        108,
+        76,
+        245,
+        0.25
+      );
+
+    outline-offset:
+      2px;
+  }
+}
+
+@media (
+  max-width:
+    650px
+) {
+  .performance-role-skill-toggle-wrap {
+    padding-left:
+      18px;
+
+    padding-right:
+      18px;
+  }
+
+  .performance-role-skill-toggle {
+    width: 100%;
+  }
+}

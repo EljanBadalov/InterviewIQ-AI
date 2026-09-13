@@ -7,10 +7,12 @@ import {
   generateDailyPlan,
   getAutomation,
   getAutomationSummary,
+  getCareerFields,
   refreshAutomationProgress,
   replanAutomation,
   updateAutomationStatus,
   updateTaskStatus,
+  updateJobPreferences,
 } from "../controllers/careerAutomationController";
 
 import {
@@ -102,6 +104,7 @@ router.use(
  *   }
  * }
  */
+
 router.post(
   "/career-automation/",
   createAutomation
@@ -121,9 +124,74 @@ router.post(
  * - tracked job matches
  * - progress
  */
+
 router.get(
   "/career-automation/",
   getAutomation
+);
+
+/* =========================================================
+   CAREER FIELDS
+========================================================= */
+
+/*
+ * GET ACTIVE CAREER FIELDS
+ *
+ * GET /api/v1/career-automation/fields
+ *
+ * Returns only active career fields from MongoDB.
+ * Used by frontend dropdowns.
+ */
+
+router.get(
+  "/career-automation/fields",
+  getCareerFields
+);
+
+/* =========================================================
+   JOB SEARCH PREFERENCES
+========================================================= */
+
+/*
+ * UPDATE JOB SEARCH PREFERENCES
+ *
+ * PATCH /api/v1/career-automation/job-preferences
+ *
+ * This endpoint allows the user to explicitly choose which
+ * role / vacancy type InterviewIQ should search for.
+ *
+ * Example body:
+ *
+ * {
+ *   "targetRole": "React Developer",
+ *   "locations": [
+ *     "Boston, MA"
+ *   ],
+ *   "workModes": [
+ *     "remote",
+ *     "hybrid"
+ *   ],
+ *   "employmentTypes": [
+ *     "full_time",
+ *     "contract"
+ *   ],
+ *   "experienceLevels": [
+ *     "entry",
+ *     "junior"
+ *   ],
+ *   "minimumMatchScore": 65,
+ *   "dailyApplicationTarget": 3,
+ *   "notifyOnNewMatches": true,
+ *   "notificationMatchThreshold": 75
+ * }
+ *
+ * targetRole becomes the primary role used by the
+ * external job search and matching system.
+ */
+
+router.patch(
+  "/career-automation/job-preferences",
+  updateJobPreferences
 );
 
 /* =========================================================
@@ -141,6 +209,7 @@ router.get(
  *
  * Designed primarily for the Career Automation dashboard.
  */
+
 router.get(
   "/career-automation/summary",
   getAutomationSummary
@@ -167,6 +236,7 @@ router.get(
  *
  * Older unfinished tasks can also be carried forward.
  */
+
 router.post(
   "/career-automation/daily-plan",
   generateDailyPlan
@@ -196,6 +266,7 @@ router.post(
  *
  * to create updated next steps.
  */
+
 router.post(
   "/career-automation/replan",
   replanAutomation
@@ -216,6 +287,7 @@ router.post(
  * - interview progress
  * - automation task progress
  */
+
 router.post(
   "/career-automation/progress/refresh",
   refreshAutomationProgress
@@ -242,6 +314,7 @@ router.post(
  * - completed
  * - archived
  */
+
 router.patch(
   "/career-automation/status",
   updateAutomationStatus
@@ -268,6 +341,7 @@ router.patch(
  * - completed
  * - skipped
  */
+
 router.patch(
   "/career-automation/tasks/:taskId",
   updateTaskStatus

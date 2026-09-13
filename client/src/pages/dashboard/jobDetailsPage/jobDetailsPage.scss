@@ -1264,3 +1264,122 @@
     font-size: 11px;
   }
 }
+
+/* =========================================================
+   SOURCE / APPLY / SALARY
+========================================================= */
+
+.job-details-hero-right {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.job-source-badge {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: 10px;
+  padding: 6px 10px;
+  border: 1px solid #ebe7ff;
+  border-radius: 999px;
+  background: #f6f3ff;
+  color: #6848ef;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.03em;
+}
+
+.job-apply-button {
+  min-width: 155px;
+  min-height: 46px;
+  padding: 11px 18px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #7655fa,
+      #613fe9
+    );
+
+  color: #ffffff;
+  text-decoration: none;
+
+  font-size: 13px;
+  font-weight: 750;
+
+  box-shadow:
+    0 10px 24px
+    rgba(
+      100,
+      69,
+      233,
+      0.18
+    );
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  svg {
+    font-size: 16px;
+  }
+
+  &:hover {
+    color: #ffffff;
+    transform:
+      translateY(
+        -1px
+      );
+
+    box-shadow:
+      0 13px 28px
+      rgba(
+        100,
+        69,
+        233,
+        0.24
+      );
+  }
+}
+
+.salary-estimate-label {
+  margin-top: 2px;
+  color: #a09daf;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   RESPONSIVE APPLY
+========================================================= */
+
+@media (max-width: 850px) {
+  .job-details-hero-right {
+    gap: 12px;
+  }
+
+  .job-apply-button {
+    min-width: 140px;
+  }
+}
+
+@media (max-width: 600px) {
+  .job-details-hero-right {
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .job-apply-button {
+    width: 100%;
+    min-width: 0;
+  }
+}

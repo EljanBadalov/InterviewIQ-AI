@@ -101,6 +101,19 @@
         0.09
       );
   }
+
+  &:disabled {
+    opacity: 0.65;
+
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .is-spinning {
+    animation:
+      jobsSpin 0.8s linear
+      infinite;
+  }
 }
 
 .jobs-error,
@@ -301,9 +314,7 @@
       260px,
       1fr
     )
-    165px
-    165px
-    165px;
+    auto;
 
   gap: 12px;
 
@@ -332,6 +343,29 @@
 
   background: #ffffff;
 
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:focus-within {
+    border-color:
+      rgba(
+        108,
+        76,
+        245,
+        0.28
+      );
+
+    box-shadow:
+      0 0 0 4px
+      rgba(
+        108,
+        76,
+        245,
+        0.055
+      );
+  }
+
   svg {
     flex-shrink: 0;
 
@@ -359,11 +393,17 @@
   }
 }
 
-.jobs-toolbar select {
-  width: 100%;
+.jobs-filter-trigger {
+  min-width: 118px;
   min-height: 48px;
 
-  padding: 0 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  padding: 0 15px;
 
   border: 1px solid
     rgba(
@@ -375,16 +415,714 @@
 
   border-radius: 13px;
 
-  outline: none;
-
   background: #ffffff;
 
   color: #5f6070;
 
   font-family: inherit;
   font-size: 11px;
+  font-weight: 650;
 
   cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  svg {
+    font-size: 15px;
+  }
+
+  strong {
+    min-width: 20px;
+    height: 20px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 6px;
+
+    border-radius: 999px;
+
+    background: #6c4cf5;
+
+    color: #ffffff;
+
+    font-size: 9px;
+    font-weight: 750;
+  }
+
+  &:hover {
+    transform:
+      translateY(-1px);
+
+    border-color:
+      rgba(
+        108,
+        76,
+        245,
+        0.22
+      );
+
+    color: #6546ed;
+
+    box-shadow:
+      0 9px 26px
+      rgba(
+        55,
+        40,
+        130,
+        0.055
+      );
+  }
+
+  &.has-active-filters {
+    border-color:
+      rgba(
+        108,
+        76,
+        245,
+        0.24
+      );
+
+    background:
+      rgba(
+        108,
+        76,
+        245,
+        0.045
+      );
+
+    color: #6546ed;
+  }
+}
+
+/* =========================================================
+   FILTER DRAWER
+========================================================= */
+
+body.jobs-filter-open {
+  overflow: hidden;
+}
+
+.jobs-filter-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+
+  visibility: hidden;
+
+  background:
+    rgba(
+      18,
+      18,
+      30,
+      0
+    );
+
+  pointer-events: none;
+
+  transition:
+    background 0.28s ease,
+    visibility 0.28s ease;
+
+  &.is-open {
+    visibility: visible;
+
+    background:
+      rgba(
+        18,
+        18,
+        30,
+        0.32
+      );
+
+    pointer-events: auto;
+  }
+}
+
+.jobs-filter-drawer {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  width: min(
+    460px,
+    94vw
+  );
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  border-left: 1px solid
+    rgba(
+      108,
+      76,
+      245,
+      0.08
+    );
+
+  background: #ffffff;
+
+  box-shadow:
+    -25px 0 70px
+    rgba(
+      27,
+      24,
+      55,
+      0.14
+    );
+
+  transform:
+    translateX(100%);
+
+  transition:
+    transform 0.32s
+    cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    );
+
+  &.is-open {
+    transform:
+      translateX(0);
+  }
+}
+
+.filter-drawer-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 28px 26px 22px;
+
+  border-bottom: 1px solid
+    rgba(
+      20,
+      20,
+      40,
+      0.065
+    );
+
+  h2 {
+    margin: 7px 0 5px;
+
+    color: #171725;
+
+    font-size: 26px;
+    font-weight: 760;
+
+    letter-spacing: -0.04em;
+  }
+
+  p {
+    max-width: 290px;
+
+    margin: 0;
+
+    color: #9696a8;
+
+    font-size: 10px;
+    line-height: 1.55;
+  }
+}
+
+.filter-close-btn {
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid
+    rgba(
+      20,
+      20,
+      40,
+      0.075
+    );
+
+  border-radius: 11px;
+
+  background: #ffffff;
+
+  color: #7f7f91;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+
+  svg {
+    font-size: 18px;
+  }
+
+  &:hover {
+    color: #6243e8;
+
+    border-color:
+      rgba(
+        108,
+        76,
+        245,
+        0.2
+      );
+
+    background:
+      rgba(
+        108,
+        76,
+        245,
+        0.045
+      );
+  }
+}
+
+.filter-drawer-content {
+  flex: 1;
+
+  /*
+   * The new Job Market filter adds one more section. Keep
+   * scrolling smooth while preserving the current drawer UI.
+   */
+  overscroll-behavior: contain;
+
+  overflow-y: auto;
+
+  padding: 8px 26px 26px;
+
+  scrollbar-width: thin;
+  scrollbar-color:
+    rgba(
+      108,
+      76,
+      245,
+      0.24
+    )
+    transparent;
+}
+
+.filter-section {
+  padding: 22px 0;
+
+  border-bottom: 1px solid
+    rgba(
+      20,
+      20,
+      40,
+      0.055
+    );
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+.filter-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin-bottom: 13px;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+  }
+
+  strong {
+    color: #252533;
+
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  span {
+    color: #a0a0b0;
+
+    font-size: 9px;
+  }
+
+  > svg {
+    flex-shrink: 0;
+
+    color: #7556f3;
+
+    font-size: 15px;
+  }
+}
+
+.filter-input-shell,
+.filter-select-shell {
+  min-height: 45px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 0 13px;
+
+  border: 1px solid
+    rgba(
+      20,
+      20,
+      40,
+      0.08
+    );
+
+  border-radius: 11px;
+
+  background: #fbfbfe;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+
+  &:focus-within {
+    border-color:
+      rgba(
+        108,
+        76,
+        245,
+        0.25
+      );
+
+    background: #ffffff;
+
+    box-shadow:
+      0 0 0 4px
+      rgba(
+        108,
+        76,
+        245,
+        0.045
+      );
+  }
+
+  svg {
+    flex-shrink: 0;
+
+    color: #9696a8;
+
+    font-size: 14px;
+  }
+
+  input,
+  select {
+    width: 100%;
+
+    border: 0;
+    outline: 0;
+
+    background: transparent;
+
+    color: #3d3d4d;
+
+    font-family: inherit;
+    font-size: 10px;
+  }
+
+  input {
+    &::placeholder {
+      color: #b0b0be;
+    }
+  }
+
+  select {
+    min-height: 43px;
+
+    cursor: pointer;
+  }
+}
+
+.salary-input {
+  > span {
+    color: #6c4cf5;
+
+    font-size: 12px;
+    font-weight: 700;
+  }
+}
+
+.filter-helper-text {
+  display: block;
+
+  margin-top: 8px;
+
+  color: #a0a0b0;
+
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+.filter-chip-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  gap: 8px;
+
+  &.three-columns {
+    grid-template-columns:
+      repeat(
+        3,
+        minmax(
+          0,
+          1fr
+        )
+      );
+
+    /*
+     * Market/source labels can be longer than the original
+     * Remote / Hybrid / On-site values.
+     */
+    .filter-chip {
+      min-width: 0;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+  }
+}
+
+.filter-chip {
+  min-height: 39px;
+
+  /*
+   * Added for the expanded market/source filters:
+   * - Azerbaijan (N)
+   * - Global (N)
+   * - SuccessFactors
+   *
+   * Keeps longer labels centered without breaking the drawer.
+   */
+  white-space: normal;
+  line-height: 1.25;
+  text-align: center;
+
+  padding: 0 10px;
+
+  border: 1px solid
+    rgba(
+      20,
+      20,
+      40,
+      0.075
+    );
+
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  color: #717183;
+
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 620;
+
+  cursor: pointer;
+
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+
+  &:hover {
+    transform:
+      translateY(-1px);
+
+    color: #6546ed;
+
+    border-color:
+      rgba(
+        108,
+        76,
+        245,
+        0.18
+      );
+  }
+
+  &.selected {
+    border-color:
+      rgba(
+        108,
+        76,
+        245,
+        0.28
+      );
+
+    background:
+      linear-gradient(
+        135deg,
+        rgba(
+          117,
+          86,
+          255,
+          0.11
+        ),
+        rgba(
+          95,
+          62,
+          232,
+          0.075
+        )
+      );
+
+    color: #6243e8;
+
+    box-shadow:
+      inset 0 0 0 1px
+      rgba(
+        108,
+        76,
+        245,
+        0.035
+      );
+  }
+}
+
+.filter-drawer-footer {
+  display: grid;
+
+  grid-template-columns:
+    110px
+    1fr;
+
+  gap: 10px;
+
+  padding: 18px 26px 22px;
+
+  border-top: 1px solid
+    rgba(
+      20,
+      20,
+      40,
+      0.065
+    );
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.96
+    );
+
+  box-shadow:
+    0 -10px 30px
+    rgba(
+      30,
+      30,
+      60,
+      0.025
+    );
+}
+
+.filter-reset-btn,
+.filter-apply-btn {
+  min-height: 44px;
+
+  border-radius: 11px;
+
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 680;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.filter-reset-btn {
+  border: 1px solid
+    rgba(
+      20,
+      20,
+      40,
+      0.08
+    );
+
+  background: #ffffff;
+
+  color: #6f6f80;
+
+  &:hover:not(:disabled) {
+    transform:
+      translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.42;
+
+    cursor: not-allowed;
+  }
+}
+
+.filter-apply-btn {
+  border: 0;
+
+  background:
+    linear-gradient(
+      135deg,
+      #7252f8,
+      #6040e9
+    );
+
+  color: #ffffff;
+
+  box-shadow:
+    0 10px 25px
+    rgba(
+      96,
+      64,
+      233,
+      0.18
+    );
+
+  &:hover {
+    transform:
+      translateY(-1px);
+
+    box-shadow:
+      0 13px 30px
+      rgba(
+        96,
+        64,
+        233,
+        0.23
+      );
+  }
 }
 
 .jobs-results-header {
@@ -1164,18 +1902,20 @@
 
   .jobs-toolbar {
     grid-template-columns:
-      1fr 1fr;
-
-    .jobs-search {
-      grid-column:
-        1 / -1;
-    }
+      1fr auto;
   }
 }
 
 @media (
   max-width: 700px
 ) {
+  .jobs-filter-drawer {
+    width: min(
+      430px,
+      96vw
+    );
+  }
+
   .jobs-hero {
     align-items: flex-start;
     flex-direction: column;
@@ -1197,6 +1937,24 @@
   .jobs-toolbar {
     grid-template-columns:
       1fr;
+
+    .jobs-filter-trigger {
+      width: 100%;
+    }
+  }
+
+  .filter-drawer-header,
+  .filter-drawer-content,
+  .filter-drawer-footer {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .filter-chip-grid {
+    &.three-columns {
+      grid-template-columns:
+        1fr;
+    }
   }
 
   .jobs-grid {
@@ -1251,5 +2009,52 @@
   .pagination-page-btn {
     width: 38px;
     height: 38px;
+  }
+}
+
+
+/* =========================================================
+   COMPACT PAGINATION
+   1 2 3 4 … 12 / 1 … 5 6 7 … 12
+========================================================= */
+
+.jobs-pagination {
+  gap: 12px;
+}
+
+.pagination-pages {
+  gap: 7px;
+}
+
+.pagination-ellipsis {
+  width: 28px;
+  height: 40px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 auto;
+
+  color: #9898aa;
+
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+
+  user-select: none;
+  pointer-events: none;
+}
+
+@media (max-width: 600px) {
+  .pagination-pages {
+    gap: 5px;
+  }
+
+  .pagination-ellipsis {
+    width: 22px;
+    height: 38px;
+
+    font-size: 12px;
   }
 }

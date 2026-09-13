@@ -18,6 +18,12 @@ import {
   type ICareerProgressContext,
 } from "./careerProgressService";
 
+import {
+  CareerAutomation,
+  type CareerRoadmapCategory,
+  type ICareerRoadmapMilestone,
+} from "../models/CareerAutomation";
+
 /* =========================================================
    TYPES
 ========================================================= */
@@ -82,6 +88,12 @@ export interface ICareerNextStepsContext {
   userMessage?: string;
 
   contextualMode?: string;
+
+  personalizedRoadmapAvailable?:
+    boolean;
+
+  personalizedRoadmapSections?:
+    number;
 
   steps:
     ICareerNextStep[];
@@ -275,237 +287,418 @@ const isRoadmapOrImprovementRequest = (
   );
 };
 
-const getSkillRoadmapDescription = (
-  skill: string,
-  targetRole?: string
+/* =========================================================
+   PERSONALIZED ROADMAP HELPERS
+
+   The roadmap is generated upstream by careerGoalService using:
+   - deterministic CV/job/interview/progress evidence
+   - Qwen for specific, non-repetitive wording
+   - validated structured fallback
+
+   This service should NOT regenerate generic roadmap prose.
+   It converts the stored personalized roadmap into actionable next steps.
+========================================================= */
+
+const normalizeKey = (
+  value:
+    string | undefined | null
 ): string => {
-  const normalized =
-    skill
-      .trim()
-      .toLowerCase();
-
-  const role =
-    targetRole
-      ? ` for ${targetRole} roles`
-      : "";
-
-  switch (
-    normalized
-  ) {
-    case "typescript":
-      return `Learn TypeScript fundamentals, interfaces, types, generics, and how to use TypeScript in real React projects${role}.`;
-
-    case "rest api":
-    case "rest apis":
-      return `Practice consuming REST APIs with GET, POST, PUT, PATCH, and DELETE requests, including authentication, loading states, validation, and error handling${role}.`;
-
-    case "figma":
-      return `Learn to read Figma designs accurately, understand spacing and component systems, and convert design specifications into responsive frontend interfaces${role}.`;
-
-    case "ui design":
-      return `Strengthen layout, spacing, typography, responsive design, accessibility, and reusable component design so your interfaces feel production-ready${role}.`;
-
-    case "react":
-    case "react.js":
-      return `Deepen React knowledge with reusable components, hooks, state management, forms, routing, API integration, and performance-conscious patterns${role}.`;
-
-    case "next.js":
-      return `Practice Next.js routing, layouts, data fetching, server and client components, metadata, and deployment patterns${role}.`;
-
-    case "git":
-      return `Practice real Git workflows including branching, pull requests, resolving conflicts, clean commits, and collaborative repository work${role}.`;
-
-    default:
-      return `Build practical confidence in ${skill} through focused study, small exercises, and at least one project feature where you use it in a realistic scenario${role}.`;
-  }
-};
-
-const collectJobPrioritySkills = (
-  jobMatches?:
-    ICareerJobMatchingResult
-): string[] => {
-  if (
-    !jobMatches?.found
-  ) {
-    return [];
-  }
-
-  const fromJobs =
-    jobMatches.matchedJobs
-      .flatMap(
-        (
-          job
-        ) =>
-          job.match
-            .missingSkills ??
-          []
-      );
-
-  const fromBest =
-    jobMatches.bestMatch
-      ?.match
-      .missingSkills ??
-    [];
-
-  return uniqueStrings([
-    ...fromBest,
-    ...fromJobs,
-  ]);
-};
-
-const buildContextualJobRoadmapSteps = (
-  jobMatches?:
-    ICareerJobMatchingResult,
-  targetRole?: string
-): ICareerNextStep[] => {
-  if (
-    !jobMatches?.found
-  ) {
-    return [];
-  }
-
-  const prioritySkills =
-    collectJobPrioritySkills(
-      jobMatches
+  return (
+    normalizeString(
+      value
+    ) ||
+    ""
+  )
+    .toLowerCase()
+    .replace(
+      /[^a-z0-9]+/g,
+      " "
     )
-      .slice(
-        0,
-        4
-      );
+    .trim();
+};
 
-  const steps:
-    ICareerNextStep[] = [];
+const roadmapCategoryToNextStepCategory = (
+  category:
+    CareerRoadmapCategory
+): CareerNextStepCategory => {
+  switch (
+    category
+  ) {
+    case "CORE_SKILLS":
+    case "ROLE_SKILLS":
+      return "SKILL";
+
+    case "CV":
+      return "CV";
+
+    case "INTERVIEW":
+      return "INTERVIEW";
+
+    case "JOB_SEARCH":
+      return "JOB";
+
+    case "PROJECTS":
+    default:
+      /*
+       * CareerNextStepCategory does not currently have a PORTFOLIO
+       * value. Keep PROJECTS under CAREER and preserve the precise
+       * roadmap category in metadata. careerAutomationService can
+       * continue creating tasks without a breaking type change.
+       */
+      return "CAREER";
+  }
+};
+
+const resolveStoredRoadmap = async (
+  userId:
+    string
+): Promise<
+  ICareerRoadmapMilestone[]
+> => {
+  try {
+    const automation =
+      await CareerAutomation
+        .findOne({
+          userId,
+
+          status: {
+            $in: [
+              "active",
+              "paused",
+            ],
+          },
+        })
+        .select({
+          roadmap:
+            1,
+        })
+        .lean();
+
+    if (
+      !automation ||
+      !Array.isArray(
+        automation.roadmap
+      )
+    ) {
+      return [];
+    }
+
+    return (
+      automation.roadmap as
+        ICareerRoadmapMilestone[]
+    );
+  } catch (
+    error
+  ) {
+    console.error(
+      "[Career Next Steps] Stored personalized roadmap failed:",
+      error
+    );
+
+    return [];
+  }
+};
+
+const buildPersonalizedRoadmapSteps = ({
+  roadmap,
+  categories,
+  maxSteps =
+    12,
+}: {
+  roadmap:
+    ICareerRoadmapMilestone[];
+
+  categories?:
+    CareerRoadmapCategory[];
+
+  maxSteps?:
+    number;
+}): ICareerNextStep[] => {
+  const categoryFilter =
+    categories
+      ? new Set<
+          CareerRoadmapCategory
+        >(
+          categories
+        )
+      : undefined;
+
+  const result:
+    ICareerNextStep[] =
+      [];
+
+  const seen =
+    new Set<string>();
+
+  const sortedMilestones =
+    [
+      ...roadmap,
+    ].sort(
+      (
+        a,
+        b
+      ) =>
+        a.order -
+        b.order
+    );
 
   for (
-    const [
-      index,
-      skill,
-    ] of prioritySkills.entries()
+    const milestone
+    of sortedMilestones
   ) {
-    steps.push({
-      id:
-        createStepId(
-          "SKILL",
-          `roadmap-${skill}`
-        ),
+    if (
+      !milestone.category
+    ) {
+      continue;
+    }
 
-      category:
-        "SKILL",
+    if (
+      categoryFilter &&
+      !categoryFilter.has(
+        milestone.category
+      )
+    ) {
+      continue;
+    }
 
-      priority:
-        index <= 1
-          ? "high"
-          : "medium",
+    const recommendations =
+      milestone
+        .recommendations ||
+      [];
 
-      title:
-        `Strengthen ${skill}`,
+    for (
+      const [
+        index,
+        recommendation,
+      ]
+      of recommendations.entries()
+    ) {
+      const title =
+        normalizeString(
+          recommendation.title
+        );
 
-      description:
-        getSkillRoadmapDescription(
-          skill,
-          targetRole
-        ),
+      const whyItMatters =
+        normalizeString(
+          recommendation
+            .whyItMatters
+        );
 
-      reason:
-        "This skill appears as a gap across relevant job matches and directly supports the job-search direction discussed in the previous message.",
+      const action =
+        normalizeString(
+          recommendation.action
+        );
 
-      metadata: {
-        skill,
+      if (
+        !title ||
+        !whyItMatters ||
+        !action
+      ) {
+        continue;
+      }
 
-        roadmapOrder:
-          index + 1,
+      const dedupeKey =
+        [
+          milestone.category,
+          normalizeKey(
+            title
+          ),
+          normalizeKey(
+            action
+          ),
+        ].join(
+          "|"
+        );
 
-        contextIntent:
-          "JOB_SEARCH_HELP",
-      },
-    });
+      if (
+        seen.has(
+          dedupeKey
+        )
+      ) {
+        continue;
+      }
+
+      seen.add(
+        dedupeKey
+      );
+
+      const whatToLearn =
+        uniqueStrings(
+          recommendation
+            .whatToLearn ||
+          []
+        );
+
+      const evidence =
+        uniqueStrings(
+          recommendation
+            .evidence ||
+          []
+        );
+
+      const proofOfCompletion =
+        normalizeString(
+          recommendation
+            .proofOfCompletion
+        );
+
+      const milestoneReason =
+        normalizeString(
+          milestone.reason
+        );
+
+      result.push({
+        id:
+          createStepId(
+            roadmapCategoryToNextStepCategory(
+              milestone.category
+            ),
+            `${milestone.id}-${index}-${title}`
+          ),
+
+        category:
+          roadmapCategoryToNextStepCategory(
+            milestone.category
+          ),
+
+        priority:
+          recommendation
+            .priority,
+
+        title,
+
+        /*
+         * description is the concrete thing the user should do.
+         * reason separately explains why the recommendation exists.
+         */
+        description:
+          action,
+
+        reason:
+          whyItMatters,
+
+        score:
+          typeof milestone
+            .readinessScore ===
+            "number"
+            ? milestone
+                .readinessScore
+            : undefined,
+
+        metadata: {
+          personalized:
+            true,
+
+          roadmapMilestoneId:
+            milestone.id,
+
+          roadmapCategory:
+            milestone.category,
+
+          roadmapTitle:
+            milestone.title,
+
+          milestoneDescription:
+            milestone.description,
+
+          milestoneReason,
+
+          readinessScore:
+            milestone
+              .readinessScore,
+
+          relatedSkills:
+            milestone
+              .relatedSkills,
+
+          whatToLearn,
+
+          action,
+
+          proofOfCompletion,
+
+          recommendationSource:
+            recommendation
+              .source,
+
+          evidence,
+
+          generatedBy:
+            milestone
+              .generatedBy,
+
+          generatedAt:
+            milestone
+              .generatedAt,
+
+          recommendationIndex:
+            index,
+        },
+      });
+
+      if (
+        result.length >=
+        maxSteps
+      ) {
+        return result;
+      }
+    }
   }
 
-  const best =
-    jobMatches.bestMatch;
+  return result;
+};
 
-  if (
-    best
+const mergeUniqueSteps = (
+  groups:
+    ICareerNextStep[][]
+): ICareerNextStep[] => {
+  const result:
+    ICareerNextStep[] =
+      [];
+
+  const seen =
+    new Set<string>();
+
+  for (
+    const group
+    of groups
   ) {
-    steps.push({
-      id:
-        createStepId(
-          "JOB",
-          "build-role-project"
-        ),
+    for (
+      const step
+      of group
+    ) {
+      const key =
+        [
+          step.category,
+          normalizeKey(
+            step.title
+          ),
+          normalizeKey(
+            step.description
+          ),
+        ].join(
+          "|"
+        );
 
-      category:
-        "JOB",
+      if (
+        seen.has(
+          key
+        )
+      ) {
+        continue;
+      }
 
-      priority:
-        "medium",
+      seen.add(
+        key
+      );
 
-      title:
-        targetRole
-          ? `Build a ${targetRole}-focused project`
-          : "Build a role-focused portfolio project",
-
-      description:
-        prioritySkills.length >
-          0
-          ? `Build one portfolio project that combines ${prioritySkills
-              .slice(
-                0,
-                4
-              )
-              .join(
-                ", "
-              )}. Use the project to demonstrate practical ability instead of only listing the skills on your CV.`
-          : `Build a portfolio project aligned with ${best.title} responsibilities and use it to demonstrate the skills already recognized in your strongest job match.`,
-
-      reason:
-        "A practical project connects the skill roadmap to real job readiness.",
-
-      resourceId:
-        best.id,
-
-      metadata: {
-        prioritySkills,
-
-        bestMatchTitle:
-          best.title,
-
-        bestMatchCompany:
-          best.company,
-      },
-    });
-
-    steps.push({
-      id:
-        createStepId(
-          "JOB",
-          "apply-after-roadmap"
-        ),
-
-      category:
-        "JOB",
-
-      priority:
-        "low",
-
-      title:
-        "Update your CV and apply strategically",
-
-      description:
-        `After completing the priority skill work, update your CV and projects with evidence of those skills, then prioritize roles similar to ${best.title} at ${best.company}, where your current match is ${best.match.matchScore}%.`,
-
-      reason:
-        "The roadmap should end by converting new skills into stronger applications.",
-
-      score:
-        best.match.matchScore,
-
-      resourceId:
-        best.id,
-    });
+      result.push(
+        step
+      );
+    }
   }
 
-  return steps;
+  return result;
 };
 
 const resolveContextualMode = (
@@ -1425,6 +1618,19 @@ export const buildCareerNextStepsContext =
     let progress:
       ICareerProgressContext | undefined;
 
+    let storedRoadmap:
+      ICareerRoadmapMilestone[] =
+        [];
+
+    /* =====================================================
+       PERSONALIZED STORED ROADMAP
+    ===================================================== */
+
+    storedRoadmap =
+      await resolveStoredRoadmap(
+        userId
+      );
+
     /* =====================================================
        RESUME
     ===================================================== */
@@ -1556,6 +1762,8 @@ export const buildCareerNextStepsContext =
       !jobMatches &&
       !interview &&
       !progress &&
+      storedRoadmap.length ===
+        0 &&
       !input.targetRole &&
       !input.careerGoal
     ) {
@@ -1581,86 +1789,169 @@ export const buildCareerNextStepsContext =
     let steps:
       ICareerNextStep[] = [];
 
+    /*
+     * Personalized roadmap steps are the primary source whenever a
+     * roadmap has already been generated for this automation.
+     *
+     * Deterministic CV/job/interview/progress builders remain as safe
+     * fallbacks and as additional evidence-based steps. The old
+     * hardcoded per-skill prose is intentionally no longer used.
+     */
+    const personalizedAll =
+      buildPersonalizedRoadmapSteps({
+        roadmap:
+          storedRoadmap,
+
+        maxSteps:
+          14,
+      });
+
     switch (
       contextualMode
     ) {
       case "JOB_SKILL_ROADMAP": {
-        const roadmapSteps =
-          buildContextualJobRoadmapSteps(
-            jobMatches,
-            input.targetRole
-          );
+        const personalizedSkillRoadmap =
+          buildPersonalizedRoadmapSteps({
+            roadmap:
+              storedRoadmap,
+
+            categories: [
+              "CORE_SKILLS",
+              "ROLE_SKILLS",
+              "PROJECTS",
+              "CV",
+            ],
+
+            maxSteps:
+              12,
+          });
 
         steps =
-          roadmapSteps.length >
+          personalizedSkillRoadmap.length >
             0
-            ? roadmapSteps
-            : sortSteps([
-                ...buildJobSteps(
-                  jobMatches
-                ),
+            ? sortSteps(
+                personalizedSkillRoadmap
+              )
+            : sortSteps(
+                mergeUniqueSteps([
+                  buildJobSteps(
+                    jobMatches
+                  ),
 
-                ...buildCVSteps(
-                  resume
-                ),
-              ]);
+                  buildCVSteps(
+                    resume
+                  ),
+                ])
+              );
 
         break;
       }
 
-      case "CV_FOCUS":
-        steps =
-          sortSteps([
-            ...buildCVSteps(
-              resume
-            ),
+      case "CV_FOCUS": {
+        const personalizedCV =
+          buildPersonalizedRoadmapSteps({
+            roadmap:
+              storedRoadmap,
 
-            ...buildJobSteps(
-              jobMatches
-            ),
-          ]);
+            categories: [
+              "CV",
+            ],
+
+            maxSteps:
+              8,
+          });
+
+        steps =
+          sortSteps(
+            mergeUniqueSteps([
+              personalizedCV,
+
+              buildCVSteps(
+                resume
+              ),
+
+              buildJobSteps(
+                jobMatches
+              ),
+            ])
+          )
+            .slice(
+              0,
+              12
+            );
 
         break;
+      }
 
-      case "INTERVIEW_FOCUS":
+      case "INTERVIEW_FOCUS": {
+        const personalizedInterview =
+          buildPersonalizedRoadmapSteps({
+            roadmap:
+              storedRoadmap,
+
+            categories: [
+              "INTERVIEW",
+            ],
+
+            maxSteps:
+              8,
+          });
+
         steps =
-          sortSteps([
-            ...buildInterviewSteps(
-              interview
-            ),
+          sortSteps(
+            mergeUniqueSteps([
+              personalizedInterview,
 
-            ...buildJobSteps(
-              jobMatches
-            ),
-          ]);
+              buildInterviewSteps(
+                interview
+              ),
+
+              buildJobSteps(
+                jobMatches
+              ),
+            ])
+          )
+            .slice(
+              0,
+              12
+            );
 
         break;
+      }
 
       case "GENERAL":
       default:
         steps =
-          sortSteps([
-            ...buildCVSteps(
-              resume
-            ),
+          sortSteps(
+            mergeUniqueSteps([
+              personalizedAll,
 
-            ...buildJobSteps(
-              jobMatches
-            ),
+              buildCVSteps(
+                resume
+              ),
 
-            ...buildInterviewSteps(
-              interview
-            ),
+              buildJobSteps(
+                jobMatches
+              ),
 
-            ...buildProgressSteps(
-              progress
-            ),
+              buildInterviewSteps(
+                interview
+              ),
 
-            ...buildCareerGoalSteps(
-              input.targetRole,
-              input.careerGoal
-            ),
-          ]);
+              buildProgressSteps(
+                progress
+              ),
+
+              buildCareerGoalSteps(
+                input.targetRole,
+                input.careerGoal
+              ),
+            ])
+          )
+            .slice(
+              0,
+              16
+            );
 
         break;
     }
@@ -1691,6 +1982,34 @@ export const buildCareerNextStepsContext =
           input.userMessage,
 
         contextualMode,
+
+        personalizedRoadmapAvailable:
+          storedRoadmap.some(
+            (
+              milestone
+            ) =>
+              (
+                milestone
+                  .recommendations
+                  ?.length ||
+                0
+              ) >
+              0
+          ),
+
+        personalizedRoadmapSections:
+          storedRoadmap.filter(
+            (
+              milestone
+            ) =>
+              (
+                milestone
+                  .recommendations
+                  ?.length ||
+                0
+              ) >
+              0
+          ).length,
 
         steps,
 
@@ -1786,6 +2105,14 @@ export const buildCareerNextStepsSummary =
       totalSteps:
         context.steps.length,
 
+      personalizedRoadmapAvailable:
+        context
+          .personalizedRoadmapAvailable,
+
+      personalizedRoadmapSections:
+        context
+          .personalizedRoadmapSections,
+
       topStep:
         context.topStep,
 
@@ -1811,6 +2138,12 @@ export const buildCareerNextStepsSummary =
         progress:
           Boolean(
             context.progress
+          ),
+
+        personalizedRoadmap:
+          Boolean(
+            context
+              .personalizedRoadmapAvailable
           ),
       },
     };

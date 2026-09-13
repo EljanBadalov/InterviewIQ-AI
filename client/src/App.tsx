@@ -17,7 +17,7 @@ import InterviewSessionPage from "./pages/dashboard/interviewSessionPage/Intervi
 import ResumeAnalysisPage from "./pages/dashboard/resumeAnalysisPage/resumeAnalysisPage";
 import JobsPage from "./pages/dashboard/jobsPage/jobsPage";
 import JobDetailsPage from "./pages/dashboard/jobDetailsPage/jobDetailsPage";
-import HistoryPage from "./pages/dashboard/historyPage/historyPage";
+import PerformanceProgressPage from "./pages/dashboard/performanceProgressPage/performanceProgressPage";
 import BookmarksPage from "./pages/dashboard/bookmarksPage/bookmarksPage";
 import SettingsPage from "./pages/dashboard/settingsPage/SettingsPage";
 import CVOptimizerPage from "./pages/dashboard/cvOptimizerPage/cvOptimizerPage";
@@ -92,8 +92,8 @@ function App() {
           />
 
           <Route
-            path="history"
-            element={<HistoryPage />}
+            path="performance-progress"
+            element={<PerformanceProgressPage />}
           />
 
           <Route

@@ -16,6 +16,7 @@ import CareerAutomation, {
   type ICareerAutomationSettings,
 } from "../models/CareerAutomation";
 
+
 import {
   buildCareerGoalContext,
 } from "./careerGoalService";
@@ -50,10 +51,10 @@ export interface ICreateCareerAutomationInput {
   activeInterviewId?: string;
 
   jobPreferences?:
-    Partial<ICareerJobPreferences>;
+  Partial<ICareerJobPreferences>;
 
   settings?:
-    Partial<ICareerAutomationSettings>;
+  Partial<ICareerAutomationSettings>;
 }
 
 export interface IGenerateDailyPlanInput {
@@ -70,24 +71,24 @@ export interface IUpdateCareerTaskInput {
   taskId: string;
 
   status:
-    CareerTaskStatus;
+  CareerTaskStatus;
 }
 
 export interface IReplanCareerAutomationInput {
   userId: string;
 
   reason?:
-    string;
+  string;
 
   preserveCompletedTasks?:
-    boolean;
+  boolean;
 }
 
 export interface ICareerAutomationSummary {
   id: string;
 
   status:
-    CareerAutomationStatus;
+  CareerAutomationStatus;
 
   targetRole: string;
 
@@ -123,17 +124,17 @@ export interface ICareerAutomationSummary {
     date: string;
 
     tasks:
-      ICareerAutomationTask[];
+    ICareerAutomationTask[];
 
     total:
-      number;
+    number;
 
     completed:
-      number;
+    number;
   };
 
   progress:
-    ICareerAutomationProgress;
+  ICareerAutomationProgress;
 
   nextDailyPlanAt?: Date;
 
@@ -408,8 +409,8 @@ const buildDefaultJobPreferences = (
           ?.length
           ? input.targetRoles
           : [
-              targetRole,
-            ]
+            targetRole,
+          ]
       ),
 
     locations:
@@ -567,7 +568,7 @@ const mapStepCategory = (
 
   if (
     step.category ===
-      "SKILL"
+    "SKILL"
   ) {
     /*
      * Project-building tasks are portfolio work even when they came
@@ -585,7 +586,7 @@ const mapStepCategory = (
   }
 
   switch (
-    step.category
+  step.category
   ) {
     case "CV":
       return "CV";
@@ -610,7 +611,7 @@ const mapStepPriority = (
     "low"
 ): CareerTaskPriority => {
   switch (
-    priority
+  priority
   ) {
     case "high":
       return "high";
@@ -629,7 +630,7 @@ const mapTaskSource = (
     CareerNextStepCategory
 ): CareerTaskSource => {
   switch (
-    category
+  category
   ) {
     case "CV":
       return "resume";
@@ -657,7 +658,7 @@ const getEstimatedMinutes = (
     CareerTaskCategory
 ): number => {
   switch (
-    category
+  category
   ) {
     case "LEARNING":
       return 45;
@@ -687,7 +688,7 @@ const isTaskEnabled = (
     ICareerAutomationSettings
 ): boolean => {
   switch (
-    category
+  category
   ) {
     case "LEARNING":
       return settings
@@ -724,11 +725,33 @@ const buildRoadmapFromGoal = (
     Array<{
       order: number;
 
+      category?:
+        ICareerRoadmapMilestone[
+          "category"
+        ];
+
       title: string;
 
       description: string;
 
+      reason?: string;
+
+      readinessScore?: number;
+
       completed: boolean;
+
+      relatedSkills?:
+        string[];
+
+      recommendations?:
+        ICareerRoadmapMilestone[
+          "recommendations"
+        ];
+
+      generatedBy?:
+        ICareerRoadmapMilestone[
+          "generatedBy"
+        ];
     }>,
   roadmapDurationDays:
     number,
@@ -758,7 +781,12 @@ const buildRoadmapFromGoal = (
       )
     );
 
-  return milestones
+  const generatedAt =
+    new Date();
+
+  return [
+    ...milestones,
+  ]
     .sort(
       (
         a,
@@ -782,11 +810,117 @@ const buildRoadmapFromGoal = (
             )
           );
 
+        const title =
+          normalizeString(
+            milestone.title
+          );
+
+        const description =
+          normalizeString(
+            milestone.description
+          );
+
+        const reason =
+          normalizeString(
+            milestone.reason
+          ) ||
+          undefined;
+
+        const relatedSkills =
+          uniqueStrings(
+            milestone
+              .relatedSkills ||
+            []
+          );
+
+        /*
+         * The CareerGoal service already validates Qwen output before it
+         * reaches this layer. We still normalize strings here because this
+         * object becomes persistent MongoDB state and later feeds the UI.
+         */
+        const recommendations =
+          (
+            milestone
+              .recommendations ||
+            []
+          )
+            .map(
+              (
+                recommendation
+              ) => ({
+                title:
+                  normalizeString(
+                    recommendation
+                      .title
+                  ),
+
+                whyItMatters:
+                  normalizeString(
+                    recommendation
+                      .whyItMatters
+                  ),
+
+                whatToLearn:
+                  uniqueStrings(
+                    recommendation
+                      .whatToLearn ||
+                    []
+                  ),
+
+                action:
+                  normalizeString(
+                    recommendation
+                      .action
+                  ),
+
+                proofOfCompletion:
+                  normalizeString(
+                    recommendation
+                      .proofOfCompletion
+                  ) ||
+                  undefined,
+
+                priority:
+                  recommendation
+                    .priority,
+
+                source:
+                  recommendation
+                    .source,
+
+                evidence:
+                  uniqueStrings(
+                    recommendation
+                      .evidence ||
+                    []
+                  ),
+
+                metadata:
+                  recommendation
+                    .metadata,
+              })
+            )
+            .filter(
+              (
+                recommendation
+              ) =>
+                Boolean(
+                  recommendation
+                    .title &&
+                  recommendation
+                    .whyItMatters &&
+                  recommendation
+                    .action
+                )
+            );
+
         return {
           id:
             createStableId(
               "milestone",
-              milestone.title,
+              milestone.category
+                ? `${milestone.category}-${title}`
+                : title,
               index
             ),
 
@@ -794,21 +928,33 @@ const buildRoadmapFromGoal = (
             index +
             1,
 
-          title:
-            normalizeString(
-              milestone.title
-            ),
+          category:
+            milestone
+              .category,
 
-          description:
-            normalizeString(
-              milestone.description
-            ),
+          title,
+
+          description,
+
+          reason,
+
+          readinessScore:
+            typeof milestone
+              .readinessScore ===
+              "number"
+              ? clamp(
+                  milestone
+                    .readinessScore,
+                  0,
+                  100
+                )
+              : undefined,
 
           status:
             milestone.completed
               ? "completed"
               : index ===
-                  0
+                0
                 ? "in_progress"
                 : "not_started",
 
@@ -823,16 +969,127 @@ const buildRoadmapFromGoal = (
               ? new Date()
               : undefined,
 
-          relatedSkills:
-            [],
+          relatedSkills,
+
+          recommendations,
+
+          generatedBy:
+            milestone
+              .generatedBy ||
+            "system",
+
+          generatedAt,
 
           metadata: {
             originalOrder:
               milestone.order,
+
+            personalized:
+              (
+                milestone
+                  .generatedBy ===
+                "qwen"
+              ),
+
+            recommendationCount:
+              recommendations
+                .length,
           },
         };
       }
     );
+};
+
+/*
+ * Replanning can produce new Qwen wording and therefore new milestone IDs.
+ * Preserve an already-completed roadmap section by stable category when
+ * possible. For legacy milestones that do not yet have category, fall back
+ * to a normalized title match.
+ */
+const preserveCompletedRoadmapState = (
+  previous:
+    ICareerRoadmapMilestone[],
+  next:
+    ICareerRoadmapMilestone[]
+): ICareerRoadmapMilestone[] => {
+  const completedCategories =
+    new Set(
+      previous
+        .filter(
+          (
+            milestone
+          ) =>
+            milestone.status ===
+              "completed" &&
+            Boolean(
+              milestone.category
+            )
+        )
+        .map(
+          (
+            milestone
+          ) =>
+            milestone.category
+        )
+    );
+
+  const completedTitles =
+    new Set(
+      previous
+        .filter(
+          (
+            milestone
+          ) =>
+            milestone.status ===
+            "completed"
+        )
+        .map(
+          (
+            milestone
+          ) =>
+            normalizeString(
+              milestone.title
+            )
+              .toLowerCase()
+        )
+    );
+
+  return next.map(
+    (
+      milestone
+    ) => {
+      const shouldRemainCompleted =
+        (
+          milestone.category &&
+          completedCategories.has(
+            milestone.category
+          )
+        ) ||
+        completedTitles.has(
+          normalizeString(
+            milestone.title
+          )
+            .toLowerCase()
+        );
+
+      if (
+        !shouldRemainCompleted
+      ) {
+        return milestone;
+      }
+
+      return {
+        ...milestone,
+
+        status:
+          "completed",
+
+        completedAt:
+          milestone.completedAt ||
+          new Date(),
+      };
+    }
+  );
 };
 
 /* =========================================================
@@ -846,20 +1103,20 @@ const buildTasksFromNextSteps = ({
   startedAt,
 }: {
   steps:
-    ICareerNextStep[];
+  ICareerNextStep[];
 
   roadmap:
-    ICareerRoadmapMilestone[];
+  ICareerRoadmapMilestone[];
 
   settings:
-    ICareerAutomationSettings;
+  ICareerAutomationSettings;
 
   startedAt:
-    Date;
+  Date;
 }): ICareerAutomationTask[] => {
   const tasks:
     ICareerAutomationTask[] =
-      [];
+    [];
 
   let currentDayOffset =
     0;
@@ -902,9 +1159,9 @@ const buildTasksFromNextSteps = ({
 
     const exceedsTimeLimit =
       tasksOnCurrentDay >
-        0 &&
+      0 &&
       minutesOnCurrentDay +
-        estimatedMinutes >
+      estimatedMinutes >
       settings
         .preferredDailyMinutes;
 
@@ -934,21 +1191,21 @@ const buildTasksFromNextSteps = ({
       roadmap.length >
         0
         ? roadmap[
-            Math.min(
-              roadmap.length -
-                1,
-              Math.floor(
-                (
-                  index /
-                  Math.max(
-                    steps.length,
-                    1
-                  )
-                ) *
-                roadmap.length
+        Math.min(
+          roadmap.length -
+          1,
+          Math.floor(
+            (
+              index /
+              Math.max(
+                steps.length,
+                1
               )
-            )
-          ]
+            ) *
+            roadmap.length
+          )
+        )
+        ]
         : undefined;
 
     tasks.push({
@@ -1006,21 +1263,21 @@ const buildTasksFromNextSteps = ({
           ?.skill ===
           "string"
           ? normalizeString(
-              step
-                .metadata
-                .skill as string
-            ) ||
-            undefined
+            step
+              .metadata
+              .skill as string
+          ) ||
+          undefined
           : undefined,
 
       relatedJobId:
         step.resourceId &&
-        Types.ObjectId.isValid(
-          step.resourceId
-        )
+          Types.ObjectId.isValid(
+            step.resourceId
+          )
           ? new Types.ObjectId(
-              step.resourceId
-            )
+            step.resourceId
+          )
           : undefined,
 
       roadmapMilestoneId:
@@ -1089,9 +1346,9 @@ const calculateTaskProgress = (
         task
       ) =>
         task.status ===
-          "pending" ||
+        "pending" ||
         task.status ===
-          "in_progress"
+        "in_progress"
     );
 
   const completedApplications =
@@ -1143,12 +1400,12 @@ const calculateTaskProgress = (
     totalTasks >
       0
       ? Math.round(
-          (
-            completed.length /
-            totalTasks
-          ) *
-          100
-        )
+        (
+          completed.length /
+          totalTasks
+        ) *
+        100
+      )
       : 0;
 
   const lastCompleted =
@@ -1340,9 +1597,8 @@ export const createCareerAutomation =
       !goalResult.data
     ) {
       throw new Error(
-        `Could not build career goal context: ${
-          goalResult.reason ||
-          "UNKNOWN_REASON"
+        `Could not build career goal context: ${goalResult.reason ||
+        "UNKNOWN_REASON"
         }.`
       );
     }
@@ -1422,11 +1678,11 @@ export const createCareerAutomation =
       settings
         .jobSearchEnabled
         ? startOfUTCDay(
-            addDays(
-              startedAt,
-              1
-            )
+          addDays(
+            startedAt,
+            1
           )
+        )
         : undefined;
 
     if (
@@ -1602,11 +1858,11 @@ const getTasksForDay = (
         task
           .scheduledFor
           .getTime() >=
-          start.getTime() &&
+        start.getTime() &&
         task
           .scheduledFor
           .getTime() <=
-          end.getTime()
+        end.getTime()
     )
     .sort(
       (
@@ -1630,10 +1886,10 @@ const getTasksForDay = (
 
         return (
           priorityWeight[
-            b.priority
+          b.priority
           ] -
           priorityWeight[
-            a.priority
+          a.priority
           ]
         );
       }
@@ -1660,12 +1916,12 @@ const getIncompleteCarryOverTasks = (
         task
           .scheduledFor
           .getTime() <
-          start.getTime() &&
+        start.getTime() &&
         (
           task.status ===
-            "pending" ||
+          "pending" ||
           task.status ===
-            "in_progress"
+          "in_progress"
         )
     );
 };
@@ -1674,9 +1930,9 @@ export const generateDailyCareerPlan =
   async ({
     userId,
     date =
-      new Date(),
+    new Date(),
     force =
-      false,
+    false,
   }: IGenerateDailyPlanInput): Promise<ICareerAutomationTask[]> => {
     const automation =
       await getCareerAutomation(
@@ -1693,7 +1949,7 @@ export const generateDailyCareerPlan =
 
     if (
       automation.status !==
-        "active" ||
+      "active" ||
       !automation
         .settings
         .automationEnabled ||
@@ -1717,7 +1973,7 @@ export const generateDailyCareerPlan =
 
     if (
       existingTodayTasks.length >
-        0 &&
+      0 &&
       !force
     ) {
       return existingTodayTasks;
@@ -1842,7 +2098,7 @@ export const updateCareerTaskStatus =
       status;
 
     switch (
-      status
+    status
     ) {
       case "in_progress":
         task.startedAt =
@@ -1911,7 +2167,7 @@ export const replanCareerAutomation =
     userId,
     reason,
     preserveCompletedTasks =
-      true,
+    true,
   }: IReplanCareerAutomationInput): Promise<ICareerAutomation> => {
     const automation =
       await getCareerAutomation(
@@ -1932,6 +2188,87 @@ export const replanCareerAutomation =
         .automaticReplanningEnabled
     ) {
       return automation;
+    }
+
+    const now =
+      new Date();
+
+    /*
+     * Rebuild the personalized roadmap from the latest InterviewIQ
+     * evidence. buildCareerGoalContext now owns:
+     * - deterministic readiness / gap evidence
+     * - Qwen roadmap wording and recommendations
+     * - safe deterministic fallback when Qwen is unavailable
+     */
+    let refreshedRoadmap =
+      automation.roadmap;
+
+    try {
+      const goalResult =
+        await buildCareerGoalContext({
+          userId,
+
+          activeResumeId:
+            automation
+              .activeResumeId
+              ?.toString(),
+
+          activeInterviewId:
+            automation
+              .activeInterviewId
+              ?.toString(),
+
+          targetRole:
+            automation
+              .targetRole,
+
+          careerGoal:
+            automation
+              .careerGoal,
+        });
+
+      if (
+        goalResult.found &&
+        goalResult.data
+      ) {
+        automation.currentReadinessScore =
+          goalResult
+            .data
+            .readinessScore;
+
+        const rebuiltRoadmap =
+          buildRoadmapFromGoal(
+            goalResult
+              .data
+              .milestones ||
+            [],
+            automation
+              .roadmapDurationDays,
+            now
+          );
+
+        refreshedRoadmap =
+          preserveCompletedRoadmapState(
+            automation
+              .roadmap,
+            rebuiltRoadmap
+          );
+
+        automation.roadmap =
+          refreshedRoadmap;
+      }
+    } catch (
+      error
+    ) {
+      /*
+       * Roadmap generation failure must not destroy the user's current
+       * automation. Keep the existing roadmap and continue refreshing
+       * practical next steps.
+       */
+      console.error(
+        "[Career Automation] Personalized roadmap replan failed:",
+        error
+      );
     }
 
     const nextStepsResult =
@@ -1966,24 +2303,38 @@ export const replanCareerAutomation =
       !nextStepsResult.found ||
       !nextStepsResult.data
     ) {
+      automation.lastReplannedAt =
+        now;
+
+      automation.nextDailyPlanAt =
+        startOfUTCDay(
+          addDays(
+            now,
+            1
+          )
+        );
+
+      refreshStoredProgress(
+        automation
+      );
+
+      await automation.save();
+
       return automation;
     }
 
     const preserved =
       preserveCompletedTasks
         ? automation
-            .tasks
-            .filter(
-              (
-                task
-              ) =>
-                task.status ===
-                "completed"
-            )
+          .tasks
+          .filter(
+            (
+              task
+            ) =>
+              task.status ===
+              "completed"
+          )
         : [];
-
-    const now =
-      new Date();
 
     const freshTasks =
       buildTasksFromNextSteps({
@@ -1993,8 +2344,7 @@ export const replanCareerAutomation =
             .steps,
 
         roadmap:
-          automation
-            .roadmap,
+          refreshedRoadmap,
 
         settings:
           automation
@@ -2101,9 +2451,27 @@ export const refreshCareerAutomationProgress =
           goalResult
             .data
             .readinessScore;
+
+        const refreshedRoadmap =
+          buildRoadmapFromGoal(
+            goalResult
+              .data
+              .milestones ||
+            [],
+            automation
+              .roadmapDurationDays,
+            new Date()
+          );
+
+        automation.roadmap =
+          preserveCompletedRoadmapState(
+            automation
+              .roadmap,
+            refreshedRoadmap
+          );
       }
     } catch (
-      error
+    error
     ) {
       console.error(
         "[Career Automation] Readiness refresh failed:",
@@ -2122,7 +2490,7 @@ export const refreshCareerAutomationProgress =
         userId
       );
     } catch (
-      error
+    error
     ) {
       console.error(
         "[Career Automation] Career progress refresh failed:",
@@ -2194,11 +2562,11 @@ export const setCareerAutomationStatus =
 
     if (
       status ===
-        "paused" ||
+      "paused" ||
       status ===
-        "archived" ||
+      "archived" ||
       status ===
-        "completed"
+      "completed"
     ) {
       automation
         .settings

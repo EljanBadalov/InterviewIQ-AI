@@ -1228,3 +1228,1347 @@
     height: 36px;
   }
 }
+
+
+/* =========================================
+   DYNAMIC CAREER FIELD SELECT
+========================================= */
+
+.career-role-picker {
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+.career-role-select-shell {
+  min-height: 52px;
+
+  display: grid;
+
+  grid-template-columns:
+    20px
+    minmax(0, 1fr)
+    18px;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding:
+    0
+    15px;
+
+  border:
+    1px solid
+    rgba(30, 30, 50, 0.09);
+
+  border-radius: 13px;
+
+  background: #fbfbfe;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:focus-within {
+    border-color:
+      rgba(108, 76, 245, 0.3);
+
+    background: #ffffff;
+
+    box-shadow:
+      0 0 0 4px
+      rgba(108, 76, 245, 0.055);
+  }
+
+  &.has-error {
+    border-color:
+      rgba(220, 76, 76, 0.2);
+  }
+
+  > svg:first-child {
+    color: #6c4cf5;
+
+    font-size: 17px;
+  }
+
+  select {
+    width: 100%;
+    min-width: 0;
+    min-height: 50px;
+
+    border: 0;
+    outline: 0;
+
+    appearance: none;
+    -webkit-appearance: none;
+
+    background: transparent;
+
+    color: #292934;
+
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 650;
+
+    cursor: pointer;
+
+    &:disabled {
+      color: #9696a6;
+
+      cursor: not-allowed;
+    }
+
+    optgroup {
+      color: #5f5f70;
+
+      font-weight: 700;
+    }
+
+    option {
+      color: #252530;
+
+      font-weight: 500;
+    }
+  }
+}
+
+.career-role-chevron {
+  color: #9292a4;
+
+  font-size: 15px;
+
+  pointer-events: none;
+}
+
+.career-role-load-error {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 8px;
+
+  padding:
+    10px
+    12px;
+
+  border:
+    1px solid
+    rgba(220, 76, 76, 0.12);
+
+  border-radius: 10px;
+
+  background:
+    rgba(220, 76, 76, 0.04);
+
+  color: #b64a4a;
+
+  font-size: 9px;
+  line-height: 1.5;
+
+  svg {
+    flex-shrink: 0;
+
+    margin-top: 1px;
+  }
+}
+
+.career-role-selected-card {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 13px;
+
+  padding: 16px;
+
+  border:
+    1px solid
+    rgba(108, 76, 245, 0.11);
+
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(108, 76, 245, 0.055),
+      rgba(108, 76, 245, 0.015)
+    );
+}
+
+.career-role-selected-icon {
+  width: 40px;
+  height: 40px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background: #6c4cf5;
+
+  color: #ffffff;
+
+  font-size: 17px;
+
+  box-shadow:
+    0 8px 18px
+    rgba(95, 66, 220, 0.15);
+}
+
+.career-role-selected-copy {
+  min-width: 0;
+
+  flex: 1;
+
+  > p {
+    max-width: 720px;
+
+    margin:
+      9px
+      0
+      0;
+
+    color: #7f7f91;
+
+    font-size: 9px;
+    line-height: 1.55;
+  }
+}
+
+.career-role-selected-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 14px;
+
+  > div {
+    min-width: 0;
+  }
+
+  > div > span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #8e8e9f;
+
+    font-size: 7px;
+    font-weight: 750;
+
+    letter-spacing: 0.1em;
+  }
+
+  strong {
+    display: block;
+
+    color: #292934;
+
+    font-size: 12px;
+    font-weight: 680;
+
+    line-height: 1.35;
+  }
+}
+
+.career-role-domain-badge {
+  flex-shrink: 0;
+
+  padding:
+    5px
+    8px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(108, 76, 245, 0.085);
+
+  color: #6848ed;
+
+  font-size: 7px;
+  font-weight: 700;
+}
+
+.career-role-focus-list {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 6px;
+
+  margin-top: 10px;
+
+  span {
+    padding:
+      5px
+      7px;
+
+    border-radius: 7px;
+
+    background: #ffffff;
+
+    color: #68687a;
+
+    font-size: 7px;
+    font-weight: 600;
+
+    box-shadow:
+      inset 0 0 0 1px
+      rgba(108, 76, 245, 0.08);
+  }
+}
+
+/* The old category cards are no longer rendered. */
+.category-grid {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .career-role-selected-top {
+    flex-direction: column;
+
+    gap: 8px;
+  }
+
+  .career-role-domain-badge {
+    align-self: flex-start;
+  }
+
+  .career-role-selected-card {
+    padding: 13px;
+  }
+}
+
+
+/* =========================================
+   ADAPTIVE INTERVIEW HISTORY
+========================================= */
+
+.mock-history-panel {
+  margin-top: 14px;
+}
+
+.mock-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mock-history-item {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto 18px;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 13px 14px;
+
+  border: 1px solid rgba(30, 30, 50, 0.08);
+  border-radius: 13px;
+
+  background: #fbfbfe;
+  color: inherit;
+
+  text-align: left;
+  cursor: pointer;
+
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+
+  &:hover {
+    border-color: rgba(108, 76, 245, 0.18);
+    background: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 22px rgba(49, 40, 90, 0.06);
+  }
+}
+
+.mock-history-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background: rgba(108, 76, 245, 0.09);
+  color: #6c4cf5;
+
+  font-size: 17px;
+}
+
+.mock-history-copy {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+
+  strong {
+    overflow: hidden;
+
+    color: #262633;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  span {
+    color: #9898a8;
+    font-size: 8px;
+  }
+}
+
+.mock-history-meta {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  strong {
+    min-width: 34px;
+
+    color: #252532;
+
+    font-size: 11px;
+    font-weight: 750;
+
+    text-align: right;
+  }
+}
+
+.mock-history-status {
+  padding: 5px 7px;
+
+  border-radius: 999px;
+
+  background: rgba(145, 145, 160, 0.1);
+  color: #7e7e8f;
+
+  font-size: 7px;
+  font-weight: 700;
+
+  text-transform: capitalize;
+
+  &.completed {
+    background: rgba(38, 179, 126, 0.09);
+    color: #299c75;
+  }
+
+  &.in_progress {
+    background: rgba(108, 76, 245, 0.09);
+    color: #6848ed;
+  }
+}
+
+.mock-history-arrow {
+  color: #9a9aaa;
+  font-size: 14px;
+}
+
+.mock-history-state {
+  min-height: 76px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  padding: 16px;
+
+  border: 1px solid rgba(30, 30, 50, 0.07);
+  border-radius: 13px;
+
+  background: #fbfbfe;
+  color: #8a8a9a;
+
+  font-size: 9px;
+
+  &.error {
+    border-color: rgba(220, 76, 76, 0.12);
+    background: rgba(220, 76, 76, 0.035);
+    color: #b64a4a;
+  }
+}
+
+.mock-history-empty {
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  padding: 17px;
+
+  border: 1px dashed rgba(108, 76, 245, 0.16);
+  border-radius: 13px;
+
+  background: rgba(108, 76, 245, 0.025);
+
+  strong {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #292934;
+
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0;
+
+    color: #8d8d9d;
+
+    font-size: 8px;
+    line-height: 1.5;
+  }
+}
+
+.mock-history-empty-icon {
+  width: 40px;
+  height: 40px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background: rgba(108, 76, 245, 0.09);
+  color: #6c4cf5;
+
+  font-size: 17px;
+}
+
+.summary-row strong {
+  max-width: 175px;
+  text-align: right;
+}
+
+@media (max-width: 700px) {
+  .mock-history-item {
+    grid-template-columns: 40px minmax(0, 1fr) auto;
+  }
+
+  .mock-history-meta {
+    grid-column: 2 / -1;
+    justify-content: flex-start;
+  }
+
+  .mock-history-arrow {
+    display: none;
+  }
+}
+
+
+/* =========================================
+   CLASSIC INTERVIEW HISTORY
+   Matches the original InterviewIQ history design
+========================================= */
+
+.interview-history-classic {
+  padding-top: 2px;
+}
+
+.history-classic-header {
+  margin-bottom: 24px;
+
+  > span {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #6848ed;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 0.14em;
+  }
+
+  h2 {
+    margin: 0;
+
+    color: #171722;
+
+    font-size: 17px;
+    font-weight: 800;
+
+    letter-spacing: -0.025em;
+  }
+
+  p {
+    margin: 6px 0 0;
+
+    color: #9292a2;
+
+    font-size: 10px;
+    line-height: 1.45;
+  }
+}
+
+.history-classic-list {
+  width: 100%;
+}
+
+.history-classic-row {
+  width: 100%;
+  min-height: 84px;
+
+  display: grid;
+
+  grid-template-columns:
+    42px
+    minmax(0, 1fr)
+    auto;
+
+  align-items: center;
+
+  gap: 13px;
+
+  padding:
+    14px
+    0;
+
+  border: 0;
+  border-bottom:
+    1px solid
+    rgba(28, 28, 48, 0.07);
+
+  background: transparent;
+
+  color: inherit;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    padding 0.18s ease;
+
+  &:first-child {
+    border-top:
+      1px solid
+      rgba(28, 28, 48, 0.04);
+  }
+
+  &:hover {
+    padding-left: 8px;
+    padding-right: 8px;
+
+    background:
+      rgba(108, 76, 245, 0.025);
+  }
+}
+
+.history-classic-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background:
+    rgba(108, 76, 245, 0.09);
+
+  color: #6c4cf5;
+
+  font-size: 17px;
+}
+
+.history-classic-copy {
+  min-width: 0;
+
+  strong {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #20202b;
+
+    font-size: 11px;
+    font-weight: 750;
+
+    line-height: 1.25;
+  }
+
+  > div {
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    color: #9a9aaa;
+
+    font-size: 8px;
+
+    i {
+      color: #bebec8;
+      font-style: normal;
+    }
+  }
+}
+
+.history-classic-score {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  > span {
+    color: #9898a8;
+
+    font-size: 8px;
+  }
+
+  strong {
+    min-width: 54px;
+
+    padding:
+      7px
+      10px;
+
+    border-radius: 10px;
+
+    background:
+      rgba(108, 76, 245, 0.09);
+
+    color: #6848ed;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    text-align: center;
+  }
+}
+
+.history-classic-state {
+  min-height: 90px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  border-top:
+    1px solid
+    rgba(28, 28, 48, 0.05);
+
+  border-bottom:
+    1px solid
+    rgba(28, 28, 48, 0.05);
+
+  color: #9292a2;
+
+  font-size: 9px;
+
+  svg {
+    color: #6c4cf5;
+  }
+
+  &.error {
+    color: #b64a4a;
+
+    svg {
+      color: #b64a4a;
+    }
+  }
+}
+
+@media (max-width: 700px) {
+  .history-classic-row {
+    grid-template-columns:
+      40px
+      minmax(0, 1fr);
+
+    gap: 11px;
+  }
+
+  .history-classic-score {
+    grid-column:
+      2;
+
+    justify-content:
+      flex-start;
+
+    margin-top:
+      3px;
+  }
+
+  .history-classic-header h2 {
+    font-size: 16px;
+  }
+}
+
+
+/* =========================================
+   HISTORY: ALL SESSIONS + CONTINUE
+========================================= */
+
+.history-classic-list {
+  max-height: none;
+  overflow: visible;
+}
+
+.interview-history-classic {
+  overflow: visible;
+}
+
+.history-classic-row {
+  grid-template-columns:
+    42px
+    minmax(0, 1fr)
+    auto;
+
+  cursor: default;
+
+  &.in-progress {
+    background:
+      linear-gradient(
+        90deg,
+        rgba(108, 76, 245, 0.04),
+        rgba(108, 76, 245, 0.012)
+      );
+  }
+}
+
+.history-classic-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 8px;
+
+  margin-bottom: 4px;
+
+  > strong {
+    margin-bottom: 0;
+  }
+}
+
+.history-classic-progress-badge {
+  display: inline-flex;
+  align-items: center;
+
+  padding:
+    4px
+    7px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(108, 76, 245, 0.1);
+
+  color: #6848ed;
+
+  font-size: 7px;
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+.history-classic-continue-button {
+  min-width: 96px;
+  height: 36px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  padding:
+    0
+    13px;
+
+  border: 0;
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #7554ff,
+      #613df0
+    );
+
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 750;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 8px 18px
+    rgba(98, 63, 236, 0.16);
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+
+  svg {
+    font-size: 12px;
+  }
+
+  &:hover {
+    transform:
+      translateY(-1px);
+
+    box-shadow:
+      0 10px 22px
+      rgba(98, 63, 236, 0.22);
+  }
+}
+
+.history-classic-result-button {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+
+  font-family: inherit;
+
+  cursor: pointer;
+
+  > span {
+    color: #9898a8;
+
+    font-size: 8px;
+  }
+
+  strong {
+    min-width: 54px;
+
+    padding:
+      7px
+      10px;
+
+    border-radius: 10px;
+
+    background:
+      rgba(108, 76, 245, 0.09);
+
+    color: #6848ed;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    text-align: center;
+
+    transition:
+      background 0.18s ease,
+      transform 0.18s ease;
+  }
+
+  &:hover strong {
+    background:
+      rgba(108, 76, 245, 0.14);
+
+    transform:
+      translateY(-1px);
+  }
+}
+
+@media (max-width: 700px) {
+  .history-classic-row {
+    grid-template-columns:
+      40px
+      minmax(0, 1fr);
+  }
+
+  .history-classic-continue-button,
+  .history-classic-result-button {
+    grid-column:
+      2;
+
+    justify-self:
+      flex-start;
+
+    margin-top:
+      6px;
+  }
+}
+
+
+/* =========================================
+   UNFINISHED INTERVIEW CHOICE MODAL
+========================================= */
+
+.interview-resume-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background: rgba(22, 20, 38, 0.34);
+  backdrop-filter: blur(5px);
+}
+
+.interview-resume-modal {
+  position: relative;
+
+  width: min(520px, 100%);
+
+  padding: 30px;
+
+  border: 1px solid rgba(108, 76, 245, 0.11);
+  border-radius: 22px;
+
+  background: #ffffff;
+
+  box-shadow: 0 28px 80px rgba(31, 25, 67, 0.2);
+
+  animation: interview-resume-modal-in 0.2s ease-out;
+}
+
+@keyframes interview-resume-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.interview-resume-modal-close {
+  position: absolute;
+
+  top: 18px;
+  right: 18px;
+
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(30, 30, 50, 0.08);
+  border-radius: 10px;
+
+  background: #fafafe;
+  color: #777789;
+
+  font-size: 17px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+
+  &:hover:not(:disabled) {
+    background: #f4f1ff;
+    color: #6848ed;
+    transform: rotate(2deg);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.interview-resume-modal-icon {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 18px;
+
+  border-radius: 14px;
+
+  background: rgba(108, 76, 245, 0.1);
+  color: #6848ed;
+
+  font-size: 21px;
+}
+
+.interview-resume-modal-eyebrow {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #6848ed;
+
+  font-size: 8px;
+  font-weight: 800;
+
+  letter-spacing: 0.13em;
+}
+
+.interview-resume-modal h2 {
+  margin: 0 48px 8px 0;
+
+  color: #171722;
+
+  font-size: 23px;
+  font-weight: 800;
+
+  letter-spacing: -0.035em;
+}
+
+.interview-resume-modal > p {
+  margin: 0;
+
+  color: #858596;
+
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.interview-resume-modal > p strong {
+  color: #454556;
+  font-weight: 700;
+}
+
+.interview-resume-modal-error {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 8px;
+
+  margin-top: 16px;
+
+  padding: 10px 12px;
+
+  border: 1px solid rgba(220, 76, 76, 0.13);
+  border-radius: 10px;
+
+  background: rgba(220, 76, 76, 0.04);
+  color: #b64a4a;
+
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.interview-resume-modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  gap: 12px;
+
+  margin-top: 24px;
+}
+
+.interview-resume-restart-button,
+.interview-resume-continue-button {
+  min-height: 118px;
+
+  position: relative;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 11px;
+
+  padding: 17px;
+
+  border-radius: 14px;
+
+  font-family: inherit;
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+
+  > svg:first-child {
+    flex-shrink: 0;
+
+    margin-top: 2px;
+
+    font-size: 17px;
+  }
+
+  > span {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+  }
+
+  > span strong {
+    font-size: 10px;
+    font-weight: 750;
+  }
+
+  > span small {
+    font-size: 8px;
+    line-height: 1.5;
+
+    font-weight: 500;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.interview-resume-restart-button {
+  border: 1px solid rgba(30, 30, 50, 0.09);
+
+  background: #fbfbfe;
+  color: #383846;
+
+  > span small {
+    color: #9292a2;
+  }
+
+  > svg {
+    color: #7d7d90;
+  }
+
+  &:hover:not(:disabled) {
+    border-color: rgba(108, 76, 245, 0.18);
+    background: #f8f6ff;
+
+    transform: translateY(-1px);
+  }
+}
+
+.interview-resume-continue-button {
+  border: 1px solid transparent;
+
+  background: linear-gradient(135deg, #7554ff, #613df0);
+  color: #ffffff;
+
+  box-shadow: 0 12px 28px rgba(98, 63, 236, 0.18);
+
+  > span small {
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+
+    box-shadow: 0 15px 32px rgba(98, 63, 236, 0.24);
+  }
+}
+
+.interview-resume-action-arrow {
+  position: absolute;
+
+  right: 14px;
+  bottom: 14px;
+
+  font-size: 14px;
+}
+
+@media (max-width: 600px) {
+  .interview-resume-modal-backdrop {
+    padding: 16px;
+  }
+
+  .interview-resume-modal {
+    padding: 24px 18px 18px;
+
+    border-radius: 18px;
+  }
+
+  .interview-resume-modal-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .interview-resume-restart-button,
+  .interview-resume-continue-button {
+    min-height: 94px;
+  }
+}
+
+
+/* =========================================
+   COMPACT MODAL ACTION BUTTONS
+========================================= */
+
+.interview-resume-modal-actions {
+  gap: 12px;
+}
+
+.interview-resume-restart-button,
+.interview-resume-continue-button {
+  min-height: 62px;
+
+  align-items: center;
+
+  padding:
+    0
+    18px;
+
+  > svg:first-child {
+    margin-top: 0;
+  }
+
+  > span {
+    display: block;
+  }
+
+  > span strong {
+    font-size: 10px;
+    line-height: 1.2;
+  }
+}
+
+.interview-resume-action-arrow {
+  right: 16px;
+  bottom: 50%;
+
+  transform:
+    translateY(50%);
+}
+
+@media (max-width: 600px) {
+  .interview-resume-restart-button,
+  .interview-resume-continue-button {
+    min-height: 58px;
+  }
+}

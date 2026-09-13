@@ -25,11 +25,16 @@ import {
   recordInterviewSkillEvidence,
 } from "../services/skillEvidenceService";
 
+import {
+  buildCareerSkillProfile,
+} from "../services/careerSkillProfileService";
+
 /* =========================================
    CONSTANTS
 ========================================= */
 
-const QUESTIONS_PER_INTERVIEW = 4;
+const QUESTIONS_PER_TYPE = 3;
+const TOTAL_QUESTIONS = 6;
 
 const VALID_DIFFICULTIES: QuestionDifficulty[] = [
   "beginner",
@@ -42,6 +47,14 @@ const VALID_INTERVIEW_TYPES: InterviewType[] = [
   "technical",
   "behavioral",
 ];
+
+const DIFFICULTY_ORDER:
+  QuestionDifficulty[] = [
+    "beginner",
+    "intermediate",
+    "advanced",
+    "senior",
+  ];
 
 /* =========================================
    HELPERS
@@ -89,6 +102,697 @@ const normalizeCategory = (
     .toLowerCase();
 };
 
+
+const normalizeRoleSlug = (
+  value: unknown
+): string => {
+  if (typeof value !== "string") {
+    return "";
+  }
+
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[_\s]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+};
+
+/*
+ * Existing Question documents may still use the older category names.
+ * Career Fields now use slugs such as "frontend-developer".
+ *
+ * These aliases keep the old question bank working while allowing
+ * new question documents to use the Career Field slug directly.
+ */
+const LEGACY_CATEGORY_ALIASES:
+  Record<
+    string,
+    string[]
+  > = {
+    "frontend-developer": [
+      "frontend-developer",
+      "frontend",
+    ],
+
+    "backend-developer": [
+      "backend-developer",
+      "backend",
+    ],
+
+    "software-engineer": [
+      "software-engineer",
+      "software-engineering",
+    ],
+
+    "devops-engineer": [
+      "devops-engineer",
+      "devops",
+    ],
+
+    "ui-ux-designer": [
+      "ui-ux-designer",
+      "ui-ux-design",
+    ],
+
+    "machine-learning-engineer": [
+      "machine-learning-engineer",
+      "machine-learning",
+    ],
+  };
+
+const getQuestionCategoryCandidates = (
+  roleSlug: string
+): string[] => {
+  const values =
+    LEGACY_CATEGORY_ALIASES[
+      roleSlug
+    ] || [roleSlug];
+
+  return [
+    ...new Set(
+      values
+        .map(
+          (
+            value
+          ) =>
+            normalizeCategory(
+              value
+            )
+        )
+        .filter(Boolean)
+    ),
+  ];
+};
+
+
+/* =========================================
+   ADAPTIVE DIFFICULTY
+========================================= */
+
+interface IAdaptiveDifficultyResult {
+  detectedLevel:
+    QuestionDifficulty;
+
+  stretchLevel:
+    QuestionDifficulty;
+
+  confidenceScore:
+    number;
+
+  previousInterviewAverage?:
+    number;
+
+  evidenceAverage?:
+    number;
+
+  reason:
+    string;
+}
+
+const averageNumbers = (
+  values:
+    number[]
+): number | undefined => {
+  const safe =
+    values.filter(
+      (
+        value
+      ) =>
+        Number.isFinite(
+          value
+        )
+    );
+
+  if (
+    safe.length ===
+    0
+  ) {
+    return undefined;
+  }
+
+  return (
+    safe.reduce(
+      (
+        total,
+        value
+      ) =>
+        total +
+        value,
+      0
+    ) /
+    safe.length
+  );
+};
+
+const getNextDifficulty = (
+  difficulty:
+    QuestionDifficulty
+): QuestionDifficulty => {
+  const index =
+    DIFFICULTY_ORDER.indexOf(
+      difficulty
+    );
+
+  if (
+    index < 0 ||
+    index >=
+      DIFFICULTY_ORDER.length -
+        1
+  ) {
+    return difficulty;
+  }
+
+  return (
+    DIFFICULTY_ORDER[
+      index + 1
+    ] ||
+    difficulty
+  );
+};
+
+const scoreToDifficulty = (
+  score:
+    number
+): QuestionDifficulty => {
+  if (
+    score >=
+    88
+  ) {
+    return "senior";
+  }
+
+  if (
+    score >=
+    74
+  ) {
+    return "advanced";
+  }
+
+  if (
+    score >=
+    48
+  ) {
+    return "intermediate";
+  }
+
+  return "beginner";
+};
+
+const determineAdaptiveDifficulty =
+  async ({
+    userId,
+    roleSlug,
+  }: {
+    userId:
+      mongoose.Types.ObjectId;
+
+    roleSlug:
+      string;
+  }): Promise<IAdaptiveDifficultyResult> => {
+    /*
+     * 1. Previous completed interviews for the SAME career field
+     *    are the strongest signal because they are directly
+     *    role-specific.
+     */
+    const previousInterviews =
+      await Interview.find({
+        user:
+          userId,
+
+        category:
+          roleSlug,
+
+        status:
+          "completed",
+      })
+        .sort({
+          completedAt:
+            -1,
+        })
+        .limit(
+          5
+        )
+        .select(
+          "overallScore"
+        )
+        .lean();
+
+    const previousInterviewAverage =
+      averageNumbers(
+        previousInterviews
+          .map(
+            (
+              interview
+            ) =>
+              typeof interview.overallScore ===
+              "number"
+                ? interview.overallScore
+                : NaN
+          )
+      );
+
+    /*
+     * 2. Unified Career Skill Profile provides broader evidence
+     *    from resume + mock interview + technical questions +
+     *    projects + other verified evidence.
+     *
+     *    CV formatting / ATS score is intentionally NOT used.
+     */
+    let evidenceAverage:
+      number | undefined;
+
+    try {
+      const profile =
+        await buildCareerSkillProfile({
+          userId,
+
+          strongestSkillLimit:
+            10,
+        });
+
+      const verifiedScores =
+        profile
+          .verifiedSkills
+          .map(
+            (
+              skill
+            ) =>
+              skill.skillScore
+          )
+          .filter(
+            (
+              score
+            ) =>
+              Number.isFinite(
+                score
+              )
+          );
+
+      const strongestScores =
+        profile
+          .strongestSkills
+          .map(
+            (
+              skill
+            ) =>
+              skill.skillScore
+          )
+          .filter(
+            (
+              score
+            ) =>
+              Number.isFinite(
+                score
+              )
+          );
+
+      evidenceAverage =
+        averageNumbers(
+          verifiedScores.length >
+            0
+            ? verifiedScores
+            : strongestScores
+        );
+    } catch (
+      profileError
+    ) {
+      console.error(
+        "[Interview Adaptive Difficulty] Career profile could not be loaded:",
+        profileError
+      );
+    }
+
+    /*
+     * Weight role-specific interview history more heavily.
+     */
+    let confidenceScore =
+      50;
+
+    let reason =
+      "No strong prior evidence was available, so InterviewIQ starts at an intermediate baseline.";
+
+    if (
+      typeof previousInterviewAverage ===
+        "number" &&
+      typeof evidenceAverage ===
+        "number"
+    ) {
+      confidenceScore =
+        Math.round(
+          previousInterviewAverage *
+            0.7 +
+          evidenceAverage *
+            0.3
+        );
+
+      reason =
+        "Difficulty was calculated from previous interviews in this career field plus verified skill evidence.";
+    } else if (
+      typeof previousInterviewAverage ===
+      "number"
+    ) {
+      confidenceScore =
+        Math.round(
+          previousInterviewAverage
+        );
+
+      reason =
+        "Difficulty was calculated primarily from previous interviews in this career field.";
+    } else if (
+      typeof evidenceAverage ===
+      "number"
+    ) {
+      confidenceScore =
+        Math.round(
+          evidenceAverage
+        );
+
+      /*
+       * Do not jump a first-time user directly to Senior solely
+       * from general skill evidence.
+       */
+      confidenceScore =
+        Math.min(
+          confidenceScore,
+          82
+        );
+
+      reason =
+        "Difficulty was estimated from verified skill evidence because no completed interview exists for this career field yet.";
+    }
+
+    const detectedLevel =
+      scoreToDifficulty(
+        confidenceScore
+      );
+
+    const stretchLevel =
+      getNextDifficulty(
+        detectedLevel
+      );
+
+    return {
+      detectedLevel,
+
+      stretchLevel,
+
+      confidenceScore,
+
+      previousInterviewAverage:
+        typeof previousInterviewAverage ===
+        "number"
+          ? Math.round(
+              previousInterviewAverage
+            )
+          : undefined,
+
+      evidenceAverage:
+        typeof evidenceAverage ===
+        "number"
+          ? Math.round(
+              evidenceAverage
+            )
+          : undefined,
+
+      reason,
+    };
+  };
+
+/* =========================================
+   QUESTION SELECTION
+========================================= */
+
+const sampleQuestions = async ({
+  categoryCandidates,
+  interviewType,
+  difficulty,
+  size,
+  excludedIds,
+}: {
+  categoryCandidates:
+    string[];
+
+  interviewType:
+    InterviewType;
+
+  difficulty:
+    QuestionDifficulty;
+
+  size:
+    number;
+
+  excludedIds:
+    mongoose.Types.ObjectId[];
+}) => {
+  if (
+    size <= 0
+  ) {
+    return [];
+  }
+
+  const match:
+    Record<
+      string,
+      unknown
+    > = {
+    category: {
+      $in:
+        categoryCandidates,
+    },
+
+    difficulty,
+
+    interviewType,
+
+    isActive:
+      true,
+  };
+
+  if (
+    excludedIds.length >
+    0
+  ) {
+    match._id = {
+      $nin:
+        excludedIds,
+    };
+  }
+
+  return Question.aggregate([
+    {
+      $match:
+        match,
+    },
+
+    {
+      $sample: {
+        size,
+      },
+    },
+
+    {
+      $project: {
+        _id:
+          1,
+
+        text:
+          1,
+
+        category:
+          1,
+
+        difficulty:
+          1,
+
+        interviewType:
+          1,
+
+        tags:
+          1,
+      },
+    },
+  ]);
+};
+
+const getAdaptiveQuestionsForType =
+  async ({
+    categoryCandidates,
+    interviewType,
+    detectedLevel,
+    stretchLevel,
+  }: {
+    categoryCandidates:
+      string[];
+
+    interviewType:
+      InterviewType;
+
+    detectedLevel:
+      QuestionDifficulty;
+
+    stretchLevel:
+      QuestionDifficulty;
+  }) => {
+    const selected:
+      any[] = [];
+
+    /*
+     * Default mix:
+     * 2 questions at detected level
+     * 1 stretch question one level higher
+     *
+     * Senior users receive 3 senior questions.
+     */
+    const baseCount =
+      detectedLevel ===
+      stretchLevel
+        ? 3
+        : 2;
+
+    const stretchCount =
+      detectedLevel ===
+      stretchLevel
+        ? 0
+        : 1;
+
+    const baseQuestions =
+      await sampleQuestions({
+        categoryCandidates,
+
+        interviewType,
+
+        difficulty:
+          detectedLevel,
+
+        size:
+          baseCount,
+
+        excludedIds:
+          [],
+      });
+
+    selected.push(
+      ...baseQuestions
+    );
+
+    const excludedIds =
+      selected.map(
+        (
+          question
+        ) =>
+          new mongoose.Types.ObjectId(
+            question._id
+          )
+      );
+
+    const stretchQuestions =
+      await sampleQuestions({
+        categoryCandidates,
+
+        interviewType,
+
+        difficulty:
+          stretchLevel,
+
+        size:
+          stretchCount,
+
+        excludedIds,
+      });
+
+    selected.push(
+      ...stretchQuestions
+    );
+
+    /*
+     * If the preferred mix is short, fill remaining slots from
+     * the nearest useful difficulties rather than failing
+     * immediately.
+     */
+    if (
+      selected.length <
+      QUESTIONS_PER_TYPE
+    ) {
+      const fallbackOrder =
+        DIFFICULTY_ORDER
+          .slice()
+          .sort(
+            (
+              a,
+              b
+            ) =>
+              Math.abs(
+                DIFFICULTY_ORDER.indexOf(
+                  a
+                ) -
+                DIFFICULTY_ORDER.indexOf(
+                  detectedLevel
+                )
+              ) -
+              Math.abs(
+                DIFFICULTY_ORDER.indexOf(
+                  b
+                ) -
+                DIFFICULTY_ORDER.indexOf(
+                  detectedLevel
+                )
+              )
+          );
+
+      for (
+        const fallbackDifficulty
+        of fallbackOrder
+      ) {
+        if (
+          selected.length >=
+          QUESTIONS_PER_TYPE
+        ) {
+          break;
+        }
+
+        const currentExcludedIds =
+          selected.map(
+            (
+              question
+            ) =>
+              new mongoose.Types.ObjectId(
+                question._id
+              )
+          );
+
+        const needed =
+          QUESTIONS_PER_TYPE -
+          selected.length;
+
+        const fallbackQuestions =
+          await sampleQuestions({
+            categoryCandidates,
+
+            interviewType,
+
+            difficulty:
+              fallbackDifficulty,
+
+            size:
+              needed,
+
+            excludedIds:
+              currentExcludedIds,
+          });
+
+        selected.push(
+          ...fallbackQuestions
+        );
+      }
+    }
+
+    return selected.slice(
+      0,
+      QUESTIONS_PER_TYPE
+    );
+  };
+
 /* =========================================
    START INTERVIEW
 ========================================= */
@@ -103,9 +807,15 @@ export const startInterviewController =
       const userId =
         getUserId(req);
 
-      if (!userId) {
-        res.status(401).json({
-          success: false,
+      if (
+        !userId
+      ) {
+        res.status(
+          401
+        ).json({
+          success:
+            false,
+
           message:
             "Not authorized",
         });
@@ -113,122 +823,138 @@ export const startInterviewController =
         return;
       }
 
-      const category =
-        normalizeCategory(
+      /*
+       * Frontend only needs to send:
+       *
+       * {
+       *   roleSlug: "frontend-developer"
+       * }
+       *
+       * Old category remains a fallback for backward compatibility.
+       */
+      const roleSlug =
+        normalizeRoleSlug(
+          req.body.roleSlug ||
           req.body.category
         );
 
-      const difficulty =
-        req.body
-          .difficulty as QuestionDifficulty;
+      if (
+        !roleSlug
+      ) {
+        res.status(
+          400
+        ).json({
+          success:
+            false,
 
-      const interviewType =
-        req.body
-          .interviewType as InterviewType;
-
-      /* =========================
-         VALIDATION
-      ========================= */
-
-      if (!category) {
-        res.status(400).json({
-          success: false,
           message:
-            "Category is required",
+            "Career field is required",
         });
 
         return;
       }
+
+      const categoryCandidates =
+        getQuestionCategoryCandidates(
+          roleSlug
+        );
+
+      /* =========================
+         ADAPTIVE LEVEL
+      ========================= */
+
+      const adaptive =
+        await determineAdaptiveDifficulty({
+          userId,
+
+          roleSlug,
+        });
+
+      /* =========================
+         3 TECHNICAL
+      ========================= */
+
+      const technicalQuestions =
+        await getAdaptiveQuestionsForType({
+          categoryCandidates,
+
+          interviewType:
+            "technical",
+
+          detectedLevel:
+            adaptive.detectedLevel,
+
+          stretchLevel:
+            adaptive.stretchLevel,
+        });
+
+      /* =========================
+         3 BEHAVIORAL
+      ========================= */
+
+      const behavioralQuestions =
+        await getAdaptiveQuestionsForType({
+          categoryCandidates,
+
+          interviewType:
+            "behavioral",
+
+          detectedLevel:
+            adaptive.detectedLevel,
+
+          stretchLevel:
+            adaptive.stretchLevel,
+        });
 
       if (
-        !VALID_DIFFICULTIES.includes(
-          difficulty
-        )
+        technicalQuestions.length <
+          QUESTIONS_PER_TYPE ||
+        behavioralQuestions.length <
+          QUESTIONS_PER_TYPE
       ) {
-        res.status(400).json({
-          success: false,
+        res.status(
+          400
+        ).json({
+          success:
+            false,
+
           message:
-            "Invalid difficulty",
+            `Not enough questions are available for ${roleSlug}. ` +
+            `InterviewIQ requires ${QUESTIONS_PER_TYPE} technical and ${QUESTIONS_PER_TYPE} behavioral questions. ` +
+            `Available for this adaptive session: ${technicalQuestions.length} technical and ${behavioralQuestions.length} behavioral.`,
         });
 
         return;
       }
+
+      /*
+       * Keep a predictable format:
+       * first 3 technical, then 3 behavioral.
+       *
+       * Each question snapshot still points to its original
+       * Question document, so evaluation/evidence keeps working.
+       */
+      const questions = [
+        ...technicalQuestions,
+
+        ...behavioralQuestions,
+      ];
 
       if (
-        !VALID_INTERVIEW_TYPES.includes(
-          interviewType
-        )
+        questions.length !==
+        TOTAL_QUESTIONS
       ) {
-        res.status(400).json({
-          success: false,
-          message:
-            "Invalid interview type",
-        });
-
-        return;
+        throw new Error(
+          `Adaptive interview must contain exactly ${TOTAL_QUESTIONS} questions.`
+        );
       }
-
-      /* =========================
-         RANDOM QUESTIONS
-      ========================= */
-
-      const questions =
-        await Question.aggregate([
-          {
-            $match: {
-              category,
-              difficulty,
-              interviewType,
-              isActive: true,
-            },
-          },
-
-          {
-            $sample: {
-              size:
-                QUESTIONS_PER_INTERVIEW,
-            },
-          },
-
-          {
-            $project: {
-              _id: 1,
-              text: 1,
-              category: 1,
-              difficulty: 1,
-              interviewType: 1,
-              tags: 1,
-            },
-          },
-        ]);
-
-      /* =========================
-         NOT ENOUGH QUESTIONS
-      ========================= */
-
-      if (
-        questions.length <
-        QUESTIONS_PER_INTERVIEW
-      ) {
-        res.status(400).json({
-          success: false,
-
-          message:
-            `Not enough questions available for ${category} / ${difficulty} / ${interviewType}. ` +
-            `Required: ${QUESTIONS_PER_INTERVIEW}, available: ${questions.length}.`,
-        });
-
-        return;
-      }
-
-      /* =========================
-         CREATE SNAPSHOTS
-      ========================= */
 
       const answerSnapshots:
         IInterviewAnswer[] =
         questions.map(
-          (question) => ({
+          (
+            question
+          ) => ({
             question:
               question._id,
 
@@ -240,19 +966,28 @@ export const startInterviewController =
           })
         );
 
-      /* =========================
-         CREATE INTERVIEW
-      ========================= */
-
+      /*
+       * Interview model currently has one difficulty and one
+       * interviewType field.
+       *
+       * Store detected base level in difficulty.
+       * "technical" is kept in interviewType only for legacy
+       * schema compatibility; the actual session is mixed and
+       * each Question document retains its own interviewType.
+       */
       const interview =
         await Interview.create({
-          user: userId,
+          user:
+            userId,
 
-          category,
+          category:
+            roleSlug,
 
-          difficulty,
+          difficulty:
+            adaptive.detectedLevel,
 
-          interviewType,
+          interviewType:
+            "technical",
 
           status:
             "in_progress",
@@ -265,34 +1000,67 @@ export const startInterviewController =
         });
 
       const firstQuestion =
-        interview.answers[0];
+        interview.answers[
+          0
+        ];
 
-      if (!firstQuestion) {
+      if (
+        !firstQuestion
+      ) {
         throw new Error(
           "Interview was created without questions."
         );
       }
 
-      /* =========================
-         RESPONSE
-      ========================= */
-
-      res.status(201).json({
-        success: true,
+      res.status(
+        201
+      ).json({
+        success:
+          true,
 
         message:
-          "Interview started successfully",
+          "Adaptive interview started successfully",
 
         data: {
           interviewId:
             interview._id,
 
+          roleSlug,
+
+          category:
+            interview.category,
+
+          difficultyMode:
+            "adaptive",
+
+          detectedDifficulty:
+            adaptive.detectedLevel,
+
+          stretchDifficulty:
+            adaptive.stretchLevel,
+
+          difficultyScore:
+            adaptive.confidenceScore,
+
+          difficultyReason:
+            adaptive.reason,
+
+          format: {
+            technicalQuestions:
+              QUESTIONS_PER_TYPE,
+
+            behavioralQuestions:
+              QUESTIONS_PER_TYPE,
+
+            totalQuestions:
+              TOTAL_QUESTIONS,
+          },
+
           status:
             interview.status,
 
           totalQuestions:
-            interview.answers
-              .length,
+            interview.answers.length,
 
           currentQuestionIndex:
             0,
@@ -306,8 +1074,12 @@ export const startInterviewController =
           },
         },
       });
-    } catch (error) {
-      next(error);
+    } catch (
+      error
+    ) {
+      next(
+        error
+      );
     }
   };
 
@@ -501,6 +1273,9 @@ export const submitInterviewAnswerController =
         evaluation =
           await evaluateInterviewAnswer(
             {
+              roleSlug:
+                interview.category,
+
               category:
                 interview.category,
 
@@ -1022,48 +1797,6 @@ export const getInterviewController =
 export const getInterviewsController =
   async (
     req: Request,
-    req2: Request, // Note: Adding a dummy to match the format of arguments correctly? The original had req, res, next
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => { // Let's correct this back
-    try {
-      const userId =
-        getUserId(req);
-
-      if (!userId) {
-        res.status(401).json({
-          success: false,
-          message:
-            "Not authorized",
-        });
-
-        return;
-      }
-
-      const interviews =
-        await Interview.find({
-          user: userId,
-        })
-          .sort({
-            createdAt: -1,
-          })
-          .select(
-            "_id category difficulty interviewType status overallScore startedAt completedAt createdAt"
-          );
-
-      res.status(200).json({
-        success: true,
-        data: interviews,
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-// Correcting the function signature for getInterviewsController
-export const getInterviewsControllerCorrected =
-  async (
-    req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
@@ -1083,26 +1816,32 @@ export const getInterviewsControllerCorrected =
 
       const interviews =
         await Interview.find({
-          user: userId,
+          user:
+            userId,
         })
           .sort({
-            createdAt: -1,
+            createdAt:
+              -1,
           })
           .select(
             "_id category difficulty interviewType status overallScore startedAt completedAt createdAt"
           );
 
       res.status(200).json({
-        success: true,
-        data: interviews,
+        success:
+          true,
+
+        data:
+          interviews,
       });
-    } catch (error) {
-      next(error);
+    } catch (
+      error
+    ) {
+      next(
+        error
+      );
     }
   };
-
-// Re-exporting with correct name
-export { getInterviewsControllerCorrected as getInterviewsControllerAlternative }
 
 /* =========================================
    DELETE INTERVIEW

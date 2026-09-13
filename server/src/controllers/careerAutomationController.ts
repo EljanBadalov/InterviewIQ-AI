@@ -3,6 +3,14 @@ import {
   Response,
 } from "express";
 
+import CareerAutomation, {
+  type CareerAutomationStatus,
+  type CareerTaskStatus,
+  type CareerWorkMode,
+  type CareerEmploymentType,
+  type CareerExperienceLevel,
+} from "../models/CareerAutomation";
+
 import {
   createCareerAutomation,
   generateDailyCareerPlan,
@@ -15,12 +23,8 @@ import {
 } from "../services/careerAutomationService";
 
 import {
-  type CareerAutomationStatus,
-  type CareerTaskStatus,
-  type CareerWorkMode,
-  type CareerEmploymentType,
-  type CareerExperienceLevel,
-} from "../models/CareerAutomation";
+  getAllCareerFields,
+} from "../services/careerFieldService";
 
 /* =========================================================
    TYPES
@@ -84,6 +88,28 @@ interface ICreateAutomationBody {
 
     timezone?: unknown;
   };
+}
+
+interface IUpdateJobPreferencesBody {
+  targetRole?: unknown;
+
+  enabled?: unknown;
+
+  locations?: unknown;
+
+  workModes?: unknown;
+
+  employmentTypes?: unknown;
+
+  experienceLevels?: unknown;
+
+  minimumMatchScore?: unknown;
+
+  dailyApplicationTarget?: unknown;
+
+  notifyOnNewMatches?: unknown;
+
+  notificationMatchThreshold?: unknown;
 }
 
 interface IUpdateTaskBody {
@@ -162,7 +188,7 @@ const normalizeString = (
 ): string | undefined => {
   if (
     typeof value !==
-      "string"
+    "string"
   ) {
     return undefined;
   }
@@ -324,23 +350,23 @@ const normalizeEnumArray = <
 
   return Array.from(
     new Set(
-      value
-        .filter(
-          (
+      value.filter(
+        (
+          item
+        ): item is T =>
+          typeof item ===
+            "string" &&
+          allowedSet.has(
             item
-          ): item is T =>
-            typeof item ===
-              "string" &&
-            allowedSet.has(
-              item
-            )
-        )
+          )
+      )
     )
   );
 };
 
 const getAuthenticatedUserId = (
-  req: Request
+  req:
+    Request
 ): string | undefined => {
   const user =
     req.user;
@@ -352,10 +378,12 @@ const getAuthenticatedUserId = (
     return undefined;
   }
 
-  return String(
-    user._id
-  ).trim() ||
-    undefined;
+  return (
+    String(
+      user._id
+    ).trim() ||
+    undefined
+  );
 };
 
 const requireAuthenticatedUserId = (
@@ -408,7 +436,7 @@ const getErrorMessage = (
 };
 
 /* =========================================================
-   CREATE / INITIALIZE AUTOMATION
+   CREATE / INITIALIZE
 ========================================================= */
 
 export const createAutomation =
@@ -539,11 +567,20 @@ export const createAutomation =
                   ?.enabled
               ),
 
+            /*
+             * Main targetRole is always included.
+             */
             targetRoles:
-              normalizeStringArray(
-                body
-                  .jobPreferences
-                  ?.targetRoles
+              Array.from(
+                new Set([
+                  targetRole,
+
+                  ...normalizeStringArray(
+                    body
+                      .jobPreferences
+                      ?.targetRoles
+                  ),
+                ])
               ),
 
             locations:
@@ -589,7 +626,8 @@ export const createAutomation =
                 body
                   .jobPreferences
                   ?.dailyApplicationTarget
-              ),
+              ) ??
+              3,
 
             notifyOnNewMatches:
               normalizeBoolean(
@@ -730,7 +768,395 @@ export const createAutomation =
   };
 
 /* =========================================================
-   GET FULL AUTOMATION
+   UPDATE JOB SEARCH PREFERENCES
+========================================================= */
+
+export const updateJobPreferences =
+  async (
+    req:
+      Request,
+    res:
+      Response
+  ): Promise<void> => {
+    try {
+      const userId =
+        requireAuthenticatedUserId(
+          req,
+          res
+        );
+
+      if (
+        !userId
+      ) {
+        return;
+      }
+
+      const body =
+        (
+          req.body ||
+          {}
+        ) as IUpdateJobPreferencesBody;
+
+      const automation =
+        await CareerAutomation.findOne({
+          userId,
+
+          status: {
+            $in: [
+              "active",
+              "paused",
+            ],
+          },
+        });
+
+      if (
+        !automation
+      ) {
+        res.status(
+          404
+        ).json({
+          success:
+            false,
+
+          message:
+            "Career automation was not found.",
+        });
+
+        return;
+      }
+
+      const targetRole =
+        normalizeString(
+          body.targetRole
+        );
+
+      if (
+        body.targetRole !==
+          undefined &&
+        !targetRole
+      ) {
+        res.status(
+          400
+        ).json({
+          success:
+            false,
+
+          message:
+            "Target role cannot be empty.",
+        });
+
+        return;
+      }
+
+      if (
+        targetRole
+      ) {
+        automation.targetRole =
+          targetRole;
+
+        /*
+         * Keep jobPreferences target role aligned with the
+         * primary Career Automation target role.
+         */
+        automation
+          .jobPreferences
+          .targetRoles = [
+            targetRole,
+          ];
+      }
+
+      const enabled =
+        normalizeBoolean(
+          body.enabled
+        );
+
+      if (
+        enabled !==
+        undefined
+      ) {
+        automation
+          .jobPreferences
+          .enabled =
+          enabled;
+      }
+
+      if (
+        body.locations !==
+        undefined
+      ) {
+        automation
+          .jobPreferences
+          .locations =
+          normalizeStringArray(
+            body.locations
+          );
+      }
+
+      if (
+        body.workModes !==
+        undefined
+      ) {
+        automation
+          .jobPreferences
+          .workModes =
+          normalizeEnumArray(
+            body.workModes,
+            VALID_WORK_MODES
+          );
+      }
+
+      if (
+        body.employmentTypes !==
+        undefined
+      ) {
+        automation
+          .jobPreferences
+          .employmentTypes =
+          normalizeEnumArray(
+            body.employmentTypes,
+            VALID_EMPLOYMENT_TYPES
+          );
+      }
+
+      if (
+        body.experienceLevels !==
+        undefined
+      ) {
+        automation
+          .jobPreferences
+          .experienceLevels =
+          normalizeEnumArray(
+            body.experienceLevels,
+            VALID_EXPERIENCE_LEVELS
+          );
+      }
+
+      const minimumMatchScore =
+        normalizeNumber(
+          body.minimumMatchScore
+        );
+
+      if (
+        minimumMatchScore !==
+        undefined
+      ) {
+        automation
+          .jobPreferences
+          .minimumMatchScore =
+          Math.max(
+            0,
+            Math.min(
+              100,
+              Math.round(
+                minimumMatchScore
+              )
+            )
+          );
+      }
+
+      const dailyApplicationTarget =
+        normalizeNumber(
+          body.dailyApplicationTarget
+        );
+
+      if (
+        dailyApplicationTarget !==
+        undefined
+      ) {
+        automation
+          .jobPreferences
+          .dailyApplicationTarget =
+          Math.max(
+            1,
+            Math.min(
+              20,
+              Math.round(
+                dailyApplicationTarget
+              )
+            )
+          );
+      }
+
+      const notifyOnNewMatches =
+        normalizeBoolean(
+          body.notifyOnNewMatches
+        );
+
+      if (
+        notifyOnNewMatches !==
+        undefined
+      ) {
+        automation
+          .jobPreferences
+          .notifyOnNewMatches =
+          notifyOnNewMatches;
+      }
+
+      const notificationMatchThreshold =
+        normalizeNumber(
+          body.notificationMatchThreshold
+        );
+
+      if (
+        notificationMatchThreshold !==
+        undefined
+      ) {
+        automation
+          .jobPreferences
+          .notificationMatchThreshold =
+          Math.max(
+            0,
+            Math.min(
+              100,
+              Math.round(
+                notificationMatchThreshold
+              )
+            )
+          );
+      }
+
+      /*
+       * Role/preferences changed.
+       * Force next external search to be considered due.
+       */
+      automation.nextJobSearchAt =
+        new Date();
+
+      await automation.save();
+
+      const summary =
+        await getCareerAutomationSummary(
+          userId
+        );
+
+      res.status(
+        200
+      ).json({
+        success:
+          true,
+
+        message:
+          "Job search preferences updated successfully.",
+
+        data: {
+          automation,
+
+          summary,
+        },
+      });
+    } catch (
+      error
+    ) {
+      console.error(
+        "[Career Automation Controller] Job preferences update failed:",
+        error
+      );
+
+      res.status(
+        500
+      ).json({
+        success:
+          false,
+
+        message:
+          getErrorMessage(
+            error,
+            "Failed to update job search preferences."
+          ),
+      });
+    }
+  };
+
+/* =========================================================
+   GET CAREER FIELDS
+========================================================= */
+
+export const getCareerFields =
+  async (
+    req:
+      Request,
+    res:
+      Response
+  ): Promise<void> => {
+    try {
+      const userId =
+        requireAuthenticatedUserId(
+          req,
+          res
+        );
+
+      if (
+        !userId
+      ) {
+        return;
+      }
+
+      const fields =
+        await getAllCareerFields();
+
+      /*
+       * The frontend dropdown only needs stable UI-facing
+       * information. Search queries, skills, related roles,
+       * and other internal matching data stay on the backend.
+       */
+      const options =
+        fields.map(
+          (
+            field
+          ) => ({
+            slug:
+              field.slug,
+
+            name:
+              field.name,
+
+            category:
+              field.category,
+
+            description:
+              field.description,
+          })
+        );
+
+      res.status(
+        200
+      ).json({
+        success:
+          true,
+
+        data: {
+          fields:
+            options,
+
+          total:
+            options.length,
+        },
+      });
+    } catch (
+      error
+    ) {
+      console.error(
+        "[Career Automation Controller] Career fields load failed:",
+        error
+      );
+
+      res.status(
+        500
+      ).json({
+        success:
+          false,
+
+        message:
+          getErrorMessage(
+            error,
+            "Failed to load career fields."
+          ),
+      });
+    }
+  };
+
+/* =========================================================
+   GET AUTOMATION
 ========================================================= */
 
 export const getAutomation =
@@ -807,7 +1233,7 @@ export const getAutomation =
   };
 
 /* =========================================================
-   GET DASHBOARD SUMMARY
+   SUMMARY
 ========================================================= */
 
 export const getAutomationSummary =
@@ -891,7 +1317,7 @@ export const getAutomationSummary =
   };
 
 /* =========================================================
-   GENERATE / GET DAILY PLAN
+   DAILY PLAN
 ========================================================= */
 
 export const generateDailyPlan =
@@ -1127,15 +1553,12 @@ export const updateTaskStatus =
           "Failed to update career task."
         );
 
-      const statusCode =
+      res.status(
         /not found/i.test(
           message
         )
           ? 404
-          : 500;
-
-      res.status(
-        statusCode
+          : 500
       ).json({
         success:
           false,
@@ -1186,8 +1609,7 @@ export const replanAutomation =
 
           preserveCompletedTasks:
             normalizeBoolean(
-              body
-                .preserveCompletedTasks
+              body.preserveCompletedTasks
             ) ??
             true,
         });
@@ -1308,7 +1730,7 @@ export const refreshAutomationProgress =
   };
 
 /* =========================================================
-   PAUSE / RESUME / COMPLETE / ARCHIVE
+   STATUS
 ========================================================= */
 
 export const updateAutomationStatus =
@@ -1412,12 +1834,10 @@ export const updateAutomationStatus =
     }
   };
 
-/* =========================================================
-   DEFAULT EXPORT
-========================================================= */
-
 export default {
   createAutomation,
+  updateJobPreferences,
+  getCareerFields,
   getAutomation,
   getAutomationSummary,
   generateDailyPlan,

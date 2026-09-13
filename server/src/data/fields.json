@@ -1,0 +1,1242 @@
+[
+  {
+    "id": "frontend-developer",
+    "name": "Frontend Developer",
+    "category": "software-development",
+    "description": "Builds user-facing web applications, reusable interfaces and browser-based experiences using modern frontend technologies.",
+    "aliases": [
+      "Frontend Engineer",
+      "Front End Developer",
+      "Front End Engineer",
+      "Frontend Software Engineer",
+      "React Developer",
+      "React Engineer",
+      "JavaScript Developer",
+      "JavaScript Engineer",
+      "TypeScript Developer",
+      "TypeScript Engineer",
+      "UI Engineer",
+      "UI Developer",
+      "Web Developer",
+      "Web Engineer",
+      "Client-Side Developer",
+      "Client-Side Engineer"
+    ],
+    "searchQueries": [
+      "Frontend Developer",
+      "Frontend Engineer",
+      "React Developer",
+      "React Engineer",
+      "JavaScript Developer",
+      "JavaScript Engineer",
+      "TypeScript Developer",
+      "TypeScript Engineer",
+      "UI Engineer",
+      "Web Developer"
+    ],
+    "coreSkills": [
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "TypeScript",
+      "React"
+    ],
+    "secondarySkills": [
+      "Next.js",
+      "Redux",
+      "SASS",
+      "SCSS",
+      "Tailwind CSS",
+      "Bootstrap",
+      "Git",
+      "REST API",
+      "Responsive Design",
+      "Accessibility",
+      "Frontend Testing"
+    ],
+    "keywords": [
+      "frontend",
+      "front-end",
+      "react",
+      "javascript",
+      "typescript",
+      "html",
+      "css",
+      "ui engineer",
+      "web developer",
+      "client-side",
+      "browser",
+      "next.js"
+    ],
+    "negativeKeywords": [
+      "backend only",
+      "data engineer",
+      "data scientist",
+      "machine learning engineer",
+      "devops engineer",
+      "security engineer",
+      "network engineer",
+      "database administrator",
+      "embedded engineer",
+      "firmware engineer"
+    ],
+    "relatedFields": [
+      {
+        "fieldId": "fullstack-developer",
+        "similarity": 85
+      },
+      {
+        "fieldId": "software-engineer",
+        "similarity": 72
+      },
+      {
+        "fieldId": "ui-ux-designer",
+        "similarity": 52
+      },
+      {
+        "fieldId": "mobile-developer",
+        "similarity": 42
+      },
+      {
+        "fieldId": "backend-developer",
+        "similarity": 32
+      }
+    ]
+  },
+  {
+    "id": "backend-developer",
+    "name": "Backend Developer",
+    "category": "software-development",
+    "description": "Builds server-side applications, APIs, authentication systems, databases and application business logic.",
+    "aliases": [
+      "Backend Engineer",
+      "Back End Developer",
+      "Back End Engineer",
+      "Backend Software Engineer",
+      "Node.js Developer",
+      "Node.js Engineer",
+      "API Developer",
+      "API Engineer",
+      "Server-Side Developer",
+      "Server-Side Engineer",
+      "Server Developer"
+    ],
+    "searchQueries": [
+      "Backend Developer",
+      "Backend Engineer",
+      "Backend Software Engineer",
+      "Node.js Developer",
+      "Node.js Engineer",
+      "API Developer",
+      "API Engineer",
+      "Server Side Developer"
+    ],
+    "coreSkills": [
+      "Server-Side Programming",
+      "REST API",
+      "SQL",
+      "Databases",
+      "Authentication"
+    ],
+    "secondarySkills": [
+      "Node.js",
+      "Express",
+      "TypeScript",
+      "Python",
+      "Java",
+      "PostgreSQL",
+      "MySQL",
+      "MongoDB",
+      "Redis",
+      "GraphQL",
+      "Docker",
+      "AWS"
+    ],
+    "keywords": [
+      "backend",
+      "back-end",
+      "server-side",
+      "api",
+      "rest api",
+      "database",
+      "node.js",
+      "express",
+      "authentication",
+      "microservices",
+      "server"
+    ],
+    "negativeKeywords": [
+      "frontend only",
+      "ui designer",
+      "ux designer",
+      "data analyst",
+      "graphic designer"
+    ],
+    "relatedFields": [
+      {
+        "fieldId": "fullstack-developer",
+        "similarity": 86
+      },
+      {
+        "fieldId": "software-engineer",
+        "similarity": 80
+      },
+      {
+        "fieldId": "database-engineer",
+        "similarity": 68
+      },
+      {
+        "fieldId": "cloud-engineer",
+        "similarity": 55
+      },
+      {
+        "fieldId": "devops-engineer",
+        "similarity": 48
+      },
+      {
+        "fieldId": "frontend-developer",
+        "similarity": 32
+      }
+    ]
+  },
+  {
+    "id": "software-engineer",
+    "name": "Software Engineer",
+    "category": "software-development",
+    "description": "Designs, develops, tests and maintains software systems using programming, architecture and software engineering principles.",
+    "aliases": [
+      "Software Developer",
+      "Software Development Engineer",
+      "SDE",
+      "Application Developer",
+      "Application Engineer",
+      "Software Programmer",
+      "Software Development Engineer I",
+      "Software Engineer I",
+      "Associate Software Engineer",
+      "Junior Software Engineer"
+    ],
+    "searchQueries": [
+      "Software Engineer",
+      "Software Developer",
+      "Software Development Engineer",
+      "Application Developer",
+      "Application Engineer",
+      "Junior Software Engineer",
+      "Associate Software Engineer"
+    ],
+    "coreSkills": [
+      "Programming",
+      "Algorithms",
+      "Data Structures",
+      "Software Engineering",
+      "Testing"
+    ],
+    "secondarySkills": [
+      "Object-Oriented Programming",
+      "Design Patterns",
+      "SOLID Principles",
+      "Git",
+      "Databases",
+      "REST API",
+      "Debugging",
+      "System Design",
+      "Software Architecture"
+    ],
+    "keywords": [
+      "software engineer",
+      "software developer",
+      "software development",
+      "application developer",
+      "application engineer",
+      "programming",
+      "software architecture",
+      "algorithms",
+      "data structures"
+    ],
+    "negativeKeywords": [
+      "sales engineer",
+      "technical sales",
+      "customer support",
+      "technical recruiter",
+      "account executive"
+    ],
+    "relatedFields": [
+      {
+        "fieldId": "fullstack-developer",
+        "similarity": 84
+      },
+      {
+        "fieldId": "backend-developer",
+        "similarity": 80
+      },
+      {
+        "fieldId": "frontend-developer",
+        "similarity": 72
+      },
+      {
+        "fieldId": "mobile-developer",
+        "similarity": 70
+      },
+      {
+        "fieldId": "qa-engineer",
+        "similarity": 50
+      },
+      {
+        "fieldId": "machine-learning-engineer",
+        "similarity": 48
+      }
+    ]
+  },
+  {
+    "id": "fullstack-developer",
+    "name": "Full Stack Developer",
+    "category": "software-development",
+    "description": "Builds complete web applications across frontend interfaces, backend services, APIs and databases.",
+    "aliases": [
+      "Full Stack Engineer",
+      "Fullstack Developer",
+      "Fullstack Engineer",
+      "Full-Stack Developer",
+      "Full-Stack Engineer",
+      "Full Stack Software Engineer",
+      "Web Application Developer"
+    ],
+    "searchQueries": [
+      "Full Stack Developer",
+      "Full Stack Engineer",
+      "Fullstack Developer",
+      "Fullstack Engineer",
+      "Full Stack Software Engineer",
+      "Web Application Developer"
+    ],
+    "coreSkills": [
+      "JavaScript",
+      "Frontend Development",
+      "Backend Development",
+      "REST API",
+      "Databases"
+    ],
+    "secondarySkills": [
+      "TypeScript",
+      "React",
+      "Next.js",
+      "Node.js",
+      "Express",
+      "PostgreSQL",
+      "MongoDB",
+      "Git",
+      "Docker",
+      "AWS"
+    ],
+    "keywords": [
+      "full stack",
+      "full-stack",
+      "fullstack",
+      "frontend",
+      "backend",
+      "web application",
+      "react",
+      "node.js",
+      "api",
+      "database"
+    ],
+    "negativeKeywords": [
+      "data scientist",
+      "machine learning only",
+      "security analyst",
+      "network administrator"
+    ],
+    "relatedFields": [
+      {
+        "fieldId": "backend-developer",
+        "similarity": 86
+      },
+      {
+        "fieldId": "frontend-developer",
+        "similarity": 85
+      },
+      {
+        "fieldId": "software-engineer",
+        "similarity": 84
+      },
+      {
+        "fieldId": "database-engineer",
+        "similarity": 48
+      },
+      {
+        "fieldId": "cloud-engineer",
+        "similarity": 42
+      }
+    ]
+  },
+  {
+    "id": "devops-engineer",
+    "name": "DevOps Engineer",
+    "category": "infrastructure",
+    "description": "Automates software delivery, deployment, infrastructure, containers, CI/CD systems and production operations.",
+    "aliases": [
+      "DevOps Developer",
+      "DevOps Specialist",
+      "CI/CD Engineer",
+      "Build Engineer",
+      "Release Engineer",
+      "Platform Engineer",
+      "Infrastructure Automation Engineer",
+      "Site Reliability Engineer",
+      "SRE"
+    ],
+    "searchQueries": [
+      "DevOps Engineer",
+      "Junior DevOps Engineer",
+      "CI/CD Engineer",
+      "Platform Engineer",
+      "Build Engineer",
+      "Release Engineer",
+      "Site Reliability Engineer"
+    ],
+    "coreSkills": [
+      "Linux",
+      "CI/CD",
+      "Docker",
+      "Cloud Computing",
+      "Infrastructure Automation"
+    ],
+    "secondarySkills": [
+      "Kubernetes",
+      "AWS",
+      "Azure",
+      "GCP",
+      "Terraform",
+      "Jenkins",
+      "GitHub Actions",
+      "Bash",
+      "Python",
+      "Monitoring",
+      "Networking"
+    ],
+    "keywords": [
+      "devops",
+      "ci/cd",
+      "docker",
+      "kubernetes",
+      "terraform",
+      "deployment",
+      "infrastructure",
+      "platform engineer",
+      "site reliability",
+      "sre"
+    ],
+    "negativeKeywords": [
+      "frontend developer",
+      "ui designer",
+      "ux designer",
+      "data analyst",
+      "mobile developer"
+    ],
+    "relatedFields": [
+      {
+        "fieldId": "cloud-engineer",
+        "similarity": 91
+      },
+      {
+        "fieldId": "cybersecurity-engineer",
+        "similarity": 57
+      },
+      {
+        "fieldId": "backend-developer",
+        "similarity": 48
+      },
+      {
+        "fieldId": "software-engineer",
+        "similarity": 47
+      },
+      {
+        "fieldId": "data-engineer",
+        "similarity": 43
+      }
+    ]
+  },
+  {
+    "id": "ui-ux-designer",
+    "name": "UI/UX Designer",
+    "category": "design",
+    "description": "Designs digital interfaces and user experiences through research, prototyping, interaction design and usability principles.",
+    "aliases": [
+      "UI Designer",
+      "UX Designer",
+      "UI UX Designer",
+      "Product Designer",
+      "User Interface Designer",
+      "User Experience Designer",
+      "Interaction Designer",
+      "Digital Product Designer"
+    ],
+    "searchQueries": [
+      "UI UX Designer",
+      "UI Designer",
+      "UX Designer",
+      "Product Designer",
+      "Interaction Designer",
+      "Digital Product Designer"
+    ],
+    "coreSkills": [
+      "UI Design",
+      "UX Design",
+      "Figma",
+      "Wireframing",
+      "Prototyping"
+    ],
+    "secondarySkills": [
+      "UX Research",
+      "User Testing",
+      "Interaction Design",
+      "Design Systems",
+      "Accessibility",
+      "Information Architecture",
+      "Responsive Design"
+    ],
+    "keywords": [
+      "ui designer",
+      "ux designer",
+      "ui/ux",
+      "product designer",
+      "figma",
+      "wireframe",
+      "prototype",
+      "user experience",
+      "user interface",
+      "interaction design"
+    ],
+    "negativeKeywords": [
+      "backend developer",
+      "devops engineer",
+      "database engineer",
+      "data engineer",
+      "machine learning engineer"
+    ],
+    "relatedFields": [
+      {
+        "fieldId": "frontend-developer",
+        "similarity": 52
+      },
+      {
+        "fieldId": "mobile-developer",
+        "similarity": 43
+      },
+      {
+        "fieldId": "software-engineer",
+        "similarity": 20
+      }
+    ]
+  },
+  {
+    "id": "machine-learning-engineer",
+    "name": "Machine Learning Engineer",
+    "category": "artificial-intelligence",
+    "description": "Builds, trains, evaluates, deploys and maintains machine learning models and production AI systems.",
+    "aliases": [
+      "ML Engineer",
+      "AI Engineer",
+      "Artificial Intelligence Engineer",
+      "Machine Learning Developer",
+      "Applied Machine Learning Engineer",
+      "Applied AI Engineer",
+      "Deep Learning Engineer"
+    ],
+    "searchQueries": [
+      "Machine Learning Engineer",
+      "ML Engineer",
+      "AI Engineer",
+      "Artificial Intelligence Engineer",
+      "Applied Machine Learning Engineer",
+      "Applied AI Engineer",
+      "Deep Learning Engineer"
+    ],
+    "coreSkills": [
+      "Python",
+      "Machine Learning",
+      "Statistics",
+      "Model Training",
+      "Model Evaluation"
+    ],
+    "secondarySkills": [
+      "PyTorch",
+      "TensorFlow",
+      "Scikit-learn",
+      "Pandas",
+      "NumPy",
+      "MLOps",
+      "Docker",
+      "SQL",
+      "Cloud Computing"
+    ],
+    "keywords": [
+      "machine learning",
+      "ml engineer",
+      "ai engineer",
+      "artificial intelligence",
+      "deep learning",
+      "model training",
+      "pytorch",
+      "tensorflow",
+      "mlops"
+    ],
+    "negativeKeywords": [
+      "frontend developer",
+      "ui designer",
+      "manual qa",
+      "network administrator"
+    ],
+    "relatedFields": [
+      {
+        "fieldId": "data-scientist",
+        "similarity": 91
+      },
+      {
+        "fieldId": "data-engineer",
+        "similarity": 67
+      },
+      {
+        "fieldId": "software-engineer",
+        "similarity": 62
+      },
+      {
+        "fieldId": "cloud-engineer",
+        "similarity": 45
+      }
+    ]
+  },
+  {
+    "id": "data-analyst",
+    "name": "Data Analyst",
+    "category": "data",
+    "description": "Analyzes datasets, creates reports and dashboards and converts data into actionable business insights.",
+    "aliases": [
+      "Business Data Analyst",
+      "Analytics Analyst",
+      "Reporting Analyst",
+      "BI Analyst",
+      "Business Intelligence Analyst",
+      "Junior Data Analyst"
+    ],
+    "searchQueries": [
+      "Data Analyst",
+      "Junior Data Analyst",
+      "Business Data Analyst",
+      "Analytics Analyst",
+      "BI Analyst",
+      "Business Intelligence Analyst",
+      "Reporting Analyst"
+    ],
+    "coreSkills": [
+      "SQL",
+      "Excel",
+      "Data Analysis",
+      "Data Visualization",
+      "Statistics"
+    ],
+    "secondarySkills": [
+      "Python",
+      "Pandas",
+      "Power BI",
+      "Tableau",
+      "Data Cleaning",
+      "Reporting",
+      "Business Intelligence"
+    ],
+    "keywords": [
+      "data analyst",
+      "analytics analyst",
+      "business intelligence",
+      "bi analyst",
+      "sql",
+      "excel",
+      "dashboard",
+      "reporting",
+      "power bi",
+      "tableau"
+    ],
+    "negativeKeywords": [
+      "frontend developer",
+      "devops engineer",
+      "mobile developer",
+      "network engineer"
+    ],
+    "relatedFields": [
+      {
+        "fieldId": "data-scientist",
+        "similarity": 73
+      },
+      {
+        "fieldId": "data-engineer",
+        "similarity": 58
+      },
+      {
+        "fieldId": "database-engineer",
+        "similarity": 54
+      },
+      {
+        "fieldId": "machine-learning-engineer",
+        "similarity": 45
+      }
+    ]
+  },
+  {
+    "id": "data-scientist",
+    "name": "Data Scientist",
+    "category": "data",
+    "description": "Uses statistics, programming, experimentation and machine learning to discover insights and build predictive models.",
+    "aliases": [
+      "Applied Data Scientist",
+      "Research Data Scientist",
+      "Decision Scientist",
+      "Junior Data Scientist",
+      "Statistical Data Scientist"
+    ],
+    "searchQueries": [
+      "Data Scientist",
+      "Junior Data Scientist",
+      "Applied Data Scientist",
+      "Research Data Scientist",
+      "Decision Scientist"
+    ],
+    "coreSkills": [
+      "Python",
+      "Statistics",
+      "Machine Learning",
+      "SQL",
+      "Data Analysis"
+    ],
+    "secondarySkills": [
+      "Pandas",
+      "NumPy",
+      "Scikit-learn",
+      "Jupyter",
+      "Data Visualization",
+      "Experimentation",
+      "Predictive Modeling",
+      "Model Evaluation"
+    ],
+    "keywords": [
+      "data scientist",
+      "data science",
+      "statistics",
+      "machine learning",
+      "predictive modeling",
+      "experimentation",
+      "python",
+      "pandas",
+      "scikit-learn"
+    ],
+    "negativeKeywords": [
+      "frontend developer",
+      "ui designer",
+      "mobile developer",
+      "network administrator"
+    ],
+    "relatedFields": [
+      {
+        "fieldId": "machine-learning-engineer",
+        "similarity": 91
+      },
+      {
+        "fieldId": "data-analyst",
+        "similarity": 73
+      },
+      {
+        "fieldId": "data-engineer",
+        "similarity": 70
+      },
+      {
+        "fieldId": "database-engineer",
+        "similarity": 46
+      }
+    ]
+  },
+  {
+    "id": "data-engineer",
+    "name": "Data Engineer",
+    "category": "data",
+    "description": "Builds scalable data pipelines, ETL systems, warehouses and infrastructure for storing and processing data.",
+    "aliases": [
+      "ETL Engineer",
+      "ETL Developer",
+      "Analytics Engineer",
+      "Big Data Engineer",
+      "Data Platform Engineer",
+      "Data Infrastructure Engineer"
+    ],
+    "searchQueries": [
+      "Data Engineer",
+      "Junior Data Engineer",
+      "ETL Engineer",
+      "ETL Developer",
+      "Analytics Engineer",
+      "Big Data Engineer",
+      "Data Platform Engineer"
+    ],
+    "coreSkills": [
+      "SQL",
+      "Python",
+      "ETL",
+      "Data Pipelines",
+      "Data Warehousing"
+    ],
+    "secondarySkills": [
+      "Apache Spark",
+      "Airflow",
+      "Kafka",
+      "dbt",
+      "PostgreSQL",
+      "AWS",
+      "Azure",
+      "GCP",
+      "Docker"
+    ],
+    "keywords": [
+      "data engineer",
+      "data engineering",
+      "etl",
+      "data pipeline",
+      "data warehouse",
+      "spark",
+      "airflow",
+      "kafka",
+      "dbt",
+      "big data"
+    ],
+    "negativeKeywords": [
+      "frontend developer",
+      "ui designer",
+      "mobile developer",
+      "manual qa"
+    ],
+    "relatedFields": [
+      {
+        "fieldId": "database-engineer",
+        "similarity": 77
+      },
+      {
+        "fieldId": "data-scientist",
+        "similarity": 70
+      },
+      {
+        "fieldId": "machine-learning-engineer",
+        "similarity": 67
+      },
+      {
+        "fieldId": "cloud-engineer",
+        "similarity": 62
+      },
+      {
+        "fieldId": "data-analyst",
+        "similarity": 58
+      }
+    ]
+  },
+  {
+    "id": "qa-engineer",
+    "name": "QA Engineer",
+    "category": "quality-assurance",
+    "description": "Ensures software quality through manual testing, automated testing, API testing, regression testing and defect management.",
+    "aliases": [
+      "Quality Assurance Engineer",
+      "QA Tester",
+      "Software Tester",
+      "Test Engineer",
+      "Software Test Engineer",
+      "Automation QA Engineer",
+      "QA Automation Engineer",
+      "Test Automation Engineer",
+      "SDET",
+      "Quality Engineer"
+    ],
+    "searchQueries": [
+      "QA Engineer",
+      "Quality Assurance Engineer",
+      "QA Tester",
+      "Software Tester",
+      "Test Engineer",
+      "Automation QA Engineer",
+      "QA Automation Engineer",
+      "SDET"
+    ],
+    "coreSkills": [
+      "Software Testing",
+      "Test Cases",
+      "Bug Reporting",
+      "Regression Testing",
+      "API Testing"
+    ],
+    "secondarySkills": [
+      "Postman",
+      "Selenium",
+      "Cypress",
+      "Playwright",
+      "Jest",
+      "Automation Testing",
+      "SQL",
+      "Git",
+      "JavaScript",
+      "Python"
+    ],
+    "keywords": [
+      "qa engineer",
+      "quality assurance",
+      "software tester",
+      "test engineer",
+      "test automation",
+      "qa automation",
+      "selenium",
+      "cypress",
+      "playwright",
+      "sdet"
+    ],
+    "negativeKeywords": [
+      "ui designer",
+      "data scientist",
+      "network administrator",
+      "sales engineer"
+    ],
+    "relatedFields": [
+      {
+        "fieldId": "software-engineer",
+        "similarity": 50
+      },
+      {
+        "fieldId": "frontend-developer",
+        "similarity": 40
+      },
+      {
+        "fieldId": "backend-developer",
+        "similarity": 40
+      },
+      {
+        "fieldId": "devops-engineer",
+        "similarity": 34
+      }
+    ]
+  },
+  {
+    "id": "cybersecurity-engineer",
+    "name": "Cybersecurity Engineer",
+    "category": "security",
+    "description": "Protects applications, systems, networks and cloud environments using security controls, monitoring and vulnerability management.",
+    "aliases": [
+      "Security Engineer",
+      "Cyber Security Engineer",
+      "Information Security Engineer",
+      "Application Security Engineer",
+      "Cybersecurity Analyst",
+      "Security Analyst",
+      "Information Security Analyst",
+      "SOC Analyst"
+    ],
+    "searchQueries": [
+      "Cybersecurity Engineer",
+      "Security Engineer",
+      "Information Security Engineer",
+      "Application Security Engineer",
+      "Cybersecurity Analyst",
+      "Security Analyst",
+      "SOC Analyst"
+    ],
+    "coreSkills": [
+      "Cybersecurity",
+      "Networking",
+      "Security Monitoring",
+      "Vulnerability Management",
+      "IAM"
+    ],
+    "secondarySkills": [
+      "Linux",
+      "SIEM",
+      "Cloud Security",
+      "Incident Response",
+      "Penetration Testing",
+      "Python",
+      "AWS",
+      "Azure",
+      "Network Security"
+    ],
+    "keywords": [
+      "cybersecurity",
+      "cyber security",
+      "security engineer",
+      "security analyst",
+      "information security",
+      "soc analyst",
+      "siem",
+      "vulnerability",
+      "incident response",
+      "application security"
+    ],
+    "negativeKeywords": [
+      "frontend developer",
+      "ui designer",
+      "data analyst",
+      "mobile developer"
+    ],
+    "relatedFields": [
+      {
+        "fieldId": "cloud-engineer",
+        "similarity": 64
+      },
+      {
+        "fieldId": "devops-engineer",
+        "similarity": 57
+      },
+      {
+        "fieldId": "software-engineer",
+        "similarity": 38
+      },
+      {
+        "fieldId": "backend-developer",
+        "similarity": 35
+      }
+    ]
+  },
+  {
+    "id": "cloud-engineer",
+    "name": "Cloud Engineer",
+    "category": "infrastructure",
+    "description": "Designs, deploys and manages cloud infrastructure, compute, networking, storage and cloud platform services.",
+    "aliases": [
+      "Cloud Infrastructure Engineer",
+      "Cloud Platform Engineer",
+      "AWS Engineer",
+      "Azure Engineer",
+      "GCP Engineer",
+      "Cloud Operations Engineer",
+      "Cloud Systems Engineer"
+    ],
+    "searchQueries": [
+      "Cloud Engineer",
+      "Cloud Infrastructure Engineer",
+      "Cloud Platform Engineer",
+      "AWS Engineer",
+      "Azure Engineer",
+      "GCP Engineer",
+      "Cloud Operations Engineer"
+    ],
+    "coreSkills": [
+      "Cloud Computing",
+      "AWS",
+      "Linux",
+      "Networking",
+      "Infrastructure"
+    ],
+    "secondarySkills": [
+      "Azure",
+      "GCP",
+      "Docker",
+      "Kubernetes",
+      "Terraform",
+      "IAM",
+      "CI/CD",
+      "Monitoring",
+      "Python",
+      "Bash"
+    ],
+    "keywords": [
+      "cloud engineer",
+      "cloud infrastructure",
+      "cloud platform",
+      "aws",
+      "azure",
+      "gcp",
+      "terraform",
+      "cloud operations",
+      "infrastructure"
+    ],
+    "negativeKeywords": [
+      "frontend developer",
+      "ui designer",
+      "data analyst",
+      "mobile developer"
+    ],
+    "relatedFields": [
+      {
+        "fieldId": "devops-engineer",
+        "similarity": 91
+      },
+      {
+        "fieldId": "cybersecurity-engineer",
+        "similarity": 64
+      },
+      {
+        "fieldId": "data-engineer",
+        "similarity": 62
+      },
+      {
+        "fieldId": "backend-developer",
+        "similarity": 55
+      },
+      {
+        "fieldId": "software-engineer",
+        "similarity": 42
+      }
+    ]
+  },
+  {
+    "id": "mobile-developer",
+    "name": "Mobile Developer",
+    "category": "software-development",
+    "description": "Builds mobile applications for iOS and Android using native or cross-platform technologies.",
+    "aliases": [
+      "Mobile Engineer",
+      "Mobile Application Developer",
+      "Mobile App Developer",
+      "iOS Developer",
+      "iOS Engineer",
+      "Android Developer",
+      "Android Engineer",
+      "React Native Developer",
+      "React Native Engineer",
+      "Flutter Developer",
+      "Flutter Engineer"
+    ],
+    "searchQueries": [
+      "Mobile Developer",
+      "Mobile Engineer",
+      "iOS Developer",
+      "iOS Engineer",
+      "Android Developer",
+      "Android Engineer",
+      "React Native Developer",
+      "Flutter Developer"
+    ],
+    "coreSkills": [
+      "Mobile Development",
+      "Mobile UI",
+      "API Integration",
+      "iOS",
+      "Android"
+    ],
+    "secondarySkills": [
+      "React Native",
+      "Flutter",
+      "Swift",
+      "Kotlin",
+      "JavaScript",
+      "TypeScript",
+      "State Management",
+      "Mobile Testing"
+    ],
+    "keywords": [
+      "mobile developer",
+      "mobile engineer",
+      "ios developer",
+      "android developer",
+      "react native",
+      "flutter",
+      "swift",
+      "kotlin",
+      "mobile app"
+    ],
+    "negativeKeywords": [
+      "devops engineer",
+      "data engineer",
+      "database administrator",
+      "network engineer"
+    ],
+    "relatedFields": [
+      {
+        "fieldId": "software-engineer",
+        "similarity": 70
+      },
+      {
+        "fieldId": "ui-ux-designer",
+        "similarity": 43
+      },
+      {
+        "fieldId": "frontend-developer",
+        "similarity": 42
+      },
+      {
+        "fieldId": "fullstack-developer",
+        "similarity": 36
+      }
+    ]
+  },
+  {
+    "id": "database-engineer",
+    "name": "Database Engineer",
+    "category": "data",
+    "description": "Designs, maintains, secures and optimizes relational and NoSQL database systems, schemas and queries.",
+    "aliases": [
+      "Database Developer",
+      "Database Administrator",
+      "DBA",
+      "SQL Developer",
+      "Database Specialist",
+      "Database Systems Engineer",
+      "SQL Database Developer"
+    ],
+    "searchQueries": [
+      "Database Engineer",
+      "Database Developer",
+      "Database Administrator",
+      "DBA",
+      "SQL Developer",
+      "Database Systems Engineer"
+    ],
+    "coreSkills": [
+      "SQL",
+      "Database Design",
+      "Query Optimization",
+      "PostgreSQL",
+      "MySQL"
+    ],
+    "secondarySkills": [
+      "MongoDB",
+      "Indexes",
+      "Transactions",
+      "Replication",
+      "Backup and Recovery",
+      "Performance Tuning",
+      "Cloud Databases",
+      "Database Security"
+    ],
+    "keywords": [
+      "database engineer",
+      "database developer",
+      "database administrator",
+      "dba",
+      "sql developer",
+      "postgresql",
+      "mysql",
+      "query optimization",
+      "database design"
+    ],
+    "negativeKeywords": [
+      "frontend developer",
+      "ui designer",
+      "mobile developer",
+      "machine learning engineer"
+    ],
+    "relatedFields": [
+      {
+        "fieldId": "data-engineer",
+        "similarity": 77
+      },
+      {
+        "fieldId": "backend-developer",
+        "similarity": 68
+      },
+      {
+        "fieldId": "data-analyst",
+        "similarity": 54
+      },
+      {
+        "fieldId": "data-scientist",
+        "similarity": 46
+      },
+      {
+        "fieldId": "cloud-engineer",
+        "similarity": 42
+      }
+    ]
+  }
+]

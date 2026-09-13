@@ -1,30 +1,36 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+
+import { useNavigate } from "react-router-dom";
+
+import { City, Country, State } from "country-state-city";
 
 import {
   FiAlertCircle,
   FiArrowRight,
   FiBriefcase,
   FiCheck,
-  FiCheckCircle,
   FiClock,
   FiRefreshCw,
+  FiSettings,
   FiTarget,
   FiTrendingUp,
+  FiX,
   FiZap,
 } from "react-icons/fi";
 
 import {
   getCareerAutomation,
   getCareerAutomationSummary,
+  getCareerFields,
   isCareerAutomationNotFoundError,
   replanCareerAutomation,
+  refreshExternalCareerJobs,
+  getExternalCareerJobMatches,
+  updateCareerJobPreferences,
   type ICareerAutomation,
   type ICareerAutomationSummary,
+  type ICareerFieldOption,
+  type IExternalCareerJobMatch,
 } from "../../../api/careerAutomationApi";
 
 import "./careerAutomationPage.scss";
@@ -33,11 +39,11 @@ import "./careerAutomationPage.scss";
    TYPES
 ========================================================= */
 
-type SkillStatus =
-  | "strong"
-  | "priority"
-  | "next"
-  | "later";
+type SkillStatus = "strong" | "priority" | "next" | "later";
+
+type WorkModeInput = "any" | "remote" | "hybrid" | "onsite";
+
+type PreferencesMessageType = "success" | "warning" | "error" | null;
 
 interface ISkillNode {
   id: string;
@@ -46,1023 +52,1422 @@ interface ISkillNode {
 
   status: SkillStatus;
 
-  score: number;
+  score?: number;
 
   x: number;
 
   y: number;
 
   reason: string;
+
+  milestoneId?: string;
+
+  category?: string;
+
+  recommendationTitle?: string;
+
+  whatToLearn: string[];
+
+  action?: string;
+
+  proofOfCompletion?: string;
+
+  priority?: "high" | "medium" | "low";
+
+  source?: string;
+
+  evidence: string[];
 }
+
+/* =========================================================
+   CONSTANTS
+========================================================= */
+
+const DAILY_JOB_TARGET = 3;
 
 /* =========================================================
    HELPERS
 ========================================================= */
 
-const TECH_SKILL_PATTERN =
-  /\b(JavaScript|TypeScript|React(?:\.js)?|Next(?:\.js)?|Redux|HTML5?|CSS3?|SASS|SCSS|Tailwind(?:CSS)?|Git|GitHub|Node(?:\.js)?|Express(?:\.js)?|MongoDB|SQL|PostgreSQL|MySQL|REST|REST API|APIs?|Testing|Jest|Cypress|Docker|AWS|Python|Java|C\+\+|C#|Figma)\b/gi;
-
-const SKILL_TOPICS:
-  Record<
-    string,
-    string[]
-  > = {
-    javascript: [
-      "Scope, closures, and execution context",
-      "Promises, async/await, and the event loop",
-      "Objects, prototypes, and this",
-      "Array methods and functional patterns",
-      "DOM, events, and browser APIs",
-    ],
-
-    typescript: [
-      "Core types, interfaces, and type aliases",
-      "Generics and reusable typed utilities",
-      "Union, intersection, and narrowing",
-      "Utility types and mapped types",
-      "Typing React components, props, and hooks",
-    ],
-
-    react: [
-      "Component composition and reusable architecture",
-      "State, props, and controlled data flow",
-      "useEffect and side-effect management",
-      "useMemo, useCallback, and rendering performance",
-      "Custom hooks and shared logic",
-      "Forms, error states, and async UI",
-    ],
-
-    "next.js": [
-      "App Router and routing patterns",
-      "Server vs Client Components",
-      "Data fetching and caching",
-      "Rendering strategies and SEO",
-      "Route handlers and API integration",
-      "Deployment and performance optimization",
-    ],
-
-    redux: [
-      "Global vs local state decisions",
-      "Redux Toolkit slices and reducers",
-      "Async logic with thunks",
-      "Selectors and normalized state",
-      "React-Redux integration",
-    ],
-
-    html: [
-      "Semantic HTML structure",
-      "Forms and native validation",
-      "Accessibility fundamentals",
-      "SEO-friendly document structure",
-      "Responsive media and content",
-    ],
-
-    css: [
-      "Box model, cascade, and specificity",
-      "Flexbox and Grid layouts",
-      "Responsive design and breakpoints",
-      "Positioning and stacking contexts",
-      "Animations and maintainable CSS architecture",
-    ],
-
-    "sass/scss": [
-      "Variables, nesting, and partials",
-      "Mixins and reusable patterns",
-      "Functions and modular architecture",
-      "Responsive utility patterns",
-    ],
-
-    "tailwind css": [
-      "Utility-first responsive design",
-      "Layout and spacing system",
-      "Reusable component patterns",
-      "Theme customization",
-      "State and breakpoint variants",
-    ],
-
-    git: [
-      "Branching and merge workflows",
-      "Commit discipline and clean history",
-      "Pull requests and code review",
-      "Rebase, merge, and conflict resolution",
-      "Reset, revert, stash, and recovery",
-    ],
-
-    github: [
-      "Pull-request workflow",
-      "Issues and project collaboration",
-      "GitHub Actions basics",
-      "Repository documentation and README quality",
-      "Branch protection and review workflow",
-    ],
-
-    "node.js": [
-      "Node runtime and event loop",
-      "Modules and package management",
-      "REST API architecture",
-      "Async error handling",
-      "Authentication and middleware",
-    ],
-
-    "rest apis": [
-      "HTTP methods and status codes",
-      "RESTful resource design",
-      "Authentication and authorization",
-      "Validation and error responses",
-      "Pagination, filtering, and versioning",
-    ],
-
-    testing: [
-      "Unit vs integration vs end-to-end testing",
-      "Test structure and assertions",
-      "Mocking and dependency isolation",
-      "React component testing",
-      "Critical user-flow coverage",
-    ],
-
-    jest: [
-      "Test suites, assertions, and matchers",
-      "Mocks, spies, and modules",
-      "Async testing",
-      "Coverage and reliable test design",
-    ],
-
-    cypress: [
-      "End-to-end test structure",
-      "Selectors and stable test strategy",
-      "Network interception",
-      "Authentication flows",
-      "CI execution",
-    ],
-
-    docker: [
-      "Images, containers, and Dockerfiles",
-      "Volumes and networking",
-      "Docker Compose",
-      "Environment configuration",
-      "Production-oriented container practices",
-    ],
-
-    aws: [
-      "Core cloud concepts and IAM",
-      "Compute and storage fundamentals",
-      "Static/frontend deployment",
-      "Monitoring and basic security",
-      "Cost-aware architecture basics",
-    ],
-
-    python: [
-      "Core syntax and data structures",
-      "Functions, modules, and packages",
-      "Object-oriented programming",
-      "File and API handling",
-      "Testing and virtual environments",
-    ],
-
-    sql: [
-      "SELECT, filtering, and aggregation",
-      "JOINs and relational modeling",
-      "Indexes and query performance",
-      "Transactions and constraints",
-      "Subqueries and common table expressions",
-    ],
-
-    mongodb: [
-      "Documents, collections, and schema design",
-      "CRUD queries and operators",
-      "Indexes and performance",
-      "Aggregation pipeline",
-      "Mongoose modeling patterns",
-    ],
-  };
-
-const getImportantTopics = (
-  skill:
-    string
-): string[] => {
-  const normalized =
-    normalizeSkill(
-      skill
-    )
-      .toLowerCase();
-
-  return (
-    SKILL_TOPICS[
-      normalized
-    ] ||
-    [
-      `${skill} fundamentals and core concepts`,
-      `Practical ${skill} patterns used in real projects`,
-      `Common ${skill} interview questions`,
-      `${skill} debugging and problem-solving`,
-      `Build one portfolio-ready example using ${skill}`,
-    ]
-  );
-};
-
-const normalizeSkill = (
-  value: string
-): string => {
-  const cleaned =
-    value
-      .trim()
-      .replace(
-        /\s+/g,
-        " "
-      );
-
-  const lower =
-    cleaned
-      .toLowerCase();
-
-  if (
-    lower === "react.js"
-  ) {
-    return "React";
-  }
-
-  if (
-    lower === "next.js"
-  ) {
-    return "Next.js";
-  }
-
-  if (
-    lower === "node.js"
-  ) {
-    return "Node.js";
-  }
-
-  if (
-    lower === "tailwindcss"
-  ) {
-    return "Tailwind CSS";
-  }
-
-  if (
-    lower === "api" ||
-    lower === "apis" ||
-    lower === "rest api"
-  ) {
-    return "REST APIs";
-  }
-
-  return cleaned;
-};
-
-const uniqueSkills = (
-  values: string[]
+const uniqueStrings = (
+  values:
+    Array<
+      string |
+      undefined |
+      null
+    >
 ): string[] => {
   const seen =
     new Set<string>();
 
   const result:
-    string[] = [];
+    string[] =
+      [];
 
   for (
     const rawValue
     of values
   ) {
     const value =
-      normalizeSkill(
-        rawValue
-      );
+      (
+        rawValue ||
+        ""
+      )
+        .replace(
+          /\s+/g,
+          " "
+        )
+        .trim();
 
-    if (
-      !value
-    ) {
+    if (!value) {
       continue;
     }
 
     const key =
-      value
-        .toLowerCase();
+      value.toLowerCase();
 
-    if (
-      seen.has(
-        key
-      )
-    ) {
+    if (seen.has(key)) {
       continue;
     }
 
-    seen.add(
-      key
-    );
-
-    result.push(
-      value
-    );
+    seen.add(key);
+    result.push(value);
   }
 
   return result;
 };
 
-const extractSkillsFromAutomation = (
-  automation:
-    ICareerAutomation
-): string[] => {
-  const directSkills = [
-    ...automation
-      .roadmap
-      .flatMap(
-        (
-          item
-        ) =>
-          item.relatedSkills ||
-          []
-      ),
+const roadmapCategoryToStatus = ({
+  readinessScore,
+  priority,
+  completed,
+}: {
+  readinessScore?: number;
 
-    ...automation
-      .tasks
-      .map(
-        (
-          task
-        ) =>
-          task.relatedSkill ||
-          ""
-      ),
-  ];
+  priority?:
+    "high" |
+    "medium" |
+    "low";
 
-  const searchableText =
-    automation
-      .tasks
-      .map(
-        (
-          task
-        ) =>
-          [
-            task.title,
-            task.description,
-            task.reason,
-          ]
-            .filter(
-              Boolean
-            )
-            .join(
-              " "
-            )
-      )
-      .join(
-        " "
-      );
-
-  const detected =
-    searchableText
-      .match(
-        TECH_SKILL_PATTERN
-      ) ||
-    [];
-
-  return uniqueSkills([
-    ...directSkills,
-    ...detected,
-  ]).slice(
-    0,
-    8
-  );
-};
-
-const getSkillStatus = (
-  skill:
-    string,
-  automation:
-    ICareerAutomation
-): SkillStatus => {
-  const matchingTasks =
-    automation
-      .tasks
-      .filter(
-        (
-          task
-        ) => {
-          const haystack =
-            [
-              task.relatedSkill,
-              task.title,
-              task.description,
-              task.reason,
-            ]
-              .filter(
-                Boolean
-              )
-              .join(
-                " "
-              )
-              .toLowerCase();
-
-          return haystack
-            .includes(
-              skill
-                .toLowerCase()
-            );
-        }
-      );
-
-  const hasHighPriority =
-    matchingTasks
-      .some(
-        (
-          task
-        ) =>
-          task.priority ===
-            "high" &&
-          task.status !==
-            "completed"
-      );
-
-  const hasIncomplete =
-    matchingTasks
-      .some(
-        (
-          task
-        ) =>
-          task.status ===
-            "pending" ||
-          task.status ===
-            "in_progress"
-      );
-
-  const hasCompleted =
-    matchingTasks
-      .some(
-        (
-          task
-        ) =>
-          task.status ===
-          "completed"
-      );
+  completed: boolean;
+}): SkillStatus => {
+  if (
+    completed ||
+    (
+      typeof readinessScore ===
+        "number" &&
+      readinessScore >= 80
+    )
+  ) {
+    return "strong";
+  }
 
   if (
-    hasHighPriority
+    priority === "high" ||
+    (
+      typeof readinessScore ===
+        "number" &&
+      readinessScore < 50
+    )
   ) {
     return "priority";
   }
 
   if (
-    hasIncomplete
+    priority === "medium" ||
+    (
+      typeof readinessScore ===
+        "number" &&
+      readinessScore < 75
+    )
   ) {
     return "next";
-  }
-
-  if (
-    hasCompleted
-  ) {
-    return "strong";
   }
 
   return "later";
 };
 
-const getStatusScore = (
-  status:
-    SkillStatus
-): number => {
-  switch (
-    status
+const buildSkillNodesFromRoadmap = (
+  automation:
+    ICareerAutomation
+): ISkillNode[] => {
+  const ROADMAP_START_X = 74;
+  const ROADMAP_HORIZONTAL_GAP = 205;
+
+  const ROADMAP_ROWS = [
+    104,
+    246,
+  ];
+
+  const nodes:
+    ISkillNode[] =
+      [];
+
+  let visualIndex =
+    0;
+
+  for (
+    const milestone
+    of automation.roadmap
   ) {
-    case "strong":
-      return 88;
+    const recommendations =
+      milestone.recommendations ||
+      [];
 
-    case "priority":
-      return 42;
+    if (
+      recommendations.length > 0
+    ) {
+      for (
+        const [
+          recommendationIndex,
+          recommendation,
+        ]
+        of recommendations.entries()
+      ) {
+        const label =
+          (
+            recommendation.title ||
+            milestone.title
+          )
+            .replace(
+              /\s+/g,
+              " "
+            )
+            .trim();
 
-    case "next":
-      return 58;
+        if (!label) {
+          continue;
+        }
 
-    case "later":
-    default:
-      return 70;
+        const score =
+          typeof milestone.readinessScore ===
+            "number"
+            ? Math.max(
+                0,
+                Math.min(
+                  100,
+                  Math.round(
+                    milestone.readinessScore
+                  )
+                )
+              )
+            : undefined;
+
+        const status =
+          roadmapCategoryToStatus({
+            readinessScore:
+              score,
+
+            priority:
+              recommendation.priority,
+
+            completed:
+              milestone.status ===
+              "completed",
+          });
+
+        nodes.push({
+          id:
+            `${milestone.id}-${recommendationIndex}`,
+
+          label,
+
+          status,
+
+          score,
+
+          x:
+            ROADMAP_START_X +
+            visualIndex *
+              ROADMAP_HORIZONTAL_GAP,
+
+          y:
+            ROADMAP_ROWS[
+              visualIndex %
+              ROADMAP_ROWS.length
+            ],
+
+          reason:
+            (
+              recommendation.whyItMatters ||
+              milestone.reason ||
+              milestone.description ||
+              "This recommendation supports your target role."
+            )
+              .replace(
+                /\s+/g,
+                " "
+              )
+              .trim(),
+
+          milestoneId:
+            milestone.id,
+
+          category:
+            milestone.category,
+
+          recommendationTitle:
+            recommendation.title,
+
+          whatToLearn:
+            uniqueStrings(
+              recommendation.whatToLearn ||
+              []
+            ),
+
+          action:
+            recommendation.action,
+
+          proofOfCompletion:
+            recommendation.proofOfCompletion,
+
+          priority:
+            recommendation.priority,
+
+          source:
+            recommendation.source,
+
+          evidence:
+            uniqueStrings(
+              recommendation.evidence ||
+              []
+            ),
+        });
+
+        visualIndex += 1;
+      }
+
+      continue;
+    }
+
+    const label =
+      milestone.title
+        .replace(
+          /\s+/g,
+          " "
+        )
+        .trim();
+
+    const score =
+      typeof milestone.readinessScore ===
+        "number"
+        ? Math.max(
+            0,
+            Math.min(
+              100,
+              Math.round(
+                milestone.readinessScore
+              )
+            )
+          )
+        : undefined;
+
+    nodes.push({
+      id:
+        milestone.id,
+
+      label,
+
+      status:
+        roadmapCategoryToStatus({
+          readinessScore:
+            score,
+
+          completed:
+            milestone.status ===
+            "completed",
+        }),
+
+      score,
+
+      x:
+        ROADMAP_START_X +
+        visualIndex *
+          ROADMAP_HORIZONTAL_GAP,
+
+      y:
+        ROADMAP_ROWS[
+          visualIndex %
+          ROADMAP_ROWS.length
+        ],
+
+      reason:
+        milestone.reason ||
+        milestone.description ||
+        "This roadmap section supports your target role.",
+
+      milestoneId:
+        milestone.id,
+
+      category:
+        milestone.category,
+
+      whatToLearn:
+        uniqueStrings(
+          milestone.relatedSkills ||
+          []
+        ),
+
+      evidence:
+        [],
+    });
+
+    visualIndex += 1;
   }
+
+  return nodes.slice(
+    0,
+    18
+  );
 };
 
-const getStatusReason = (
-  status:
-    SkillStatus
-): string => {
-  switch (
-    status
-  ) {
-    case "strong":
-      return "Current evidence suggests this skill is already supported.";
-
-    case "priority":
-      return "High-priority gap for your current target role.";
-
-    case "next":
-      return "Recommended as one of your next learning steps.";
-
-    case "later":
-    default:
-      return "Useful supporting skill after the higher-priority gaps.";
-  }
-};
-
-const formatDate = (
-  value?:
-    string
-): string => {
-  if (
-    !value
-  ) {
+const formatDate = (value?: string): string => {
+  if (!value) {
     return "Not scheduled";
   }
 
-  const date =
-    new Date(
-      value
-    );
+  const date = new Date(value);
 
-  if (
-    Number.isNaN(
-      date.getTime()
-    )
-  ) {
+  if (Number.isNaN(date.getTime())) {
     return value;
   }
 
-  return new Intl
-    .DateTimeFormat(
-      "en-US",
-      {
-        month:
-          "short",
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
 
-        day:
-          "numeric",
-      }
-    )
-    .format(
-      date
-    );
+    day: "numeric",
+  }).format(date);
+};
+
+
+/* =========================================================
+   FRESH JOB RESPONSE NORMALIZER
+========================================================= */
+
+type ExternalJobRefreshResult = Awaited<
+  ReturnType<typeof refreshExternalCareerJobs>
+>;
+
+type ExternalJobRefreshItem = ExternalJobRefreshResult["jobs"][number];
+
+const getStringArrayField = (
+  value: unknown,
+): string[] => {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.filter(
+    (item): item is string => typeof item === "string",
+  );
+};
+
+const normalizeFreshJobMatch = (
+  item: ExternalJobRefreshItem,
+): IExternalCareerJobMatch => {
+  const rawJob = item.job as typeof item.job & {
+    keywords?: unknown;
+  };
+
+  return {
+    job: {
+      _id: rawJob._id,
+      title: rawJob.title,
+      company: rawJob.company,
+      location: rawJob.location,
+      remoteType: rawJob.remoteType,
+      employmentType: rawJob.employmentType,
+      experienceLevel: rawJob.experienceLevel,
+      description: rawJob.description,
+      skills: rawJob.skills || [],
+      keywords: getStringArrayField(rawJob.keywords),
+      source: rawJob.source,
+      externalUrl: rawJob.externalUrl,
+      postedAt: rawJob.postedAt,
+    },
+    matchScore: item.matchScore,
+    matchedSkills: item.matchedSkills || [],
+    missingSkills: item.missingSkills || [],
+  };
+};
+
+const normalizeFreshJobMatches = (
+  jobs: ExternalJobRefreshResult["jobs"],
+): IExternalCareerJobMatch[] => {
+  return jobs.map(normalizeFreshJobMatch);
 };
 
 /* =========================================================
    COMPONENT
 ========================================================= */
 
-const CareerAutomationPage:
-  React.FC = () => {
-    const [
-      automation,
-      setAutomation,
-    ] =
-      useState<
-        ICareerAutomation |
-        null
-      >(
-        null
-      );
+const CareerAutomationPage: React.FC = () => {
+  const navigate = useNavigate();
 
-    const [
-      summary,
-      setSummary,
-    ] =
-      useState<
-        ICareerAutomationSummary |
-        null
-      >(
-        null
-      );
+  /* =====================================================
+       MAIN DATA
+    ===================================================== */
 
-    const [
-      loading,
-      setLoading,
-    ] =
-      useState(
-        true
-      );
+  const [automation, setAutomation] = useState<ICareerAutomation | null>(null);
 
-    const [
-      actionKey,
-      setActionKey,
-    ] =
-      useState<
-        string |
-        null
-      >(
-        null
-      );
+  const [summary, setSummary] = useState<ICareerAutomationSummary | null>(null);
 
-    const [
-      selectedSkillId,
-      setSelectedSkillId,
-    ] =
-      useState<
-        string |
-        null
-      >(
-        null
-      );
+  const [loading, setLoading] = useState(true);
 
-    const [
-      error,
-      setError,
-    ] =
-      useState<
-        string |
-        null
-      >(
-        null
-      );
+  const [actionKey, setActionKey] = useState<string | null>(null);
 
-    const loadAutomation =
-      useCallback(
-        async () => {
-          try {
-            setLoading(
-              true
-            );
+  const [selectedSkillId, setSelectedSkillId] = useState<string | null>(null);
 
-            setError(
-              null
-            );
+  const [error, setError] = useState<string | null>(null);
 
-            const [
-              automationData,
-              summaryData,
-            ] =
-              await Promise.all([
-                getCareerAutomation(),
-                getCareerAutomationSummary(),
-              ]);
+  /* =====================================================
+       EXTERNAL JOBS
+    ===================================================== */
 
-            setAutomation(
-              automationData
-            );
+  const [externalJobs, setExternalJobs] = useState<IExternalCareerJobMatch[]>(
+    [],
+  );
 
-            setSummary(
-              summaryData
-            );
-          } catch (
-            requestError
-          ) {
-            if (
-              isCareerAutomationNotFoundError(
-                requestError
-              )
-            ) {
-              setAutomation(
-                null
-              );
+  const [jobsLoading, setJobsLoading] = useState(false);
 
-              setSummary(
-                null
-              );
+  const [jobsError, setJobsError] = useState<string | null>(null);
 
-              return;
-            }
+  /* =====================================================
+       JOB PREFERENCES
+    ===================================================== */
 
-            console.error(
-              "[Career Automation Page] Load failed:",
-              requestError
-            );
+  const [jobPreferencesOpen, setJobPreferencesOpen] = useState(false);
 
-            setError(
-              "Career roadmap could not be loaded."
-            );
-          } finally {
-            setLoading(
-              false
-            );
-          }
-        },
-        []
-      );
+  const [targetRoleInput, setTargetRoleInput] = useState("");
 
-    useEffect(
-      () => {
-        void loadAutomation();
-      },
-      [
-        loadAutomation,
-      ]
-    );
+  const [locationInput, setLocationInput] = useState("");
 
-    const skills =
-      useMemo(
-        () => {
-          if (
-            !automation
-          ) {
-            return [];
-          }
+  const [careerFields, setCareerFields] = useState<ICareerFieldOption[]>([]);
 
-          return extractSkillsFromAutomation(
-            automation
-          );
-        },
-        [
-          automation,
-        ]
-      );
+  const [careerFieldsLoading, setCareerFieldsLoading] = useState(false);
 
-    const skillNodes:
-      ISkillNode[] =
-      useMemo(
-        () => {
-          if (
-            !automation
-          ) {
-            return [];
-          }
+  const [careerFieldsError, setCareerFieldsError] = useState<string | null>(null);
 
-          const graphSkills =
-            skills.length >
-              0
-              ? skills
-              : [
-                  "Core Skills",
-                  "Role Skills",
-                  "Projects",
-                  "Interview",
-                ];
+  const [countryCodeInput, setCountryCodeInput] = useState("");
 
-          const yPattern = [
-            84,
-            170,
-            112,
-            218,
-            142,
-            246,
-            176,
-            112,
-          ];
+  const [subdivisionCodeInput, setSubdivisionCodeInput] = useState("");
 
-          return graphSkills
-            .map(
-              (
-                skill,
-                index
-              ) => {
-                const status =
-                  getSkillStatus(
-                    skill,
-                    automation
-                  );
+  const [cityInput, setCityInput] = useState("");
 
-                return {
-                  id:
-                    `${skill}-${index}`,
+  const [locationSelectionTouched, setLocationSelectionTouched] = useState(false);
 
-                  label:
-                    skill,
+  const [workModeInput, setWorkModeInput] = useState<WorkModeInput>("any");
 
-                  status,
+  const [preferencesSaving, setPreferencesSaving] = useState(false);
 
-                  score:
-                    getStatusScore(
-                      status
-                    ),
+  const [preferencesMessage, setPreferencesMessage] = useState<string | null>(
+    null,
+  );
 
-                  x:
-                    70 +
-                    index *
-                      145,
+  const [preferencesMessageType, setPreferencesMessageType] =
+    useState<PreferencesMessageType>(null);
 
-                  y:
-                    yPattern[
-                      index %
-                      yPattern.length
-                    ],
+  /* =====================================================
+       LOAD AUTOMATION
+    ===================================================== */
 
-                  reason:
-                    getStatusReason(
-                      status
-                    ),
-                };
-              }
-            );
-        },
-        [
-          automation,
-          skills,
-        ]
-      );
+  const loadAutomation = useCallback(async () => {
+    try {
+      setLoading(true);
 
-    const selectedSkill =
-      skillNodes
-        .find(
-          (
-            node
-          ) =>
-            node.id ===
-            selectedSkillId
-        ) ||
-      skillNodes[0];
+      setError(null);
 
-    useEffect(
-      () => {
-        if (
-          skillNodes.length >
-            0 &&
-          !selectedSkillId
-        ) {
-          setSelectedSkillId(
-            skillNodes[0].id
-          );
+      const [automationData, summaryData] = await Promise.all([
+        getCareerAutomation(),
+        getCareerAutomationSummary(),
+      ]);
+
+      setAutomation(automationData);
+
+      setSummary(summaryData);
+    } catch (requestError) {
+      if (isCareerAutomationNotFoundError(requestError)) {
+        setAutomation(null);
+
+        setSummary(null);
+
+        return;
+      }
+
+      console.error("[Career Automation Page] Load failed:", requestError);
+
+      setError("Career roadmap could not be loaded.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  /* =====================================================
+       LOAD EXTERNAL JOBS
+    ===================================================== */
+
+  const loadExternalJobs = useCallback(
+    async (forceRefresh: boolean = false) => {
+      try {
+        setJobsLoading(true);
+
+        setJobsError(null);
+
+        /*
+         * When the user explicitly searches again, use the fresh
+         * jobs returned by the refresh endpoint directly.
+         *
+         * Do NOT refresh and then immediately reload saved matches,
+         * because that can reintroduce stale CareerAutomation
+         * jobMatches from the previous recommendation cycle.
+         */
+        if (forceRefresh) {
+          const refreshed = await refreshExternalCareerJobs();
+
+          setExternalJobs(normalizeFreshJobMatches(refreshed.jobs || []));
+
+          return;
         }
-      },
-      [
-        selectedSkillId,
-        skillNodes,
-      ]
-    );
 
-    const handleReplan =
-      async () => {
-        try {
-          setActionKey(
-            "replan"
-          );
+        /*
+         * Initial page load can use the already saved matches so
+         * opening Career Automation does not trigger a new ATS search.
+         */
+        const result = await getExternalCareerJobMatches();
 
-          setError(
-            null
-          );
+        setExternalJobs(result.jobs || []);
+      } catch (requestError) {
+        console.error(
+          "[Career Automation] External jobs failed:",
+          requestError,
+        );
 
-          const result =
-            await replanCareerAutomation(
-              "Recalculate the roadmap around my target role, weakest skill gaps, and current career progress."
-            );
+        setJobsError("Real job opportunities could not be loaded.");
+      } finally {
+        setJobsLoading(false);
+      }
+    },
+    [],
+  );
 
-          setAutomation(
-            result.automation
-          );
+  /* =====================================================
+       INITIAL LOAD
+    ===================================================== */
 
-          setSummary(
-            result.summary
-          );
-        } catch (
-          requestError
-        ) {
-          console.error(
-            requestError
-          );
+  useEffect(() => {
+    void loadAutomation();
+  }, [loadAutomation]);
 
-          setError(
-            "Career roadmap could not be recalculated."
-          );
-        } finally {
-          setActionKey(
-            null
-          );
-        }
-      };
-
-    if (
-      loading
-    ) {
-      return (
-        <section className="career-graph-page">
-          <div className="career-graph-loading">
-            <FiRefreshCw />
-
-            <span>
-              Building your career roadmap...
-            </span>
-          </div>
-        </section>
-      );
+  useEffect(() => {
+    if (!automation) {
+      return;
     }
 
-    if (
-      !automation
-    ) {
-      return (
-        <section className="career-graph-page">
-          <div className="career-graph-empty">
-            <FiTarget />
+    void loadExternalJobs(false);
+  }, [automation?._id, loadExternalJobs]);
 
-            <h1>
-              Career Automation
-            </h1>
+  /* =====================================================
+       LOAD CAREER FIELDS
+    ===================================================== */
 
-            <p>
-              Create your Career Automation profile first so
-              InterviewIQ can build a personalized skill roadmap.
-            </p>
-          </div>
-        </section>
-      );
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadCareerFields = async () => {
+      try {
+        setCareerFieldsLoading(true);
+
+        setCareerFieldsError(null);
+
+        const result = await getCareerFields();
+
+        if (!cancelled) {
+          setCareerFields(result.fields || []);
+        }
+      } catch (requestError) {
+        console.error(
+          "[Career Automation] Career fields failed:",
+          requestError,
+        );
+
+        if (!cancelled) {
+          setCareerFieldsError("Career fields could not be loaded.");
+        }
+      } finally {
+        if (!cancelled) {
+          setCareerFieldsLoading(false);
+        }
+      }
+    };
+
+    void loadCareerFields();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  /* =====================================================
+       LOCATION OPTIONS
+
+       Progressive flow:
+       1. Country
+       2. State / Region / District (only when the selected
+          country has administrative subdivisions)
+       3. City
+
+       The next control is rendered only after the previous
+       selection is made.
+    ===================================================== */
+
+  const countryOptions = useMemo(() => {
+    return [...Country.getAllCountries()].sort((a, b) =>
+      a.name.localeCompare(b.name),
+    );
+  }, []);
+
+  const subdivisionOptions = useMemo(() => {
+    if (!countryCodeInput) {
+      return [];
     }
 
-    const readiness =
-      Math.round(
-        summary
-          ?.currentReadinessScore ??
-        automation
-          .currentReadinessScore ??
-        0
-      );
+    return [...State.getStatesOfCountry(countryCodeInput)].sort((a, b) =>
+      a.name.localeCompare(b.name),
+    );
+  }, [countryCodeInput]);
 
-    const selectedTopics =
-      selectedSkill
-        ? getImportantTopics(
-            selectedSkill.label
+  const hasSubdivisions = subdivisionOptions.length > 0;
+
+  const cityOptions = useMemo(() => {
+    if (!countryCodeInput) {
+      return [];
+    }
+
+    /*
+     * Countries such as the United States expose cities under
+     * a state/region. Countries without subdivisions can load
+     * their cities directly.
+     */
+    const cities = hasSubdivisions
+      ? subdivisionCodeInput
+        ? City.getCitiesOfState(countryCodeInput, subdivisionCodeInput)
+        : []
+      : City.getCitiesOfCountry(countryCodeInput);
+
+    return [...(cities || [])].sort((a, b) =>
+      a.name.localeCompare(b.name),
+    );
+  }, [
+    countryCodeInput,
+    hasSubdivisions,
+    subdivisionCodeInput,
+  ]);
+
+  const selectedCity = useMemo(() => {
+    if (!cityInput) {
+      return undefined;
+    }
+
+    return cityOptions.find((city) => city.name === cityInput);
+  }, [cityInput, cityOptions]);
+
+  const getSubdivisionLabel = useCallback((): string => {
+    if (!countryCodeInput) {
+      return "State / Region / District";
+    }
+
+    /*
+     * Keep the UI generic because administrative divisions vary
+     * by country: state, province, region, district, governorate,
+     * prefecture, etc.
+     */
+    if (countryCodeInput === "US") {
+      return "State";
+    }
+
+    if (countryCodeInput === "CA") {
+      return "Province / Territory";
+    }
+
+    if (countryCodeInput === "AU") {
+      return "State / Territory";
+    }
+
+    return "Region / District";
+  }, [countryCodeInput]);
+
+  const buildSelectedLocation = useCallback((): string => {
+    /*
+     * Location is optional.
+     *
+     * No country selected:
+     *   "" -> worldwide search
+     *
+     * Country selected only:
+     *   "United States"
+     *
+     * Country + state/region:
+     *   "Massachusetts, United States"
+     *
+     * Full selection:
+     *   "Boston, MA" (US)
+     *   "Baku, Azerbaijan" (other countries)
+     */
+    if (!countryCodeInput) {
+      return "";
+    }
+
+    const country = Country.getCountryByCode(countryCodeInput);
+
+    const subdivision =
+      hasSubdivisions && subdivisionCodeInput
+        ? State.getStateByCodeAndCountry(
+            subdivisionCodeInput,
+            countryCodeInput,
           )
-        : [];
+        : undefined;
 
+    if (!selectedCity) {
+      return [
+        subdivision?.name,
+        country?.name,
+      ]
+        .filter(Boolean)
+        .join(", ");
+    }
 
+    if (countryCodeInput === "US") {
+      return subdivision?.isoCode
+        ? `${selectedCity.name}, ${subdivision.isoCode}`
+        : selectedCity.name;
+    }
+
+    return [
+      selectedCity.name,
+      subdivision?.name,
+      country?.name,
+    ]
+      .filter(Boolean)
+      .join(", ");
+  }, [
+    countryCodeInput,
+    hasSubdivisions,
+    selectedCity,
+    subdivisionCodeInput,
+  ]);
+
+  /* =====================================================
+       SYNC JOB PREFERENCES
+    ===================================================== */
+
+  useEffect(() => {
+    if (!automation) {
+      return;
+    }
+
+    setTargetRoleInput(automation.targetRole || "");
+
+    setLocationInput(automation.jobPreferences.locations?.[0] || "");
+
+    setCountryCodeInput("");
+
+    setSubdivisionCodeInput("");
+
+    setCityInput("");
+
+    setLocationSelectionTouched(false);
+
+    const savedWorkModes = automation.jobPreferences.workModes || [];
+
+    if (savedWorkModes.length === 1) {
+      setWorkModeInput(savedWorkModes[0]);
+    } else {
+      setWorkModeInput("any");
+    }
+  }, [
+    automation?._id,
+    automation?.targetRole,
+    automation?.jobPreferences?.locations,
+    automation?.jobPreferences?.workModes,
+  ]);
+
+  /* =====================================================
+       SKILLS
+    ===================================================== */
+
+  const skillNodes: ISkillNode[] =
+    useMemo(() => {
+      if (!automation) {
+        return [];
+      }
+
+      return buildSkillNodesFromRoadmap(
+        automation
+      );
+    }, [
+      automation,
+    ]);
+
+  const selectedSkill =
+    selectedSkillId
+      ? skillNodes.find(
+          (node) =>
+            node.id === selectedSkillId
+        ) || null
+      : null;
+
+  /*
+   * Do NOT auto-select the first roadmap node.
+   *
+   * selectedSkillId === null means the roadmap view should be visible.
+   * This is what allows "Back to roadmap" to work correctly.
+   *
+   * If the roadmap is rebuilt while a detail is open and that selected
+   * node no longer exists, close the detail view safely.
+   */
+  useEffect(() => {
+    if (
+      selectedSkillId &&
+      !skillNodes.some(
+        (node) =>
+          node.id === selectedSkillId
+      )
+    ) {
+      setSelectedSkillId(null);
+    }
+  }, [
+    selectedSkillId,
+    skillNodes,
+  ]);
+
+  /* =====================================================
+       REPLAN
+    ===================================================== */
+
+  const handleReplan = async () => {
+    try {
+      setActionKey("replan");
+
+      setError(null);
+
+      const result = await replanCareerAutomation(
+        "Recalculate the roadmap around my target role, weakest skill gaps, and current career progress.",
+      );
+
+      setAutomation(result.automation);
+
+      setSummary(result.summary);
+    } catch (requestError) {
+      console.error(requestError);
+
+      setError("Career roadmap could not be recalculated.");
+    } finally {
+      setActionKey(null);
+    }
+  };
+
+  /* =====================================================
+       OPEN JOB PREFERENCES
+    ===================================================== */
+
+  const handleOpenJobPreferences = () => {
+    if (automation) {
+      setTargetRoleInput(automation.targetRole || "");
+
+      setLocationInput(automation.jobPreferences.locations?.[0] || "");
+
+      setCountryCodeInput("");
+
+        setCityInput("");
+
+      setLocationSelectionTouched(false);
+
+      const savedWorkModes = automation.jobPreferences.workModes || [];
+
+      setWorkModeInput(savedWorkModes.length === 1 ? savedWorkModes[0] : "any");
+    }
+
+    setPreferencesMessage(null);
+
+    setPreferencesMessageType(null);
+
+    setJobPreferencesOpen(true);
+  };
+
+  /* =====================================================
+       CANCEL JOB PREFERENCES
+    ===================================================== */
+
+  const handleCancelJobPreferences = () => {
+    if (automation) {
+      setTargetRoleInput(automation.targetRole || "");
+
+      setLocationInput(automation.jobPreferences.locations?.[0] || "");
+
+      setCountryCodeInput("");
+
+        setCityInput("");
+
+      setLocationSelectionTouched(false);
+
+      const savedWorkModes = automation.jobPreferences.workModes || [];
+
+      setWorkModeInput(savedWorkModes.length === 1 ? savedWorkModes[0] : "any");
+    }
+
+    setPreferencesMessage(null);
+
+    setPreferencesMessageType(null);
+
+    setJobPreferencesOpen(false);
+  };
+
+  /* =====================================================
+       SAVE JOB PREFERENCES
+    ===================================================== */
+
+  const handleSaveJobPreferences = async () => {
+    const targetRole = targetRoleInput.replace(/\s+/g, " ").trim();
+
+    const selectedStructuredLocation = buildSelectedLocation();
+
+    const location = locationSelectionTouched
+      ? selectedStructuredLocation
+      : locationInput.replace(/\s+/g, " ").trim();
+
+    if (!targetRole) {
+      setPreferencesMessage("Target role is required.");
+
+      setPreferencesMessageType("error");
+
+      return;
+    }
+
+    if (
+      careerFields.length > 0 &&
+      !careerFields.some((field) => field.name === targetRole)
+    ) {
+      setPreferencesMessage("Please select a target role from the available career fields.");
+
+      setPreferencesMessageType("error");
+
+      return;
+    }
+
+    try {
+      setPreferencesSaving(true);
+
+      setPreferencesMessage(null);
+
+      setPreferencesMessageType(null);
+
+      setJobsError(null);
+
+      /* ===============================================
+             STEP 1
+             SAVE PREFERENCES
+          =============================================== */
+
+      const result = await updateCareerJobPreferences({
+        targetRole,
+
+        enabled: true,
+
+        /*
+         * Empty locations means worldwide search.
+         */
+        locations: location ? [location] : [],
+
+        workModes: workModeInput === "any" ? [] : [workModeInput],
+      });
+
+      setAutomation(result.automation);
+
+      if (result.summary) {
+        setSummary(result.summary);
+      }
+
+      setPreferencesMessage("Job search preferences saved successfully.");
+
+      setPreferencesMessageType("success");
+
+      /* ===============================================
+             STEP 2
+             SEARCH NEW JOBS
+
+             Important:
+             This has its own try/catch.
+          =============================================== */
+
+      try {
+        setJobsLoading(true);
+
+        /*
+         * The refresh endpoint already returns the newly ranked
+         * recommendation set. Use it directly instead of loading
+         * older saved matches immediately afterwards.
+         */
+        const refreshed = await refreshExternalCareerJobs();
+
+        setExternalJobs(normalizeFreshJobMatches(refreshed.jobs || []));
+
+        setPreferencesMessage(
+          "Preferences saved and new job opportunities loaded.",
+        );
+
+        setPreferencesMessageType("success");
+
+        setJobPreferencesOpen(false);
+      } catch (searchError) {
+        console.error(
+          "[Career Automation] Job search failed after preferences were saved:",
+          searchError,
+        );
+
+        setPreferencesMessage(
+          "Preferences were saved, but new jobs could not be loaded. You can try searching again.",
+        );
+
+        setPreferencesMessageType("warning");
+
+        setJobsError(
+          "Your job preferences were saved, but InterviewIQ could not load new opportunities.",
+        );
+      } finally {
+        setJobsLoading(false);
+      }
+    } catch (requestError) {
+      console.error(
+        "[Career Automation] Preferences update failed:",
+        requestError,
+      );
+
+      setPreferencesMessage("Could not save job search preferences.");
+
+      setPreferencesMessageType("error");
+    } finally {
+      setPreferencesSaving(false);
+    }
+  };
+
+  /* =====================================================
+       LOADING
+    ===================================================== */
+
+  if (loading) {
     return (
-      <section className="career-graph-page">
-        <header className="career-graph-header">
-          <div>
-            <span className="career-graph-eyebrow">
-              AI CAREER ROADMAP
-            </span>
+      <section className="career-graph-page career-graph-page--skeleton">
+        {/* ===================================================
+              HEADER SKELETON
+          =================================================== */}
 
-            <h1>
-              {automation.targetRole}
-            </h1>
-
-            <p>
-              A visual path built around your current strengths,
-              skill gaps, and target role.
-            </p>
+        <header className="career-graph-header career-graph-header--skeleton">
+          <div className="career-header-skeleton-copy">
+            <span className="career-skeleton career-skeleton--eyebrow" />
+            <span className="career-skeleton career-skeleton--page-title" />
+            <span className="career-skeleton career-skeleton--header-copy" />
+            <span className="career-skeleton career-skeleton--header-copy career-skeleton--header-copy-short" />
           </div>
 
-          <div className="career-graph-header-actions">
-            <div className="career-readiness-pill">
-              <FiTrendingUp />
-
-              <span>
-                Readiness
-              </span>
-
-              <strong>
-                {readiness}%
-              </strong>
-            </div>
-
-            <button
-              type="button"
-              className="career-replan-button"
-              onClick={
-                handleReplan
-              }
-              disabled={
-                actionKey ===
-                "replan"
-              }
-            >
-              <FiRefreshCw
-                className={
-                  actionKey ===
-                    "replan"
-                    ? "spin"
-                    : ""
-                }
-              />
-
-              Rebuild roadmap
-            </button>
+          <div className="career-graph-header-actions career-graph-header-actions--skeleton">
+            <span className="career-skeleton career-skeleton--header-action" />
+            <span className="career-skeleton career-skeleton--header-action career-skeleton--header-action-wide" />
+            <span className="career-skeleton career-skeleton--header-action career-skeleton--header-action-wide" />
           </div>
         </header>
 
-        {error && (
-          <div className="career-graph-alert">
-            <FiAlertCircle />
+        {/* ===================================================
+              PREFERENCES SKELETON
+          =================================================== */}
 
-            <span>
-              {error}
-            </span>
-          </div>
-        )}
+        <div className="career-current-job-preferences career-current-job-preferences--skeleton">
+          {[1, 2, 3, 4].map((item) => (
+            <div key={item}>
+              <span className="career-skeleton career-skeleton--pref-label" />
+              <span className="career-skeleton career-skeleton--pref-value" />
+            </div>
+          ))}
+        </div>
 
-        <div className="career-graph-layout">
-          <article className="career-skill-map-card">
-            <div className="career-section-heading">
+        {/* ===================================================
+              ROADMAP SKELETON
+          =================================================== */}
+
+        <section className="career-roadmap-shell">
+          <article className="career-skill-map-card career-skill-map-card--full career-roadmap-skeleton-card">
+            <div className="career-section-heading career-section-heading--roadmap career-section-heading--skeleton">
               <div>
-                <span>
-                  YOUR SKILL PATH
-                </span>
+                <span className="career-skeleton career-skeleton--section-label" />
+                <span className="career-skeleton career-skeleton--section-title" />
+                <span className="career-skeleton career-skeleton--section-copy" />
+              </div>
 
-                <h2>
-                  Personalized Skill Roadmap
-                </h2>
+              <div className="career-skeleton-legend">
+                {[1, 2, 3, 4].map((item) => (
+                  <span
+                    className="career-skeleton career-skeleton--legend-pill"
+                    key={item}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="career-skill-map-scroll">
+              <div className="career-skill-map-canvas career-skill-map-canvas--skeleton">
+                <svg
+                  className="career-skill-map-lines career-skill-map-lines--skeleton"
+                  viewBox="0 0 1180 405"
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                >
+                  <path d="M 130 140 C 210 140, 250 282, 330 282" />
+                  <path d="M 330 282 C 410 282, 455 140, 535 140" />
+                  <path d="M 535 140 C 615 140, 660 282, 740 282" />
+                  <path d="M 740 282 C 820 282, 865 140, 945 140" />
+                </svg>
+
+                <div className="career-skeleton-node career-skeleton-node--one">
+                  <span className="career-skeleton career-skeleton--node-title" />
+                  <span className="career-skeleton career-skeleton--node-subtitle" />
+                </div>
+
+                <div className="career-skeleton-node career-skeleton-node--two">
+                  <span className="career-skeleton career-skeleton--node-title" />
+                  <span className="career-skeleton career-skeleton--node-subtitle" />
+                </div>
+
+                <div className="career-skeleton-node career-skeleton-node--three">
+                  <span className="career-skeleton career-skeleton--node-title" />
+                  <span className="career-skeleton career-skeleton--node-subtitle" />
+                </div>
+
+                <div className="career-skeleton-node career-skeleton-node--four">
+                  <span className="career-skeleton career-skeleton--node-title" />
+                  <span className="career-skeleton career-skeleton--node-subtitle" />
+                </div>
+
+                <div className="career-skeleton-node career-skeleton-node--five">
+                  <span className="career-skeleton career-skeleton--node-title" />
+                  <span className="career-skeleton career-skeleton--node-subtitle" />
+                </div>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        {/* ===================================================
+              OPPORTUNITIES SKELETON
+          =================================================== */}
+
+        <div className="career-opportunities-section">
+          <article className="career-job-card career-job-card--skeleton">
+            <div className="career-section-heading compact career-section-heading--jobs-skeleton">
+              <div className="career-opportunities-title-group">
+                <span className="career-skeleton career-skeleton--jobs-icon" />
+
+                <div>
+                  <span className="career-skeleton career-skeleton--section-label" />
+                  <span className="career-skeleton career-skeleton--jobs-title" />
+                  <span className="career-skeleton career-skeleton--jobs-copy" />
+                </div>
+              </div>
+
+              <span className="career-skeleton career-skeleton--search-button" />
+            </div>
+
+            <div className="career-job-list career-job-list--skeleton">
+              {[1, 2, 3].map((item) => (
+                <div className="career-job-row-skeleton" key={item}>
+                  <span className="career-skeleton career-skeleton--job-score" />
+
+                  <div>
+                    <span className="career-skeleton career-skeleton--job-title" />
+                    <span className="career-skeleton career-skeleton--job-company" />
+                    <span className="career-skeleton career-skeleton--job-description" />
+                  </div>
+
+                  <span className="career-skeleton career-skeleton--job-action" />
+                </div>
+              ))}
+            </div>
+          </article>
+        </div>
+      </section>
+    );
+  }
+
+  /* =====================================================
+       NO AUTOMATION
+    ===================================================== */
+
+  if (!automation) {
+    return (
+      <section className="career-graph-page">
+        <div className="career-graph-empty">
+          <FiTarget />
+
+          <h1>Career Automation</h1>
+
+          <p>
+            Create your Career Automation profile first so InterviewIQ can build
+            a personalized skill roadmap.
+          </p>
+        </div>
+      </section>
+    );
+  }
+
+  /* =====================================================
+       DERIVED VALUES
+    ===================================================== */
+
+  const readiness = Math.round(
+    summary?.currentReadinessScore ?? automation.currentReadinessScore ?? 0,
+  );
+
+  const selectedTopics =
+    selectedSkill?.whatToLearn ||
+    [];
+
+  const visibleJobs = externalJobs.slice(0, DAILY_JOB_TARGET);
+
+  const selectedLocation =
+    automation.jobPreferences.locations?.[0] || "Any location";
+
+  const selectedWorkModes = automation.jobPreferences.workModes || [];
+
+  const selectedWorkModeLabel =
+    selectedWorkModes.length === 0
+      ? "Any work mode"
+      : selectedWorkModes
+          .map((value) =>
+            value === "onsite"
+              ? "On-site"
+              : value.charAt(0).toUpperCase() + value.slice(1),
+          )
+          .join(", ");
+
+  /* =====================================================
+       RENDER
+    ===================================================== */
+
+  return (
+    <section className="career-graph-page">
+      {/* ===================================================
+            HEADER
+        =================================================== */}
+
+      <header className="career-graph-header">
+        <div>
+          <span className="career-graph-eyebrow">AI CAREER ROADMAP</span>
+
+          <h1>{automation.targetRole}</h1>
+
+          <p>
+            A role-first path built from your current evidence, target-role
+            knowledge, skill gaps, and practical next steps.
+          </p>
+        </div>
+
+        <div className="career-graph-header-actions">
+          <div className="career-readiness-pill">
+            <FiTrendingUp />
+
+            <span>Readiness</span>
+
+            <strong>{readiness}%</strong>
+          </div>
+
+          <button
+            type="button"
+            className="career-job-preferences-button"
+            onClick={handleOpenJobPreferences}
+          >
+            <FiSettings />
+            Job Preferences
+          </button>
+
+          <button
+            type="button"
+            className="career-replan-button"
+            onClick={handleReplan}
+            disabled={actionKey === "replan"}
+          >
+            <FiRefreshCw className={actionKey === "replan" ? "spin" : ""} />
+            Rebuild roadmap
+          </button>
+        </div>
+      </header>
+
+      {/* ===================================================
+            CURRENT JOB SEARCH PREFERENCES
+        =================================================== */}
+
+      <div className="career-current-job-preferences">
+        <div>
+          <span>Target Role</span>
+
+          <strong>{automation.targetRole}</strong>
+        </div>
+
+        <div>
+          <span>Location</span>
+
+          <strong>{selectedLocation}</strong>
+        </div>
+
+        <div>
+          <span>Work Mode</span>
+
+          <strong>{selectedWorkModeLabel}</strong>
+        </div>
+
+        <div>
+          <span>Daily Opportunities</span>
+
+          <strong>3 jobs / day</strong>
+        </div>
+      </div>
+
+      {/* ===================================================
+            ERROR
+        =================================================== */}
+
+      {error && (
+        <div className="career-graph-alert">
+          <FiAlertCircle />
+
+          <span>{error}</span>
+        </div>
+      )}
+
+      {/* ===================================================
+            ROADMAP / FULL-WIDTH DETAIL
+        =================================================== */}
+
+      <section className="career-roadmap-shell">
+        {!selectedSkill ? (
+          <article className="career-skill-map-card career-skill-map-card--full">
+            <div className="career-section-heading career-section-heading--roadmap">
+              <div>
+                <span>YOUR SKILL PATH</span>
+
+                <h2>Personalized Skill Roadmap</h2>
 
                 <p>
-                  Click any skill to understand why it matters
-                  and where it sits in your path.
+                  Click any recommendation to open a full learning plan with
+                  specific topics, practical action, and proof of completion.
                 </p>
               </div>
 
               <div className="career-skill-legend">
-                <span className="strong">
-                  Strong
-                </span>
+                <span className="strong">Strong</span>
 
-                <span className="priority">
-                  Priority gap
-                </span>
+                <span className="priority">Priority gap</span>
 
-                <span className="next">
-                  Next
-                </span>
+                <span className="next">Next</span>
 
-                <span className="later">
-                  Later
-                </span>
+                <span className="later">Later</span>
               </div>
             </div>
 
@@ -1070,367 +1475,761 @@ const CareerAutomationPage:
               <div
                 className="career-skill-map-canvas"
                 style={{
-                  minWidth:
-                    `${
-                      Math.max(
-                        980,
-                        skillNodes.length *
-                          155 +
-                        100
-                      )
-                    }px`,
+                  minWidth: `${Math.max(
+                    1180,
+                    skillNodes.length * 205 + 165,
+                  )}px`,
                 }}
               >
                 <svg
                   className="career-skill-map-lines"
-                  viewBox={`0 0 ${
-                    Math.max(
-                      980,
-                      skillNodes.length *
-                        155 +
-                      100
-                    )
-                  } 340`}
+                  viewBox={`0 0 ${Math.max(
+                    1180,
+                    skillNodes.length * 205 + 165,
+                  )} 405`}
                   preserveAspectRatio="none"
                   aria-hidden="true"
                 >
-                  {skillNodes
-                    .slice(
-                      0,
-                      -1
-                    )
-                    .map(
-                      (
-                        node,
-                        index
-                      ) => {
-                        const next =
-                          skillNodes[
-                            index +
-                            1
-                          ];
+                  {skillNodes.slice(0, -1).map((node, index) => {
+                    const next = skillNodes[index + 1];
 
-                        if (
-                          !next
-                        ) {
-                          return null;
-                        }
+                    if (!next) {
+                      return null;
+                    }
 
-                        const startX =
-                          node.x +
-                          105;
+                    const startX =
+                      node.x + 168;
 
-                        const startY =
-                          node.y +
-                          29;
+                    const startY =
+                      node.y + 36;
 
-                        const endX =
-                          next.x;
+                    const endX =
+                      next.x;
 
-                        const endY =
-                          next.y +
-                          29;
+                    const endY =
+                      next.y + 36;
 
-                        const middleX =
-                          (
-                            startX +
-                            endX
-                          ) /
-                          2;
+                    const horizontalDistance =
+                      Math.max(
+                        44,
+                        (endX - startX) * 0.46,
+                      );
 
-                        const path =
-                          `M ${startX} ${startY}
-                           C ${middleX} ${startY},
-                             ${middleX} ${endY},
+                    const control1X =
+                      startX +
+                      horizontalDistance;
+
+                    const control2X =
+                      endX -
+                      horizontalDistance;
+
+                    const path = `M ${startX} ${startY}
+                           C ${control1X} ${startY},
+                             ${control2X} ${endY},
                              ${endX} ${endY}`;
 
-                        return (
-                          <path
-                            key={
-                              `${node.id}-${next.id}`
-                            }
-                            d={
-                              path
-                            }
-                          />
-                        );
-                      }
-                    )}
+                    return (
+                      <path
+                        key={`${node.id}-${next.id}`}
+                        d={path}
+                      />
+                    );
+                  })}
                 </svg>
 
-                {skillNodes.map(
-                  (
-                    node
-                  ) => (
-                    <button
-                      key={
-                        node.id
-                      }
-                      type="button"
-                      className={`career-skill-node ${node.status} ${
-                        selectedSkill
-                          ?.id ===
-                          node.id
-                          ? "selected"
-                          : ""
-                      }`}
-                      style={{
-                        left:
-                          `${node.x}px`,
+                {skillNodes.map((node) => (
+                  <button
+                    key={node.id}
+                    type="button"
+                    className={`career-skill-node ${node.status}`}
+                    style={{
+                      left: `${node.x}px`,
+                      top: `${node.y}px`,
+                    }}
+                    onClick={() => setSelectedSkillId(node.id)}
+                  >
+                    <span className="career-skill-node-index">
+                      {node.status === "strong" ? (
+                        <FiCheck />
+                      ) : node.status === "priority" ? (
+                        "!"
+                      ) : null}
+                    </span>
 
-                        top:
-                          `${node.y}px`,
-                      }}
-                      onClick={() =>
-                        setSelectedSkillId(
-                          node.id
-                        )
-                      }
-                    >
-                      <span className="career-skill-node-index">
-                        {node.status ===
-                        "strong"
-                          ? <FiCheck />
-                          : node.status ===
-                              "priority"
-                            ? "!"
-                            : null}
-                      </span>
+                    <strong>
+                      {node.label}
+                    </strong>
 
-                      <strong>
-                        {node.label}
-                      </strong>
+                    <small>
+                      {typeof node.score === "number"
+                        ? `${node.score}% readiness`
+                        : "Evidence pending"}
+                    </small>
+                  </button>
+                ))}
 
-                      <small>
-                        {node.score}% readiness
-                      </small>
-                    </button>
-                  )
+                {skillNodes.length === 0 && (
+                  <div className="career-roadmap-empty-state">
+                    No personalized roadmap recommendations are available yet.
+                  </div>
                 )}
               </div>
             </div>
           </article>
+        ) : (
+          <article className="career-skill-full-detail">
+            <div className="career-skill-full-detail-topbar">
+              <button
+                type="button"
+                className="career-skill-back-button"
+                onClick={() => setSelectedSkillId(null)}
+              >
+                ← Back to roadmap
+              </button>
 
-          <aside className="career-skill-detail-card">
-            <div className="career-detail-header-row">
-              <span className="career-detail-label">
-                SELECTED SKILL
-              </span>
-
-              <div className={`career-detail-status ${selectedSkill?.status || "later"}`}>
-                {selectedSkill
-                  ?.status ===
-                  "priority"
+              <span
+                className={`career-detail-status ${selectedSkill.status}`}
+              >
+                {selectedSkill.status === "priority"
                   ? "High priority"
-                  : selectedSkill
-                      ?.status ===
-                      "strong"
+                  : selectedSkill.status === "strong"
                     ? "Strong"
-                    : selectedSkill
-                        ?.status ===
-                        "next"
+                    : selectedSkill.status === "next"
                       ? "Next to learn"
                       : "Later"}
-              </div>
+              </span>
             </div>
 
-            <h2>
-              {selectedSkill
-                ?.label ||
-                "Skill"}
-            </h2>
-
-            <p>
-              {selectedSkill
-                ?.reason ||
-                "This skill supports your target role."}
-            </p>
-
-            <div className="career-detail-score">
-              <div>
-                <span>
-                  Current readiness
+            <div className="career-skill-full-detail-hero">
+              <div className="career-skill-full-detail-copy">
+                <span className="career-detail-label">
+                  SELECTED RECOMMENDATION
                 </span>
+
+                <h2>{selectedSkill.label}</h2>
+
+                <p>{selectedSkill.reason}</p>
+              </div>
+
+              <div className="career-skill-readiness-card">
+                <span>Current readiness</span>
 
                 <strong>
-                  {selectedSkill
-                    ?.score ||
-                    0}%
+                  {typeof selectedSkill.score === "number"
+                    ? `${selectedSkill.score}%`
+                    : "Not enough evidence"}
                 </strong>
-              </div>
 
-              <div className="career-detail-score-track">
-                <span
-                  style={{
-                    width:
-                      `${selectedSkill?.score || 0}%`,
-                  }}
-                />
-              </div>
-            </div>
-
-            <div className="career-important-topics">
-              <div className="career-important-topics-heading">
-                <FiZap />
-
-                <div>
-                  <span>
-                    IMPORTANT TOPICS
-                  </span>
-
-                  <strong>
-                    Learn these first
-                  </strong>
-                </div>
-              </div>
-
-              <div className="career-important-topic-list">
-                {selectedTopics.map(
-                  (
-                    topic,
-                    index
-                  ) => (
-                    <div
-                      key={
-                        `${selectedSkill?.id || "skill"}-${topic}`
-                      }
-                      className="career-important-topic"
-                    >
-                      <span>
-                        {index + 1}
-                      </span>
-
-                      <p>
-                        {topic}
-                      </p>
-                    </div>
-                  )
+                {typeof selectedSkill.score === "number" && (
+                  <div className="career-detail-score-track">
+                    <span
+                      style={{
+                        width: `${selectedSkill.score}%`,
+                      }}
+                    />
+                  </div>
                 )}
               </div>
-
-              <small>
-                Focus on these topics when researching or
-                practicing {selectedSkill?.label || "this skill"}.
-              </small>
             </div>
-          </aside>
-        </div>
 
-        <div className="career-opportunities-section">
-          <article className="career-job-card">
-            <div className="career-section-heading compact">
-              <div>
+            <div className="career-skill-full-detail-grid">
+              <section className="career-detail-panel career-detail-panel--topics">
+                <div className="career-detail-panel-heading">
+                  <div className="career-detail-panel-icon">
+                    <FiZap />
+                  </div>
+
+                  <div>
+                    <span>WHAT TO LEARN</span>
+
+                    <h3>Specific topics for this recommendation</h3>
+                  </div>
+                </div>
+
+                {selectedTopics.length > 0 ? (
+                  <div className="career-detail-topic-grid">
+                    {selectedTopics.map((topic, index) => (
+                      <div
+                        key={`${selectedSkill.id}-${topic}`}
+                        className="career-detail-topic-card"
+                      >
+                        <span>{index + 1}</span>
+
+                        <p>{topic}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="career-detail-empty-message">
+                    InterviewIQ does not have enough structured subtopic data
+                    for this recommendation yet.
+                  </div>
+                )}
+              </section>
+
+              <section className="career-detail-panel">
+                <div className="career-detail-panel-heading">
+                  <div>
+                    <span>RECOMMENDED ACTION</span>
+
+                    <h3>What you should do next</h3>
+                  </div>
+                </div>
+
+                <p className="career-detail-panel-text">
+                  {selectedSkill.action ||
+                    "Complete a realistic exercise or project task that proves this capability in the context of your target role."}
+                </p>
+              </section>
+
+              <section className="career-detail-panel">
+                <div className="career-detail-panel-heading">
+                  <div>
+                    <span>PROOF OF COMPLETION</span>
+
+                    <h3>How to prove that you learned it</h3>
+                  </div>
+                </div>
+
+                <p className="career-detail-panel-text">
+                  {selectedSkill.proofOfCompletion ||
+                    "Keep a concrete artifact such as working code, tests, documentation, analysis, or a project result that demonstrates this skill."}
+                </p>
+              </section>
+
+              <section className="career-detail-panel career-detail-panel--evidence">
+                <div className="career-detail-panel-heading">
+                  <div>
+                    <span>WHY INTERVIEWIQ RECOMMENDS THIS</span>
+
+                    <h3>Evidence behind the recommendation</h3>
+                  </div>
+                </div>
+
+                {selectedSkill.evidence.length > 0 ? (
+                  <ul className="career-detail-evidence-list">
+                    {selectedSkill.evidence
+                      .slice(0, 6)
+                      .map((item) => (
+                        <li key={`${selectedSkill.id}-${item}`}>
+                          {item}
+                        </li>
+                      ))}
+                  </ul>
+                ) : (
+                  <p className="career-detail-panel-text">
+                    This recommendation was selected from your target-role
+                    roadmap and current career evidence.
+                  </p>
+                )}
+              </section>
+            </div>
+
+            <div className="career-skill-full-detail-meta">
+              {selectedSkill.priority && (
                 <span>
-                  MATCHING OPPORTUNITIES
+                  Priority:
+                  <strong>
+                    {selectedSkill.priority.charAt(0).toUpperCase() +
+                      selectedSkill.priority.slice(1)}
+                  </strong>
                 </span>
+              )}
 
-                <h2>
-                  Jobs for your roadmap
-                </h2>
+              {selectedSkill.source && (
+                <span>
+                  Source:
+                  <strong>
+                    {selectedSkill.source
+                      .replace(/_/g, " ")
+                      .replace(/\b\w/g, (char) => char.toUpperCase())}
+                  </strong>
+                </span>
+              )}
+
+              {selectedSkill.category && (
+                <span>
+                  Category:
+                  <strong>
+                    {selectedSkill.category
+                      .replace(/_/g, " ")
+                      .replace(/\b\w/g, (char) => char.toUpperCase())}
+                  </strong>
+                </span>
+              )}
+            </div>
+          </article>
+        )}
+      </section>
+
+      {/* ===================================================
+            OPPORTUNITIES
+        =================================================== */}
+
+      <div className="career-opportunities-section">
+        <article className="career-job-card">
+          <div className="career-section-heading compact">
+            <div className="career-opportunities-title-group">
+              <FiBriefcase />
+
+              <div>
+                <span>TODAY&apos;S OPPORTUNITIES</span>
+
+                <h2>Best jobs matched to your skills</h2>
 
                 <p>
-                  New jobs will be ranked against your skill path.
+                  InterviewIQ selects your 3 strongest opportunities based on
+                  role, location, work mode and your career profile.
                 </p>
               </div>
-
-              <FiBriefcase />
             </div>
 
-            <div className="career-job-list">
-              {automation
-                .jobMatches
-                .length >
-              0
-                ? automation
-                    .jobMatches
-                    .slice(
-                      0,
-                      5
-                    )
-                    .map(
-                      (
-                        match,
-                        index
-                      ) => (
-                        <div
-                          key={
-                            `${match.jobId}-${index}`
-                          }
-                          className="career-job-row"
-                        >
-                          <div className="career-job-score">
-                            {Math.round(
-                              match.matchScore
-                            )}%
-                          </div>
+            <button
+              type="button"
+              className="career-opportunities-refresh-button"
+              onClick={() => void loadExternalJobs(true)}
+            >
+              <FiRefreshCw />
+              Search again
+            </button>
+          </div>
 
-                          <div>
-                            <strong>
-                              Matching opportunity
-                            </strong>
+          <div className="career-job-list">
+            {jobsLoading ? (
+              <div className="career-job-list career-job-list--skeleton career-job-list--inline-loading">
+                {[1, 2, 3].map((item) => (
+                  <div className="career-job-row-skeleton" key={item}>
+                    <span className="career-skeleton career-skeleton--job-score" />
 
-                            <span>
-                              Job ID: {String(
-                                match.jobId
-                              ).slice(
-                                -8
-                              )}
+                    <div>
+                      <span className="career-skeleton career-skeleton--job-title" />
+                      <span className="career-skeleton career-skeleton--job-company" />
+                      <span className="career-skeleton career-skeleton--job-description" />
+                    </div>
+
+                    <span className="career-skeleton career-skeleton--job-action" />
+                  </div>
+                ))}
+              </div>
+            ) : jobsError ? (
+              <div className="career-job-empty">
+                <FiAlertCircle />
+
+                <h3>Could not load opportunities</h3>
+
+                <p>{jobsError}</p>
+
+                <button
+                  type="button"
+                  onClick={() => void loadExternalJobs(true)}
+                >
+                  Try again
+                </button>
+              </div>
+            ) : visibleJobs.length > 0 ? (
+              visibleJobs.map((item, index) => {
+                const job = item.job;
+
+                const matchedSkills = item.matchedSkills?.slice(0, 4) || [];
+
+                return (
+                  <article key={job._id} className="career-opportunity-card">
+                    <div className="career-opportunity-rank">
+                      <span>#{index + 1}</span>
+                    </div>
+
+                    <div className="career-opportunity-score">
+                      <strong>{Math.round(item.matchScore)}%</strong>
+
+                      <span>MATCH</span>
+                    </div>
+
+                    <div className="career-opportunity-content">
+                      <div className="career-opportunity-title-row">
+                        <div>
+                          <div className="career-opportunity-title">
+                            <h3>{job.title}</h3>
+
+                            <span className="career-opportunity-source">
+                              {job.source}
                             </span>
                           </div>
 
-                          <FiArrowRight />
+                          <p className="career-opportunity-company">
+                            {job.company}
+                          </p>
                         </div>
-                      )
-                    )
-                : (
-                  <div className="career-job-empty">
-                    <FiBriefcase />
+                      </div>
 
-                    <h3>
-                      No external job matches yet
-                    </h3>
+                      <div className="career-opportunity-meta">
+                        {job.location && <span>{job.location}</span>}
 
-                    <p>
-                      The next backend phase will collect fresh
-                      vacancies from external sources and place the
-                      best matches here automatically.
-                    </p>
-                  </div>
-                )}
-            </div>
-          </article>
+                        {job.remoteType && <span>{job.remoteType}</span>}
+
+                        {job.employmentType && (
+                          <span>{job.employmentType}</span>
+                        )}
+
+                        {job.experienceLevel && (
+                          <span>{job.experienceLevel}</span>
+                        )}
+                      </div>
+
+                      {matchedSkills.length > 0 && (
+                        <div className="career-opportunity-skills">
+                          <span className="career-opportunity-skills-label">
+                            Matched skills
+                          </span>
+
+                          <div>
+                            {matchedSkills.map((skill) => (
+                              <span
+                                key={`${job._id}-${skill}`}
+                                className="career-opportunity-skill"
+                              >
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="career-opportunity-action">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigate(`/dashboard/jobs/${job._id}`);
+                        }}
+                      >
+                        View Details
+                        <FiArrowRight />
+                      </button>
+                    </div>
+                  </article>
+                );
+              })
+            ) : (
+              <div className="career-job-empty">
+                <FiBriefcase />
+
+                <h3>No matching vacancies yet</h3>
+
+                <p>
+                  No suitable jobs were found for your current role, location
+                  and work mode.
+                </p>
+
+                <button type="button" onClick={handleOpenJobPreferences}>
+                  Change preferences
+                </button>
+              </div>
+            )}
+          </div>
+        </article>
+      </div>
+
+      {/* ===================================================
+            FOOTER
+        =================================================== */}
+
+      <footer className="career-roadmap-footer">
+        <div>
+          <FiClock />
+
+          <span>Next plan refresh:</span>
+
+          <strong>{formatDate(summary?.nextDailyPlanAt)}</strong>
         </div>
 
-        <footer className="career-roadmap-footer">
-          <div>
-            <FiClock />
+        <div>
+          <FiTarget />
 
-            <span>
-              Next plan refresh:
-            </span>
+          <span>Career goal:</span>
 
-            <strong>
-              {formatDate(
-                summary
-                  ?.nextDailyPlanAt
-              )}
-            </strong>
+          <strong>{automation.careerGoal}</strong>
+        </div>
+      </footer>
+
+      {/* ===================================================
+            JOB PREFERENCES MODAL
+        =================================================== */}
+
+      {jobPreferencesOpen && (
+        <div
+          className="career-job-preferences-overlay"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !preferencesSaving) {
+              handleCancelJobPreferences();
+            }
+          }}
+        >
+          <div
+            className="career-job-preferences-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="career-job-preferences-title"
+          >
+            <div className="career-job-preferences-header">
+              <div>
+                <span className="career-graph-eyebrow">
+                  JOB SEARCH SETTINGS
+                </span>
+
+                <h2 id="career-job-preferences-title">Job Preferences</h2>
+
+                <p>
+                  Choose your target career and optional location. InterviewIQ will select
+                  your 3 strongest opportunities.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                className="career-job-preferences-close"
+                onClick={handleCancelJobPreferences}
+                disabled={preferencesSaving}
+                aria-label="Close"
+              >
+                <FiX />
+              </button>
+            </div>
+
+            <div className="career-job-preferences-grid">
+              {/* TARGET ROLE */}
+
+              <label className="career-job-preference-field">
+                <span>Target Role</span>
+
+                <select
+                  value={targetRoleInput}
+                  onChange={(event) => {
+                    setTargetRoleInput(event.target.value);
+
+                    setPreferencesMessage(null);
+
+                    setPreferencesMessageType(null);
+                  }}
+                  disabled={preferencesSaving || careerFieldsLoading}
+                >
+                  <option value="">
+                    {careerFieldsLoading
+                      ? "Loading career fields..."
+                      : "Select a career field"}
+                  </option>
+
+                  {careerFields.map((field) => (
+                    <option key={field.slug} value={field.name}>
+                      {field.name}
+                    </option>
+                  ))}
+                </select>
+
+                <small>
+                  {careerFieldsError
+                    ? careerFieldsError
+                    : "Choose one of the active career fields available in InterviewIQ."}
+                </small>
+              </label>
+
+              {/* LOCATION */}
+
+              <div className="career-job-preference-field career-location-field">
+                <span>
+                  Location <small className="career-field-optional">(Optional)</small>
+                </span>
+
+                <div className="career-location-selects progressive">
+                  {/* STEP 1: COUNTRY */}
+                  <select
+                    value={countryCodeInput}
+                    onChange={(event) => {
+                      setCountryCodeInput(event.target.value);
+
+                      setSubdivisionCodeInput("");
+
+                      setCityInput("");
+
+                      setLocationSelectionTouched(true);
+
+                      setPreferencesMessage(null);
+
+                      setPreferencesMessageType(null);
+                    }}
+                    disabled={preferencesSaving}
+                  >
+                    <option value="">Select country</option>
+
+                    {countryOptions.map((country) => (
+                      <option key={country.isoCode} value={country.isoCode}>
+                        {country.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* STEP 2: STATE / REGION / DISTRICT */}
+                  {countryCodeInput && hasSubdivisions && (
+                    <select
+                      value={subdivisionCodeInput}
+                      onChange={(event) => {
+                        setSubdivisionCodeInput(event.target.value);
+
+                        setCityInput("");
+
+                        setLocationSelectionTouched(true);
+
+                        setPreferencesMessage(null);
+
+                        setPreferencesMessageType(null);
+                      }}
+                      disabled={preferencesSaving}
+                    >
+                      <option value="">
+                        Select {getSubdivisionLabel().toLowerCase()}
+                      </option>
+
+                      {subdivisionOptions.map((subdivision) => (
+                        <option
+                          key={subdivision.isoCode}
+                          value={subdivision.isoCode}
+                        >
+                          {subdivision.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+
+                  {/* STEP 3: CITY
+                      For countries without subdivisions this becomes STEP 2. */}
+                  {countryCodeInput &&
+                    (!hasSubdivisions || subdivisionCodeInput) && (
+                      <select
+                        value={cityInput}
+                        onChange={(event) => {
+                          setCityInput(event.target.value);
+
+                          setLocationSelectionTouched(true);
+
+                          setPreferencesMessage(null);
+
+                          setPreferencesMessageType(null);
+                        }}
+                        disabled={preferencesSaving}
+                      >
+                        <option value="">Select city</option>
+
+                        {cityOptions.map((city) => (
+                          <option
+                            key={`${city.name}-${city.latitude}-${city.longitude}`}
+                            value={city.name}
+                          >
+                            {city.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                </div>
+
+                <small>
+                  {locationSelectionTouched
+                    ? buildSelectedLocation() ||
+                      "Optional — leave location empty to search worldwide."
+                    : locationInput
+                      ? `Current saved location: ${locationInput}`
+                      : "Optional — leave location empty to search opportunities worldwide."}
+                </small>
+              </div>
+
+              {/* WORK MODE */}
+
+              <label className="career-job-preference-field">
+                <span>Work Mode</span>
+
+                <select
+                  value={workModeInput}
+                  onChange={(event) => {
+                    setWorkModeInput(event.target.value as WorkModeInput);
+
+                    setPreferencesMessage(null);
+
+                    setPreferencesMessageType(null);
+                  }}
+                  disabled={preferencesSaving}
+                >
+                  <option value="any">Any work mode</option>
+
+                  <option value="remote">Remote</option>
+
+                  <option value="hybrid">Hybrid</option>
+
+                  <option value="onsite">On-site</option>
+                </select>
+
+                <small>
+                  Choose whether you prefer remote, hybrid or on-site
+                  opportunities.
+                </small>
+              </label>
+
+              {/* DAILY TARGET */}
+
+              <div className="career-job-preference-summary">
+                <span>Daily Opportunities</span>
+
+                <strong>3 jobs / day</strong>
+
+                <small>
+                  InterviewIQ automatically selects your 3 strongest matching
+                  opportunities each day.
+                </small>
+              </div>
+            </div>
+
+            {preferencesMessage && (
+              <p
+                className={`career-job-preferences-message ${
+                  preferencesMessageType || ""
+                }`}
+              >
+                {preferencesMessage}
+              </p>
+            )}
+
+            <div className="career-job-preferences-actions">
+              <button
+                type="button"
+                className="career-job-preferences-cancel"
+                onClick={handleCancelJobPreferences}
+                disabled={preferencesSaving}
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                className="career-job-preferences-save"
+                onClick={() => void handleSaveJobPreferences()}
+                disabled={preferencesSaving || jobsLoading}
+              >
+                {preferencesSaving || jobsLoading ? (
+                  <>
+                    <FiRefreshCw className="spin" />
+                    Saving & Searching...
+                  </>
+                ) : (
+                  <>
+                    <FiBriefcase />
+                    Save & Search Jobs
+                  </>
+                )}
+              </button>
+            </div>
           </div>
-
-          <div>
-            <FiTarget />
-
-            <span>
-              Career goal:
-            </span>
-
-            <strong>
-              {automation.careerGoal}
-            </strong>
-          </div>
-        </footer>
-      </section>
-    );
-  };
+        </div>
+      )}
+    </section>
+  );
+};
 
 export default CareerAutomationPage;

@@ -983,3 +983,160 @@
       32px;
   }
 }
+
+
+/* =========================================================
+   SIDEBAR POLISH OVERRIDES
+   Cleaner spacing between main navigation and bottom tools
+========================================================= */
+
+.sidebar {
+  padding:
+    24px
+    18px
+    18px;
+}
+
+.sidebar-main {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.sidebar-logo {
+  margin-bottom: 34px;
+}
+
+.sidebar-nav {
+  gap: 5px;
+}
+
+.nav-title {
+  margin-bottom: 10px;
+}
+
+.nav-item {
+  min-height: 44px;
+  gap: 12px;
+  padding:
+    0
+    14px;
+}
+
+.sidebar-bottom {
+  flex: 0 0 auto;
+
+  margin-top: 26px;
+  padding-top: 20px;
+
+  border-top:
+    1px solid
+    rgba(20, 20, 40, 0.075);
+}
+
+.sidebar-tools {
+  gap: 7px;
+  margin-bottom: 18px;
+}
+
+.sidebar-user {
+  margin-bottom: 12px;
+}
+
+.logout-btn {
+  margin-top: 2px;
+}
+
+/* Give Career Automation a little breathing room before the divider. */
+.sidebar-nav .nav-item:last-child {
+  margin-bottom: 6px;
+}
+
+/* Keep labels and icons visually aligned. */
+.nav-item svg {
+  width: 20px;
+  height: 20px;
+}
+
+.nav-item span {
+  line-height: 1.2;
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1050px) {
+  .sidebar {
+    padding:
+      22px
+      14px
+      17px;
+  }
+
+  .sidebar-bottom {
+    margin-top: 22px;
+    padding-top: 18px;
+  }
+}
+
+/* =========================================================
+   ICON-ONLY SIDEBAR
+========================================================= */
+
+@media (max-width: 850px) and (min-width: 601px) {
+  .sidebar {
+    padding:
+      22px
+      12px
+      16px;
+  }
+
+  .sidebar-logo {
+    margin-bottom: 30px;
+  }
+
+  .sidebar-bottom {
+    margin-top: 20px;
+    padding-top: 16px;
+  }
+
+  .sidebar-tools {
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .sidebar-user {
+    margin-bottom: 10px;
+  }
+}
+
+/* =========================================================
+   MOBILE DRAWER
+========================================================= */
+
+@media (max-width: 600px) {
+  .sidebar {
+    justify-content: flex-start;
+  }
+
+  .sidebar-main {
+    flex: 0 0 auto;
+  }
+
+  .sidebar-bottom {
+    margin-top: 24px;
+    padding-top: 18px;
+  }
+
+  .sidebar-tools {
+    margin-bottom: 16px;
+  }
+
+  .sidebar-user {
+    margin-bottom: 10px;
+  }
+
+  .logout-btn {
+    margin-top: 2px;
+  }
+}

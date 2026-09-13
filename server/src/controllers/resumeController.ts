@@ -1020,6 +1020,128 @@ export const analyzeResumeController =
       const analysis =
         localResult.analysis;
 
+      /* =============================================
+         CANONICAL DETECTED SKILLS
+         ---------------------------------------------
+         Job matching must use the candidate's actual
+         skills, not CV quality scores.
+
+         The local scorer may occasionally return an
+         empty skillsDetected array even when canonical
+         structured extraction successfully found skills.
+
+         Build one reliable, deduplicated skill list from:
+         - local analysis skillsDetected
+         - canonical profile skills
+         - canonical technicalSkills
+         - experience technologies
+         - project technologies
+      ============================================= */
+
+      const detectedSkills =
+        Array.from(
+          new Map(
+            [
+              ...(
+                analysis
+                  .skillsDetected ||
+                []
+              ),
+
+              ...(
+                extractedProfile
+                  .skills ||
+                []
+              ),
+
+              ...(
+                extractedProfile
+                  .technicalSkills ||
+                []
+              ),
+
+              ...extractedProfile
+                .experience
+                .flatMap(
+                  (
+                    item
+                  ) =>
+                    item
+                      .technologies ||
+                    []
+                ),
+
+              ...extractedProfile
+                .projects
+                .flatMap(
+                  (
+                    item
+                  ) =>
+                    item
+                      .technologies ||
+                    []
+                ),
+            ]
+              .filter(
+                (
+                  skill
+                ): skill is string =>
+                  typeof skill ===
+                    "string"
+              )
+              .map(
+                (
+                  skill
+                ) =>
+                  skill
+                    .replace(
+                      /\s+/g,
+                      " "
+                    )
+                    .trim()
+              )
+              .filter(
+                Boolean
+              )
+              .map(
+                (
+                  skill
+                ) => [
+                  skill
+                    .toLowerCase(),
+                  skill,
+                ] as const
+              )
+          ).values()
+        );
+
+      console.log(
+        "[Resume Analyze] Persisted detected skills",
+        {
+          scorerSkills:
+            analysis
+              .skillsDetected
+              ?.length ||
+            0,
+
+          canonicalSkills:
+            extractedProfile
+              .skills
+              .length,
+
+          canonicalTechnicalSkills:
+            extractedProfile
+              .technicalSkills
+              .length,
+
+          finalDetectedSkills:
+            detectedSkills
+              .length,
+
+          detectedSkills,
+        }
+      );
+
       console.log(
         "[Resume Analyze] Canonical structured profile + realistic scoring ready",
         {
@@ -1138,8 +1260,7 @@ export const analyzeResumeController =
               .summary,
 
           skillsDetected:
-            analysis
-              .skillsDetected,
+            detectedSkills,
 
           strengths:
             analysis

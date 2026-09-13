@@ -38,13 +38,24 @@ interface SkillVerificationResult {
    CONSTANTS
 ========================================= */
 
-const MIN_ACCEPTED_SCORE = 80;
+/*
+  IMPORTANT:
+  We intentionally do NOT use a minimum mastery score here.
+
+  A low technical result is still valid evidence. Without
+  storing weak results, Performance & Progress could identify
+  strong skills but could never measure developing/beginner
+  skills accurately.
+*/
 
 const STRONG_SINGLE_EVIDENCE_SCORE =
   90;
 
-const MIN_TECHNICAL_ACCURACY =
-  80;
+/*
+  Technical accuracy is no longer used as a rejection
+  threshold. Instead it contributes directly to the mastery
+  evidence score below.
+*/
 
 const MIN_MULTI_EVIDENCE_COUNT =
   2;
@@ -450,6 +461,28 @@ const looksLikeRealSkill = (
    SCORE HELPERS
 ========================================= */
 
+const clampScore = (
+  value: number
+): number => {
+  if (
+    !Number.isFinite(
+      value
+    )
+  ) {
+    return 0;
+  }
+
+  return Math.max(
+    0,
+    Math.min(
+      100,
+      Math.round(
+        value
+      )
+    )
+  );
+};
+
 const calculateAverage = (
   scores: number[]
 ): number => {
@@ -474,42 +507,39 @@ const calculateAverage = (
 };
 
 const calculateConfidence = (
-  averageScore: number,
+  _averageScore: number,
   evidenceCount: number
 ): number => {
   if (
-    averageScore <= 0 ||
     evidenceCount <= 0
   ) {
     return 0;
   }
 
-  const scoreFactor =
-    Math.min(
-      averageScore / 100,
-      1
-    );
-
   /*
-    More independent evidence means
-    stronger confidence.
+    Confidence describes HOW MUCH evidence
+    InterviewIQ has — not whether the score
+    itself is high.
+
+    Example:
+    - Docker 42% from 5 interviews can still
+      be a high-confidence estimate.
+    - Docker 92% from 1 answer is strong but
+      still based on limited evidence.
   */
   const evidenceFactor =
     Math.min(
-      0.65 +
+      0.5 +
         Math.max(
           evidenceCount - 1,
           0
         ) *
-          0.12,
-      1
+          0.09,
+      0.95
     );
 
   return Number(
-    (
-      scoreFactor *
-      evidenceFactor
-    ).toFixed(2)
+    evidenceFactor.toFixed(2)
   );
 };
 
@@ -538,6 +568,56 @@ const calculateLevel = (
   }
 
   return "beginner";
+};
+
+/*
+  Skill mastery should mostly reflect technical
+  correctness.
+
+  Overall answer quality still contributes because
+  an interview answer also needs to address the
+  actual question clearly and completely.
+
+  Weight:
+  - 60% technical accuracy
+  - 40% overall answer score
+
+  If technicalAccuracy is unavailable, we safely
+  fall back to the overall answer score.
+*/
+const calculateSkillEvidenceScore = ({
+  score,
+  technicalAccuracy,
+}: {
+  score: number;
+  technicalAccuracy?: number;
+}): number => {
+  const safeOverallScore =
+    clampScore(
+      score
+    );
+
+  if (
+    typeof technicalAccuracy !==
+      "number" ||
+    !Number.isFinite(
+      technicalAccuracy
+    )
+  ) {
+    return safeOverallScore;
+  }
+
+  const safeTechnicalAccuracy =
+    clampScore(
+      technicalAccuracy
+    );
+
+  return clampScore(
+    safeOverallScore *
+      0.4 +
+    safeTechnicalAccuracy *
+      0.6
+  );
 };
 
 /* =========================================
@@ -750,30 +830,38 @@ export const recordInterviewSkillEvidence =
     }
 
     /* -------------------------------------
-       Overall answer threshold
+       Validate score
     ------------------------------------- */
 
     if (
       typeof score !==
         "number" ||
-      score <
-        MIN_ACCEPTED_SCORE
+      !Number.isFinite(
+        score
+      )
     ) {
       return [];
     }
 
-    /* -------------------------------------
-       Technical accuracy threshold
-    ------------------------------------- */
+    /*
+      IMPORTANT:
+      We do NOT reject low scores anymore.
 
-    if (
-      typeof technicalAccuracy ===
-        "number" &&
-      technicalAccuracy <
-        MIN_TECHNICAL_ACCURACY
-    ) {
-      return [];
-    }
+      45%, 60%, 75%, etc. are still valuable
+      evidence because Performance & Progress
+      needs to distinguish:
+
+      Beginner
+      Developing
+      Good
+      Strong
+    */
+
+    const evidenceScore =
+      calculateSkillEvidenceScore({
+        score,
+        technicalAccuracy,
+      });
 
     /* -------------------------------------
        Extract valid skills
@@ -882,11 +970,28 @@ export const recordInterviewSkillEvidence =
       }
 
       /* -----------------------------------
-         Duplicate prevention
+         Current interview evidence
       ----------------------------------- */
 
-      const alreadyRecorded =
-        skill.evidence.some(
+      /*
+        Old behavior:
+        sourceId = questionId
+
+        Problem:
+        If the same question appeared again in a future
+        interview, the user's newer performance could be
+        ignored forever.
+
+        New behavior:
+        sourceId = interviewId
+
+        That gives us one mastery evidence point per skill
+        per interview. A future interview can therefore
+        improve or lower the mastery estimate naturally.
+      */
+
+      const currentInterviewEvidence =
+        skill.evidence.find(
           (item) =>
             item.source ===
               INTERVIEW_SOURCE &&
@@ -897,61 +1002,131 @@ export const recordInterviewSkillEvidence =
               item.sourceId
             ) ===
               String(
-                questionId
+                interviewId
               )
         );
 
       if (
-        alreadyRecorded
+        currentInterviewEvidence
       ) {
-        continue;
-      }
+        /*
+          Multiple technical questions in the SAME
+          interview may test the same skill.
 
-      /* -----------------------------------
-         Evidence
-      ----------------------------------- */
+          Combine them into the interview-level evidence
+          instead of creating duplicate rows.
+        */
 
-      skill.evidence.push({
-        source:
-          INTERVIEW_SOURCE,
+        const previousScore =
+          typeof currentInterviewEvidence
+            .score ===
+            "number"
+            ? currentInterviewEvidence
+                .score
+            : evidenceScore;
 
-        sourceId:
-          new mongoose.Types.ObjectId(
-            String(
-              questionId
-            )
-          ),
-
-        score,
-
-        note: [
-          `Interview ${String(
-            interviewId
-          )}`,
-
-          category
-            ? `Category: ${category}`
-            : null,
-
-          typeof technicalAccuracy ===
-          "number"
-            ? `Technical accuracy: ${technicalAccuracy}`
-            : null,
-        ]
-          .filter(
+        currentInterviewEvidence.score =
+          clampScore(
             (
-              value
-            ): value is string =>
-              typeof value ===
-                "string"
-          )
-          .join(
-            " | "
-          ),
+              previousScore +
+              evidenceScore
+            ) /
+              2
+          );
 
-        recordedAt:
-          new Date(),
-      });
+        currentInterviewEvidence.note =
+          [
+            currentInterviewEvidence
+              .note,
+
+            `Question ${String(
+              questionId
+            )}`,
+
+            `Skill evidence: ${evidenceScore}%`,
+
+            typeof technicalAccuracy ===
+              "number"
+              ? `Technical accuracy: ${clampScore(
+                  technicalAccuracy
+                )}%`
+              : null,
+          ]
+            .filter(
+              (
+                value
+              ): value is string =>
+                typeof value ===
+                  "string" &&
+                value.length >
+                  0
+            )
+            .join(
+              " | "
+            );
+
+        currentInterviewEvidence.recordedAt =
+          new Date();
+      } else {
+        /* -----------------------------------
+           New interview evidence
+        ----------------------------------- */
+
+        skill.evidence.push({
+          source:
+            INTERVIEW_SOURCE,
+
+          /*
+            Store interviewId so this skill can be
+            measured again in later interviews.
+          */
+          sourceId:
+            new mongoose.Types.ObjectId(
+              String(
+                interviewId
+              )
+            ),
+
+          score:
+            evidenceScore,
+
+          note: [
+            `Interview ${String(
+              interviewId
+            )}`,
+
+            `Question ${String(
+              questionId
+            )}`,
+
+            `Skill evidence: ${evidenceScore}%`,
+
+            category
+              ? `Category: ${category}`
+              : null,
+
+            typeof technicalAccuracy ===
+              "number"
+              ? `Technical accuracy: ${clampScore(
+                  technicalAccuracy
+                )}%`
+              : null,
+          ]
+            .filter(
+              (
+                value
+              ): value is string =>
+                typeof value ===
+                  "string"
+            )
+            .join(
+              " | "
+            ),
+
+          recordedAt:
+            new Date(),
+        });
+      }
 
       recalculateSkill(
         skill

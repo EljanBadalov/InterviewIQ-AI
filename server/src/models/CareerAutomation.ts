@@ -22,6 +22,51 @@ export type CareerRoadmapStatus =
   | "in_progress"
   | "completed";
 
+/*
+ * High-level roadmap sections.
+ *
+ * These categories are intentionally explicit so the frontend does not
+ * have to infer whether a milestone belongs to skills, projects, CV,
+ * interview preparation, or job-search execution from its title.
+ */
+export type CareerRoadmapCategory =
+  | "CORE_SKILLS"
+  | "ROLE_SKILLS"
+  | "PROJECTS"
+  | "CV"
+  | "INTERVIEW"
+  | "JOB_SEARCH";
+
+/*
+ * Where the evidence behind a personalized recommendation came from.
+ *
+ * Qwen will be used to explain and organize evidence, but it should not
+ * invent the evidence itself. Keeping the source allows the UI and future
+ * analytics to explain why a recommendation exists.
+ */
+export type CareerRoadmapInsightSource =
+  | "resume"
+  | "resume_analysis"
+  | "job_market"
+  | "interview"
+  | "progress"
+  | "career_profile"
+  | "combined";
+
+/*
+ * We intentionally reuse the same three-level priority language used by
+ * Career Automation tasks.
+ */
+export type CareerRoadmapPriority =
+  | "high"
+  | "medium"
+  | "low";
+
+export type CareerRoadmapGeneratedBy =
+  | "qwen"
+  | "fallback"
+  | "system";
+
 export type CareerTaskCategory =
   | "LEARNING"
   | "JOB_APPLICATION"
@@ -98,6 +143,56 @@ export interface ICareerJobPreferences {
 }
 
 /* =========================================================
+   ROADMAP RECOMMENDATION
+========================================================= */
+
+/*
+ * One concrete, explainable recommendation shown inside a roadmap
+ * milestone.
+ *
+ * Example:
+ * - title: "Type-safe React Components"
+ * - whyItMatters: explains the user's actual gap
+ * - whatToLearn: precise topics, not generic "learn fundamentals"
+ * - action: a practical next action
+ * - proofOfCompletion: how the user can demonstrate completion
+ */
+export interface ICareerRoadmapRecommendation {
+  title: string;
+
+  whyItMatters: string;
+
+  whatToLearn: string[];
+
+  action: string;
+
+  proofOfCompletion?: string;
+
+  priority:
+    CareerRoadmapPriority;
+
+  source:
+    CareerRoadmapInsightSource;
+
+  /*
+   * Optional evidence labels make it possible to preserve concrete
+   * supporting signals such as:
+   * - "missing in CV"
+   * - "required by 3 matched jobs"
+   * - "technical interview score: 64"
+   *
+   * These are not required for the first UI version, but keeping them
+   * structured avoids losing useful provenance from the backend.
+   */
+  evidence?: string[];
+
+  metadata?: Record<
+    string,
+    unknown
+  >;
+}
+
+/* =========================================================
    ROADMAP MILESTONE
 ========================================================= */
 
@@ -106,9 +201,30 @@ export interface ICareerRoadmapMilestone {
 
   order: number;
 
+  /*
+   * Optional during the migration step so existing stored Career
+   * Automation documents and the current roadmap builder remain valid.
+   * The personalized roadmap generator added in the next step will
+   * populate this field for every newly generated milestone.
+   */
+  category?:
+    CareerRoadmapCategory;
+
   title: string;
 
   description: string;
+
+  /*
+   * Human-readable explanation of why this roadmap section exists for
+   * this user.
+   */
+  reason?: string;
+
+  /*
+   * Readiness for this specific roadmap category, independent from the
+   * overall Career Automation readiness score.
+   */
+  readinessScore?: number;
 
   status:
     CareerRoadmapStatus;
@@ -118,6 +234,18 @@ export interface ICareerRoadmapMilestone {
   completedAt?: Date;
 
   relatedSkills: string[];
+
+  /*
+   * Detailed Qwen-personalized recommendations. Optional during the
+   * migration so the current service can compile before it is upgraded.
+   */
+  recommendations?:
+    ICareerRoadmapRecommendation[];
+
+  generatedBy?:
+    CareerRoadmapGeneratedBy;
+
+  generatedAt?: Date;
 
   metadata?: Record<
     string,
@@ -472,6 +600,118 @@ const careerJobPreferencesSchema =
   );
 
 /* =========================================================
+   ROADMAP RECOMMENDATION SCHEMA
+========================================================= */
+
+const careerRoadmapRecommendationSchema =
+  new Schema<ICareerRoadmapRecommendation>(
+    {
+      title: {
+        type:
+          String,
+
+        required:
+          true,
+
+        trim:
+          true,
+      },
+
+      whyItMatters: {
+        type:
+          String,
+
+        required:
+          true,
+
+        trim:
+          true,
+      },
+
+      whatToLearn: {
+        type: [
+          String,
+        ],
+
+        default:
+          [],
+      },
+
+      action: {
+        type:
+          String,
+
+        required:
+          true,
+
+        trim:
+          true,
+      },
+
+      proofOfCompletion: {
+        type:
+          String,
+
+        trim:
+          true,
+      },
+
+      priority: {
+        type:
+          String,
+
+        enum: [
+          "high",
+          "medium",
+          "low",
+        ],
+
+        default:
+          "medium",
+      },
+
+      source: {
+        type:
+          String,
+
+        enum: [
+          "resume",
+          "resume_analysis",
+          "job_market",
+          "interview",
+          "progress",
+          "career_profile",
+          "combined",
+        ],
+
+        default:
+          "combined",
+      },
+
+      evidence: {
+        type: [
+          String,
+        ],
+
+        default:
+          [],
+      },
+
+      metadata: {
+        type:
+          Schema.Types.Mixed,
+
+        default:
+          undefined,
+      },
+    },
+    {
+      _id:
+        false,
+    }
+  );
+
+/* =========================================================
    ROADMAP MILESTONE SCHEMA
 ========================================================= */
 
@@ -500,6 +740,27 @@ const careerRoadmapMilestoneSchema =
           1,
       },
 
+      /*
+       * Not required during migration so old CareerAutomation documents
+       * can still be read without modification.
+       */
+      category: {
+        type:
+          String,
+
+        enum: [
+          "CORE_SKILLS",
+          "ROLE_SKILLS",
+          "PROJECTS",
+          "CV",
+          "INTERVIEW",
+          "JOB_SEARCH",
+        ],
+
+        default:
+          undefined,
+      },
+
       title: {
         type:
           String,
@@ -520,6 +781,31 @@ const careerRoadmapMilestoneSchema =
 
         trim:
           true,
+      },
+
+      reason: {
+        type:
+          String,
+
+        trim:
+          true,
+
+        default:
+          undefined,
+      },
+
+      readinessScore: {
+        type:
+          Number,
+
+        min:
+          0,
+
+        max:
+          100,
+
+        default:
+          undefined,
       },
 
       status: {
@@ -553,6 +839,37 @@ const careerRoadmapMilestoneSchema =
 
         default:
           [],
+      },
+
+      recommendations: {
+        type: [
+          careerRoadmapRecommendationSchema,
+        ],
+
+        default:
+          [],
+      },
+
+      generatedBy: {
+        type:
+          String,
+
+        enum: [
+          "qwen",
+          "fallback",
+          "system",
+        ],
+
+        default:
+          undefined,
+      },
+
+      generatedAt: {
+        type:
+          Date,
+
+        default:
+          undefined,
       },
 
       metadata: {
