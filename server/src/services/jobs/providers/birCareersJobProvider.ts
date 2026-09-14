@@ -648,6 +648,87 @@ const tryClickLoadMore =
   };
 
 
+const waitForInitialVacancyLinks =
+  async (
+    page: Page,
+    baseUrl: string,
+    timeoutMs:
+      number = 25_000
+  ): Promise<string[]> => {
+    const startedAt =
+      Date.now();
+
+    let lastUrls:
+      string[] =
+      [];
+
+    while (
+      Date.now() -
+        startedAt <
+      timeoutMs
+    ) {
+      if (
+        page.isClosed()
+      ) {
+        return [];
+      }
+
+      lastUrls =
+        await getCurrentVacancyUrls(
+          page,
+          baseUrl
+        );
+
+      if (
+        lastUrls.length >
+        0
+      ) {
+        console.log(
+          "[BIR CAREERS PROVIDER] Initial vacancy links became available:",
+          {
+            count:
+              lastUrls.length,
+
+            elapsedMs:
+              Date.now() -
+              startedAt,
+          }
+        );
+
+        return lastUrls;
+      }
+
+      /*
+       * careers.bir.az is an SPA and can finish DOMContentLoaded
+       * before the vacancy API has populated the cards.
+       * Give the client-side app time to render instead of
+       * declaring an empty board after a couple of fast rounds.
+       */
+      try {
+        await page.mouse.wheel(
+          0,
+          1200
+        );
+      } catch {
+        // Ignore.
+      }
+
+      await page.waitForTimeout(
+        750
+      );
+    }
+
+    console.warn(
+      "[BIR CAREERS PROVIDER] Initial vacancy links did not appear before timeout.",
+      {
+        timeoutMs,
+      }
+    );
+
+    return lastUrls;
+  };
+
+
 const loadAllVacancies =
   async (
     page: Page,
@@ -666,10 +747,29 @@ const loadAllVacancies =
       Date.now();
 
     const MAX_DISCOVERY_MS =
-      20_000;
+      30_000;
 
     const MAX_ROUNDS =
-      12;
+      16;
+
+    /*
+     * Wait specifically for the SPA to render its first vacancies.
+     * DOMContentLoaded/networkidle alone is not enough on this site.
+     */
+    const initialUrls =
+      await waitForInitialVacancyLinks(
+        page,
+        baseUrl,
+        20_000
+      );
+
+    for (
+      const url of initialUrls
+    ) {
+      discovered.add(
+        url
+      );
+    }
 
     for (
       let round = 0;
@@ -760,9 +860,27 @@ const loadAllVacancies =
       ) {
         await page.waitForTimeout(
           clicked
-            ? 800
-            : 400
+            ? 900
+            : 700
         );
+      }
+
+      /*
+       * Do NOT consider an empty page "stable".
+       * On careers.bir.az the SPA can need several seconds before
+       * the first cards appear.
+       */
+      if (
+        discovered.size ===
+        0
+      ) {
+        stableRounds =
+          0;
+
+        previousSize =
+          0;
+
+        continue;
       }
 
       if (
@@ -779,11 +897,6 @@ const loadAllVacancies =
       previousSize =
         discovered.size;
 
-      /*
-       * Three unchanged rounds are enough.
-       * We do not want Render to spend tens
-       * of seconds looping unnecessarily.
-       */
       if (
         stableRounds >=
         3
@@ -2212,11 +2325,56 @@ export const discoverBirCareersJobs =
         );
       }
 
-      const discoveredUrls =
+      let discoveredUrls =
         await loadAllVacancies(
           listingPage,
           baseUrl
         );
+
+      /*
+       * One bounded retry protects against an intermittent SPA/API
+       * load where the shell renders but the vacancy cards never do.
+       */
+      if (
+        discoveredUrls.length ===
+        0 &&
+        !listingPage.isClosed()
+      ) {
+        console.warn(
+          "[BIR CAREERS PROVIDER] No vacancies found on first pass; reloading once..."
+        );
+
+        try {
+          await listingPage.reload({
+            waitUntil:
+              "domcontentloaded",
+
+            timeout:
+              timeoutMs,
+          });
+
+          await waitForPageToSettle(
+            listingPage
+          );
+
+          discoveredUrls =
+            await loadAllVacancies(
+              listingPage,
+              baseUrl
+            );
+        } catch (
+          retryError
+        ) {
+          console.warn(
+            "[BIR CAREERS PROVIDER] Vacancy discovery retry failed:",
+            retryError instanceof Error
+              ? retryError.message
+              : String(
+                  retryError
+                )
+          );
+        }
+      }
 
       diagnostics.discoveredLinks =
         discoveredUrls.length;

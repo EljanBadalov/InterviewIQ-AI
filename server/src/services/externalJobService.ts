@@ -5172,10 +5172,24 @@ const fetchBirCareersBoard =
           mapBirCareersJob
         );
 
-      setCachedBoard(
-        cacheKey,
-        jobs
-      );
+      /*
+       * Never cache a transient empty Bir Careers result.
+       * The SPA occasionally loads its shell before vacancy data.
+       * Caching [] would suppress retries until the board cache TTL expires.
+       */
+      if (
+        jobs.length >
+        0
+      ) {
+        setCachedBoard(
+          cacheKey,
+          jobs
+        );
+      } else {
+        console.warn(
+          "[BIR CAREERS] Empty result was not cached."
+        );
+      }
 
       console.log(
         "[BIR CAREERS] Board loaded:",
