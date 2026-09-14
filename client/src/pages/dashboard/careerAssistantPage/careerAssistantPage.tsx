@@ -21,7 +21,7 @@ import {
   getStoredUser,
 } from "../../../utils/authStorage";
 
-import "./CareerAssistantPage.scss";
+import "./careerAssistantPage.scss";
 
 /* =========================================================
    TYPES
