@@ -5057,10 +5057,85 @@ const mapBirCareersJob =
     };
   };
 
+const BIR_CAREERS_CACHE_KEY =
+  "bircareers:https://careers.bir.az/vacancies";
+
+let birCareersBackgroundRefresh:
+  Promise<IExternalJobRecord[]> | null =
+  null;
+
+const getCachedBirCareersJobs =
+  (): IExternalJobRecord[] => {
+    return (
+      getCachedBoard(
+        BIR_CAREERS_CACHE_KEY
+      ) ||
+      []
+    );
+  };
+
+const startBirCareersBackgroundRefresh =
+  (): void => {
+    if (
+      birCareersBackgroundRefresh
+    ) {
+      console.log(
+        "[BIR CAREERS] Background refresh already running."
+      );
+
+      return;
+    }
+
+    console.log(
+      "[BIR CAREERS] Starting background refresh..."
+    );
+
+    birCareersBackgroundRefresh =
+      fetchBirCareersBoard()
+        .then(
+          (
+            jobs
+          ) => {
+            console.log(
+              "[BIR CAREERS] Background refresh finished:",
+              {
+                jobs:
+                  jobs.length,
+              }
+            );
+
+            return jobs;
+          }
+        )
+        .catch(
+          (
+            error
+          ) => {
+            console.warn(
+              "[BIR CAREERS] Background refresh failed:",
+              {
+                error:
+                  error instanceof Error
+                    ? error.message
+                    : error,
+              }
+            );
+
+            return [];
+          }
+        )
+        .finally(
+          () => {
+            birCareersBackgroundRefresh =
+              null;
+          }
+        );
+  };
+
 const fetchBirCareersBoard =
   async (): Promise<IExternalJobRecord[]> => {
     const cacheKey =
-      "bircareers:https://careers.bir.az/vacancies";
+      BIR_CAREERS_CACHE_KEY;
 
     const cached =
       getCachedBoard(
@@ -5478,19 +5553,13 @@ const fetchRegisteredAtsJobs =
 /*
  * Combined external vacancy pool.
  *
- * IMPORTANT:
+ * Bir Careers uses Playwright / Chromium and should not block
+ * the user-facing refresh request on a small Render instance.
  *
- * Bir Careers uses Playwright / Chromium and is intentionally
- * fetched BEFORE the registered ATS boards.
- *
- * Running Bir Careers in parallel with 30-60 Greenhouse /
- * Lever / Ashby / SuccessFactors boards can create unnecessary
- * CPU, memory, and network pressure on small Render instances.
- *
- * Sequential execution keeps Bir Careers isolated while its
- * browser is active. After Bir Careers has completed (or safely
- * returned an empty array on failure), the normal ATS registry
- * fetch begins.
+ * The foreground request uses the most recent completed Bir
+ * Careers cache while one background refresh is allowed to run.
+ * Duplicate background launches are prevented by the in-flight
+ * promise above.
  */
 const fetchAllAtsJobs =
   async (
@@ -5502,37 +5571,41 @@ const fetchAllAtsJobs =
         "successfactors",
       ]
   ): Promise<IExternalJobRecord[]> => {
-    console.log(
-      "[EXTERNAL JOBS] Starting Bir Careers fetch before registered ATS boards..."
-    );
-
-    const birCareersJobs =
-      await fetchBirCareersBoard();
+    const cachedBirCareersJobs =
+      getCachedBirCareersJobs();
 
     console.log(
-      "[EXTERNAL JOBS] Bir Careers fetch finished:",
+      "[EXTERNAL JOBS] Bir Careers cache state:",
       {
-        jobs:
-          birCareersJobs.length,
+        cachedJobs:
+          cachedBirCareersJobs.length,
+
+        backgroundRefreshRunning:
+          birCareersBackgroundRefresh !==
+          null,
       }
     );
 
-    console.log(
-      "[EXTERNAL JOBS] Starting registered ATS boards..."
-    );
+    startBirCareersBackgroundRefresh();
 
     const registeredJobs =
       await fetchRegisteredAtsJobs(
         providers
       );
 
-    console.log(
-      "[EXTERNAL JOBS] Registered ATS boards finished:",
-      {
-        jobs:
-          registeredJobs.length,
-      }
-    );
+    /*
+     * The background Bir Careers refresh may have completed while
+     * the registered ATS boards were loading. Read the cache again
+     * before combining the final pool.
+     */
+    const refreshedBirCareersJobs =
+      getCachedBirCareersJobs();
+
+    const birCareersJobs =
+      refreshedBirCareersJobs.length >
+        0
+        ? refreshedBirCareersJobs
+        : cachedBirCareersJobs;
 
     const jobs = [
       ...registeredJobs,
@@ -5552,7 +5625,7 @@ const fetchAllAtsJobs =
           jobs.length,
 
         executionMode:
-          "sequential-bir-first",
+          "background-bir-careers",
       }
     );
 
