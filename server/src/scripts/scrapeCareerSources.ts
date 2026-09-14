@@ -6,6 +6,11 @@ import {
   type IBirCareersJob,
 } from "../services/jobs/providers/birCareersJobProvider";
 
+import {
+  discoverAbbCareersJobs,
+  type IAbbCareersJob,
+} from "../services/jobs/providers/abbCareersJobProvider";
+
 /* =========================================================
    TYPES
 ========================================================= */
@@ -117,7 +122,7 @@ const scrapeBirCareers =
             true,
 
           detailConcurrency:
-            1,
+            3,
         });
 
       const jobs:
@@ -209,6 +214,123 @@ const scrapeBirCareers =
   };
 
 /* =========================================================
+   ABB CAREERS
+========================================================= */
+
+const scrapeAbbCareers =
+  async (): Promise<ICareerSourceResult> => {
+    console.log(
+      "[CAREER SCRAPER] Starting ABB Careers..."
+    );
+
+    try {
+      const result =
+        await discoverAbbCareersJobs({
+          careersUrl:
+            "https://careers.abb-bank.az/vakansiyalar",
+
+          requestTimeoutMs:
+            60_000,
+
+          maxJobs:
+            150,
+
+          headless:
+            true,
+
+          detailConcurrency:
+            3,
+        });
+
+      const jobs:
+        IAbbCareersJob[] =
+        result.jobs;
+
+      if (
+        jobs.length ===
+        0
+      ) {
+        return {
+          id:
+            "abb-careers",
+
+          name:
+            "ABB Careers",
+
+          updatedAt:
+            new Date().toISOString(),
+
+          success:
+            false,
+
+          count:
+            0,
+
+          jobs:
+            [],
+
+          diagnostics:
+            result.diagnostics,
+
+          error:
+            "ABB Careers returned 0 jobs; previous snapshot preserved.",
+        };
+      }
+
+      return {
+        id:
+          "abb-careers",
+
+        name:
+          "ABB Careers",
+
+        updatedAt:
+          new Date().toISOString(),
+
+        success:
+          true,
+
+        count:
+          jobs.length,
+
+        jobs,
+
+        diagnostics:
+          result.diagnostics,
+      };
+    } catch (
+      error
+    ) {
+      return {
+        id:
+          "abb-careers",
+
+        name:
+          "ABB Careers",
+
+        updatedAt:
+          new Date().toISOString(),
+
+        success:
+          false,
+
+        count:
+          0,
+
+        jobs:
+          [],
+
+        error:
+          error instanceof Error
+            ? error.message
+            : String(
+                error
+              ),
+      };
+    }
+  };
+
+/* =========================================================
    SOURCE REGISTRY
 ========================================================= */
 
@@ -224,6 +346,17 @@ const careerSources:
 
       scrape:
         scrapeBirCareers,
+    },
+
+    {
+      id:
+        "abb-careers",
+
+      name:
+        "ABB Careers",
+
+      scrape:
+        scrapeAbbCareers,
     },
   ];
 

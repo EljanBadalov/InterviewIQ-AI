@@ -34,6 +34,10 @@ import {
 } from "./jobs/providers/birCareersJobProvider";
 
 import {
+  type IAbbCareersJob,
+} from "./jobs/providers/abbCareersJobProvider";
+
+import {
   ALL_CAREER_SKILLS,
 } from "./jobs/careerJobTaxonomy";
 
@@ -4782,61 +4786,164 @@ const runWithConcurrency =
   };
 
 /* =========================================================
-   BIR CAREERS / KAPITAL BANK
+   CUSTOM CAREER SOURCES
 
-   This source is intentionally additive and independent from
-   the MongoDB ATS registry because careers.bir.az is a custom
-   careers site rather than Greenhouse / Lever / Ashby /
-   SuccessFactors.
+   These sources are scraped by GitHub Actions and stored as
+   JSON snapshots in:
+     server/data/career-sources/
 
-   The provider discovers the live vacancy list, opens each
-   detail page, and returns structured vacancy data.
+   Render only downloads the generated JSON snapshots. It does
+   not run Playwright / Chromium for these custom career sites.
 ========================================================= */
 
-const normalizeBirExperienceLevel = (
-  job:
-    IBirCareersJob
-): JobExperienceLevel => {
-  const explicit =
-    normalizeWhitespace(
-      job.experienceLevel
-    )
-      .toLowerCase();
+type ICareerSourceSnapshotJob =
+  | IBirCareersJob
+  | IAbbCareersJob;
 
-  if (
-    /\b(manager|lead|head|senior|principal|director)\b/i.test(
-      explicit
-    )
-  ) {
-    return "senior";
-  }
+interface ICareerSourceConfig {
+  id:
+    "bir-careers" |
+    "abb-careers";
 
-  if (
-    /\b(mid|middle|specialist|professional)\b/i.test(
-      explicit
-    )
-  ) {
-    return "mid";
-  }
+  name:
+    string;
 
-  if (
-    /\b(junior|jr|entry|graduate|intern)\b/i.test(
-      explicit
-    )
-  ) {
-    return "junior";
-  }
+  sourceLabel:
+    string;
 
-  return inferExperienceLevel(
-    job.title,
-    `${job.description} ${job.requirements.join(" ")}`
-  );
-};
+  externalIdPrefix:
+    string;
 
-const mapBirCareersJob =
+  defaultCompany:
+    string;
+
+  snapshotUrl:
+    string;
+
+  cacheKey:
+    string;
+}
+
+interface ICareerSourceSnapshot {
+  updatedAt:
+    string;
+
+  source?:
+    string;
+
+  id?:
+    string;
+
+  name?:
+    string;
+
+  count:
+    number;
+
+  jobs:
+    ICareerSourceSnapshotJob[];
+
+  diagnostics?:
+    unknown;
+}
+
+const CAREER_SOURCE_CONFIGS:
+  ICareerSourceConfig[] =
+  [
+    {
+      id:
+        "bir-careers",
+
+      name:
+        "Bir Careers",
+
+      sourceLabel:
+        "Bir Careers",
+
+      externalIdPrefix:
+        "bir",
+
+      defaultCompany:
+        "Kapital Bank / Bir",
+
+      snapshotUrl:
+        "https://raw.githubusercontent.com/EljanBadalov/InterviewIQ-AI/main/server/data/career-sources/bir-careers.json",
+
+      cacheKey:
+        "career-source:bir-careers",
+    },
+
+    {
+      id:
+        "abb-careers",
+
+      name:
+        "ABB Careers",
+
+      sourceLabel:
+        "ABB Careers",
+
+      externalIdPrefix:
+        "abb",
+
+      defaultCompany:
+        "ABB",
+
+      snapshotUrl:
+        "https://raw.githubusercontent.com/EljanBadalov/InterviewIQ-AI/main/server/data/career-sources/abb-careers.json",
+
+      cacheKey:
+        "career-source:abb-careers",
+    },
+  ];
+
+const normalizeCareerSourceExperienceLevel =
   (
     job:
-      IBirCareersJob
+      ICareerSourceSnapshotJob
+  ): JobExperienceLevel => {
+    const explicit =
+      normalizeWhitespace(
+        job.experienceLevel
+      )
+        .toLowerCase();
+
+    if (
+      /\b(manager|lead|head|senior|principal|director)\b/i.test(
+        explicit
+      )
+    ) {
+      return "senior";
+    }
+
+    if (
+      /\b(mid|middle|specialist|professional)\b/i.test(
+        explicit
+      )
+    ) {
+      return "mid";
+    }
+
+    if (
+      /\b(junior|jr|entry|graduate|intern)\b/i.test(
+        explicit
+      )
+    ) {
+      return "junior";
+    }
+
+    return inferExperienceLevel(
+      job.title,
+      `${job.description} ${job.requirements.join(" ")}`
+    );
+  };
+
+const mapCareerSourceJob =
+  (
+    job:
+      ICareerSourceSnapshotJob,
+    config:
+      ICareerSourceConfig
   ): IExternalJobRecord => {
     const description =
       normalizeWhitespace(
@@ -4845,7 +4952,7 @@ const mapBirCareersJob =
       );
 
     const level =
-      normalizeBirExperienceLevel(
+      normalizeCareerSourceExperienceLevel(
         job
       );
 
@@ -4926,12 +5033,14 @@ const mapBirCareersJob =
       normalizeWhitespace(
         job.company
       ) ||
-      "Kapital Bank / Bir";
+      config.defaultCompany;
 
     const brand =
-      normalizeWhitespace(
-        job.brand
-      );
+      "brand" in job
+        ? normalizeWhitespace(
+            job.brand
+          )
+        : "";
 
     const deadlineText =
       normalizeWhitespace(
@@ -4943,12 +5052,6 @@ const mapBirCareersJob =
         job.benefits
       );
 
-    /*
-     * IJob currently has no dedicated brand / deadline /
-     * benefits fields. Preserve those useful details inside
-     * keywords and preferredQualifications without changing
-     * the Job model schema.
-     */
     const preferredQualifications =
       uniqueStrings([
         ...benefitsText,
@@ -5005,7 +5108,7 @@ const mapBirCareersJob =
             location,
             company,
             brand,
-            "Bir Careers",
+            config.sourceLabel,
             deadlineText
               ? `Deadline ${deadlineText}`
               : "",
@@ -5028,19 +5131,16 @@ const mapBirCareersJob =
         undefined,
 
       salaryPeriod:
-        salary >
-          0
-          ? "unknown"
-          : "unknown",
+        "unknown",
 
       salaryIsPredicted:
         false,
 
       source:
-        "Bir Careers",
+        config.sourceLabel,
 
       externalId:
-        `bir:${job.externalId}`,
+        `${config.externalIdPrefix}:${job.externalId}`,
 
       externalUrl:
         job.url,
@@ -5056,114 +5156,19 @@ const mapBirCareersJob =
     };
   };
 
-const BIR_CAREERS_CACHE_KEY =
-  "bircareers:https://careers.bir.az/vacancies";
-
-let birCareersBackgroundRefresh:
-  Promise<IExternalJobRecord[]> | null =
-  null;
-
-const getCachedBirCareersJobs =
-  (): IExternalJobRecord[] => {
-    return (
-      getCachedBoard(
-        BIR_CAREERS_CACHE_KEY
-      ) ||
-      []
-    );
-  };
-
-const startBirCareersBackgroundRefresh =
-  (): void => {
-    if (
-      birCareersBackgroundRefresh
-    ) {
-      console.log(
-        "[BIR CAREERS] Background refresh already running."
-      );
-
-      return;
-    }
-
-    console.log(
-      "[BIR CAREERS] Starting background refresh..."
-    );
-
-    birCareersBackgroundRefresh =
-      fetchBirCareersBoard()
-        .then(
-          (
-            jobs
-          ) => {
-            console.log(
-              "[BIR CAREERS] Background refresh finished:",
-              {
-                jobs:
-                  jobs.length,
-              }
-            );
-
-            return jobs;
-          }
-        )
-        .catch(
-          (
-            error
-          ) => {
-            console.warn(
-              "[BIR CAREERS] Background refresh failed:",
-              {
-                error:
-                  error instanceof Error
-                    ? error.message
-                    : error,
-              }
-            );
-
-            return [];
-          }
-        )
-        .finally(
-          () => {
-            birCareersBackgroundRefresh =
-              null;
-          }
-        );
-  };
-
-const BIR_CAREERS_SNAPSHOT_URL =
-  "https://raw.githubusercontent.com/EljanBadalov/InterviewIQ-AI/main/server/data/career-sources/bir-careers.json";
-
-interface IBirCareersSnapshot {
-  updatedAt:
-    string;
-
-  source:
-    string;
-
-  count:
-    number;
-
-  jobs:
-    IBirCareersJob[];
-
-  diagnostics?:
-    unknown;
-}
-
-const fetchBirCareersBoard =
-  async (): Promise<IExternalJobRecord[]> => {
-    const cacheKey =
-      BIR_CAREERS_CACHE_KEY;
-
+const fetchCareerSourceBoard =
+  async (
+    config:
+      ICareerSourceConfig
+  ): Promise<IExternalJobRecord[]> => {
     const cached =
       getCachedBoard(
-        cacheKey
+        config.cacheKey
       );
 
     try {
       console.log(
-        "[BIR CAREERS] Fetching GitHub snapshot..."
+        `[CAREER SOURCE] Fetching ${config.name} GitHub snapshot...`
       );
 
       const controller =
@@ -5179,7 +5184,7 @@ const fetchBirCareersBoard =
       try {
         const response =
           await fetch(
-            BIR_CAREERS_SNAPSHOT_URL,
+            config.snapshotUrl,
             {
               method:
                 "GET",
@@ -5195,11 +5200,6 @@ const fetchBirCareersBoard =
               signal:
                 controller.signal,
 
-              /*
-               * Always request the latest GitHub snapshot.
-               * Our own in-memory board cache below is responsible
-               * for short-term reuse inside this backend process.
-               */
               cache:
                 "no-store",
             }
@@ -5209,13 +5209,13 @@ const fetchBirCareersBoard =
           !response.ok
         ) {
           throw new Error(
-            `GitHub snapshot request failed: ${response.status} ${response.statusText}`
+            `${config.name} snapshot request failed: ${response.status} ${response.statusText}`
           );
         }
 
         const snapshot =
           await response.json() as
-            IBirCareersSnapshot;
+            ICareerSourceSnapshot;
 
         if (
           !snapshot ||
@@ -5224,7 +5224,7 @@ const fetchBirCareersBoard =
           )
         ) {
           throw new Error(
-            "Invalid Bir Careers snapshot format."
+            `Invalid ${config.name} snapshot format.`
           );
         }
 
@@ -5233,14 +5233,14 @@ const fetchBirCareersBoard =
           0
         ) {
           console.warn(
-            "[BIR CAREERS] GitHub snapshot contains 0 jobs."
+            `[CAREER SOURCE] ${config.name} snapshot contains 0 jobs.`
           );
 
           if (
             cached
           ) {
             console.log(
-              "[BIR CAREERS] Using previous cached jobs:",
+              `[CAREER SOURCE] ${config.name} using previous cached jobs:`,
               {
                 jobs:
                   cached.length,
@@ -5255,7 +5255,13 @@ const fetchBirCareersBoard =
 
         const jobs =
           snapshot.jobs.map(
-            mapBirCareersJob
+            (
+              job
+            ) =>
+              mapCareerSourceJob(
+                job,
+                config
+              )
           );
 
         if (
@@ -5263,13 +5269,13 @@ const fetchBirCareersBoard =
           0
         ) {
           setCachedBoard(
-            cacheKey,
+            config.cacheKey,
             jobs
           );
         }
 
         console.log(
-          "[BIR CAREERS] GitHub snapshot loaded:",
+          `[CAREER SOURCE] ${config.name} snapshot loaded:`,
           {
             snapshotUpdatedAt:
               snapshot.updatedAt,
@@ -5295,7 +5301,7 @@ const fetchBirCareersBoard =
       error
     ) {
       console.warn(
-        "[BIR CAREERS] GitHub snapshot failed:",
+        `[CAREER SOURCE] ${config.name} snapshot failed:`,
         {
           error:
             error instanceof Error
@@ -5310,7 +5316,7 @@ const fetchBirCareersBoard =
         cached
       ) {
         console.log(
-          "[BIR CAREERS] Falling back to cached jobs:",
+          `[CAREER SOURCE] ${config.name} falling back to cached jobs:`,
           {
             jobs:
               cached.length,
@@ -5322,6 +5328,86 @@ const fetchBirCareersBoard =
 
       return [];
     }
+  };
+
+const fetchAllCareerSourceJobs =
+  async (): Promise<IExternalJobRecord[]> => {
+    const results =
+      await Promise.all(
+        CAREER_SOURCE_CONFIGS.map(
+          (
+            config
+          ) =>
+            fetchCareerSourceBoard(
+              config
+            )
+        )
+      );
+
+    const jobs =
+      deduplicateJobs(
+        results.flat()
+      );
+
+    console.log(
+      "[CAREER SOURCE] Combined snapshot pool:",
+      {
+        sources:
+          CAREER_SOURCE_CONFIGS.length,
+
+        totalJobs:
+          jobs.length,
+
+        sourceCounts:
+          CAREER_SOURCE_CONFIGS.map(
+            (
+              config,
+              index
+            ) => ({
+              id:
+                config.id,
+
+              name:
+                config.name,
+
+              jobs:
+                results[
+                  index
+                ]?.length ||
+                0,
+            })
+          ),
+      }
+    );
+
+    return jobs;
+  };
+
+const fetchCareerSourceJobsById =
+  async (
+    sourceId:
+      ICareerSourceConfig[
+        "id"
+      ]
+  ): Promise<IExternalJobRecord[]> => {
+    const config =
+      CAREER_SOURCE_CONFIGS.find(
+        (
+          item
+        ) =>
+          item.id ===
+          sourceId
+      );
+
+    if (
+      !config
+    ) {
+      return [];
+    }
+
+    return fetchCareerSourceBoard(
+      config
+    );
   };
 
 /* =========================================================
@@ -5673,54 +5759,25 @@ const fetchAllAtsJobs =
         "successfactors",
       ]
   ): Promise<IExternalJobRecord[]> => {
-    const cachedBirCareersJobs =
-      getCachedBirCareersJobs();
-
-    console.log(
-      "[EXTERNAL JOBS] Bir Careers cache state:",
-      {
-        cachedJobs:
-          cachedBirCareersJobs.length,
-
-        backgroundRefreshRunning:
-          birCareersBackgroundRefresh !==
-          null,
-      }
-    );
-
     /*
-     * IMPORTANT:
-     * Fetch the lightweight ATS APIs first.
-     *
-     * Bir Careers uses Chromium, so we intentionally do NOT start
-     * it while Greenhouse / Lever / Ashby / SuccessFactors are
-     * still being fetched. This avoids unnecessary CPU / RAM
-     * pressure on the small Render instance.
+     * Custom career sources are now lightweight GitHub JSON reads,
+     * so they can safely run alongside the registered ATS boards.
      */
-    const registeredJobs =
-      await fetchRegisteredAtsJobs(
-        providers
-      );
+    const [
+      registeredJobs,
+      careerSourceJobs,
+    ] =
+      await Promise.all([
+        fetchRegisteredAtsJobs(
+          providers
+        ),
 
-    /*
-     * Start Bir Careers only AFTER the normal ATS work has
-     * finished. Do not await it: the user-facing refresh request
-     * can finish while Bir Careers updates its cache in background.
-     */
-    startBirCareersBackgroundRefresh();
-
-    const refreshedBirCareersJobs =
-      getCachedBirCareersJobs();
-
-    const birCareersJobs =
-      refreshedBirCareersJobs.length >
-        0
-        ? refreshedBirCareersJobs
-        : cachedBirCareersJobs;
+        fetchAllCareerSourceJobs(),
+      ]);
 
     const jobs = [
       ...registeredJobs,
-      ...birCareersJobs,
+      ...careerSourceJobs,
     ];
 
     console.log(
@@ -5729,14 +5786,14 @@ const fetchAllAtsJobs =
         registeredAtsJobs:
           registeredJobs.length,
 
-        birCareersJobs:
-          birCareersJobs.length,
+        careerSourceJobs:
+          careerSourceJobs.length,
 
         totalJobs:
           jobs.length,
 
         executionMode:
-          "ats-first-then-background-bir",
+          "ats-plus-github-career-snapshots",
       }
     );
 
@@ -6113,7 +6170,41 @@ export const fetchBirCareersJobs =
       IFetchExternalJobsParams
   ): Promise<IExternalJobRecord[]> => {
     const jobs =
-      await fetchBirCareersBoard();
+      await fetchCareerSourceJobsById(
+        "bir-careers"
+      );
+
+    return deduplicateJobs(
+      jobs.filter(
+        (
+          job
+        ) =>
+          matchesOptionalJobSearchQuery(
+            job.title,
+            params.query
+          ) &&
+          matchesLocation(
+            job,
+            params.location
+          )
+      )
+    )
+      .slice(
+        0,
+        params.limit ||
+        DEFAULT_LIMIT
+      );
+  };
+
+export const fetchAbbCareersJobs =
+  async (
+    params:
+      IFetchExternalJobsParams
+  ): Promise<IExternalJobRecord[]> => {
+    const jobs =
+      await fetchCareerSourceJobsById(
+        "abb-careers"
+      );
 
     return deduplicateJobs(
       jobs.filter(
