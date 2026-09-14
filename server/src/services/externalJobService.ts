@@ -5586,18 +5586,27 @@ const fetchAllAtsJobs =
       }
     );
 
-    startBirCareersBackgroundRefresh();
-
+    /*
+     * IMPORTANT:
+     * Fetch the lightweight ATS APIs first.
+     *
+     * Bir Careers uses Chromium, so we intentionally do NOT start
+     * it while Greenhouse / Lever / Ashby / SuccessFactors are
+     * still being fetched. This avoids unnecessary CPU / RAM
+     * pressure on the small Render instance.
+     */
     const registeredJobs =
       await fetchRegisteredAtsJobs(
         providers
       );
 
     /*
-     * The background Bir Careers refresh may have completed while
-     * the registered ATS boards were loading. Read the cache again
-     * before combining the final pool.
+     * Start Bir Careers only AFTER the normal ATS work has
+     * finished. Do not await it: the user-facing refresh request
+     * can finish while Bir Careers updates its cache in background.
      */
+    startBirCareersBackgroundRefresh();
+
     const refreshedBirCareersJobs =
       getCachedBirCareersJobs();
 
@@ -5625,7 +5634,7 @@ const fetchAllAtsJobs =
           jobs.length,
 
         executionMode:
-          "background-bir-careers",
+          "ats-first-then-background-bir",
       }
     );
 

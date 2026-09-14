@@ -2244,83 +2244,301 @@ export const discoverBirCareersJobs =
         }
       );
 
-      const detailResults =
-        await runWithConcurrency(
-          limitedUrls,
+      /*
+       * LOW-MEMORY PRODUCTION MODE
+       * -------------------------------------------------------
+       * Do not open every vacancy detail page here.
+       *
+       * On Render Free, Chromium + Node + multiple detail pages
+       * can exceed the 512 MB memory limit and can also keep the
+       * refresh request alive for many minutes.
+       *
+       * Instead, build lightweight vacancy records directly from
+       * the already-loaded listing page. This keeps Bir Careers
+       * useful in the job pool without opening more browser pages.
+       */
+      const listingItems =
+        await listingPage.evaluate(
+          () => {
+            return Array.from(
+              document.querySelectorAll<HTMLAnchorElement>(
+                'a[href*="/vacancies/"]'
+              )
+            ).map(
+              (
+                anchor
+              ) => {
+                const href =
+                  anchor.getAttribute(
+                    "href"
+                  ) || "";
 
-          async (
-            vacancyUrl
-          ) => {
-            try {
-              const job =
-                await parseBirVacancyDetail(
-                  context,
-                  vacancyUrl,
-                  timeoutMs
-                );
+                const text =
+                  (
+                    anchor.innerText ||
+                    anchor.textContent ||
+                    ""
+                  )
+                    .replace(
+                      /\s+/g,
+                      " "
+                    )
+                    .trim();
 
-              return {
-                job,
-                error:
-                  "",
-              };
-            } catch (error) {
-              return {
-                job:
-                  null,
+                const parent =
+                  anchor.closest(
+                    "article, li, [class*='vacan'], [class*='card'], [class*='job']"
+                  );
 
-                error:
-                  error instanceof
-                  Error
-                    ? error.message
-                    : String(
-                        error
-                      ),
-              };
-            }
-          },
+                const parentText =
+                  (
+                    parent?.textContent ||
+                    ""
+                  )
+                    .replace(
+                      /\s+/g,
+                      " "
+                    )
+                    .trim();
 
-          detailConcurrency
+                return {
+                  href,
+                  text,
+                  parentText,
+                };
+              }
+            );
+          }
         );
+
+      const listingByUrl =
+        new Map<
+          string,
+          {
+            text: string;
+            parentText: string;
+          }
+        >();
+
+      for (
+        const item of
+        listingItems
+      ) {
+        const url =
+          canonicalizeVacancyUrl(
+            item.href,
+            baseUrl
+          );
+
+        if (
+          !url
+        ) {
+          continue;
+        }
+
+        if (
+          !listingByUrl.has(
+            url
+          )
+        ) {
+          listingByUrl.set(
+            url,
+            {
+              text:
+                normalizeWhitespace(
+                  item.text
+                ),
+
+              parentText:
+                normalizeWhitespace(
+                  item.parentText
+                ),
+            }
+          );
+        }
+      }
 
       const jobs:
         IBirCareersJob[] =
         [];
 
       for (
-        let index = 0;
-        index <
-        detailResults.length;
-        index += 1
+        const vacancyUrl of
+        limitedUrls
       ) {
-        diagnostics.detailPagesFetched +=
-          1;
-
-        const result =
-          detailResults[
-            index
-          ];
-
-        if (
-          result.job
-        ) {
-          jobs.push(
-            result.job
+        const externalId =
+          extractExternalId(
+            vacancyUrl
           );
 
-          diagnostics.acceptedJobs +=
+        if (
+          !externalId
+        ) {
+          diagnostics.rejectedJobs +=
             1;
+
+          diagnostics.errors.push(
+            `${vacancyUrl}: vacancy id not found`
+          );
 
           continue;
         }
 
-        diagnostics.rejectedJobs +=
-          1;
+        const listing =
+          listingByUrl.get(
+            vacancyUrl
+          );
 
-        diagnostics.errors.push(
-          `${limitedUrls[index]}: ${result.error}`
-        );
+        const rawTitle =
+          normalizeWhitespace(
+            listing?.text
+          );
+
+        /*
+         * Some cards place extra metadata inside the link.
+         * Keep the first meaningful chunk as the title.
+         */
+        const title =
+          rawTitle
+            .split(
+              /\s{2,}|\n/
+            )
+            .map(
+              normalizeWhitespace
+            )
+            .find(
+              (
+                value
+              ) =>
+                value.length >=
+                  3 &&
+                !/^(müraciət et|apply|ətraflı|details)$/i.test(
+                  value
+                )
+            ) ||
+          `Bir Careers vacancy ${externalId}`;
+
+        const cardText =
+          normalizeWhitespace(
+            listing?.parentText
+          );
+
+        const location =
+          detectLocationFromMetadata(
+            cleanContentLines(
+              cardText
+                .split(
+                  /[|•·]/g
+                )
+            ),
+            title
+          );
+
+        const experienceLevel =
+          detectExperienceLevel(
+            cleanContentLines(
+              cardText
+                .split(
+                  /[|•·]/g
+                )
+            )
+          );
+
+        const workMode =
+          detectWorkMode(
+            cleanContentLines(
+              cardText
+                .split(
+                  /[|•·]/g
+                )
+            )
+          );
+
+        const skills =
+          detectSkills(
+            `${title} ${cardText}`
+          );
+
+        jobs.push({
+          externalId,
+
+          title,
+
+          company:
+            DEFAULT_COMPANY_NAME,
+
+          brand:
+            detectBrand(
+              cleanContentLines(
+                cardText
+                  .split(
+                    /[|•·]/g
+                  )
+              )
+            ),
+
+          location,
+
+          summary:
+            cardText ||
+            title,
+
+          description:
+            cardText ||
+            title,
+
+          requirements:
+            [],
+
+          responsibilities:
+            [],
+
+          benefits:
+            [],
+
+          skills,
+
+          employmentType:
+            "full-time",
+
+          experienceLevel,
+
+          workMode,
+
+          salaryMin:
+            null,
+
+          salaryMax:
+            null,
+
+          salaryCurrency:
+            null,
+
+          deadline:
+            extractDeadline(
+              cardText,
+              cardText
+            ),
+
+          postedAt:
+            null,
+
+          url:
+            vacancyUrl,
+
+          applyUrl:
+            vacancyUrl,
+
+          source:
+            "Bir Careers",
+        });
+
+        diagnostics.acceptedJobs +=
+          1;
       }
+
+      diagnostics.detailPagesFetched =
+        0;
 
       if (
         !listingPage.isClosed()
@@ -2329,59 +2547,37 @@ export const discoverBirCareersJobs =
       }
 
       console.log(
-        "[BIR CAREERS PROVIDER] Browser discovery complete:",
+        "[BIR CAREERS PROVIDER] Listing-only discovery complete:",
         {
           careersUrl,
 
-          jobs:
+          discovered:
+            discoveredUrls.length,
+
+          returned:
             jobs.length,
 
           sampleJobs:
             jobs
-              .slice(0, 5)
+              .slice(
+                0,
+                5
+              )
               .map(
-                (job) => ({
+                (
+                  job
+                ) => ({
                   externalId:
                     job.externalId,
 
                   title:
                     job.title,
 
-                  brand:
-                    job.brand,
-
                   location:
                     job.location,
 
-                  experienceLevel:
-                    job.experienceLevel,
-
-                  workMode:
-                    job.workMode,
-
-                  deadline:
-                    job.deadline,
-
-                  salary:
-                    job.salaryMin ||
-                    job.salaryMax
-                      ? {
-                          min:
-                            job.salaryMin,
-
-                          max:
-                            job.salaryMax,
-
-                          currency:
-                            job.salaryCurrency,
-                        }
-                      : null,
-
-                  skills:
-                    job.skills,
-
-                  applyUrl:
-                    job.applyUrl,
+                  url:
+                    job.url,
                 })
               ),
 
@@ -2393,10 +2589,7 @@ export const discoverBirCareersJobs =
         baseUrl,
 
         urls:
-          jobs.map(
-            (job) =>
-              job.url
-          ),
+          limitedUrls,
 
         jobs,
 
