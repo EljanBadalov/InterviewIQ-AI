@@ -2046,6 +2046,10 @@ export const discoverBirCareersJobs =
         timeoutMs
       );
 
+      console.log(
+        "[BIR CAREERS PROVIDER] Starting page.goto..."
+      );
+
       await listingPage.goto(
         careersUrl,
         {
@@ -2057,11 +2061,28 @@ export const discoverBirCareersJobs =
         }
       );
 
+      console.log(
+        "[BIR CAREERS PROVIDER] page.goto completed:",
+        listingPage.url()
+      );
+
       diagnostics.fetchedPages +=
         1;
 
+      console.log(
+        "[BIR CAREERS PROVIDER] Starting page settle..."
+      );
+
       await waitForPageToSettle(
         listingPage
+      );
+
+      console.log(
+        "[BIR CAREERS PROVIDER] Page settle completed."
+      );
+
+      console.log(
+        "[BIR CAREERS PROVIDER] Starting vacancy discovery..."
       );
 
       if (
