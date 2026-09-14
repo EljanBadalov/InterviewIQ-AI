@@ -5080,7 +5080,7 @@ const fetchBirCareersBoard =
             "https://careers.bir.az/vacancies",
 
           requestTimeoutMs:
-            30_000,
+            60_000,
 
           maxJobs:
             10,
@@ -5478,9 +5478,19 @@ const fetchRegisteredAtsJobs =
 /*
  * Combined external vacancy pool.
  *
- * Registered ATS companies and Bir Careers are fetched in
- * parallel. A Bir Careers failure never removes or blocks the
- * Greenhouse / Lever / Ashby / SuccessFactors results.
+ * IMPORTANT:
+ *
+ * Bir Careers uses Playwright / Chromium and is intentionally
+ * fetched BEFORE the registered ATS boards.
+ *
+ * Running Bir Careers in parallel with 30-60 Greenhouse /
+ * Lever / Ashby / SuccessFactors boards can create unnecessary
+ * CPU, memory, and network pressure on small Render instances.
+ *
+ * Sequential execution keeps Bir Careers isolated while its
+ * browser is active. After Bir Careers has completed (or safely
+ * returned an empty array on failure), the normal ATS registry
+ * fetch begins.
  */
 const fetchAllAtsJobs =
   async (
@@ -5492,17 +5502,37 @@ const fetchAllAtsJobs =
         "successfactors",
       ]
   ): Promise<IExternalJobRecord[]> => {
-    const [
-      registeredJobs,
-      birCareersJobs,
-    ] =
-      await Promise.all([
-        fetchRegisteredAtsJobs(
-          providers
-        ),
+    console.log(
+      "[EXTERNAL JOBS] Starting Bir Careers fetch before registered ATS boards..."
+    );
 
-        fetchBirCareersBoard(),
-      ]);
+    const birCareersJobs =
+      await fetchBirCareersBoard();
+
+    console.log(
+      "[EXTERNAL JOBS] Bir Careers fetch finished:",
+      {
+        jobs:
+          birCareersJobs.length,
+      }
+    );
+
+    console.log(
+      "[EXTERNAL JOBS] Starting registered ATS boards..."
+    );
+
+    const registeredJobs =
+      await fetchRegisteredAtsJobs(
+        providers
+      );
+
+    console.log(
+      "[EXTERNAL JOBS] Registered ATS boards finished:",
+      {
+        jobs:
+          registeredJobs.length,
+      }
+    );
 
     const jobs = [
       ...registeredJobs,
@@ -5520,6 +5550,9 @@ const fetchAllAtsJobs =
 
         totalJobs:
           jobs.length,
+
+        executionMode:
+          "sequential-bir-first",
       }
     );
 
