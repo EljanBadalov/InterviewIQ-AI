@@ -5083,13 +5083,13 @@ const fetchBirCareersBoard =
             30_000,
 
           maxJobs:
-            15,
+            10,
 
           headless:
             true,
 
           detailConcurrency:
-            4,
+            1,
         });
 
       const jobs =
