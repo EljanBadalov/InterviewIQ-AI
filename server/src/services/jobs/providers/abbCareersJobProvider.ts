@@ -125,9 +125,9 @@ const USER_AGENT =
 const normalizeWhitespace =
   (
     value:
-      string |
-      null |
-      undefined
+      | string
+      | null
+      | undefined
   ): string => {
     return (
       value
@@ -143,13 +143,11 @@ const normalizeWhitespace =
 const normalizeMultilineText =
   (
     value:
-      string |
-      null |
-      undefined
+      | string
+      | null
+      | undefined
   ): string => {
-    if (
-      !value
-    ) {
+    if (!value) {
       return "";
     }
 
@@ -162,9 +160,7 @@ const normalizeMultilineText =
         "\n"
       )
       .map(
-        (
-          line
-        ) =>
+        (line) =>
           normalizeWhitespace(
             line
           )
@@ -198,15 +194,15 @@ const uniqueStrings =
           value
         );
 
-      if (
-        !normalized
-      ) {
+      if (!normalized) {
         continue;
       }
 
       const key =
         normalized
-          .toLowerCase();
+          .toLocaleLowerCase(
+            "az"
+          );
 
       if (
         seen.has(
@@ -226,6 +222,17 @@ const uniqueStrings =
     }
 
     return result;
+  };
+
+const escapeRegex =
+  (
+    value:
+      string
+  ): string => {
+    return value.replace(
+      /[.*+?^${}()|[\]\\]/g,
+      "\\$&"
+    );
   };
 
 const canonicalizeAbbUrl =
@@ -288,9 +295,7 @@ const extractExternalId =
           .pathname
           .match(
             DETAIL_PATH_REGEX
-          )?.[
-            1
-          ] ||
+          )?.[1] ||
         ""
       );
     } catch {
@@ -327,53 +332,6 @@ const safeText =
     }
   };
 
-const safeAllTexts =
-  async (
-    locator:
-      Locator
-  ): Promise<string[]> => {
-    const values:
-      string[] =
-      [];
-
-    try {
-      const count =
-        await locator.count();
-
-      for (
-        let index =
-          0;
-        index <
-          count;
-        index +=
-          1
-      ) {
-        const value =
-          normalizeWhitespace(
-            await locator
-              .nth(
-                index
-              )
-              .textContent()
-          );
-
-        if (
-          value
-        ) {
-          values.push(
-            value
-          );
-        }
-      }
-    } catch {
-      // Keep successfully collected items.
-    }
-
-    return uniqueStrings(
-      values
-    );
-  };
-
 /* =========================================================
    SKILLS
 ========================================================= */
@@ -383,21 +341,32 @@ const detectSkills =
     text:
       string
   ): string[] => {
-    const normalized =
+    const normalizedText =
       text
-        .toLowerCase();
+        .toLocaleLowerCase(
+          "az"
+        );
 
     return ALL_CAREER_SKILLS
       .filter(
         (
           skill
         ) => {
-          const value =
+          const normalizedSkill =
             skill
-              .toLowerCase();
+              .trim()
+              .toLocaleLowerCase(
+                "az"
+              );
 
           if (
-            value ===
+            !normalizedSkill
+          ) {
+            return false;
+          }
+
+          if (
+            normalizedSkill ===
             "c++"
           ) {
             return /(?:^|[^a-z0-9])c\+\+(?:[^a-z0-9]|$)/i.test(
@@ -406,7 +375,7 @@ const detectSkills =
           }
 
           if (
-            value ===
+            normalizedSkill ===
             "c#"
           ) {
             return /(?:^|[^a-z0-9])c#(?:[^a-z0-9]|$)/i.test(
@@ -415,7 +384,16 @@ const detectSkills =
           }
 
           if (
-            value ===
+            normalizedSkill ===
+            ".net"
+          ) {
+            return /(?:^|[^a-z0-9])\.net(?:[^a-z0-9]|$)/i.test(
+              text
+            );
+          }
+
+          if (
+            normalizedSkill ===
             "node.js"
           ) {
             return /\bnode(?:\.js|\s+js)\b/i.test(
@@ -424,7 +402,7 @@ const detectSkills =
           }
 
           if (
-            value ===
+            normalizedSkill ===
             "next.js"
           ) {
             return /\bnext(?:\.js|\s+js)\b/i.test(
@@ -433,7 +411,7 @@ const detectSkills =
           }
 
           if (
-            value ===
+            normalizedSkill ===
             "rest api"
           ) {
             return /\brest(?:ful)?\s+api(?:s)?\b/i.test(
@@ -441,8 +419,39 @@ const detectSkills =
             );
           }
 
-          return normalized.includes(
-            value
+          /*
+           * Short skills such as Git, Go, R, SQL etc.
+           * must be matched as complete tokens.
+           *
+           * normalized.includes("git") can produce false positives
+           * inside unrelated Azerbaijani / English words.
+           */
+          if (
+            /^[a-z0-9]+$/i.test(
+              normalizedSkill
+            ) &&
+            normalizedSkill.length <=
+              4
+          ) {
+            const regex =
+              new RegExp(
+                `(?:^|[^a-z0-9])${escapeRegex(
+                  normalizedSkill
+                )}(?:[^a-z0-9]|$)`,
+                "i"
+              );
+
+            return regex.test(
+              normalizedText
+            );
+          }
+
+          /*
+           * Multi-word / longer skills are safe enough to search
+           * as normalized phrases.
+           */
+          return normalizedText.includes(
+            normalizedSkill
           );
         }
       )
@@ -556,9 +565,9 @@ const tryClickLoadMore =
           let index =
             0;
           index <
-            count;
+          count;
           index +=
-            1
+          1
         ) {
           const item =
             candidate.nth(
@@ -615,7 +624,7 @@ const loadAllVacancies =
       let round =
         0;
       round <
-        30;
+      30;
       round +=
         1
     ) {
@@ -834,65 +843,181 @@ const getListingItems =
   };
 
 /* =========================================================
-   DETAIL SECTION HELPERS
+   DETAIL TEXT HELPERS
 ========================================================= */
 
-const getSectionItemsByHeading =
+const SECTION_HEADING_PATTERN =
+  /^(?:iş haqqında|görəcəyiniz işlər|bizim üçün uyğun namizəd|biz nə təklif edirik|üstünlüklər|what you will do|responsibilities|requirements?|qualifications?|what we offer|benefits?)\s*:?\s*$/i;
+
+const NAVIGATION_LINE_PATTERN =
+  /^(?:haqqımızda|vakansiyalar|təcrübə proqramları|f\.?\s*a\.?\s*q\.?|daxil ol|qeydiyyat|müraciət et)$/i;
+
+const cleanSectionItems =
+  (
+    items:
+      string[]
+  ): string[] => {
+    return uniqueStrings(
+      items
+        .map(
+          (
+            item
+          ) =>
+            normalizeWhitespace(
+              item
+            )
+        )
+        .filter(
+          (
+            item
+          ) =>
+            item.length >=
+              3 &&
+            !SECTION_HEADING_PATTERN.test(
+              item
+            ) &&
+            !NAVIGATION_LINE_PATTERN.test(
+              item
+            )
+        )
+    )
+      .slice(
+        0,
+        60
+      );
+  };
+
+const getContentRootText =
   async (
     page:
-      Page,
-    headingPatterns:
-      RegExp[]
-  ): Promise<string[]> => {
-    /*
-     * ABB detail page structure is currently:
-     *
-     * <article class="populated-content">
-     *   <p><strong>Görəcəyiniz işlər:</strong></p>
-     *   <ul>...</ul>
-     *
-     *   <p><strong>Bizim üçün uyğun namizəd:</strong></p>
-     *   <ul>...</ul>
-     * </article>
-     *
-     * So we must move from the heading's parent <p> to its next
-     * sibling <ul>/<ol>. Looking at heading.nextElementSibling
-     * itself returns null because <strong> is nested inside <p>.
-     */
-    const data =
+      Page
+  ): Promise<string> => {
+    const selectors = [
+      "article.populated-content",
+      "article",
+      "main",
+      "[class*='vacancy-detail']",
+      "[class*='vacancy']",
+      "[class*='detail']",
+    ];
+
+    for (
+      const selector of
+      selectors
+    ) {
+      try {
+        const locator =
+          page.locator(
+            selector
+          );
+
+        if (
+          (
+            await locator.count()
+          ) ===
+          0
+        ) {
+          continue;
+        }
+
+        const text =
+          normalizeMultilineText(
+            await locator
+              .first()
+              .innerText()
+          );
+
+        if (
+          text.length >=
+          100
+        ) {
+          return text;
+        }
+      } catch {
+        // Try next selector.
+      }
+    }
+
+    return normalizeMultilineText(
+      await page
+        .locator(
+          "body"
+        )
+        .innerText()
+    );
+  };
+
+/*
+ * Robust DOM extraction:
+ *
+ * Instead of assuming:
+ *   heading.parentElement.nextElementSibling === UL
+ *
+ * we inspect all relevant text/list elements in document order.
+ * Once a recognized section heading is found, subsequent <li>
+ * elements belong to that section until another heading appears.
+ */
+const getStructuredSectionsFromDom =
+  async (
+    page:
+      Page
+  ): Promise<{
+    responsibilities: string[];
+    requirements: string[];
+    benefits: string[];
+  }> => {
+    const raw =
       await page.evaluate(
-        (
-          patternSources
-        ) => {
-          const article =
+        () => {
+          type Section =
+            | "responsibilities"
+            | "requirements"
+            | "benefits"
+            | null;
+
+          const root =
             document.querySelector<HTMLElement>(
               "article.populated-content"
             ) ||
             document.querySelector<HTMLElement>(
               "article"
-            );
+            ) ||
+            document.querySelector<HTMLElement>(
+              "main"
+            ) ||
+            document.body;
 
-          if (
-            !article
-          ) {
-            return [];
-          }
+          const responsibilities:
+            string[] =
+            [];
 
-          const headings =
+          const requirements:
+            string[] =
+            [];
+
+          const benefits:
+            string[] =
+            [];
+
+          const nodes =
             Array.from(
-              article.querySelectorAll<HTMLElement>(
-                "strong, h1, h2, h3, h4, h5, h6"
+              root.querySelectorAll<HTMLElement>(
+                "h1, h2, h3, h4, h5, h6, p, strong, li"
               )
             );
 
+          let currentSection:
+            Section =
+            null;
+
           for (
-            const heading of
-            headings
+            const node of
+            nodes
           ) {
-            const headingText =
+            const text =
               (
-                heading.innerText ||
-                heading.textContent ||
+                node.innerText ||
+                node.textContent ||
                 ""
               )
                 .replace(
@@ -901,145 +1026,428 @@ const getSectionItemsByHeading =
                 )
                 .trim();
 
-            let matches =
-              false;
-
-            for (
-              const source of
-              patternSources
-            ) {
-              if (
-                new RegExp(
-                  source,
-                  "i"
-                ).test(
-                  headingText
-                )
-              ) {
-                matches =
-                  true;
-
-                break;
-              }
-            }
-
             if (
-              !matches
+              !text
             ) {
               continue;
             }
 
-            let current:
-              Element |
-              null =
-              heading.parentElement
-                ?.nextElementSibling ||
-              null;
-
-            let steps =
-              0;
-
-            while (
-              current &&
-              steps <
-                12
+            if (
+              /^görəcəyiniz işlər\s*:?\s*$/i.test(
+                text
+              ) ||
+              /^what you will do\s*:?\s*$/i.test(
+                text
+              ) ||
+              /^responsibilities\s*:?\s*$/i.test(
+                text
+              )
             ) {
-              if (
-                current.tagName ===
-                  "UL" ||
-                current.tagName ===
-                  "OL"
-              ) {
-                return Array.from(
-                  current.querySelectorAll<HTMLElement>(
-                    ":scope > li"
-                  )
-                )
-                  .map(
-                    (
-                      li
-                    ) =>
-                      (
-                        li.innerText ||
-                        li.textContent ||
-                        ""
-                      )
-                        .replace(
-                          /\s+/g,
-                          " "
-                        )
-                        .trim()
-                  )
-                  .filter(
-                    Boolean
-                  );
-              }
+              currentSection =
+                "responsibilities";
 
-              /*
-               * Stop if the next section heading appears before a list.
-               */
-              const nestedHeading =
-                current.querySelector<HTMLElement>(
-                  "strong, h1, h2, h3, h4, h5, h6"
-                );
+              continue;
+            }
 
-              if (
-                nestedHeading
-              ) {
-                const nestedText =
-                  (
-                    nestedHeading.innerText ||
-                    nestedHeading.textContent ||
-                    ""
-                  )
-                    .replace(
-                      /\s+/g,
-                      " "
-                    )
-                    .trim();
+            if (
+              /^bizim üçün uyğun namizəd\s*:?\s*$/i.test(
+                text
+              ) ||
+              /^requirements?\s*:?\s*$/i.test(
+                text
+              ) ||
+              /^qualifications?\s*:?\s*$/i.test(
+                text
+              )
+            ) {
+              currentSection =
+                "requirements";
 
-                if (
-                  /görəcəyiniz işlər|bizim üçün uyğun namizəd|iş haqqında|müraciət et|what you will do|responsibilities|requirements?|qualifications?|what we offer|benefits?/i.test(
-                    nestedText
-                  )
-                ) {
-                  break;
-                }
-              }
+              continue;
+            }
 
-              current =
-                current.nextElementSibling;
+            if (
+              /^biz nə təklif edirik\s*:?\s*$/i.test(
+                text
+              ) ||
+              /^üstünlüklər\s*:?\s*$/i.test(
+                text
+              ) ||
+              /^benefits?\s*:?\s*$/i.test(
+                text
+              ) ||
+              /^what we offer\s*:?\s*$/i.test(
+                text
+              )
+            ) {
+              currentSection =
+                "benefits";
 
-              steps +=
-                1;
+              continue;
+            }
+
+            if (
+              /^iş haqqında\s*:?\s*$/i.test(
+                text
+              )
+            ) {
+              currentSection =
+                null;
+
+              continue;
+            }
+
+            /*
+             * Only LI elements are treated as actual section items.
+             * This prevents parent <p>/<strong> duplication.
+             */
+            if (
+              node.tagName !==
+              "LI"
+            ) {
+              continue;
+            }
+
+            if (
+              currentSection ===
+              "responsibilities"
+            ) {
+              responsibilities.push(
+                text
+              );
+
+              continue;
+            }
+
+            if (
+              currentSection ===
+              "requirements"
+            ) {
+              requirements.push(
+                text
+              );
+
+              continue;
+            }
+
+            if (
+              currentSection ===
+              "benefits"
+            ) {
+              benefits.push(
+                text
+              );
             }
           }
 
-          return [];
-        },
-        headingPatterns.map(
+          return {
+            responsibilities,
+            requirements,
+            benefits,
+          };
+        }
+      );
+
+    return {
+      responsibilities:
+        cleanSectionItems(
+          raw.responsibilities
+        ),
+
+      requirements:
+        cleanSectionItems(
+          raw.requirements
+        ),
+
+      benefits:
+        cleanSectionItems(
+          raw.benefits
+        ),
+    };
+  };
+
+/*
+ * Body-text fallback.
+ *
+ * ABB sometimes changes wrappers/components while keeping the visible
+ * headings and list text. This parser therefore uses the visible text
+ * structure if DOM section extraction returned nothing.
+ */
+const extractTextSection =
+  (
+    multilineText:
+      string,
+    startPatterns:
+      RegExp[],
+    stopPatterns:
+      RegExp[]
+  ): string[] => {
+    const lines =
+      multilineText
+        .split(
+          "\n"
+        )
+        .map(
+          (
+            line
+          ) =>
+            normalizeWhitespace(
+              line
+            )
+        )
+        .filter(
+          Boolean
+        );
+
+    let capturing =
+      false;
+
+    const collected:
+      string[] =
+      [];
+
+    for (
+      const line of
+      lines
+    ) {
+      if (
+        !capturing
+      ) {
+        const starts =
+          startPatterns.some(
+            (
+              pattern
+            ) =>
+              pattern.test(
+                line
+              )
+          );
+
+        if (
+          starts
+        ) {
+          capturing =
+            true;
+        }
+
+        continue;
+      }
+
+      const shouldStop =
+        stopPatterns.some(
           (
             pattern
           ) =>
-            pattern.source
-        )
-      );
+            pattern.test(
+              line
+            )
+        );
 
-    return uniqueStrings(
-      data
-    )
-      .filter(
-        (
-          item
-        ) =>
-          item.length >=
-          3
+      if (
+        shouldStop
+      ) {
+        break;
+      }
+
+      if (
+        NAVIGATION_LINE_PATTERN.test(
+          line
+        )
+      ) {
+        continue;
+      }
+
+      /*
+       * ABB list items normally appear as individual lines.
+       * If the browser collapsed several semicolon-separated items
+       * into one line, split them conservatively.
+       */
+      const pieces =
+        line
+          .split(
+            /;\s+(?=[A-ZƏÖÜĞÇŞİ])/u
+          )
+          .map(
+            (
+              item
+            ) =>
+              normalizeWhitespace(
+                item
+            )
+          )
+          .filter(
+            Boolean
+          );
+
+      collected.push(
+        ...pieces
+      );
+    }
+
+    return cleanSectionItems(
+      collected
+    );
+  };
+
+const buildCleanDescription =
+  (
+    contentText:
+      string,
+    title:
+      string,
+    responsibilities:
+      string[],
+    requirements:
+      string[]
+  ): string => {
+    const lines =
+      contentText
+        .split(
+          "\n"
+        )
+        .map(
+          (
+            line
+          ) =>
+            normalizeWhitespace(
+              line
+            )
+        )
+        .filter(
+          Boolean
+        );
+
+    const cleaned:
+      string[] =
+      [];
+
+    let afterAbout =
+      false;
+
+    for (
+      const line of
+      lines
+    ) {
+      if (
+        line ===
+        title
+      ) {
+        continue;
+      }
+
+      if (
+        NAVIGATION_LINE_PATTERN.test(
+          line
+        )
+      ) {
+        continue;
+      }
+
+      if (
+        /^iş haqqında\s*:?\s*$/i.test(
+          line
+        )
+      ) {
+        afterAbout =
+          true;
+
+        continue;
+      }
+
+      if (
+        /^görəcəyiniz işlər\s*:?\s*$/i.test(
+          line
+        ) ||
+        /^bizim üçün uyğun namizəd\s*:?\s*$/i.test(
+          line
+        ) ||
+        /^biz nə təklif edirik\s*:?\s*$/i.test(
+          line
+        ) ||
+        /^responsibilities\s*:?\s*$/i.test(
+          line
+        ) ||
+        /^requirements?\s*:?\s*$/i.test(
+          line
+        ) ||
+        /^qualifications?\s*:?\s*$/i.test(
+          line
+        )
+      ) {
+        break;
+      }
+
+      /*
+       * Before "İş haqqında" we only skip page metadata/navigation.
+       */
+      if (
+        !afterAbout
+      ) {
+        if (
+          /^(?:daimi|müqavilə|tam gün|yarım gün|full[- ]?time|part[- ]?time|contract)$/i.test(
+            line
+          )
+        ) {
+          continue;
+        }
+
+        continue;
+      }
+
+      cleaned.push(
+        line
+      );
+    }
+
+    const description =
+      uniqueStrings(
+        cleaned
+      )
+        .join(
+          " "
+        )
+        .trim();
+
+    if (
+      description.length >=
+      40
+    ) {
+      return description.slice(
+        0,
+        4_000
+      );
+    }
+
+    /*
+     * ABB often has no standalone paragraph under "İş haqqında".
+     * In that case create a concise description from the real
+     * structured data instead of dumping the entire web page.
+     */
+    const fallbackParts =
+      [
+        ...responsibilities.slice(
+          0,
+          2
+        ),
+        ...requirements.slice(
+          0,
+          1
+        ),
+      ];
+
+    return fallbackParts
+      .join(
+        " "
       )
       .slice(
         0,
-        50
+        2_000
       );
   };
+
+/* =========================================================
+   INFERENCE HELPERS
+========================================================= */
 
 const inferEmploymentType =
   (
@@ -1094,7 +1502,9 @@ const inferWorkMode =
   ): string | null => {
     const normalized =
       text
-        .toLowerCase();
+        .toLocaleLowerCase(
+          "az"
+        );
 
     if (
       /hibrid|hybrid/.test(
@@ -1120,7 +1530,11 @@ const inferWorkMode =
       return "onsite";
     }
 
-    return null;
+    /*
+     * ABB vacancy pages are normally physical positions unless
+     * explicitly marked remote/hybrid.
+     */
+    return "onsite";
   };
 
 const inferExperienceLevel =
@@ -1131,8 +1545,12 @@ const inferExperienceLevel =
       string[]
   ): string | null => {
     const combined =
-      `${title} ${requirements.join(" ")}`
-        .toLowerCase();
+      `${title} ${requirements.join(
+        " "
+      )}`
+        .toLocaleLowerCase(
+          "az"
+        );
 
     if (
       /baş\s+mütəxəssis|senior|lead|principal|ekspert/.test(
@@ -1176,14 +1594,6 @@ const inferLocation =
     bodyText:
       string
   ): string => {
-    /*
-     * Do not scan the full body blindly: ABB pages may contain
-     * navigation/footer text with city names unrelated to the vacancy.
-     *
-     * Prefer the vacancy title first (many regional roles include
-     * "- Naxçıvan", "- İsmayıllı", etc.). Only use body text when
-     * a location-like label is present.
-     */
     const locations = [
       "Bakı",
       "Naxçıvan",
@@ -1221,9 +1631,10 @@ const inferLocation =
           location
         ) =>
           normalizedTitle.includes(
-            location.toLocaleLowerCase(
-              "az"
-            )
+            location
+              .toLocaleLowerCase(
+                "az"
+              )
           )
       );
 
@@ -1240,9 +1651,7 @@ const inferLocation =
 
     const labeledText =
       normalizeWhitespace(
-        locationLabelMatch?.[
-          1
-        ]
+        locationLabelMatch?.[1]
       );
 
     if (
@@ -1362,71 +1771,125 @@ const parseAbbVacancyDetail =
             .innerText()
         );
 
-      const responsibilities =
-        await getSectionItemsByHeading(
-          page,
-          [
-            /^görəcəyiniz işlər\s*:?\s*$/i,
-            /^what you will do\s*:?\s*$/i,
-            /^responsibilities\s*:?\s*$/i,
-          ]
+      const contentText =
+        await getContentRootText(
+          page
         );
+
+      /*
+       * Step 1 — DOM extraction.
+       */
+      const domSections =
+        await getStructuredSectionsFromDom(
+          page
+        );
+
+      /*
+       * Step 2 — visible-text fallback.
+       */
+      const responsibilities =
+        domSections
+          .responsibilities
+          .length >
+        0
+          ? domSections
+              .responsibilities
+          : extractTextSection(
+              contentText,
+              [
+                /^görəcəyiniz işlər\s*:?\s*$/i,
+                /^what you will do\s*:?\s*$/i,
+                /^responsibilities\s*:?\s*$/i,
+              ],
+              [
+                /^bizim üçün uyğun namizəd\s*:?\s*$/i,
+                /^requirements?\s*:?\s*$/i,
+                /^qualifications?\s*:?\s*$/i,
+                /^biz nə təklif edirik\s*:?\s*$/i,
+                /^üstünlüklər\s*:?\s*$/i,
+                /^benefits?\s*:?\s*$/i,
+                /^what we offer\s*:?\s*$/i,
+                /^müraciət et\s*:?\s*$/i,
+              ]
+            );
 
       const requirements =
-        await getSectionItemsByHeading(
-          page,
-          [
-            /^bizim üçün uyğun namizəd\s*:?\s*$/i,
-            /^requirements?\s*:?\s*$/i,
-            /^qualifications?\s*:?\s*$/i,
-          ]
-        );
+        domSections
+          .requirements
+          .length >
+        0
+          ? domSections
+              .requirements
+          : extractTextSection(
+              contentText,
+              [
+                /^bizim üçün uyğun namizəd\s*:?\s*$/i,
+                /^requirements?\s*:?\s*$/i,
+                /^qualifications?\s*:?\s*$/i,
+              ],
+              [
+                /^biz nə təklif edirik\s*:?\s*$/i,
+                /^üstünlüklər\s*:?\s*$/i,
+                /^benefits?\s*:?\s*$/i,
+                /^what we offer\s*:?\s*$/i,
+                /^müraciət et\s*:?\s*$/i,
+              ]
+            );
 
       const benefits =
-        await getSectionItemsByHeading(
-          page,
-          [
-            /^biz nə təklif edirik\s*:?\s*$/i,
-            /^üstünlüklər\s*:?\s*$/i,
-            /^benefits?\s*:?\s*$/i,
-            /^what we offer\s*:?\s*$/i,
-          ]
+        domSections
+          .benefits
+          .length >
+        0
+          ? domSections
+              .benefits
+          : extractTextSection(
+              contentText,
+              [
+                /^biz nə təklif edirik\s*:?\s*$/i,
+                /^üstünlüklər\s*:?\s*$/i,
+                /^benefits?\s*:?\s*$/i,
+                /^what we offer\s*:?\s*$/i,
+              ],
+              [
+                /^müraciət et\s*:?\s*$/i,
+              ]
+            );
+
+      const description =
+        buildCleanDescription(
+          contentText,
+          title,
+          responsibilities,
+          requirements
         );
 
-      const structuredText =
-        uniqueStrings([
-          ...responsibilities,
+      /*
+       * Skills should come from actual vacancy content,
+       * not navigation/footer text.
+       */
+      const skillSourceText =
+        [
+          title,
+          description,
           ...requirements,
-          ...benefits,
-        ])
+          ...responsibilities,
+        ]
           .join(
             "\n"
           );
 
-      const description =
-        (
-          structuredText ||
-          bodyText
-        )
-          .slice(
-            0,
-            12_000
-          );
-
       const skills =
         detectSkills(
-          `${title}\n${description}`
+          skillSourceText
         );
 
       const summary =
         (
-          responsibilities[
-            0
-          ] ||
-          requirements[
-            0
-          ] ||
-          description
+          description ||
+          responsibilities[0] ||
+          requirements[0] ||
+          title
         )
           .slice(
             0,
@@ -1444,7 +1907,7 @@ const parseAbbVacancyDetail =
         location:
           inferLocation(
             title,
-            bodyText
+            contentText
           ),
 
         summary,
@@ -1461,7 +1924,7 @@ const parseAbbVacancyDetail =
 
         employmentType:
           inferEmploymentType(
-            bodyText
+            contentText
           ),
 
         experienceLevel:
@@ -1472,7 +1935,7 @@ const parseAbbVacancyDetail =
 
         workMode:
           inferWorkMode(
-            bodyText
+            contentText
           ),
 
         salaryMin:
@@ -1908,8 +2371,10 @@ export const discoverAbbCareersJobs =
 
               return {
                 job,
+
                 usedFallback:
                   false,
+
                 error:
                   "",
               };
@@ -1951,7 +2416,7 @@ export const discoverAbbCareersJobs =
         let index =
           0;
         index <
-          detailResults.length;
+        detailResults.length;
         index +=
           1
       ) {
@@ -2005,10 +2470,12 @@ export const discoverAbbCareersJobs =
             jobs.length,
 
           detailPagesFetched:
-            diagnostics.detailPagesFetched,
+            diagnostics
+              .detailPagesFetched,
 
           listingFallbacks:
-            diagnostics.listingFallbacks,
+            diagnostics
+              .listingFallbacks,
 
           sampleJobs:
             jobs
@@ -2029,14 +2496,20 @@ export const discoverAbbCareersJobs =
                   location:
                     job.location,
 
+                  descriptionLength:
+                    job.description.length,
+
                   requirements:
                     job.requirements.length,
 
                   responsibilities:
                     job.responsibilities.length,
 
+                  benefits:
+                    job.benefits.length,
+
                   skills:
-                    job.skills.length,
+                    job.skills,
 
                   url:
                     job.url,
