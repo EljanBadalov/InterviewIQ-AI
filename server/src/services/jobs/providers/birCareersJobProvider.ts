@@ -512,48 +512,51 @@ const getCurrentVacancyUrls =
     page: Page,
     baseUrl: string
   ): Promise<string[]> => {
-    const anchors =
-      page.locator(
-        'a[href*="/vacancies/"]'
+    try {
+      const hrefs =
+        await page.evaluate(
+          () => {
+            return Array.from(
+              document.querySelectorAll<HTMLAnchorElement>(
+                'a[href*="/vacancies/"]'
+              )
+            )
+              .map(
+                (anchor) =>
+                  anchor.getAttribute(
+                    "href"
+                  ) || ""
+              )
+              .filter(Boolean);
+          }
+        );
+
+      const urls =
+        hrefs
+          .map(
+            (href) =>
+              canonicalizeVacancyUrl(
+                href,
+                baseUrl
+              )
+          )
+          .filter(Boolean);
+
+      return uniqueStrings(
+        urls
+      );
+    } catch (
+      error
+    ) {
+      console.warn(
+        "[BIR CAREERS PROVIDER] Failed to read vacancy URLs:",
+        error instanceof Error
+          ? error.message
+          : String(error)
       );
 
-    const count =
-      await anchors.count();
-
-    const urls:
-      string[] =
-      [];
-
-    for (
-      let index = 0;
-      index < count;
-      index += 1
-    ) {
-      try {
-        const href =
-          await anchors
-            .nth(index)
-            .getAttribute("href");
-
-        if (!href) {
-          continue;
-        }
-
-        const normalized =
-          canonicalizeVacancyUrl(
-            href,
-            baseUrl
-          );
-
-        if (normalized) {
-          urls.push(normalized);
-        }
-      } catch {
-        // Continue.
-      }
+      return [];
     }
-
-    return uniqueStrings(urls);
   };
 
 const tryClickLoadMore =
