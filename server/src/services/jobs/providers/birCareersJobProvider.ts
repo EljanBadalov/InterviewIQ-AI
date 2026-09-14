@@ -77,7 +77,7 @@ const DEFAULT_CAREERS_URL =
   "https://careers.bir.az/vacancies";
 
 const DEFAULT_TIMEOUT_MS =
-  30_000;
+  60_000;
 
 const DEFAULT_MAX_JOBS =
   150;
