@@ -40,6 +40,16 @@ const OUTPUT_DIRECTORY =
     "career-sources"
   );
 
+const getSourceOutputPath =
+  (
+    sourceId: string
+  ): string => {
+    return path.join(
+      OUTPUT_DIRECTORY,
+      `${sourceId}.json`
+    );
+  };
+
 const writeSourceFile =
   async (
     result: ICareerSourceResult
@@ -53,9 +63,8 @@ const writeSourceFile =
     );
 
     const outputPath =
-      path.join(
-        OUTPUT_DIRECTORY,
-        `${result.id}.json`
+      getSourceOutputPath(
+        result.id
       );
 
     await fs.writeFile(
@@ -114,6 +123,37 @@ const scrapeBirCareers =
       const jobs:
         IBirCareersJob[] =
         result.jobs;
+
+      if (
+        jobs.length ===
+        0
+      ) {
+        return {
+          id:
+            "bir-careers",
+
+          name:
+            "Bir Careers",
+
+          updatedAt:
+            new Date().toISOString(),
+
+          success:
+            false,
+
+          count:
+            0,
+
+          jobs:
+            [],
+
+          diagnostics:
+            result.diagnostics,
+
+          error:
+            "Bir Careers returned 0 jobs; previous snapshot preserved.",
+        };
+      }
 
       return {
         id:
@@ -185,22 +225,6 @@ const careerSources:
       scrape:
         scrapeBirCareers,
     },
-
-    /*
-     * Sonradan belə əlavə edəcəyik:
-     *
-     * {
-     *   id: "azercell",
-     *   name: "Azercell Careers",
-     *   scrape: scrapeAzercell,
-     * },
-     *
-     * {
-     *   id: "company-3",
-     *   name: "Company 3",
-     *   scrape: scrapeCompany3,
-     * },
-     */
   ];
 
 /* =========================================================
@@ -226,72 +250,45 @@ const scrapeSource =
       }
     );
 
-    try {
-      const result =
-        await source.scrape();
+    const result =
+      await source.scrape();
 
+    if (
+      result.success &&
+      result.count >
+        0
+    ) {
       await writeSourceFile(
         result
       );
-
-      console.log(
-        "[CAREER SCRAPER] Source finished:",
+    } else {
+      console.warn(
+        "[CAREER SCRAPER] Source did not return a valid non-empty snapshot. Previous JSON kept unchanged:",
         {
           id:
             result.id,
 
-          success:
-            result.success,
-
-          count:
-            result.count,
+          error:
+            result.error,
         }
       );
-
-      return result;
-    } catch (
-      error
-    ) {
-      const failedResult:
-        ICareerSourceResult =
-        {
-          id:
-            source.id,
-
-          name:
-            source.name,
-
-          updatedAt:
-            new Date().toISOString(),
-
-          success:
-            false,
-
-          count:
-            0,
-
-          jobs:
-            [],
-
-          error:
-            error instanceof Error
-              ? error.message
-              : String(
-                  error
-                ),
-        };
-
-      await writeSourceFile(
-        failedResult
-      );
-
-      console.error(
-        "[CAREER SCRAPER] Source failed:",
-        failedResult
-      );
-
-      return failedResult;
     }
+
+    console.log(
+      "[CAREER SCRAPER] Source finished:",
+      {
+        id:
+          result.id,
+
+        success:
+          result.success,
+
+        count:
+          result.count,
+      }
+    );
+
+    return result;
   };
 
 /* =========================================================
@@ -303,6 +300,14 @@ const writeMasterIndex =
     results:
       ICareerSourceResult[]
   ): Promise<void> => {
+    await fs.mkdir(
+      OUTPUT_DIRECTORY,
+      {
+        recursive:
+          true,
+      }
+    );
+
     const outputPath =
       path.join(
         OUTPUT_DIRECTORY,
@@ -421,12 +426,6 @@ const main =
       ICareerSourceResult[] =
       [];
 
-    /*
-     * Sequential intentionally.
-     *
-     * Playwright providers can consume a lot of RAM.
-     * Running 10 browsers in parallel would be unnecessary.
-     */
     for (
       const source of
       careerSources

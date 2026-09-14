@@ -2753,10 +2753,166 @@ export const discoverBirCareersJobs =
                     "href"
                   ) || "";
 
-                const text =
+                /*
+                 * Keep this evaluate callback self-contained and avoid
+                 * locally declared helper functions. tsx/esbuild can inject
+                 * a __name helper for nested named functions, but that helper
+                 * does not exist inside the browser execution context.
+                 */
+                const headingSelectors = [
+                  "h1",
+                  "h2",
+                  "h3",
+                  "h4",
+                  "h5",
+                  "h6",
+                  "[class*='title']",
+                  "[class*='name']",
+                  "strong",
+                  "b",
+                ];
+
+                let title =
+                  "";
+
+                for (
+                  const selector of
+                  headingSelectors
+                ) {
+                  const element =
+                    anchor.querySelector<HTMLElement>(
+                      selector
+                    );
+
+                  const candidate =
+                    (
+                      element?.innerText ||
+                      element?.textContent ||
+                      ""
+                    )
+                      .replace(
+                        /\s+/g,
+                        " "
+                      )
+                      .trim();
+
+                  if (
+                    candidate.length >=
+                      3 &&
+                    candidate.length <=
+                      180 &&
+                    !/^(apply|müraciət et|ətraflı|details|təcrübəçi|kiçik mütəxəssis|mütəxəssis|aparıcı mütəxəssis|baş mütəxəssis|ekspert|ofisdən işləmək|hibrid|hibrid işləmək|məsafədən işləmək|remote|hybrid|onsite|bir|birbank|birmarket|m10|million|milliön)$/i.test(
+                      candidate
+                    ) &&
+                    !/^son tarix\s*:/i.test(
+                      candidate
+                    )
+                  ) {
+                    title =
+                      candidate;
+
+                    break;
+                  }
+                }
+
+                if (
+                  !title
+                ) {
+                  const lines =
+                    (
+                      anchor.innerText ||
+                      anchor.textContent ||
+                      ""
+                    )
+                      .split(
+                        /\r?\n/
+                      )
+                      .map(
+                        (
+                          value
+                        ) =>
+                          value
+                            .replace(
+                              /\s+/g,
+                              " "
+                            )
+                            .trim()
+                      )
+                      .filter(
+                        Boolean
+                      );
+
+                  for (
+                    const candidate of
+                    lines
+                  ) {
+                    if (
+                      candidate.length >=
+                        3 &&
+                      candidate.length <=
+                        180 &&
+                      !/^(apply|müraciət et|ətraflı|details|təcrübəçi|kiçik mütəxəssis|mütəxəssis|aparıcı mütəxəssis|baş mütəxəssis|ekspert|ofisdən işləmək|hibrid|hibrid işləmək|məsafədən işləmək|remote|hybrid|onsite|bir|birbank|birmarket|m10|million|milliön)$/i.test(
+                        candidate
+                      ) &&
+                      !/^son tarix\s*:/i.test(
+                        candidate
+                      )
+                    ) {
+                      title =
+                        candidate;
+
+                      break;
+                    }
+                  }
+                }
+
+                if (
+                  !title
+                ) {
+                  const raw =
+                    (
+                      anchor.innerText ||
+                      anchor.textContent ||
+                      ""
+                    )
+                      .replace(
+                        /\s+/g,
+                        " "
+                      )
+                      .trim();
+
+                  const metadataBoundary =
+                    raw.search(
+                      /\s+(?:Təcrübəçi|Kiçik mütəxəssis|Mütəxəssis|Aparıcı mütəxəssis|Baş mütəxəssis|Ekspert|Ofisdən işləmək|Hibrid|Məsafədən işləmək|Son tarix:)\b/i
+                    );
+
+                  title =
+                    (
+                      metadataBoundary >
+                        0
+                        ? raw.slice(
+                            0,
+                            metadataBoundary
+                          )
+                        : raw
+                    )
+                      .slice(
+                        0,
+                        180
+                      )
+                      .trim();
+                }
+
+                const card =
+                  anchor.closest<HTMLElement>(
+                    "article, li, [class*='vacancy-card'], [class*='vacancy_item'], [class*='vacancy-item'], [class*='card']"
+                  ) ||
+                  anchor;
+
+                const normalizedCardText =
                   (
-                    anchor.innerText ||
-                    anchor.textContent ||
+                    card.innerText ||
+                    card.textContent ||
                     ""
                   )
                     .replace(
@@ -2765,26 +2921,22 @@ export const discoverBirCareersJobs =
                     )
                     .trim();
 
-                const parent =
-                  anchor.closest(
-                    "article, li, [class*='vacan'], [class*='card'], [class*='job']"
-                  );
-
-                const parentText =
-                  (
-                    parent?.textContent ||
-                    ""
-                  )
-                    .replace(
-                      /\s+/g,
-                      " "
-                    )
-                    .trim();
+                const cardText =
+                  normalizedCardText.length <=
+                    2200
+                    ? normalizedCardText
+                    : (
+                        normalizedCardText.slice(
+                          0,
+                          2200
+                        ).trim() +
+                        "…"
+                      );
 
                 return {
                   href,
-                  text,
-                  parentText,
+                  title,
+                  cardText,
                 };
               }
             );
@@ -2795,8 +2947,8 @@ export const discoverBirCareersJobs =
         new Map<
           string,
           {
-            text: string;
-            parentText: string;
+            title: string;
+            cardText: string;
           }
         >();
 
@@ -2824,14 +2976,17 @@ export const discoverBirCareersJobs =
           listingByUrl.set(
             url,
             {
-              text:
+              title:
                 normalizeWhitespace(
-                  item.text
+                  item.title
                 ),
 
-              parentText:
+              cardText:
                 normalizeWhitespace(
-                  item.parentText
+                  item.cardText
+                ).slice(
+                  0,
+                  2200
                 ),
             }
           );
@@ -2869,38 +3024,39 @@ export const discoverBirCareersJobs =
             vacancyUrl
           );
 
-        const rawTitle =
-          normalizeWhitespace(
-            listing?.text
-          );
-
-        /*
-         * Some cards place extra metadata inside the link.
-         * Keep the first meaningful chunk as the title.
-         */
         const title =
-          rawTitle
-            .split(
-              /\s{2,}|\n/
-            )
-            .map(
-              normalizeWhitespace
-            )
-            .find(
-              (
-                value
-              ) =>
-                value.length >=
-                  3 &&
-                !/^(müraciət et|apply|ətraflı|details)$/i.test(
-                  value
-                )
-            ) ||
+          normalizeWhitespace(
+            listing?.title
+          ).slice(
+            0,
+            180
+          ) ||
           `Bir Careers vacancy ${externalId}`;
 
         const cardText =
           normalizeWhitespace(
-            listing?.parentText
+            listing?.cardText
+          ).slice(
+            0,
+            2200
+          );
+
+        const summaryText =
+          (
+            cardText ||
+            title
+          ).slice(
+            0,
+            600
+          );
+
+        const descriptionText =
+          (
+            cardText ||
+            title
+          ).slice(
+            0,
+            1800
           );
 
         const location =
@@ -2960,12 +3116,10 @@ export const discoverBirCareersJobs =
           location,
 
           summary:
-            cardText ||
-            title,
+            summaryText,
 
           description:
-            cardText ||
-            title,
+            descriptionText,
 
           requirements:
             [],
