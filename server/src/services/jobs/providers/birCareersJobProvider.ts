@@ -2156,6 +2156,279 @@ const runWithConcurrency =
     return results;
   };
 
+
+const collectBirVacancyUrlsFromUnknownData =
+  (
+    value: unknown,
+    baseUrl: string,
+    output: Set<string>,
+    depth:
+      number = 0
+  ): void => {
+    if (
+      depth >
+      8 ||
+      value ===
+      null ||
+      value ===
+      undefined
+    ) {
+      return;
+    }
+
+    if (
+      typeof value ===
+      "string"
+    ) {
+      const directMatches =
+        value.match(
+          /\/vacancies\/\d+/gi
+        ) ||
+        [];
+
+      for (
+        const match of
+        directMatches
+      ) {
+        const url =
+          canonicalizeVacancyUrl(
+            match,
+            baseUrl
+          );
+
+        if (
+          url
+        ) {
+          output.add(
+            url
+          );
+        }
+      }
+
+      return;
+    }
+
+    if (
+      Array.isArray(
+        value
+      )
+    ) {
+      for (
+        const item of value
+      ) {
+        collectBirVacancyUrlsFromUnknownData(
+          item,
+          baseUrl,
+          output,
+          depth +
+            1
+        );
+      }
+
+      return;
+    }
+
+    if (
+      typeof value ===
+      "object"
+    ) {
+      const record =
+        value as Record<
+          string,
+          unknown
+        >;
+
+      /*
+       * If this looks like vacancy data, accept common id fields
+       * even when the API does not include a ready-made href.
+       */
+      const looksLikeVacancy =
+        Object.keys(
+          record
+        ).some(
+          (
+            key
+          ) =>
+            /vacan|job|position|title|profession|role/i.test(
+              key
+            )
+        );
+
+      if (
+        looksLikeVacancy
+      ) {
+        for (
+          const key of [
+            "id",
+            "vacancyId",
+            "vacancy_id",
+            "jobId",
+            "job_id",
+          ]
+        ) {
+          const rawId =
+            record[
+              key
+            ];
+
+          if (
+            typeof rawId ===
+              "number" ||
+            (
+              typeof rawId ===
+                "string" &&
+              /^\d+$/.test(
+                rawId
+              )
+            )
+          ) {
+            const url =
+              canonicalizeVacancyUrl(
+                `/vacancies/${String(
+                  rawId
+                )}`,
+                baseUrl
+              );
+
+            if (
+              url
+            ) {
+              output.add(
+                url
+              );
+            }
+          }
+        }
+      }
+
+      for (
+        const nestedValue of
+        Object.values(
+          record
+        )
+      ) {
+        collectBirVacancyUrlsFromUnknownData(
+          nestedValue,
+          baseUrl,
+          output,
+          depth +
+            1
+        );
+      }
+    }
+  };
+
+const attachBirVacancyNetworkCapture =
+  (
+    page: Page,
+    baseUrl: string,
+    output: Set<string>
+  ): void => {
+    page.on(
+      "response",
+      async (
+        response
+      ) => {
+        try {
+          const responseUrl =
+            response.url();
+
+          /*
+           * Skip clearly irrelevant heavy/static assets.
+           */
+          if (
+            /\.(?:png|jpe?g|gif|webp|svg|ico|woff2?|ttf|css|mp4|webm)(?:\?|$)/i.test(
+              responseUrl
+            )
+          ) {
+            return;
+          }
+
+          const contentType =
+            (
+              await response
+                .allHeaders()
+            )[
+              "content-type"
+            ] ||
+            "";
+
+          const interestingResponse =
+            /json|javascript|text|html/i.test(
+              contentType
+            ) ||
+            /vacan|job|career|position/i.test(
+              responseUrl
+            );
+
+          if (
+            !interestingResponse
+          ) {
+            return;
+          }
+
+          const body =
+            await response.text();
+
+          /*
+           * Fast path: URLs embedded anywhere in HTML / JS / JSON.
+           */
+          const directMatches =
+            body.match(
+              /\/vacancies\/\d+/gi
+            ) ||
+            [];
+
+          for (
+            const match of
+            directMatches
+          ) {
+            const url =
+              canonicalizeVacancyUrl(
+                match,
+                baseUrl
+              );
+
+            if (
+              url
+            ) {
+              output.add(
+                url
+              );
+            }
+          }
+
+          /*
+           * JSON APIs often return only numeric vacancy IDs.
+           */
+          if (
+            /json/i.test(
+              contentType
+            )
+          ) {
+            try {
+              const parsed =
+                JSON.parse(
+                  body
+                );
+
+              collectBirVacancyUrlsFromUnknownData(
+                parsed,
+                baseUrl,
+                output
+              );
+            } catch {
+              // Ignore malformed / non-JSON bodies.
+            }
+          }
+        } catch {
+          // Individual response bodies can become unavailable.
+        }
+      }
+    );
+  };
+
+
 /* =========================================================
    MAIN DISCOVERY
 ========================================================= */
@@ -2275,6 +2548,20 @@ export const discoverBirCareersJobs =
         timeoutMs
       );
 
+      /*
+       * Capture vacancy IDs/URLs from XHR/fetch responses before
+       * navigation starts. This avoids relying only on SPA-rendered
+       * anchor tags, which are intermittent on Render.
+       */
+      const networkDiscoveredUrls =
+        new Set<string>();
+
+      attachBirVacancyNetworkCapture(
+        listingPage,
+        baseUrl,
+        networkDiscoveredUrls
+      );
+
       console.log(
         "[BIR CAREERS PROVIDER] Starting page.goto..."
       );
@@ -2375,6 +2662,41 @@ export const discoverBirCareersJobs =
           );
         }
       }
+
+      /*
+       * Merge DOM discovery with network-level discovery.
+       * The network path is the important fallback when the SPA
+       * shell loads but cards never render into <a> elements.
+       */
+      for (
+        const url of
+        networkDiscoveredUrls
+      ) {
+        if (
+          !discoveredUrls.includes(
+            url
+          )
+        ) {
+          discoveredUrls.push(
+            url
+          );
+        }
+      }
+
+      console.log(
+        "[BIR CAREERS PROVIDER] Discovery sources merged:",
+        {
+          domAndScroll:
+            discoveredUrls.length -
+            networkDiscoveredUrls.size,
+
+          network:
+            networkDiscoveredUrls.size,
+
+          total:
+            discoveredUrls.length,
+        }
+      );
 
       diagnostics.discoveredLinks =
         discoveredUrls.length;
