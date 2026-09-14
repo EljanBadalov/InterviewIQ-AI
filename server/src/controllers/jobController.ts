@@ -315,6 +315,7 @@ export const getJobs =
             "Ashby",
             "SuccessFactors",
             "Bir Careers",
+            "ABB Careers"
           ],
         },
       };
@@ -348,6 +349,7 @@ export const getJobs =
           "Ashby",
           "SuccessFactors",
           "Bir Careers",
+          "ABB Careers",
         ]);
 
       if (
