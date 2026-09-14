@@ -565,7 +565,7 @@ const tryClickLoadMore =
         "button",
         {
           name:
-            /daha çox|daha çox göstər|show more|load more|more/i,
+            /^(daha çox|daha çox göstər|show more|load more)$/i,
         }
       ),
 
@@ -573,7 +573,7 @@ const tryClickLoadMore =
         "link",
         {
           name:
-            /daha çox|daha çox göstər|show more|load more|more/i,
+            /^(daha çox|daha çox göstər|show more|load more)$/i,
         }
       ),
 
@@ -587,7 +587,10 @@ const tryClickLoadMore =
     ) {
       try {
         const count =
-          await candidate.count();
+          Math.min(
+            await candidate.count(),
+            5
+          );
 
         for (
           let index = 0;
@@ -595,7 +598,9 @@ const tryClickLoadMore =
           index += 1
         ) {
           const item =
-            candidate.nth(index);
+            candidate.nth(
+              index
+            );
 
           if (
             !(
@@ -604,6 +609,10 @@ const tryClickLoadMore =
           ) {
             continue;
           }
+
+          console.log(
+            "[BIR CAREERS PROVIDER] Clicking load-more control..."
+          );
 
           await item.click({
             timeout:
@@ -614,19 +623,27 @@ const tryClickLoadMore =
             !page.isClosed()
           ) {
             await page.waitForTimeout(
-              900
+              700
             );
           }
 
           return true;
         }
-      } catch {
-        // Try next candidate.
+      } catch (
+        error
+      ) {
+        console.log(
+          "[BIR CAREERS PROVIDER] Load-more candidate skipped:",
+          error instanceof Error
+            ? error.message
+            : String(error)
+        );
       }
     }
 
     return false;
   };
+
 
 const loadAllVacancies =
   async (
@@ -642,32 +659,94 @@ const loadAllVacancies =
     let previousSize =
       0;
 
+    const startedAt =
+      Date.now();
+
+    const MAX_DISCOVERY_MS =
+      20_000;
+
+    const MAX_ROUNDS =
+      12;
+
     for (
       let round = 0;
-      round < 40;
+      round < MAX_ROUNDS;
       round += 1
     ) {
+      if (
+        Date.now() -
+          startedAt >
+        MAX_DISCOVERY_MS
+      ) {
+        console.log(
+          "[BIR CAREERS PROVIDER] Vacancy discovery time limit reached:",
+          {
+            round,
+            discovered:
+              discovered.size,
+          }
+        );
+
+        break;
+      }
+
+      console.log(
+        "[BIR CAREERS PROVIDER] Vacancy discovery round:",
+        {
+          round:
+            round + 1,
+
+          discovered:
+            discovered.size,
+        }
+      );
+
+      console.log(
+        "[BIR CAREERS PROVIDER] Reading current vacancy URLs..."
+      );
+
       const currentUrls =
         await getCurrentVacancyUrls(
           page,
           baseUrl
         );
 
+      console.log(
+        "[BIR CAREERS PROVIDER] Current vacancy URLs read:",
+        {
+          count:
+            currentUrls.length,
+        }
+      );
+
       for (
         const url of currentUrls
       ) {
-        discovered.add(url);
+        discovered.add(
+          url
+        );
       }
+
+      console.log(
+        "[BIR CAREERS PROVIDER] Checking load-more control..."
+      );
 
       const clicked =
         await tryClickLoadMore(
           page
         );
 
+      console.log(
+        "[BIR CAREERS PROVIDER] Load-more result:",
+        {
+          clicked,
+        }
+      );
+
       try {
         await page.mouse.wheel(
           0,
-          6000
+          5000
         );
       } catch {
         // Ignore.
@@ -678,8 +757,8 @@ const loadAllVacancies =
       ) {
         await page.waitForTimeout(
           clicked
-            ? 1_000
-            : 650
+            ? 800
+            : 400
         );
       }
 
@@ -697,13 +776,33 @@ const loadAllVacancies =
       previousSize =
         discovered.size;
 
+      /*
+       * Three unchanged rounds are enough.
+       * We do not want Render to spend tens
+       * of seconds looping unnecessarily.
+       */
       if (
         stableRounds >=
-        5
+        3
       ) {
+        console.log(
+          "[BIR CAREERS PROVIDER] Vacancy list stabilized:",
+          {
+            discovered:
+              discovered.size,
+
+            rounds:
+              round + 1,
+          }
+        );
+
         break;
       }
     }
+
+    console.log(
+      "[BIR CAREERS PROVIDER] Reading final vacancy URLs..."
+    );
 
     const finalUrls =
       await getCurrentVacancyUrls(
@@ -714,8 +813,22 @@ const loadAllVacancies =
     for (
       const url of finalUrls
     ) {
-      discovered.add(url);
+      discovered.add(
+        url
+      );
     }
+
+    console.log(
+      "[BIR CAREERS PROVIDER] Vacancy discovery finished:",
+      {
+        discovered:
+          discovered.size,
+
+        elapsedMs:
+          Date.now() -
+          startedAt,
+      }
+    );
 
     return [
       ...discovered,
