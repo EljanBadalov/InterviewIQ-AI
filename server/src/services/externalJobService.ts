@@ -30,7 +30,6 @@ import {
 } from "./jobs/providers/azercellJobProvider";
 
 import {
-  discoverBirCareersJobs,
   type IBirCareersJob,
 } from "./jobs/providers/birCareersJobProvider";
 
@@ -5132,6 +5131,26 @@ const startBirCareersBackgroundRefresh =
         );
   };
 
+const BIR_CAREERS_SNAPSHOT_URL =
+  "https://raw.githubusercontent.com/EljanBadalov/InterviewIQ-AI/main/server/data/career-sources/bir-careers.json";
+
+interface IBirCareersSnapshot {
+  updatedAt:
+    string;
+
+  source:
+    string;
+
+  count:
+    number;
+
+  jobs:
+    IBirCareersJob[];
+
+  diagnostics?:
+    unknown;
+}
+
 const fetchBirCareersBoard =
   async (): Promise<IExternalJobRecord[]> => {
     const cacheKey =
@@ -5142,95 +5161,164 @@ const fetchBirCareersBoard =
         cacheKey
       );
 
-    if (
-      cached
-    ) {
-      return cached;
-    }
-
     try {
-      const discovery =
-        await discoverBirCareersJobs({
-          careersUrl:
-            "https://careers.bir.az/vacancies",
-
-          requestTimeoutMs:
-            60_000,
-
-          maxJobs:
-            10,
-
-          headless:
-            true,
-
-          detailConcurrency:
-            1,
-        });
-
-      const jobs =
-        discovery.jobs.map(
-          mapBirCareersJob
-        );
-
-      /*
-       * Never cache a transient empty Bir Careers result.
-       * The SPA occasionally loads its shell before vacancy data.
-       * Caching [] would suppress retries until the board cache TTL expires.
-       */
-      if (
-        jobs.length >
-        0
-      ) {
-        setCachedBoard(
-          cacheKey,
-          jobs
-        );
-      } else {
-        console.warn(
-          "[BIR CAREERS] Empty result was not cached."
-        );
-      }
-
       console.log(
-        "[BIR CAREERS] Board loaded:",
-        {
-          discovered:
-            discovery.urls.length,
-
-          parsed:
-            discovery.jobs.length,
-
-          accepted:
-            discovery.diagnostics
-              .acceptedJobs,
-
-          rejected:
-            discovery.diagnostics
-              .rejectedJobs,
-
-          errors:
-            discovery.diagnostics
-              .errors.length,
-
-          returned:
-            jobs.length,
-        }
+        "[BIR CAREERS] Fetching GitHub snapshot..."
       );
 
-      return jobs;
+      const controller =
+        new AbortController();
+
+      const timeout =
+        setTimeout(
+          () =>
+            controller.abort(),
+          15_000
+        );
+
+      try {
+        const response =
+          await fetch(
+            BIR_CAREERS_SNAPSHOT_URL,
+            {
+              method:
+                "GET",
+
+              headers: {
+                Accept:
+                  "application/json",
+
+                "User-Agent":
+                  "InterviewIQ/1.0",
+              },
+
+              signal:
+                controller.signal,
+
+              /*
+               * Always request the latest GitHub snapshot.
+               * Our own in-memory board cache below is responsible
+               * for short-term reuse inside this backend process.
+               */
+              cache:
+                "no-store",
+            }
+          );
+
+        if (
+          !response.ok
+        ) {
+          throw new Error(
+            `GitHub snapshot request failed: ${response.status} ${response.statusText}`
+          );
+        }
+
+        const snapshot =
+          await response.json() as
+            IBirCareersSnapshot;
+
+        if (
+          !snapshot ||
+          !Array.isArray(
+            snapshot.jobs
+          )
+        ) {
+          throw new Error(
+            "Invalid Bir Careers snapshot format."
+          );
+        }
+
+        if (
+          snapshot.jobs.length ===
+          0
+        ) {
+          console.warn(
+            "[BIR CAREERS] GitHub snapshot contains 0 jobs."
+          );
+
+          if (
+            cached
+          ) {
+            console.log(
+              "[BIR CAREERS] Using previous cached jobs:",
+              {
+                jobs:
+                  cached.length,
+              }
+            );
+
+            return cached;
+          }
+
+          return [];
+        }
+
+        const jobs =
+          snapshot.jobs.map(
+            mapBirCareersJob
+          );
+
+        if (
+          jobs.length >
+          0
+        ) {
+          setCachedBoard(
+            cacheKey,
+            jobs
+          );
+        }
+
+        console.log(
+          "[BIR CAREERS] GitHub snapshot loaded:",
+          {
+            snapshotUpdatedAt:
+              snapshot.updatedAt,
+
+            declaredCount:
+              snapshot.count,
+
+            snapshotJobs:
+              snapshot.jobs.length,
+
+            mappedJobs:
+              jobs.length,
+          }
+        );
+
+        return jobs;
+      } finally {
+        clearTimeout(
+          timeout
+        );
+      }
     } catch (
       error
     ) {
       console.warn(
-        "[BIR CAREERS] Board failed:",
+        "[BIR CAREERS] GitHub snapshot failed:",
         {
           error:
-            error instanceof
-              Error
+            error instanceof Error
               ? error.message
-              : error,
+              : String(
+                  error
+                ),
         }
       );
+
+      if (
+        cached
+      ) {
+        console.log(
+          "[BIR CAREERS] Falling back to cached jobs:",
+          {
+            jobs:
+              cached.length,
+          }
+        );
+
+        return cached;
+      }
 
       return [];
     }
