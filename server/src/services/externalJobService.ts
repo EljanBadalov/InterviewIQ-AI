@@ -5080,10 +5080,10 @@ const fetchBirCareersBoard =
             "https://careers.bir.az/vacancies",
 
           requestTimeoutMs:
-            60_000,
+            30_000,
 
           maxJobs:
-            150,
+            15,
 
           headless:
             true,
