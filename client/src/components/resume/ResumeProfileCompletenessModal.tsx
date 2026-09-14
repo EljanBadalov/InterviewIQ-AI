@@ -1756,11 +1756,19 @@ const ResumeAnalysisPage =
           open={
             improveModalOpen
           }
+
+          sourceAnalysisId={
+            result?.analysisId ??
+            result?._id ??
+            ""
+          }
+
           onClose={() =>
             setImproveModalOpen(
               false
             )
           }
+
           onCompleted={() => {
             setImproveModalOpen(
               false

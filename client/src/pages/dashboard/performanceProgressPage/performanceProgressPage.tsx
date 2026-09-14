@@ -7,7 +7,6 @@ import {
 import {
   FiActivity,
   FiAward,
-  FiBarChart2,
   FiCheckCircle,
   FiChevronDown,
   FiChevronUp,
@@ -844,68 +843,6 @@ const performanceProgressPage =
               b.score
           )[0];
         },
-        [
-          progress,
-        ]
-      );
-
-    const skillPerformance =
-      useMemo(
-        () => [
-          {
-            name:
-              "Technical Accuracy",
-
-            score:
-              clampScore(
-                progress
-                  ?.averageTechnicalAccuracy ??
-                  0
-              ),
-
-            description:
-              "Correctness, role-specific knowledge, and technical reasoning.",
-
-            icon:
-              <FiCode />,
-          },
-
-          {
-            name:
-              "Completeness",
-
-            score:
-              clampScore(
-                progress
-                  ?.averageCompleteness ??
-                  0
-              ),
-
-            description:
-              "How fully your answers address the interview question.",
-
-            icon:
-              <FiCheckCircle />,
-          },
-
-          {
-            name:
-              "Communication",
-
-            score:
-              clampScore(
-                progress
-                  ?.averageCommunication ??
-                  0
-              ),
-
-            description:
-              "Clarity, structure, confidence, and explanation quality.",
-
-            icon:
-              <FiMessageCircle />,
-          },
-        ],
         [
           progress,
         ]
