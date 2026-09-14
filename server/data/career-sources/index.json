@@ -1,0 +1,16 @@
+{
+  "updatedAt": "2026-09-14T19:45:19.541Z",
+  "sourceCount": 1,
+  "successfulSources": 1,
+  "failedSources": 0,
+  "totalJobs": 67,
+  "sources": [
+    {
+      "id": "bir-careers",
+      "name": "Bir Careers",
+      "success": true,
+      "count": 67,
+      "updatedAt": "2026-09-14T19:45:19.504Z"
+    }
+  ]
+}
