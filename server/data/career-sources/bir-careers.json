@@ -1,10 +1,155 @@
 {
   "id": "bir-careers",
   "name": "Bir Careers",
-  "updatedAt": "2026-09-15T03:40:36.038Z",
+  "updatedAt": "2026-09-15T09:16:29.429Z",
   "success": true,
-  "count": 64,
+  "count": 66,
   "jobs": [
+    {
+      "externalId": "8335",
+      "title": "Business Analyst Intern",
+      "company": "Kapital Bank / Bir",
+      "brand": "Birbank",
+      "location": "Bakı",
+      "summary": "Birbank is seeking a highly motivated interns for Business Analyst role. This internship offers a great opportunity to gain hands-on experience in business analysis, project management, and data interpretation within the banking sector. The ideal candidate will assist in analyzing business data, identifying trends, and helping implement actionable insights to improve business outcomes.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
+      "description": "Birbank is seeking a highly motivated interns for Business Analyst role. This internship offers a great opportunity to gain hands-on experience in business analysis, project management, and data interpretation within the banking sector. The ideal candidate will assist in analyzing business data, identifying trends, and helping implement actionable insights to improve business outcomes.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
+      "requirements": [
+        "Currently pursuing a degree in Data Science, Data Analytics Information Systems, Business Analytics, or a related field.",
+        "Strong analytical skills with attention to detail and a passion for working with data.",
+        "Familiarity with data management principles, databases, and data modeling concepts.",
+        "Proficiency in Microsoft Excel; experience with SQL is a plus.",
+        "Ability to work in a collaborative, fast-paced environment.",
+        "Strong verbal and written communication skills."
+      ],
+      "responsibilities": [
+        "Collaborate with the business analyst team to gather, analyze, and interpret data.",
+        "Assist in the preparation of reports and presentations for senior management.",
+        "Support process mapping and workflow analysis.",
+        "Contribute to requirements gathering for new projects.",
+        "Help identify key performance indicators (KPIs) and business performance metrics.",
+        "Provide insights into customer needs and business trends."
+      ],
+      "benefits": [],
+      "skills": [
+        "SQL",
+        "Excel",
+        "Data Interpretation",
+        "Data Modeling",
+        "Performance",
+        "Databases"
+      ],
+      "employmentType": "full-time",
+      "experienceLevel": "intern",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": "17.09.2026",
+      "postedAt": null,
+      "url": "https://careers.bir.az/vacancies/8335",
+      "applyUrl": "https://careers.bir.az/vacancies/8335#attachFile",
+      "source": "Bir Careers"
+    },
+    {
+      "externalId": "8046",
+      "title": "Maliyyə Menecmenti Departamentinin Strategiya, Büdcə və Analitika Şöbəsinin Meneceri",
+      "company": "Kapital Bank / Bir",
+      "brand": "Birbank",
+      "location": "Bakı",
+      "summary": "Birbankın Maliyyə Menecmenti Departamentinin Strategiya, büdcə və analitika şöbəsinin mütəxəssisi vəzifəsinə maliyyə planlaşdırılması, büdcələşdirmə və analitika sahəsində təcrübəyə, güclü analitik düşüncəyə və maliyyə modelləri ilə işləmək bacarığına malik peşəkar axtarırıq.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
+      "description": "Birbankın Maliyyə Menecmenti Departamentinin Strategiya, büdcə və analitika şöbəsinin mütəxəssisi vəzifəsinə maliyyə planlaşdırılması, büdcələşdirmə və analitika sahəsində təcrübəyə, güclü analitik düşüncəyə və maliyyə modelləri ilə işləmək bacarığına malik peşəkar axtarırıq.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
+      "requirements": [
+        "Maliyyə, İqtisadiyyat və ya əlaqəli sahə üzrə ali təhsil;",
+        "Maliyyə planlaşdırılması, büdcələşdirmə və ya maliyyə təhlili sahəsində minimum 5 il iş təcrübəsi;",
+        "Maliyyə modelləşdirilməsi və büdcə planlaşdırılması üzrə təcrübə;",
+        "Yüksək səviyyədə MS Excel bilikləri;",
+        "SQL bilikləri arzuolunandır;",
+        "Yüksək səviyyədə Azərbaycan dili və ingilis dili bilikləri;",
+        "Güclü analitik düşünmə və riyazi/statistik təhlil bacarığı;",
+        "Detallara diqqət və yüksək dəqiqliklə işləmə bacarığı;",
+        "Prioritetləri düzgün müəyyən etmə və vaxtı effektiv idarə etmə bacarığı;",
+        "Komanda ilə işləmə və kommunikasiya bacarığı;",
+        "Yüksək məsuliyyətlilik və təşəbbüskarlıq."
+      ],
+      "responsibilities": [
+        "Bankın illik və çoxillik (3-5 illik) maliyyə modellərini hazırlamaq;",
+        "Büdcə planlaşdırma prosesini idarə etmək: illik büdcəni formalaşdırmaq, icrasına nəzarət və kənarlaşmaları təhlil etmək;",
+        "Xərcləri bölüşdürülməsi (cost allocation) metodologiyalarını hazırlamaq və tətbiq etmək, o cümlədən kanallar (rəqəmsal, filial) üzrə OPEX bölgüsünü həyata keçirmək;",
+        "Aylıq-rüblük maliyyə hesabatlarını hazırlamaq və rəhbərliyə təqdim olunması üçün material və analitik dəstəyi təmin etmək;",
+        "Bankın maliyyə göstəricilərini hesablamaq və təhlil etmək;",
+        "Biznes bölmələri ilə əməkdaşlıq əsasında məlumat toplamaq, fərziyyələr formalaşdırmaq və maliyyə proqnozları qurmaq;",
+        "Struktur bölmələrin fəaliyyət nəticələrinin plan-fakt təhlilini aparmaq və müvafiq tövsiyələr hazırlamaq;",
+        "Rəhbərlik üçün strateji qərarların qəbulunda dəstək məqsədilə analitik təqdimatlar hazırlamaq;",
+        "Hesabat komandalarının işinin koordinasiyası, tapşırıqların bölüşdürülməsi və nəticələrin keyfiyyət yoxlaması",
+        "Digər struktur və biznes bölmələri ilə məlumat mübadiləsinin təşkili",
+        "Mütəxəssislərin mentorluğu və peşəkar inkişafı"
+      ],
+      "benefits": [],
+      "skills": [
+        "SQL",
+        "Excel"
+      ],
+      "employmentType": "full-time",
+      "experienceLevel": "senior",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": "17.09.2026",
+      "postedAt": null,
+      "url": "https://careers.bir.az/vacancies/8046",
+      "applyUrl": "https://careers.bir.az/vacancies/8046#attachFile",
+      "source": "Bir Careers"
+    },
+    {
+      "externalId": "8000",
+      "title": "Maliyyə Menecmenti Departamentinin Strategiya, Büdcə və Analitika Şöbəsinin Aparıcı Mütəxəssisi",
+      "company": "Kapital Bank / Bir",
+      "brand": "Birbank",
+      "location": "Bakı",
+      "summary": "Birbankın Maliyyə Menecmenti Departamentinin Strategiya, büdcə və analitika şöbəsinin mütəxəssisi vəzifəsinə maliyyə planlaşdırılması, büdcələşdirmə və analitika sahəsində təcrübəyə, güclü analitik düşüncəyə və maliyyə modelləri ilə işləmək bacarığına malik peşəkar axtarırıq.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
+      "description": "Birbankın Maliyyə Menecmenti Departamentinin Strategiya, büdcə və analitika şöbəsinin mütəxəssisi vəzifəsinə maliyyə planlaşdırılması, büdcələşdirmə və analitika sahəsində təcrübəyə, güclü analitik düşüncəyə və maliyyə modelləri ilə işləmək bacarığına malik peşəkar axtarırıq.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
+      "requirements": [
+        "Maliyyə, İqtisadiyyat və ya əlaqəli sahə üzrə ali təhsil;",
+        "Maliyyə planlaşdırılması, büdcələşdirmə və ya maliyyə təhlili sahəsində minimum 2 il iş təcrübəsi;",
+        "Maliyyə modelləşdirilməsi və büdcə planlaşdırılması üzrə biliklər;",
+        "Yüksək səviyyədə MS Excel bilikləri;",
+        "SQL bilikləri arzuolunandır;",
+        "Yüksək səviyyədə Azərbaycan dili və ingilis dili bilikləri;",
+        "Güclü analitik düşünmə və riyazi/statistik təhlil bacarığı;",
+        "Detallara diqqət və yüksək dəqiqliklə işləmə bacarığı;",
+        "Prioritetləri düzgün müəyyən etmə və vaxtı effektiv idarə etmə bacarığı;",
+        "Komanda ilə işləmə və kommunikasiya bacarığı;",
+        "Yüksək məsuliyyətlilik və təşəbbüskarlıq."
+      ],
+      "responsibilities": [
+        "Bankın illik və çoxillik (3-5 illik) maliyyə modellərinin hazırlanmasında iştirak etmək;",
+        "Büdcə planlaşdırma prosesini idarə etmək: illik büdcəni formalaşdırmaq, icrasına nəzarət və kənarlaşmaları təhlil etmək;",
+        "Xərcləri bölüşdürülməsi (cost allocation) metodologiyalarını hazırlamaq və tətbiq etmək, o cümlədən kanallar (rəqəmsal, filial) üzrə OPEX bölgüsünü həyata keçirmək;",
+        "Aylıq-rüblük maliyyə hesabatlarını hazırlamaq və rəhbərliyə təqdim olunması üçün material və analitik dəstəyi təmin etmək;",
+        "Bankın maliyyə göstəricilərini hesablamaq və təhlil etmək;",
+        "Biznes bölmələri ilə əməkdaşlıq əsasında məlumat toplamaq, fərziyyələr formalaşdırmaq və maliyyə proqnozları qurmaq;",
+        "Struktur bölmələrin fəaliyyət nəticələrinin plan-fakt təhlilini aparmaq və müvafiq tövsiyələr hazırlamaq;",
+        "Rəhbərlik üçün strateji qərarların qəbulunda dəstək məqsədilə analitik təqdimatlar hazırlamaq;",
+        "Hesabat proseslərinin avtomatlaşdırılması istiqamətində təkliflər vermək və tətbiq etmək."
+      ],
+      "benefits": [],
+      "skills": [
+        "SQL",
+        "Excel"
+      ],
+      "employmentType": "full-time",
+      "experienceLevel": "senior",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": "17.09.2026",
+      "postedAt": null,
+      "url": "https://careers.bir.az/vacancies/8000",
+      "applyUrl": "https://careers.bir.az/vacancies/8000#attachFile",
+      "source": "Bir Careers"
+    },
     {
       "externalId": "8333",
       "title": "İnsan Resursları Departamentinin İşə qəbul üzrə təcrübəçisi",
@@ -407,49 +552,6 @@
       "postedAt": null,
       "url": "https://careers.bir.az/vacancies/7954",
       "applyUrl": "https://careers.bir.az/vacancies/7954#attachFile",
-      "source": "Bir Careers"
-    },
-    {
-      "externalId": "8306",
-      "title": "Community Associate internship",
-      "company": "Kapital Bank / Bir",
-      "brand": "Bir",
-      "location": "Bakı",
-      "summary": "This is not a traditional internship. The Community Associate will operate as a core member of the community team — taking on real ownership across community operations, engagement, and content pipeline management. The role demands someone who is self-directed, analytically sharp, and capable of working across multiple teams without constant supervision.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
-      "description": "This is not a traditional internship. The Community Associate will operate as a core member of the community team — taking on real ownership across community operations, engagement, and content pipeline management. The role demands someone who is self-directed, analytically sharp, and capable of working across multiple teams without constant supervision.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
-      "requirements": [
-        "Full professional proficiency in English — written and verbal",
-        "Strong analytical thinking: ability to read data, draw conclusions, and act on them",
-        "Creative and out-of-the-box thinking — able to propose ideas, not just execute instructions",
-        "Highly organized with strong attention to cross-team dependencies and follow-through",
-        "Familiarity with community platforms such as Discord, Slack, GitHub, or Telegram",
-        "Technical background or genuine interest in tech — able to hold credible conversations with engineers, data professionals, and product teams",
-        "Prior experience in community management, event coordination, or a related field",
-        "Working Russian knowledge is preffered"
-      ],
-      "responsibilities": [
-        "Monitor and track community member engagement metrics across platforms; identify patterns and flag risks or opportunities to the Community Lead",
-        "Manage day-to-day activity across community platforms — channel monitoring, announcements, and member communications",
-        "Coordinate the execution of community initiatives, workshops, and events — managing timelines, cross-team dependencies, and stakeholder follow-ups",
-        "Liaise with internal teams to track deliverables and ensure community-related workstreams stay on schedule",
-        "Propose new community initiatives grounded in the existing strategy and current engagement data",
-        "Work closely with Community Champions on event topics, speaker selection, and member engagement activities",
-        "Drive the community content creation pipeline — not writing content directly, but ensuring that designated contributors deliver consistently and on time"
-      ],
-      "benefits": [],
-      "skills": [
-        "Monitoring"
-      ],
-      "employmentType": "full-time",
-      "experienceLevel": "intern",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "17.09.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8306",
-      "applyUrl": "https://careers.bir.az/vacancies/8306#attachFile",
       "source": "Bir Careers"
     },
     {
@@ -1271,7 +1373,7 @@
       "description": "We are looking for a Product Designer to join our team and help shape intuitive, user-centric digital products and experiences.\nIn this role, you will be involved in the end-to-end product design process - from understanding customer needs and identifying pain points to developing concepts, creating prototypes, designing user interfaces, and evaluating solutions. You will work closely with Product Owners, and other stakeholders to transform business and user needs into simple, engaging, and valuable digital experiences.",
       "requirements": [
         "Higher education degree;",
-        "Minimum 1–2 years of relevant work experience;"
+        "Minimum 3 years of relevant work experience;"
       ],
       "responsibilities": [
         "Experience managing products end-to-end, from defining the product framework and concept through design, delivery, and evaluation, with a strong focus on identifying product opportunities;",
@@ -3558,9 +3660,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 64,
-    "detailPagesFetched": 64,
-    "acceptedJobs": 64,
+    "discoveredLinks": 66,
+    "detailPagesFetched": 66,
+    "acceptedJobs": 66,
     "rejectedJobs": 0,
     "errors": []
   }
