@@ -223,37 +223,96 @@ def extract_generated_text(data: Dict[str, Any]) -> str:
 
 
 def build_llama_command() -> list[str]:
-    model_spec = f"{QWEN_MODEL_REPO}:" f"{QWEN_MODEL_QUANT}"
+    model_spec = (
+        f"{QWEN_MODEL_REPO}:"
+        f"{QWEN_MODEL_QUANT}"
+    )
 
     command = [
         LLAMA_SERVER_PATH,
+
         "-hf",
         model_spec,
+
         "--host",
         LLAMA_HOST,
+
         "--port",
         str(LLAMA_PORT),
+
+        # =====================================================
+        # CONTEXT
+        # =====================================================
         "--ctx-size",
         str(QWEN_CONTEXT_SIZE),
+
+        # =====================================================
+        # PARALLEL / SLOTS
+        #
+        # Render CPU instance-də yalnız bir generation slot
+        # istifadə edirik. Default 4 slot CPU resursunu
+        # lazımsız yerə bölürdü.
+        # =====================================================
+        "--parallel",
+        os.getenv(
+            "QWEN_PARALLEL",
+            "1",
+        ),
+
+        # =====================================================
+        # CHAT TEMPLATE
+        # =====================================================
         "--jinja",
-        # Important for your current laptop.
-        # Render can override this later with an
-        # environment variable / deployment configuration.
+
+        # =====================================================
+        # GPU
+        #
+        # Render deployment hazırda CPU-only işləyir.
+        # Daha sonra GPU server istifadə etsək ENV vasitəsilə
+        # dəyişdirə bilərik.
+        # =====================================================
         "--n-gpu-layers",
         os.getenv(
             "QWEN_GPU_LAYERS",
             "0",
         ),
-        # Keep CPU usage reasonable on smaller machines.
+
+        # =====================================================
+        # CPU THREADS
+        # =====================================================
         "--threads",
         os.getenv(
             "QWEN_THREADS",
-            "4",
+            "2",
+        ),
+
+        # Prompt/batch processing üçün thread sayı.
+        "--threads-batch",
+        os.getenv(
+            "QWEN_THREADS_BATCH",
+            "2",
+        ),
+
+        # =====================================================
+        # BATCH SETTINGS
+        #
+        # Aşağı resurslu Render instance üçün daha konservativ
+        # batch ölçüləri.
+        # =====================================================
+        "--batch-size",
+        os.getenv(
+            "QWEN_BATCH_SIZE",
+            "128",
+        ),
+
+        "--ubatch-size",
+        os.getenv(
+            "QWEN_UBATCH_SIZE",
+            "64",
         ),
     ]
 
     return command
-
 
 def start_llama_server() -> None:
     global llama_process
