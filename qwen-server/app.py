@@ -8,7 +8,6 @@ import requests
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
-
 # ============================================================
 # Configuration
 # ============================================================
@@ -100,6 +99,7 @@ app = FastAPI(
 # Request / Response Models
 # ============================================================
 
+
 class GenerateRequest(BaseModel):
     message: str = Field(
         ...,
@@ -144,33 +144,29 @@ class GenerateResponse(BaseModel):
 llama_process: Optional[subprocess.Popen] = None
 llama_ready = False
 llama_lock = threading.Lock()
-
+generation_lock = threading.Lock()
 
 # ============================================================
 # URLs
 # ============================================================
 
+
 def get_llama_base_url() -> str:
-    return (
-        f"http://{LLAMA_HOST}:{LLAMA_PORT}"
-    )
+    return f"http://{LLAMA_HOST}:{LLAMA_PORT}"
 
 
 def get_llama_health_url() -> str:
-    return (
-        f"{get_llama_base_url()}/health"
-    )
+    return f"{get_llama_base_url()}/health"
 
 
 def get_llama_chat_url() -> str:
-    return (
-        f"{get_llama_base_url()}/v1/chat/completions"
-    )
+    return f"{get_llama_base_url()}/v1/chat/completions"
 
 
 # ============================================================
 # Health check
 # ============================================================
+
 
 def is_llama_ready() -> bool:
     try:
@@ -188,6 +184,7 @@ def is_llama_ready() -> bool:
 # ============================================================
 # Response Extraction Helper
 # ============================================================
+
 
 def extract_generated_text(data: Dict[str, Any]) -> str:
     """Safely extracts text whether Qwen returns content, reasoning, or raw text."""
@@ -224,29 +221,21 @@ def extract_generated_text(data: Dict[str, Any]) -> str:
 # llama.cpp startup
 # ============================================================
 
+
 def build_llama_command() -> list[str]:
-    model_spec = (
-        f"{QWEN_MODEL_REPO}:"
-        f"{QWEN_MODEL_QUANT}"
-    )
+    model_spec = f"{QWEN_MODEL_REPO}:" f"{QWEN_MODEL_QUANT}"
 
     command = [
         LLAMA_SERVER_PATH,
-
         "-hf",
         model_spec,
-
         "--host",
         LLAMA_HOST,
-
         "--port",
         str(LLAMA_PORT),
-
         "--ctx-size",
         str(QWEN_CONTEXT_SIZE),
-
         "--jinja",
-
         # Important for your current laptop.
         # Render can override this later with an
         # environment variable / deployment configuration.
@@ -255,7 +244,6 @@ def build_llama_command() -> list[str]:
             "QWEN_GPU_LAYERS",
             "0",
         ),
-
         # Keep CPU usage reasonable on smaller machines.
         "--threads",
         os.getenv(
@@ -274,9 +262,7 @@ def start_llama_server() -> None:
     if is_llama_ready():
         llama_ready = True
 
-        print(
-            "llama.cpp is already running."
-        )
+        print("llama.cpp is already running.")
 
         return
 
@@ -333,18 +319,14 @@ def start_llama_server() -> None:
             return
 
         for line in llama_process.stdout:
-            print(
-                f"[llama.cpp] {line.rstrip()}"
-            )
+            print(f"[llama.cpp] {line.rstrip()}")
 
     threading.Thread(
         target=stream_logs,
         daemon=True,
     ).start()
 
-    print(
-        "Waiting for llama.cpp to become ready..."
-    )
+    print("Waiting for llama.cpp to become ready...")
 
     # Model download + loading can take a while.
     for attempt in range(300):
@@ -352,9 +334,7 @@ def start_llama_server() -> None:
             llama_ready = True
 
             print("=" * 70)
-            print(
-                "llama.cpp is ready."
-            )
+            print("llama.cpp is ready.")
             print(
                 "URL:",
                 get_llama_base_url(),
@@ -364,43 +344,25 @@ def start_llama_server() -> None:
             return
 
         # Detect an early process failure.
-        if (
-            llama_process.poll()
-            is not None
-        ):
-            raise RuntimeError(
-                "llama-server stopped before "
-                "becoming ready."
-            )
+        if llama_process.poll() is not None:
+            raise RuntimeError("llama-server stopped before " "becoming ready.")
 
         if attempt % 10 == 0:
-            print(
-                f"Still waiting... "
-                f"{attempt}s"
-            )
+            print(f"Still waiting... " f"{attempt}s")
 
         time.sleep(1)
 
-    raise RuntimeError(
-        "llama.cpp did not become ready "
-        "within 300 seconds."
-    )
+    raise RuntimeError("llama.cpp did not become ready " "within 300 seconds.")
 
 
 def ensure_llama_server() -> None:
     global llama_ready
 
-    if (
-        llama_ready
-        and is_llama_ready()
-    ):
+    if llama_ready and is_llama_ready():
         return
 
     with llama_lock:
-        if (
-            llama_ready
-            and is_llama_ready()
-        ):
+        if llama_ready and is_llama_ready():
             return
 
         start_llama_server()
@@ -409,6 +371,7 @@ def ensure_llama_server() -> None:
 # ============================================================
 # Startup
 # ============================================================
+
 
 @app.on_event("startup")
 def startup_event():
@@ -436,6 +399,7 @@ def startup_event():
 # Shutdown
 # ============================================================
 
+
 @app.on_event("shutdown")
 def shutdown_event():
     global llama_process
@@ -446,22 +410,15 @@ def shutdown_event():
     if llama_process is None:
         return
 
-    print(
-        "Stopping llama.cpp..."
-    )
+    print("Stopping llama.cpp...")
 
     try:
         llama_process.terminate()
 
-        llama_process.wait(
-            timeout=10
-        )
+        llama_process.wait(timeout=10)
 
     except subprocess.TimeoutExpired:
-        print(
-            "llama.cpp did not stop gracefully. "
-            "Killing process."
-        )
+        print("llama.cpp did not stop gracefully. " "Killing process.")
 
         llama_process.kill()
 
@@ -479,15 +436,12 @@ def shutdown_event():
 # Routes
 # ============================================================
 
+
 @app.get("/")
 def root():
     return {
         "service": "InterviewIQ Qwen Server",
-        "status": (
-            "running"
-            if llama_ready
-            else "starting"
-        ),
+        "status": ("running" if llama_ready else "starting"),
         "model": QWEN_MODEL_REPO,
         "quantization": QWEN_MODEL_QUANT,
         "llamaCpp": get_llama_base_url(),
@@ -499,11 +453,7 @@ def health():
     llama_status = is_llama_ready()
 
     return {
-        "status": (
-            "healthy"
-            if llama_status
-            else "starting"
-        ),
+        "status": ("healthy" if llama_status else "starting"),
         "model": QWEN_MODEL_REPO,
         "quantization": QWEN_MODEL_QUANT,
         "llamaCpp": llama_status,
@@ -513,6 +463,7 @@ def health():
 # ============================================================
 # Generate
 # ============================================================
+
 
 @app.post(
     "/generate",
@@ -547,77 +498,141 @@ def generate(
             "temperature": request.temperature,
             "top_p": request.top_p,
             "stream": False,
-            "chat_template_kwargs": {
-                "enable_thinking": False
-            }
+            "chat_template_kwargs": {"enable_thinking": False},
         }
 
-        response = requests.post(
-            get_llama_chat_url(),
-            json=payload,
-            headers={"Content-Type": "application/json"},
-            timeout=300,
+        print(
+            "[QWEN] Generation request received.",
+            {
+                "messageLength": len(request.message),
+                "systemLength": len(request.system or ""),
+                "maxTokens": request.max_tokens,
+                "temperature": request.temperature,
+                "topP": request.top_p,
+            },
         )
 
-        if response.status_code != 200:
-            raise HTTPException(
-                status_code=500,
-                detail={
-                    "message": (
-                        "Qwen generation failed."
+        print("[QWEN] Waiting for generation slot...")
+
+        with generation_lock:
+            print("[QWEN] Generation slot acquired.")
+
+            started_at = time.time()
+
+            response = requests.post(
+                get_llama_chat_url(),
+                json=payload,
+                headers={
+                    "Content-Type": "application/json",
+                },
+                timeout=300,
+            )
+
+            elapsed_seconds = time.time() - started_at
+
+            print(
+                "[QWEN] llama.cpp response received.",
+                {
+                    "status": response.status_code,
+                    "elapsedSeconds": round(
+                        elapsed_seconds,
+                        2,
                     ),
-                    "llamaStatusCode": (
-                        response.status_code
-                    ),
-                    "llamaResponse": (
-                        response.text
-                    ),
+                    "bodyLength": len(response.text),
                 },
             )
 
-        data = response.json()
+        if response.status_code != 200:
+            print(
+                "[QWEN] llama.cpp generation failed.",
+                {
+                    "status": response.status_code,
+                    "response": response.text[:1000],
+                },
+            )
+
+            raise HTTPException(
+                status_code=500,
+                detail={
+                    "message": "Qwen generation failed.",
+                    "llamaStatusCode": response.status_code,
+                    "llamaResponse": response.text,
+                },
+            )
+
+        try:
+            data = response.json()
+
+        except ValueError as error:
+            print(
+                "[QWEN] Invalid JSON returned by llama.cpp:",
+                response.text[:1000],
+            )
+
+            raise HTTPException(
+                status_code=502,
+                detail={
+                    "message": "llama.cpp returned invalid JSON.",
+                    "error": str(error),
+                },
+            )
+
         generated_text = extract_generated_text(data)
 
         if not generated_text:
+            print(
+                "[QWEN] Empty generated response.",
+                {
+                    "llamaResponseKeys": list(data.keys()),
+                },
+            )
+
             raise HTTPException(
                 status_code=500,
-                detail=(
-                    "Qwen returned an empty response."
-                ),
+                detail=("Qwen returned an empty response."),
             )
+
+        print(
+            "[QWEN] Generation completed successfully.",
+            {
+                "responseLength": len(generated_text),
+            },
+        )
 
         return GenerateResponse(
             response=generated_text,
-            model=(
-                f"{QWEN_MODEL_REPO}:"
-                f"{QWEN_MODEL_QUANT}"
-            ),
-            usage=data.get(
-                "usage"
-            ),
+            model=(f"{QWEN_MODEL_REPO}:" f"{QWEN_MODEL_QUANT}"),
+            usage=data.get("usage"),
         )
 
     except HTTPException:
         raise
 
     except requests.Timeout:
+        print("[QWEN] Generation request timed out.")
+
         raise HTTPException(
             status_code=504,
-            detail=(
-                "Qwen generation timed out."
-            ),
+            detail=("Qwen generation timed out."),
         )
 
     except requests.RequestException as error:
+        print(
+            "[QWEN] Could not communicate with llama.cpp:",
+            str(error),
+        )
+
         raise HTTPException(
             status_code=502,
-            detail=(
-                f"Could not communicate with "
-                f"llama.cpp: {error}"
-            ),
+            detail=(f"Could not communicate with " f"llama.cpp: {error}"),
         )
 
     except Exception as error:
+        print(
+            "[QWEN] Unexpected generation error:",
+            repr(error),
+        )
+
         raise HTTPException(
             status_code=500,
             detail=str(error),

@@ -142,7 +142,7 @@ const DEFAULT_MAX_COMPLETION_TOKENS = 1024;
  * budget for faster, more reliable natural-language replies.
  */
 const CHAT_DEFAULT_TIMEOUT_MS = 300_000;
-const CHAT_DEFAULT_RETRIES = 0;
+const CHAT_DEFAULT_RETRIES = 2;
 const CHAT_DEFAULT_TEMPERATURE = 0.5;
 const CHAT_DEFAULT_TOP_P = 0.9;
 const CHAT_DEFAULT_MAX_COMPLETION_TOKENS = 800;
@@ -414,19 +414,77 @@ const callFastAPIQwen = async (
         await response.text();
 
       let parsed:
-        IFastAPIGenerateResponse;
+        IFastAPIGenerateResponse =
+        {};
 
-      try {
-        parsed =
-          rawText
-            ? JSON.parse(
-                rawText
+      if (
+        rawText
+      ) {
+        try {
+          parsed =
+            JSON.parse(
+              rawText
+            ) as IFastAPIGenerateResponse;
+        } catch {
+          const rawPreview =
+            rawText
+              .replace(
+                /\s+/g,
+                " "
               )
-            : {};
-      } catch {
-        throw new Error(
-          `Qwen Service returned invalid HTTP JSON. Status: ${response.status}; bodyLength=${rawText.length}`
-        );
+              .trim()
+              .slice(
+                0,
+                500
+              );
+
+          console.warn(
+            `[Qwen Service] Non-JSON HTTP response | status=${response.status} | body=${rawPreview || "<empty>"}`
+          );
+
+          if (
+            !response.ok
+          ) {
+            lastError =
+              new Error(
+                `Qwen Service returned HTTP ${response.status}: ${
+                  rawPreview ||
+                  "Empty response body"
+                }`
+              );
+
+            if (
+              attempt < retries &&
+              isRetryableStatus(
+                response.status
+              )
+            ) {
+              const delay =
+                getRetryDelay(
+                  attempt
+                );
+
+              console.warn(
+                `[Qwen Service] Retryable HTTP ${response.status}. Retrying in ${delay}ms...`
+              );
+
+              await sleep(
+                delay
+              );
+
+              continue;
+            }
+
+            throw lastError;
+          }
+
+          throw new Error(
+            `Qwen Service returned invalid JSON with HTTP ${response.status}: ${
+              rawPreview ||
+              "Empty response body"
+            }`
+          );
+        }
       }
 
       const elapsedMs =
@@ -592,9 +650,9 @@ export const generateQwenText = async (
  *
  * Important:
  * - returns plain text, NOT JSON
- * - allows up to 4 minutes for slow CPU inference
+ * - allows up to 5 minutes for slow CPU inference
  * - limits output size so local generation does not run unnecessarily long
- * - does not retry by default, preventing duplicate long-running requests
+ * - retries transient failures with exponential backoff
  *
  * Callers can still override any option explicitly.
  */
