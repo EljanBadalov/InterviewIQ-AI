@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-15T22:47:51.414Z",
+  "updatedAt": "2026-09-16T03:38:15.852Z",
   "sourceCount": 2,
   "successfulSources": 2,
   "failedSources": 0,
@@ -10,14 +10,14 @@
       "name": "Bir Careers",
       "success": true,
       "count": 70,
-      "updatedAt": "2026-09-15T22:46:32.067Z"
+      "updatedAt": "2026-09-16T03:36:57.207Z"
     },
     {
       "id": "abb-careers",
       "name": "ABB Careers",
       "success": true,
       "count": 99,
-      "updatedAt": "2026-09-15T22:47:51.411Z"
+      "updatedAt": "2026-09-16T03:38:15.849Z"
     }
   ]
 }
