@@ -1,9 +1,9 @@
 {
   "id": "bir-careers",
   "name": "Bir Careers",
-  "updatedAt": "2026-09-16T16:17:00.910Z",
+  "updatedAt": "2026-09-16T22:42:50.847Z",
   "success": true,
-  "count": 71,
+  "count": 70,
   "jobs": [
     {
       "externalId": "8013",
@@ -198,45 +198,6 @@
       "postedAt": null,
       "url": "https://careers.bir.az/vacancies/8279",
       "applyUrl": "https://careers.bir.az/vacancies/8279#attachFile",
-      "source": "Bir Careers"
-    },
-    {
-      "externalId": "8343",
-      "title": "UX/UI Intern",
-      "company": "Kapital Bank / Bir",
-      "brand": "Birbank",
-      "location": "Bakı",
-      "summary": "Birbank olaraq müştəri təcrübəsini yeni səviyyəyə qaldırmaq üçün həvəsli və yaradıcı gəncləri CX komandamıza təcrübə proqramına dəvət edirik!\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
-      "description": "Birbank olaraq müştəri təcrübəsini yeni səviyyəyə qaldırmaq üçün həvəsli və yaradıcı gəncləri CX komandamıza təcrübə proqramına dəvət edirik!\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
-      "requirements": [
-        "4-cü kurs və ya magistr oxuyursan;",
-        "Müştəri mərkəzli düşüncəyə sahibsən;",
-        "Analitik düşünmə və problem həll etmə bacarığın var;",
-        "Komanda ilə işləməyi və öyrənməyi sevirsən;",
-        "MS Office alətləri ilə işləyə bilirsən (Excel, PowerPoint və s.);",
-        "İngilis və ya rus dili arzuolunandır."
-      ],
-      "responsibilities": [
-        "Müştəri səyahətlərinin (Customer Journey) xəritələnməsi;",
-        "Müştəri araşdırmalarının təşkili və təhlili;",
-        "CX metrikləri ilə tanışlıq (NPS, CES, CSAT və s.);",
-        "Real layihələrdə iştirak;",
-        "Peşəkar mentor dəstəyi və komandadan bilik paylaşımı."
-      ],
-      "benefits": [],
-      "skills": [
-        "Excel"
-      ],
-      "employmentType": "full-time",
-      "experienceLevel": "intern",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "16.09.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8343",
-      "applyUrl": "https://careers.bir.az/vacancies/8343#attachFile",
       "source": "Bir Careers"
     },
     {
@@ -3875,9 +3836,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 71,
-    "detailPagesFetched": 71,
-    "acceptedJobs": 71,
+    "discoveredLinks": 70,
+    "detailPagesFetched": 70,
+    "acceptedJobs": 70,
     "rejectedJobs": 0,
     "errors": []
   }
