@@ -1,9 +1,9 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-09-16T09:11:02.293Z",
+  "updatedAt": "2026-09-16T16:18:19.724Z",
   "success": true,
-  "count": 99,
+  "count": 98,
   "jobs": [
     {
       "externalId": "5317",
@@ -1487,59 +1487,6 @@
       "postedAt": null,
       "url": "https://careers.abb-bank.az/vakansiyalar/v2/5275",
       "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5275",
-      "source": "ABB Careers"
-    },
-    {
-      "externalId": "5276",
-      "title": "Pərakəndə seqment sahəsinə biznes analitika üzrə aparıcı mütəxəssis",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "Biznes proseslərin texniki analizinin verilənlər bazası modelinin tərtibatı səviyyəsinə qədər detallaşdırılması; Biznes proseslər üzrə texniki sənəd (istifadəçi və texniki səviyyədə -use case) hazırlanması; Ali təhsilli;",
-      "description": "Biznes proseslərin texniki analizinin verilənlər bazası modelinin tərtibatı səviyyəsinə qədər detallaşdırılması; Biznes proseslər üzrə texniki sənəd (istifadəçi və texniki səviyyədə -use case) hazırlanması; Ali təhsilli;",
-      "requirements": [
-        "Ali təhsilli;",
-        "Sahə üzrə minimum 1-3 il təcrübəyə;",
-        "Bank məhsulları haqqında biliklərə;",
-        "Texniki tapşırıq (istifadəçi və texniki səviyyədə sənəd hazırlama, ardıcıllıq alqoritmi qurma) hazırlama bacarığına;",
-        "Verilənlər bazasının (SQL) sorğulanması üzrə biliyə;",
-        "Xarici dil biliklərinə (Texniki tapşırığı anlamaq və tərtib etmək səviyyəsində);",
-        "Web servis üzrə biliklərə sahib: Arxitektura növü (Rest/Soap), APİ Server-lərin sorğulanması bacarığı, Sorğulama formatları (JSON / XML) barədə anlayışa malik;",
-        "Blok sxemlər (BPMN) üzrə biliklərə sahib olan şəxsdir.",
-        "Agile mühitdə, bankda iş təcrübəsi;",
-        "Bank modulları (Flexcube / BPM) iş təcrübəsi;",
-        "Mobile application ilə bağlı iş təcrübəsi (minimum 1 il);",
-        "Jira və Confluence ilə işləmə bacarığı;",
-        "Camunda və ya BPMN.İO üzrərindən flow-ları çəkmək bacarığı;",
-        "Biznes ehtiyaclarını AI istifadə halları (use cases) şəklində formalaşdırmaq bacarığı;",
-        "AI əsaslı həllər üçün functional & non-functional requirements yazmaq təcrübəsi."
-      ],
-      "responsibilities": [
-        "Biznes proseslərin texniki analizinin verilənlər bazası modelinin tərtibatı səviyyəsinə qədər detallaşdırılması;",
-        "Biznes proseslər üzrə texniki sənəd (istifadəçi və texniki səviyyədə -use case) hazırlanması;",
-        "Biznes proses üzrə minimal test planların və test ssenarilərinin hazırlanmasında iştirak;",
-        "Texniki tapşırıq üzrə dəyişikliyin icra dövründə monitorinq edilməsi və dəyişikliyin tələblərə uyğunluğunun yoxlanılması;",
-        "Biznes prosesi\\arxitekturanı\\dəyişikliyi əlaqəli bütün steykholderlərlə razılaşdırmaq;",
-        "Biznes prosesin proqramlaşdırma (Flex, BPM, Rəhbərlik) komandası ilə razılaşdırılması və görülən işlər barədə hesabatların təqdim edilməsi;",
-        "Analiz zamanı report hazırlanmasının mümkünlüyünün təmin edilməsi və yarana biləcək potensial risklərin müəyyən edilməsi;",
-        "Deployment ve reliz proseslərinin hazırlanması və izlənməsi, deadline-lara uyğun getməsi üçün teamə dəsdək olmaq;",
-        "Prosesin və ya dəyişikliyin texniki dəsdək komandasına ötürülməsi;",
-        "İT, sifarişçi struktur və digər tərəfdaşlarla (3-cü şəxslər) texniki məsələlərin müzakirə edilməsi və uyğunluğun təmin edilməsi."
-      ],
-      "benefits": [],
-      "skills": [
-        "SQL",
-        "Deployment"
-      ],
-      "employmentType": null,
-      "experienceLevel": "mid",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5276",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5276",
       "source": "ABB Careers"
     },
     {
@@ -4235,9 +4182,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 99,
-    "detailPagesFetched": 99,
-    "acceptedJobs": 99,
+    "discoveredLinks": 98,
+    "detailPagesFetched": 98,
+    "acceptedJobs": 98,
     "rejectedJobs": 0,
     "listingFallbacks": 0,
     "errors": []
