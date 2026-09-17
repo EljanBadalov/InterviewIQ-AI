@@ -1,22 +1,14 @@
 # =========================================================
 # InterviewIQ API
-# Node.js + ONNX Runtime + en_US.UTF-8 locale
+# Node.js + ONNX Runtime + Playwright + en_US.UTF-8
 # =========================================================
 
 FROM node:20-bookworm-slim
 
 WORKDIR /app
 
-# ---------------------------------------------------------
-# System dependencies
-#
-# locales:
-#   Required by ONNX Runtime StringNormalizer.
-#
-# ca-certificates:
-#   Required for HTTPS connections to external services.
-# ---------------------------------------------------------
-
+# ONNX Runtime StringNormalizer requires a real en_US.UTF-8
+# locale installed in the operating system.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         locales \
@@ -30,33 +22,23 @@ ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
 
-# ---------------------------------------------------------
-# Install Node dependencies
-# ---------------------------------------------------------
-
+# Install Node dependencies, including TypeScript build dependencies.
 COPY package.json package-lock.json ./
 
-RUN npm ci
+RUN npm ci --include=dev
 
-# ---------------------------------------------------------
-# Copy application
-# ---------------------------------------------------------
+# Install Chromium + required Linux dependencies.
+RUN npx playwright install --with-deps chromium
 
+# Copy backend source.
 COPY . .
 
-# ---------------------------------------------------------
-# Build TypeScript
-# ---------------------------------------------------------
-
+# Compile TypeScript.
 RUN npm run build
-
-# ---------------------------------------------------------
-# Render provides PORT dynamically.
-# Your Node application should already read process.env.PORT.
-# ---------------------------------------------------------
 
 ENV NODE_ENV=production
 
+# Render supplies PORT dynamically.
 EXPOSE 10000
 
 CMD ["npm", "start"]
