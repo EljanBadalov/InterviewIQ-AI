@@ -1,9 +1,9 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-09-17T03:43:36.010Z",
+  "updatedAt": "2026-09-17T09:18:26.295Z",
   "success": true,
-  "count": 98,
+  "count": 97,
   "jobs": [
     {
       "externalId": "5317",
@@ -2145,50 +2145,6 @@
       "source": "ABB Careers"
     },
     {
-      "externalId": "5224",
-      "title": "Pərakəndə seqment sahəsinə müştəri təcrübələri üzrə aparıcı mütəxəssis",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "• Komandanın fəaliyyət istiqaməti üzrə məhsulun optimallaşdırılması, innovativləşdirilməsi istiqamətində davamlı işin aparılması; • Məhsulun performansını və kampaniyaların effektivliyini izləmək üçün hesabatların hazırlanması; • Ali təhsilə;",
-      "description": "• Komandanın fəaliyyət istiqaməti üzrə məhsulun optimallaşdırılması, innovativləşdirilməsi istiqamətində davamlı işin aparılması; • Məhsulun performansını və kampaniyaların effektivliyini izləmək üçün hesabatların hazırlanması; • Ali təhsilə;",
-      "requirements": [
-        "• Ali təhsilə;",
-        "• Minimum bir il iş təcrübəsinə;",
-        "• İngilis dili biliklərinə (orta səviyyədə);",
-        "• Müştəri analitikası, satış, və/və ya məhsulların yaradılması üzrə iş təcrübəsinə (üstünlükdür);",
-        "• Yaxşı səviyyədə MS Excel, SQL biliklərinə;",
-        "• Yaxşı səviyyədə məlumatların vizuallaşdırılması üzrə biliklərə;",
-        "• Orta səviyyədə Python üzrə biliklərə (üstünlükdür);",
-        "• Komandada (Scrum/Agile) işləmək bacarığı və yeni texnologiyaları öyrənmə həvəsinə;",
-        "• Analitik düşüncə və problemlərin həllərinə kreativ yanaşma bacarığına sahib olan şəxsdir."
-      ],
-      "responsibilities": [
-        "• Komandanın fəaliyyət istiqaməti üzrə məhsulun optimallaşdırılması, innovativləşdirilməsi istiqamətində davamlı işin aparılması;",
-        "• Məhsulun performansını və kampaniyaların effektivliyini izləmək üçün hesabatların hazırlanması;",
-        "• Məhsul üzrə tətbiq olunan yeni təşəbbüslərin və ya dəyişikliklərin müştərilərə təsirinin ölçülməsi;",
-        "• Biznes tapşırığa əsasən məlumatların təhlili, uyğun model və yanaşmaların tətbiq olunması;",
-        "• Müştəri seqmentlərinin/alt-seqmentlərinin müvafiq məhsul (lar) üzrə səyahətinin (journey) araşdırılması və təkliflərin hazırlanması;",
-        "• Tətbiq olunmuş model və yanaşmaların izlənməsi və optimallaşdırılması."
-      ],
-      "benefits": [],
-      "skills": [
-        "Python",
-        "SQL",
-        "Excel"
-      ],
-      "employmentType": null,
-      "experienceLevel": "mid",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5224",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5224",
-      "source": "ABB Careers"
-    },
-    {
       "externalId": "5217",
       "title": "Bank fəaliyyətinə dəstək bölməsinin müştəri bələdçisi - Gədəbəy",
       "company": "ABB",
@@ -4182,9 +4138,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 98,
-    "detailPagesFetched": 98,
-    "acceptedJobs": 98,
+    "discoveredLinks": 97,
+    "detailPagesFetched": 97,
+    "acceptedJobs": 97,
     "rejectedJobs": 0,
     "listingFallbacks": 0,
     "errors": []
