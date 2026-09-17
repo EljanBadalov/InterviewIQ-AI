@@ -2964,7 +2964,7 @@ Important:
               0.9,
 
             maxCompletionTokens:
-              800,
+              200,
 
             timeoutMs:
               300_000,
