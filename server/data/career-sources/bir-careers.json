@@ -1,9 +1,9 @@
 {
   "id": "bir-careers",
   "name": "Bir Careers",
-  "updatedAt": "2026-09-18T08:50:13.834Z",
+  "updatedAt": "2026-09-18T15:58:02.691Z",
   "success": true,
-  "count": 70,
+  "count": 68,
   "jobs": [
     {
       "externalId": "7657",
@@ -1180,80 +1180,6 @@
       "source": "Bir Careers"
     },
     {
-      "externalId": "8301",
-      "title": "Tech Lead - Retail Platforms tribe",
-      "company": "Kapital Bank / Bir",
-      "brand": "Birbank",
-      "location": "Bakı",
-      "summary": "We are seeking a Tech Lead to take a key role in shaping and implementing backend solutions within one of our engineering teams. In this role, you will collaborate closely with engineers and the Chapter Lead, contributing to architectural decisions, ensuring system reliability, and driving best practices in software development.This position requires strong expertise in system design, microservices architecture, and a deep understanding of Java, Spring Boot, and distributed systems. You will be actively engaged in technical discussions, development, and optimization, ensuring that our solutions are scalable, robust, and aligned with business objectives.\nWe are seeking a Tech Lead to take a key role in shaping and implementing backend solutions within one of our engineering teams. In this role, you will collaborate closely with engineers and the Chapter Lead, contributing to architectural decisions, ensuring system reliability, and driving best practices in software development.",
-      "description": "We are seeking a Tech Lead to take a key role in shaping and implementing backend solutions within one of our engineering teams. In this role, you will collaborate closely with engineers and the Chapter Lead, contributing to architectural decisions, ensuring system reliability, and driving best practices in software development.\nThis position requires strong expertise in system design, microservices architecture, and a deep understanding of Java, Spring Boot, and distributed systems. You will be actively engaged in technical discussions, development, and optimization, ensuring that our solutions are scalable, robust, and aligned with business objectives.",
-      "requirements": [
-        "5+ years of experience in backend development for high-performance applications.",
-        "Strong expertise in system design and scalable architecture.",
-        "Proficiency in Java and Spring Boot.",
-        "Hands-on experience with microservices architecture.",
-        "Familiarity with container orchestration tools such as Docker and Kubernetes.",
-        "Solid experience with relational (PostgreSQL) and NoSQL (MongoDB, Redis) databases.",
-        "Practical experience with event-driven architectures using tools like Kafka or RabbitMQ.",
-        "Strong understanding of algorithms and data structures.",
-        "Excellent interpersonal, communication, and teamwork skills."
-      ],
-      "responsibilities": [
-        "Design and develop scalable backend solutions in collaboration with the team.",
-        "Ensure system reliability and performance, optimizing for scalability and maintainability.",
-        "Work closely with the Chapter Lead and other engineers to align on best practices and technical strategies.",
-        "Participate in architectural discussions and contribute to key technical decisions.",
-        "Improve and refine existing systems to enhance availability and robustness.",
-        "Contribute to the full development lifecycle, from concept to production deployment.",
-        "Implement and advocate for best coding practices, including testing and deployment strategies.",
-        "Collaborate with product and business teams to align technical solutions with company objectives."
-      ],
-      "benefits": [
-        "Opportunities for professional growth and development",
-        "Competitive salary and bonuses",
-        "Comprehensive insurance coverage",
-        "Supportive work environment",
-        "Visa Premium salary card",
-        "Corporate discounts and events",
-        "Additional vacation days",
-        "Discounted education and employee loans",
-        "New cozy studio office in Port Baku Tower 2",
-        "Strong teamwork with Agile principles, regular team buildings and themed events",
-        "Multicultural environment with foreign colleagues sharing their best experiences"
-      ],
-      "skills": [
-        "Kafka",
-        "Distributed Systems",
-        "PostgreSQL",
-        "MongoDB",
-        "NoSQL",
-        "Kubernetes",
-        "Docker",
-        "Java",
-        "Redis",
-        "Testing",
-        "Microservices",
-        "System Design",
-        "Scalability",
-        "Performance",
-        "Deployment",
-        "Algorithms",
-        "Data Structures",
-        "Databases"
-      ],
-      "employmentType": "full-time",
-      "experienceLevel": "manager",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "18.09.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8301",
-      "applyUrl": "https://careers.bir.az/vacancies/8301#attachFile",
-      "source": "Bir Careers"
-    },
-    {
       "externalId": "8298",
       "title": "Manual QA Engineer",
       "company": "Kapital Bank / Bir",
@@ -2307,47 +2233,6 @@
       "postedAt": null,
       "url": "https://careers.bir.az/vacancies/7919",
       "applyUrl": "https://careers.bir.az/vacancies/7919#attachFile",
-      "source": "Bir Careers"
-    },
-    {
-      "externalId": "8216",
-      "title": "Risk hadisələrinin idarə edilməsi şöbəsinin Aparıcı Mütəxəssisi",
-      "company": "Kapital Bank / Bir",
-      "brand": "Bir",
-      "location": "Bakı",
-      "summary": "Əməkdaş risklərin müəyyənləşdirilməsi, qiymətləndirilməsi və idarə olunması üzrə metod və modellərin tətbiqində iştirak edir, əməliyyat itkilərinin və insidentlərin səbəblərini analiz edərək onların aradan qaldırılması üçün müvafiq struktur bölmələrlə işləyir. Eyni zamanda, risk nəticələrinin təhlili, nəzarət mexanizmlərinin effektivliyinin qiymətləndirilməsi və rəhbərlik üçün müntəzəm hesabatların hazırlanması bu rolun əsas öhdəliklərindəndir.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
-      "description": "Əməkdaş risklərin müəyyənləşdirilməsi, qiymətləndirilməsi və idarə olunması üzrə metod və modellərin tətbiqində iştirak edir, əməliyyat itkilərinin və insidentlərin səbəblərini analiz edərək onların aradan qaldırılması üçün müvafiq struktur bölmələrlə işləyir. Eyni zamanda, risk nəticələrinin təhlili, nəzarət mexanizmlərinin effektivliyinin qiymətləndirilməsi və rəhbərlik üçün müntəzəm hesabatların hazırlanması bu rolun əsas öhdəliklərindəndir.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
-      "requirements": [
-        "Təhsil: Ali (iqtisadi və ya maliyyə təhsili üstünlükdür);",
-        "Təcrübə: bank sektorunda ən azı 5 il,sahə üzrə 3 il;",
-        "Dil bilikləri: Azərbaycan, İngilis, Rus;",
-        "Beynəlxalq praktikada qəbul edilən digər bilik və keyfiyyətlərə malik olması;",
-        "Yüksək kommunikasiya bacarıqları",
-        "Vahid komandada işləmək qabiliyyəti;",
-        "Məsuliyyətli, diqqətli olmaq."
-      ],
-      "responsibilities": [
-        "Bankda risklərin müəyyənləşdirilməsi, qiymətləndirilməsi, yenidən qiymətləndirilməsi, təsdiqlənməsi və idarə edilməsi üzrə metodların və modellərin seçilməsi və tətbiqi (bankın aidiyyəti struktur bölmələri ilə birgə), müvafiq hesabatların hazırlanması işində iştirak edir;",
-        "ERM siyasətinə uyğun risklərin qiymətləndirilməsində aparıcı rol oynayır, mürəkkəb risk analizlərini aparır və təkmilləşdirilməsinə töhfə verir;",
-        "Bankda risk identifikasiyası üzrə üsul və alətləri tətbiq edərək yeni risklərin identifikasiyası prosesini təşkil edilməsində iştirak edir; İnsidentlərin səbəblərini araşdırır və aradan qaldırılması istiqamətində struktur bölmələr tərəfindən görülən işləri izləyir;",
-        "İnsidentlərin idarə olunması üzrə prosesləri optimallaşdırır, hesabatların hazırlanması və təhlilinə rəhbərlik edir;",
-        "Əməliyyat itkilərinin səbəblərinin araşdırılması, aradan qaldırılması ilə bağlı struktur bölmələrdən tədbirlərin əldə olunması və itkilərlə bağlı hesabat məlumatlarının formalaşdırılmasını icra edir; Müxtəlif mənbələr üzrə dataların araşdırılması nəticəsində aşkar olunmuş əməliyyat itkilərini müvafiq hesabata daxil edir;",
-        "İnsidentlər və itkilər üzrə nəticələrin analizini həyata, həmçinin rəhbərliyə periodik və sorğu əsasında hesabatları təqdim edir;",
-        "Bankda risk mədəniyyətinin inkişaf etdirilməsi istiqamətində tədbirlərin həyata keçirilməsi çərçivəsində işlər görür;",
-        "Nəzarət tədbirlərinin effektivliyini qiymətləndirilməsində iştirak edir"
-      ],
-      "benefits": [],
-      "skills": [],
-      "employmentType": "full-time",
-      "experienceLevel": "senior",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "15.10.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8216",
-      "applyUrl": "https://careers.bir.az/vacancies/8216#attachFile",
       "source": "Bir Careers"
     },
     {
@@ -3806,9 +3691,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 70,
-    "detailPagesFetched": 70,
-    "acceptedJobs": 70,
+    "discoveredLinks": 68,
+    "detailPagesFetched": 68,
+    "acceptedJobs": 68,
     "rejectedJobs": 0,
     "errors": []
   }
