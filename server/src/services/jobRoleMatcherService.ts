@@ -77,6 +77,126 @@ const ROLE_WORDS =
   ]);
 
 /*
+ * Some role words are functionally interchangeable for title matching.
+ *
+ * Example:
+ * target: Backend Developer
+ * job:    Backend Engineer
+ *
+ * The career identity is "backend". Developer vs Engineer should not
+ * cause an otherwise exact backend role to be rejected.
+ *
+ * Keep unrelated professions in separate families so:
+ * Backend Developer != Backend Designer
+ * Data Analyst      != Data Scientist
+ */
+const ROLE_COMPATIBILITY_GROUPS: string[][] = [
+  [
+    "developer",
+    "engineer",
+    "programmer",
+  ],
+  [
+    "designer",
+  ],
+  [
+    "analyst",
+  ],
+  [
+    "scientist",
+  ],
+  [
+    "administrator",
+  ],
+  [
+    "architect",
+  ],
+  [
+    "specialist",
+    "consultant",
+  ],
+  [
+    "tester",
+  ],
+];
+
+const areRoleTokensCompatible = (
+  candidateRoleTokens:
+    string[],
+  titleRoleTokens:
+    string[]
+): boolean => {
+  if (
+    candidateRoleTokens.length ===
+      0
+  ) {
+    return true;
+  }
+
+  if (
+    titleRoleTokens.length ===
+      0
+  ) {
+    return false;
+  }
+
+  const titleRoleSet =
+    new Set(
+      titleRoleTokens
+    );
+
+  /*
+   * Exact role-word overlap is always compatible.
+   */
+  if (
+    candidateRoleTokens.some(
+      (
+        token
+      ) =>
+        titleRoleSet.has(
+          token
+        )
+    )
+  ) {
+    return true;
+  }
+
+  /*
+   * Otherwise allow overlap inside one explicit compatibility family.
+   */
+  return candidateRoleTokens.some(
+    (
+      candidateToken
+    ) => {
+      const group =
+        ROLE_COMPATIBILITY_GROUPS.find(
+          (
+            item
+          ) =>
+            item.includes(
+              candidateToken
+            )
+        );
+
+      if (
+        !group
+      ) {
+        return false;
+      }
+
+      return group.some(
+        (
+          compatibleToken
+        ) =>
+          titleRoleSet.has(
+            compatibleToken
+          )
+      );
+    }
+  );
+};
+
+/*
  * Seniority words should not affect career identity.
  */
 const SENIORITY_WORDS =
@@ -644,11 +764,16 @@ const matchRoleTokens = (
       matchedIdentityTokens.length ===
       identityTokens.length;
 
+    const titleRoleTokens =
+      getRoleTokens(
+        jobTitle
+      );
+
     const roleCompatible =
-      roleTokens.length ===
-        0 ||
-      matchedRoleTokens.length >
-        0;
+      areRoleTokensCompatible(
+        roleTokens,
+        titleRoleTokens
+      );
 
     return {
       matched:
