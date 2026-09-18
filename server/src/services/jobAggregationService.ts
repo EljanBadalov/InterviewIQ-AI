@@ -3078,17 +3078,235 @@ export const refreshExternalJobsForUser =
   };
 
 /* =========================================================
+   SHARED JOB CATALOG SYNC
+
+   Runs in the background (GitHub Actions / cron), NOT from the
+   user-facing Search Again request.
+
+   Flow:
+   providers + GitHub career snapshots -> normalize/dedupe -> MongoDB.
+========================================================= */
+
+export interface ISharedJobCatalogSyncResult {
+  fetched: number;
+  accepted: number;
+  stored: number;
+  deactivated: number;
+  sources: string[];
+}
+
+const isBlockedJobSource = (
+  source: string | undefined | null
+): boolean => {
+  const normalized =
+    normalizeLower(
+      source ||
+      ""
+    );
+
+  return (
+    normalized ===
+      "adzuna" ||
+    normalized.includes(
+      "adzuna"
+    )
+  );
+};
+
+export const refreshSharedJobCatalog =
+  async (): Promise<ISharedJobCatalogSyncResult> => {
+    logDivider(
+      "START SHARED JOB CATALOG SYNC"
+    );
+
+    /*
+     * limit: 0 = complete deduplicated provider pool.
+     * This is intentionally allowed here because this function runs in
+     * the background, never inside the user's Search Again request.
+     */
+    const fetchedJobs =
+      await fetchGeneralExternalJobs({
+        limit:
+          0,
+      });
+
+    const acceptedJobs =
+      fetchedJobs.filter(
+        (
+          job
+        ) =>
+          !isBlockedJobSource(
+            job.source
+          )
+      );
+
+    if (
+      acceptedJobs.length ===
+      0
+    ) {
+      throw new Error(
+        "Job catalog sync returned zero accepted vacancies. Existing MongoDB jobs were left untouched."
+      );
+    }
+
+    const storedJobs =
+      await upsertExternalJobsWithConcurrency(
+        acceptedJobs
+      );
+
+    /*
+     * Only deactivate stale vacancies for sources that were actually
+     * present in this successful sync. If one provider completely fails,
+     * we do not wipe its previous MongoDB snapshot by accident.
+     */
+    const externalIdsBySource =
+      new Map<
+        string,
+        Set<string>
+      >();
+
+    for (
+      const job of
+      acceptedJobs
+    ) {
+      if (
+        !job.source ||
+        !job.externalId
+      ) {
+        continue;
+      }
+
+      const ids =
+        externalIdsBySource.get(
+          job.source
+        ) ||
+        new Set<string>();
+
+      ids.add(
+        job.externalId
+      );
+
+      externalIdsBySource.set(
+        job.source,
+        ids
+      );
+    }
+
+    let deactivated =
+      0;
+
+    for (
+      const [
+        source,
+        externalIds,
+      ] of
+      externalIdsBySource
+    ) {
+      const result =
+        await Job.updateMany(
+          {
+            source,
+
+            isActive:
+              true,
+
+            externalId: {
+              $exists:
+                true,
+
+              $nin:
+                Array.from(
+                  externalIds
+                ),
+            },
+          },
+          {
+            $set: {
+              isActive:
+                false,
+            },
+          }
+        );
+
+      deactivated +=
+        result.modifiedCount ||
+        0;
+    }
+
+    /*
+     * Adzuna is intentionally no longer part of InterviewIQ's catalog.
+     * Keep this defensive cleanup here so old records can never reappear
+     * even if a legacy database still contains them.
+     */
+    const adzunaCleanup =
+      await Job.updateMany(
+        {
+          source: {
+            $regex:
+              /adzuna/i,
+          },
+
+          isActive:
+            true,
+        },
+        {
+          $set: {
+            isActive:
+              false,
+          },
+        }
+      );
+
+    deactivated +=
+      adzunaCleanup.modifiedCount ||
+      0;
+
+    const sources =
+      Array.from(
+        externalIdsBySource.keys()
+      ).sort();
+
+    console.log(
+      "[JOB CATALOG SYNC] Completed:",
+      {
+        fetched:
+          fetchedJobs.length,
+
+        accepted:
+          acceptedJobs.length,
+
+        stored:
+          storedJobs.length,
+
+        deactivated,
+
+        sources,
+      }
+    );
+
+    return {
+      fetched:
+        fetchedJobs.length,
+
+      accepted:
+        acceptedJobs.length,
+
+      stored:
+        storedJobs.length,
+
+      deactivated,
+
+      sources,
+    };
+  };
+
+/* =========================================================
    REFRESH GENERAL EXTERNAL JOBS FOR USER
 
-   JOB MATCHING PAGE ONLY
-
-   Important differences from Career Automation:
-   - targetRole is NOT required
-   - location is NOT required
-   - work mode is NOT required
-   - vacancies across all role families are allowed
-   - final ordering is based on the user's CV / skill profile
-   - Career Automation preferences do not restrict this pool
+   IMPORTANT:
+   This is a USER-FACING request. It NEVER crawls providers.
+   Daily/background sync keeps MongoDB fresh; Search Again only
+   loads MongoDB, calculates CV match and returns ranked vacancies.
 ========================================================= */
 
 export const refreshGeneralExternalJobsForUser =
@@ -3097,7 +3315,7 @@ export const refreshGeneralExternalJobsForUser =
       string
   ): Promise<IGeneralJobRefreshResult> => {
     logDivider(
-      "START GENERAL CV-BASED JOB MATCHING REFRESH"
+      "START FAST GENERAL CV-BASED JOB MATCHING"
     );
 
     if (
@@ -3115,12 +3333,6 @@ export const refreshGeneralExternalJobsForUser =
         userId
       );
 
-    /*
-     * Automation is optional here.
-     * We only use activeResumeId when available.
-     * Career target role / location / work-mode preferences are
-     * intentionally NOT used for general Job Matching.
-     */
     const automation =
       await CareerAutomation.findOne({
         userId:
@@ -3146,10 +3358,6 @@ export const refreshGeneralExternalJobsForUser =
             .toString()
         : undefined;
 
-    logDivider(
-      "GENERAL JOB MATCHING SKILL PROFILE"
-    );
-
     const skillProfile =
       await buildCareerSkillProfile({
         userId:
@@ -3168,104 +3376,33 @@ export const refreshGeneralExternalJobsForUser =
       );
     }
 
-    /* =====================================================
-       FETCH BROAD ATS POOL
-    ===================================================== */
-
-    logDivider(
-      "FETCH GENERAL ATS VACANCY POOL"
-    );
-
-    const fetchedJobs =
-      await fetchGeneralExternalJobs({
-        limit:
-          GENERAL_JOB_RAW_LIMIT,
-      });
-
-    console.log(
-      "[JOB MATCHING] General ATS fetch:",
-      {
-        fetched:
-          fetchedJobs.length,
-
-        targetRole:
-          null,
-
-        location:
-          null,
-
-        mode:
-          "general-cv-ranking",
-      }
-    );
-
-    /* =====================================================
-       PREPARE LATEST 1,000 DATABASE UPSERT
-
-       No Job Matching backend preference filter is applied.
-       externalJobService already returns the newest 1,000
-       deduplicated vacancies from the complete provider pool.
-    ===================================================== */
-
-    const selectedForStorage =
-      selectGeneralJobsForStorage(
-        fetchedJobs,
-        skillProfile
-      );
-
-    const fetchedLocalJobs =
-      fetchedJobs.filter(
-        isAzerbaijanLocalJob
-      );
-
-    const selectedLocalJobsForStorage =
-      selectedForStorage.filter(
-        isAzerbaijanLocalJob
-      );
-
-    console.log(
-      "[JOB MATCHING] Complete storage pool:",
-      {
-        raw:
-          fetchedJobs.length,
-
-        selected:
-          selectedForStorage.length,
-
-        localFetched:
-          fetchedLocalJobs.length,
-
-        localSelected:
-          selectedLocalJobsForStorage.length,
-
-        globalSelected:
-          selectedForStorage.length -
-          selectedLocalJobsForStorage.length,
-
-        backendPreferenceFilters:
-          false,
-
-        storageLimit:
-          GENERAL_JOB_RAW_LIMIT,
-      }
-    );
-
-    /* =====================================================
-       STORE / UPDATE JOBS
-    ===================================================== */
-
+    /*
+     * MongoDB ONLY. No Greenhouse/Lever/Ashby/SuccessFactors request is
+     * made from this code path.
+     */
     const storedJobs =
-      await upsertExternalJobsWithConcurrency(
-        selectedForStorage
-      );
+      await Job.find({
+        isActive:
+          true,
 
-    /* =====================================================
-       FINAL CV-BASED RANKING
+        source: {
+          $not: {
+            $regex:
+              /adzuna/i,
+          },
+        },
+      })
+        .sort({
+          postedAt:
+            -1,
 
-       No targetRole option is passed.
-       This prevents Career Automation's selected field from
-       filtering or dominating the Job Matching page.
-    ===================================================== */
+          createdAt:
+            -1,
+        })
+        .limit(
+          GENERAL_JOB_RAW_LIMIT
+        )
+        .lean<IJob[]>();
 
     const ranked:
       IGeneralScoredJob[] =
@@ -3311,138 +3448,32 @@ export const refreshGeneralExternalJobsForUser =
           }
         );
 
-    /*
-     * Return every job from the latest-1,000 refresh pool.
-     *
-     * There is intentionally no secondary 200-job cap here.
-     * Search, filters and pagination belong to the Job Matching UI.
-     */
-    const selected:
-      IGeneralScoredJob[] =
-      ranked;
+    console.log(
+      "[FAST GENERAL JOB MATCHING] MongoDB ranking completed:",
+      {
+        mongoCandidates:
+          storedJobs.length,
 
-    logDivider(
-      "GENERAL JOB MATCHING SUMMARY"
-    );
-
-    console.log({
-      fetched:
-        fetchedJobs.length,
-
-      uniqueCandidates:
-        fetchedJobs.length,
-
-      stored:
-        storedJobs.length,
-
-      analyzed:
-        ranked.length,
-
-      returned:
-        selected.length,
-
-      targetRoleFilter:
-        false,
-
-      locationFilter:
-        false,
-
-      workModeFilter:
-        false,
-
-      ranking:
-        "career-skill-profile",
-
-      localIntegration: {
-        source:
-          "same-global-job-pool",
-
-        fetched:
-          fetchedJobs.filter(
-            isAzerbaijanLocalJob
-          ).length,
-
-        stored:
-          storedJobs.filter(
-            (
-              job
-            ) =>
-              isAzerbaijanLocalJob(
-                job as unknown as
-                  IExternalJobRecord
-              )
-          ).length,
-
-        ranked:
-          ranked.filter(
-            (
-              item
-            ) =>
-              isAzerbaijanLocalJob(
-                item.job as unknown as
-                  IExternalJobRecord
-              )
-          ).length,
+        analyzed:
+          ranked.length,
 
         returned:
-          selected.filter(
-            (
-              item
-            ) =>
-              isAzerbaijanLocalJob(
-                item.job as unknown as
-                  IExternalJobRecord
-              )
-          ).length,
+          ranked.length,
 
-        finalReserve:
-          null,
-
-        separateRanking:
-          false,
-      },
-    });
-
-    console.log(
-      "[JOB MATCHING] Top 10:",
-      selected
-        .slice(
+        networkProviderRequests:
           0,
-          10
-        )
-        .map(
-          (
-            item
-          ) => ({
-            title:
-              item.job.title,
 
-            company:
-              item.job.company,
-
-            source:
-              item.job.source,
-
-            location:
-              item.job.location,
-
-            matchScore:
-              item.match
-                .matchScore,
-
-            matchedSkills:
-              item.match
-                .matchedSkills,
-          })
-        )
+        adzunaAllowed:
+          false,
+      }
     );
 
     return {
       fetched:
-        fetchedJobs.length,
+        storedJobs.length,
 
       uniqueCandidates:
-        fetchedJobs.length,
+        storedJobs.length,
 
       stored:
         storedJobs.length,
@@ -3451,10 +3482,10 @@ export const refreshGeneralExternalJobsForUser =
         ranked.length,
 
       returned:
-        selected.length,
+        ranked.length,
 
       jobs:
-        selected.map(
+        ranked.map(
           (
             item
           ) => ({
@@ -3462,16 +3493,13 @@ export const refreshGeneralExternalJobsForUser =
               item.job,
 
             matchScore:
-              item.match
-                .matchScore,
+              item.match.matchScore,
 
             matchedSkills:
-              item.match
-                .matchedSkills,
+              item.match.matchedSkills,
 
             missingSkills:
-              item.match
-                .missingSkills,
+              item.match.missingSkills,
           })
         ),
     };
@@ -3484,4 +3512,5 @@ export const refreshGeneralExternalJobsForUser =
 export default {
   refreshExternalJobsForUser,
   refreshGeneralExternalJobsForUser,
+  refreshSharedJobCatalog,
 };
