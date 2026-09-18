@@ -398,7 +398,18 @@ const MAX_DESCRIPTION_LENGTH =
  * again for every related search query.
  */
 const BOARD_CACHE_TTL_MS =
-  5 *
+  15 *
+  60 *
+  1000;
+
+/*
+ * After the fresh TTL expires, keep the last successful board snapshot
+ * available for a longer stale window. User-facing requests can return
+ * this snapshot immediately while a single background refresh updates it.
+ */
+const BOARD_CACHE_STALE_TTL_MS =
+  6 *
+  60 *
   60 *
   1000;
 
@@ -458,6 +469,9 @@ interface IBoardCacheEntry {
   expiresAt:
     number;
 
+  staleUntil:
+    number;
+
   jobs:
     IExternalJobRecord[];
 }
@@ -466,6 +480,17 @@ const boardCache =
   new Map<
     string,
     IBoardCacheEntry
+  >();
+
+/*
+ * Prevent duplicate network refreshes when several users request the same
+ * ATS board at the same time. One promise per board is shared until the
+ * refresh completes.
+ */
+const boardRefreshInFlight =
+  new Map<
+    string,
+    Promise<IExternalJobRecord[]>
   >();
 
 /* =========================================================
@@ -2945,8 +2970,36 @@ const getCachedBoard = (
   }
 
   if (
-    cached.expiresAt <
+    cached.expiresAt <=
     Date.now()
+  ) {
+    return null;
+  }
+
+  return cached.jobs;
+};
+
+const getStaleCachedBoard = (
+  key:
+    string
+): IExternalJobRecord[] | null => {
+  const cached =
+    boardCache.get(
+      key
+    );
+
+  if (
+    !cached
+  ) {
+    return null;
+  }
+
+  const now =
+    Date.now();
+
+  if (
+    cached.staleUntil <=
+    now
   ) {
     boardCache.delete(
       key
@@ -2964,12 +3017,19 @@ const setCachedBoard = (
   jobs:
     IExternalJobRecord[]
 ): void => {
+  const now =
+    Date.now();
+
   boardCache.set(
     key,
     {
       expiresAt:
-        Date.now() +
+        now +
         BOARD_CACHE_TTL_MS,
+
+      staleUntil:
+        now +
+        BOARD_CACHE_STALE_TTL_MS,
 
       jobs,
     }
@@ -5414,7 +5474,7 @@ const fetchCareerSourceJobsById =
    FETCH ONE BOARD
 ========================================================= */
 
-const fetchAtsBoard =
+const fetchAtsBoardFromProvider =
   async (
     source:
       IAtsSource
@@ -5445,6 +5505,119 @@ const fetchAtsBoard =
       default:
         return [];
     }
+  };
+
+const startBoardRefresh = (
+  source:
+    IAtsSource,
+  cacheKey:
+    string
+): Promise<IExternalJobRecord[]> => {
+  const existing =
+    boardRefreshInFlight.get(
+      cacheKey
+    );
+
+  if (
+    existing
+  ) {
+    return existing;
+  }
+
+  const refreshPromise =
+    fetchAtsBoardFromProvider(
+      source
+    )
+      .finally(
+        () => {
+          boardRefreshInFlight.delete(
+            cacheKey
+          );
+        }
+      );
+
+  boardRefreshInFlight.set(
+    cacheKey,
+    refreshPromise
+  );
+
+  return refreshPromise;
+};
+
+const fetchAtsBoard =
+  async (
+    source:
+      IAtsSource
+  ): Promise<IExternalJobRecord[]> => {
+    const cacheKey =
+      getBoardCacheKeyForSource(
+        source
+      );
+
+    const fresh =
+      getCachedBoard(
+        cacheKey
+      );
+
+    if (
+      fresh
+    ) {
+      return fresh;
+    }
+
+    const stale =
+      getStaleCachedBoard(
+        cacheKey
+      );
+
+    if (
+      stale
+    ) {
+      /*
+       * Stale-while-revalidate: do not make the user wait for a slow ATS
+       * board. Refresh once in the background and keep serving the last
+       * successful snapshot until the new one is ready.
+       */
+      void startBoardRefresh(
+        source,
+        cacheKey
+      )
+        .catch(
+          (
+            error
+          ) => {
+            console.warn(
+              "[ATS JOBS] Background board refresh failed; stale cache retained:",
+              {
+                provider:
+                  source.provider,
+
+                company:
+                  source.company,
+
+                slug:
+                  source.slug,
+
+                error:
+                  error instanceof Error
+                    ? error.message
+                    : error,
+              }
+            );
+          }
+        );
+
+      return stale;
+    }
+
+    /*
+     * Cold cache: there is nothing safe to return yet, so wait for the
+     * provider. Concurrent callers share the same in-flight request.
+     */
+    return startBoardRefresh(
+      source,
+      cacheKey
+    );
   };
 
 /* =========================================================
