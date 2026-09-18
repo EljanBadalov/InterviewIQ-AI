@@ -375,12 +375,57 @@ const normalizeTechnologyToken = (
   );
 };
 
+/* =========================================================
+   CANONICAL CAREER TITLE NORMALIZATION
+========================================================= */
+
+const normalizeCareerTitle = (
+  value:
+    string | undefined | null
+): string => {
+  let normalized =
+    normalizeText(
+      value
+    );
+
+  if (
+    !normalized
+  ) {
+    return "";
+  }
+
+  normalized = normalized
+    .replace(
+      /\bback\s+end\b/g,
+      "backend"
+    )
+    .replace(
+      /\bfront\s+end\b/g,
+      "frontend"
+    )
+    .replace(
+      /\bfull\s+stack\b/g,
+      "fullstack"
+    )
+    .replace(
+      /\bserver\s+side\b/g,
+      "backend"
+    );
+
+  return normalized
+    .replace(
+      /\s+/g,
+      " "
+    )
+    .trim();
+};
+
 const tokenize = (
   value:
     string | undefined | null
 ): string[] => {
   const normalized =
-    normalizeText(
+    normalizeCareerTitle(
       value
     );
 
@@ -540,6 +585,260 @@ const isManagementTitle = (
         token
       )
   );
+};
+
+/* =========================================================
+   BACKEND ROLE INTELLIGENCE
+========================================================= */
+
+const BACKEND_TECH_TOKENS =
+  new Set<string>([
+    "node",
+    "python",
+    "java",
+    "django",
+    "flask",
+    "fastapi",
+    "spring",
+    "nestjs",
+    "express",
+    "golang",
+    "go",
+    "ruby",
+    "rails",
+    "php",
+    "laravel",
+    ".net",
+    "dotnet",
+  ]);
+
+const BACKEND_API_TOKENS =
+  new Set<string>([
+    "api",
+    "apis",
+    "rest",
+    "restful",
+    "graphql",
+    "microservice",
+    "microservices",
+  ]);
+
+const isBackendTarget = (
+  plan:
+    ICareerFieldSearchPlan
+): boolean => {
+  const tokens =
+    new Set(
+      tokenize(
+        plan.targetField.name
+      )
+    );
+
+  return tokens.has(
+    "backend"
+  );
+};
+
+const classifyBackendTitle = (
+  plan:
+    ICareerFieldSearchPlan,
+  jobTitle:
+    string
+): IJobRoleMatchResult | null => {
+  if (
+    !isBackendTarget(
+      plan
+    )
+  ) {
+    return null;
+  }
+
+  const normalizedTitle =
+    normalizeCareerTitle(
+      jobTitle
+    );
+
+  const tokens =
+    tokenize(
+      normalizedTitle
+    );
+
+  const tokenSet =
+    new Set(
+      tokens
+    );
+
+  const roleTokens =
+    getRoleTokens(
+      normalizedTitle
+    );
+
+  const hasDeveloperRole =
+    roleTokens.some(
+      (
+        token
+      ) =>
+        token === "developer" ||
+        token === "engineer" ||
+        token === "programmer"
+    );
+
+  if (
+    isManagementTitle(
+      normalizedTitle
+    )
+  ) {
+    return null;
+  }
+
+  const conflictingCareer =
+    tokenSet.has("frontend") ||
+    tokenSet.has("designer") ||
+    tokenSet.has("android") ||
+    tokenSet.has("ios");
+
+  if (
+    conflictingCareer &&
+    !tokenSet.has("fullstack")
+  ) {
+    return null;
+  }
+
+  if (
+    tokenSet.has("backend") &&
+    hasDeveloperRole
+  ) {
+    return {
+      type: "exact",
+      score: 100,
+      similarity: 100,
+      matchedRole:
+        plan.targetField.name,
+      matchedRoleSource:
+        "target",
+      conflictDetected:
+        false,
+      matchedTokens:
+        tokens.filter(
+          (token) =>
+            token === "backend" ||
+            token === "developer" ||
+            token === "engineer" ||
+            token === "programmer"
+        ),
+      missingTokens: [],
+    };
+  }
+
+  const backendTechnologies =
+    Array.from(
+      BACKEND_TECH_TOKENS
+    ).filter(
+      (token) =>
+        tokenSet.has(token)
+    );
+
+  const backendApiTokens =
+    Array.from(
+      BACKEND_API_TOKENS
+    ).filter(
+      (token) =>
+        tokenSet.has(token)
+    );
+
+  if (
+    hasDeveloperRole &&
+    backendTechnologies.length > 0 &&
+    backendApiTokens.length > 0
+  ) {
+    return {
+      type: "strong",
+      score: 94,
+      similarity: 94,
+      matchedRole:
+        plan.targetField.name,
+      matchedRoleSource:
+        "target",
+      conflictDetected:
+        false,
+      matchedTokens: [
+        ...backendTechnologies,
+        ...backendApiTokens,
+        ...roleTokens,
+      ],
+      missingTokens: [],
+    };
+  }
+
+  if (
+    hasDeveloperRole &&
+    backendTechnologies.length > 0
+  ) {
+    return {
+      type: "strong",
+      score: 90,
+      similarity: 90,
+      matchedRole:
+        plan.targetField.name,
+      matchedRoleSource:
+        "target",
+      conflictDetected:
+        false,
+      matchedTokens: [
+        ...backendTechnologies,
+        ...roleTokens,
+      ],
+      missingTokens: [],
+    };
+  }
+
+  if (
+    hasDeveloperRole &&
+    backendApiTokens.length > 0
+  ) {
+    return {
+      type: "related",
+      score: 82,
+      similarity: 82,
+      matchedRole:
+        "Backend/API Development",
+      matchedRoleSource:
+        "related-role",
+      conflictDetected:
+        false,
+      matchedTokens: [
+        ...backendApiTokens,
+        ...roleTokens,
+      ],
+      missingTokens: [],
+    };
+  }
+
+  if (
+    tokenSet.has("fullstack") &&
+    hasDeveloperRole
+  ) {
+    return {
+      type: "related",
+      score: 74,
+      similarity: 74,
+      matchedRole:
+        "Full Stack Developer",
+      matchedRoleSource:
+        "related-role",
+      conflictDetected:
+        false,
+      matchedTokens: [
+        "fullstack",
+        ...roleTokens,
+      ],
+      missingTokens: [
+        "backend",
+      ],
+    };
+  }
+
+  return null;
 };
 
 /* =========================================================
@@ -1242,7 +1541,7 @@ export const classifyJobRole = (
     string
 ): IJobRoleMatchResult => {
   const normalizedTitle =
-    normalizeText(
+    normalizeCareerTitle(
       jobTitle
     );
 
@@ -1301,6 +1600,22 @@ export const classifyJobRole = (
       missingTokens:
         [],
     };
+  }
+
+  /* =====================================================
+     SPECIALIZED CAREER CLASSIFIERS
+  ===================================================== */
+
+  const backendMatch =
+    classifyBackendTitle(
+      plan,
+      normalizedTitle
+    );
+
+  if (
+    backendMatch
+  ) {
+    return backendMatch;
   }
 
   /* =====================================================
