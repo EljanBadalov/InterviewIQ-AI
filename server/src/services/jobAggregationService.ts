@@ -1852,10 +1852,14 @@ export const refreshExternalJobsForUser =
             )
         );
 
+    /*
+     * The roadmap targetRole is the canonical source of truth.
+     * jobPreferences.targetRoles can be stale after a roadmap rebuild.
+     */
     const targetRole =
       normalizeString(
-        preferenceTargetRole ||
-        automation.targetRole
+        automation.targetRole ||
+        preferenceTargetRole
       );
 
     if (
@@ -1933,6 +1937,19 @@ export const refreshExternalJobsForUser =
       requestedLocation:
         rawLocation ||
         "Any",
+
+      roadmapTargetRole:
+        normalizeString(
+          automation.targetRole
+        ),
+
+      preferenceTargetRole:
+        normalizeString(
+          preferenceTargetRole
+        ),
+
+      resolvedTargetRole:
+        targetRole,
 
       totalSkills:
         skillProfile.totalSkills,
@@ -2172,11 +2189,24 @@ export const refreshExternalJobsForUser =
       "LOADING EXISTING JOBS FROM MONGODB"
     );
 
+    /*
+     * Load a larger current MongoDB window before applying location and
+     * role filters. The old 1,500-global-job window could exclude valid
+     * target-role vacancies before classification even started.
+     * Adzuna is blocked defensively at read time as well.
+     */
     const fetchedJobs:
       IJob[] =
       await Job.find({
         isActive:
           true,
+
+        source: {
+          $not: {
+            $regex:
+              /adzuna/i,
+          },
+        },
       })
         .sort({
           postedAt:
@@ -2186,7 +2216,7 @@ export const refreshExternalJobsForUser =
             -1,
         })
         .limit(
-          1_500
+          5_000
         )
         .lean<IJob[]>();
 
@@ -2236,8 +2266,8 @@ export const refreshExternalJobsForUser =
       );
 
     /*
-     * We don't want a frontend job with 58%
-     * to be discarded in favor of unrelated role.
+     * Keep a reasonable CV threshold. Role correctness is handled
+     * separately and always has priority over profile score.
      */
     const minimumMatchScore =
       Math.min(
