@@ -2575,19 +2575,101 @@ export const refreshExternalJobsForUser =
           sortScoredJobs
         );
 
-    /* =====================================================
-       DAILY TOP 3 SELECTION
+        /* =====================================================
+       SEARCH AGAIN ROTATION + DAILY TOP 3
 
-       Dynamic priority comes from MongoDB fields:
-       1. target field
-       2. target aliases
-       3. high-similarity relatedRoles
-       4. medium-similarity relatedRoles
-       5. low-similarity relatedRoles
+       Search #1 -> A B C
+       Search #2 -> D E F
+       Search #3 -> G H I
 
-       CV / interview profile match ranks jobs INSIDE each role
-       tier. It cannot make an unrelated title valid.
+       Previously shown vacancies are skipped while unseen,
+       valid vacancies are available.
     ===================================================== */
+
+    const previouslyShownJobIds =
+      new Set<string>(
+        automation.jobMatches
+          .map(
+            (item) =>
+              item.jobId?.toString()
+          )
+          .filter(
+            (value): value is string =>
+              Boolean(value)
+          )
+      );
+
+    const hasBeenShown = (
+      item: IScoredJob
+    ): boolean => {
+      const id =
+        item.job._id?.toString();
+
+      return Boolean(
+        id &&
+        previouslyShownJobIds.has(id)
+      );
+    };
+
+    const unseenExactJobs =
+      exactJobs.filter(
+        (item) =>
+          !hasBeenShown(item)
+      );
+
+    const unseenStrongJobs =
+      strongJobs.filter(
+        (item) =>
+          !hasBeenShown(item)
+      );
+
+    const unseenRelatedJobs =
+      relatedJobs.filter(
+        (item) =>
+          !hasBeenShown(item)
+      );
+
+    const unseenFallbackJobs =
+      fallbackJobs.filter(
+        (item) =>
+          !hasBeenShown(item)
+      );
+
+    console.log(
+      "[JOB DEBUG] SEARCH ROTATION",
+      {
+        previouslyShown:
+          previouslyShownJobIds.size,
+
+        exact: {
+          total:
+            exactJobs.length,
+          unseen:
+            unseenExactJobs.length,
+        },
+
+        strong: {
+          total:
+            strongJobs.length,
+          unseen:
+            unseenStrongJobs.length,
+        },
+
+        related: {
+          total:
+            relatedJobs.length,
+          unseen:
+            unseenRelatedJobs.length,
+        },
+
+        fallback: {
+          total:
+            fallbackJobs.length,
+          unseen:
+            unseenFallbackJobs.length,
+        },
+      }
+    );
 
     const selected:
       IScoredJob[] =
@@ -2621,30 +2703,28 @@ export const refreshExternalJobsForUser =
         }
 
         const id =
-          item.job._id
-            ?.toString();
+          item.job._id?.toString();
 
         if (
           !id ||
-          selectedIds.has(
-            id
-          )
+          selectedIds.has(id)
         ) {
           continue;
         }
 
-        selectedIds.add(
-          id
-        );
+        selectedIds.add(id);
 
-        selected.push(
-          item
-        );
+        selected.push(item);
       }
     };
 
+    /* =====================================================
+       PASS 1
+       Only vacancies that have NEVER been shown before.
+    ===================================================== */
+
     addFromPool(
-      exactJobs,
+      unseenExactJobs,
       Math.min(
         minimumMatchScore,
         42
@@ -2656,7 +2736,7 @@ export const refreshExternalJobsForUser =
       DAILY_JOB_LIMIT
     ) {
       addFromPool(
-        strongJobs,
+        unseenStrongJobs,
         Math.min(
           minimumMatchScore,
           42
@@ -2669,7 +2749,7 @@ export const refreshExternalJobsForUser =
       DAILY_JOB_LIMIT
     ) {
       addFromPool(
-        relatedJobs,
+        unseenRelatedJobs,
         Math.min(
           minimumMatchScore,
           40
@@ -2682,7 +2762,7 @@ export const refreshExternalJobsForUser =
       DAILY_JOB_LIMIT
     ) {
       addFromPool(
-        fallbackJobs,
+        unseenFallbackJobs,
         Math.min(
           minimumMatchScore,
           45
@@ -2691,14 +2771,40 @@ export const refreshExternalJobsForUser =
     }
 
     /*
-     * If fewer than three vacancies clear the profile-score
-     * threshold, prefer a genuinely field-related vacancy with
-     * weaker CV evidence over an unrelated random vacancy.
+     * If unseen jobs exist but their CV score is below
+     * the preferred threshold, still prefer a relevant
+     * unseen vacancy over recycling an old vacancy.
      */
     if (
       selected.length <
       DAILY_JOB_LIMIT
     ) {
+      addFromPool(
+        [
+          ...unseenExactJobs,
+          ...unseenStrongJobs,
+          ...unseenRelatedJobs,
+          ...unseenFallbackJobs,
+        ].sort(
+          sortScoredJobs
+        ),
+        0
+      );
+    }
+
+    /* =====================================================
+       PASS 2
+       Only recycle old vacancies when unseen pool is empty.
+    ===================================================== */
+
+    if (
+      selected.length <
+      DAILY_JOB_LIMIT
+    ) {
+      console.log(
+        "[JOB DEBUG] Unseen pool exhausted. Recycling previous vacancies."
+      );
+
       addFromPool(
         [
           ...exactJobs,
@@ -2717,7 +2823,7 @@ export const refreshExternalJobsForUser =
         0,
         DAILY_JOB_LIMIT
       );
-
+      
     /* =====================================================
        DEBUG ROLE POOLS
     ===================================================== */
@@ -2966,48 +3072,55 @@ export const refreshExternalJobsForUser =
     }
 
     /* =====================================================
-       REMOVE OLD ACTIVE RECOMMENDATIONS
+       PRESERVE SEARCH HISTORY
+
+       IMPORTANT:
+       Do not remove previous jobMatches.
+
+       jobMatches now acts as persistent Search Again history.
+       This allows the next request to exclude vacancies that
+       the user has already seen.
     ===================================================== */
 
-    const currentRankedIds =
-      new Set(
-        ranked
-          .map(
-            (
-              item
-            ) =>
-              item.job._id
-                ?.toString()
-          )
-          .filter(
-            (
-              value
-            ): value is string =>
-              Boolean(
-                value
-              )
-          )
-      );
-
     automation.jobMatches =
-      automation
-        .jobMatches
-        .filter(
-          (
-            item
-          ) =>
-            currentRankedIds.has(
-              item.jobId.toString()
-            )
-        )
+      automation.jobMatches
         .sort(
-          (
-            a,
-            b
-          ) =>
-            b.matchScore -
-            a.matchScore
+          (a, b) =>
+            new Date(
+              b.lastSeenAt
+            ).getTime() -
+            new Date(
+              a.lastSeenAt
+            ).getTime()
         ) as typeof automation.jobMatches;
+
+    console.log(
+      "[JOB DEBUG] JOB SEARCH HISTORY",
+      {
+        totalShown:
+          automation.jobMatches.length,
+
+        currentResults:
+          ranked.map(
+            (item) => ({
+              id:
+                item.job._id?.toString(),
+
+              title:
+                item.job.title,
+
+              company:
+                item.job.company,
+
+              roleTier:
+                item.roleTier,
+
+              matchScore:
+                item.match.matchScore,
+            })
+          ),
+      }
+    );
 
     /* =====================================================
        SEARCH TIMESTAMPS
