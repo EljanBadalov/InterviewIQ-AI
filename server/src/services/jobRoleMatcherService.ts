@@ -1603,20 +1603,12 @@ export const classifyJobRole = (
   }
 
   /* =====================================================
-     SPECIALIZED CAREER CLASSIFIERS
+     DATA-DRIVEN CLASSIFICATION
+
+     Do not special-case Backend, Frontend, QA, DevOps, etc.
+     The MongoDB career field is the source of truth through:
+     targetField.name -> aliases -> relatedRoles.
   ===================================================== */
-
-  const backendMatch =
-    classifyBackendTitle(
-      plan,
-      normalizedTitle
-    );
-
-  if (
-    backendMatch
-  ) {
-    return backendMatch;
-  }
 
   /* =====================================================
      TARGET

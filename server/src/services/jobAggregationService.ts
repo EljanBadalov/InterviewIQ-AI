@@ -2495,18 +2495,18 @@ export const refreshExternalJobsForUser =
             return false;
           }
 
-          if (
-            item.roleTier ===
-              "exact" ||
-            item.roleTier ===
-              "strong"
-          ) {
-            return true;
-          }
-
+          // Career Automation is strict and fully data-driven.
+          // Only target/alias/high-similarity related roles are eligible.
+          // Lower-similarity fallback roles stay in MongoDB for discovery,
+          // but they must never fill the user's daily Top 3.
           return (
-            item.fieldRelevance >=
-            38
+            item.roleTier === "exact" ||
+            item.roleTier === "strong" ||
+            (
+              item.roleTier === "related" &&
+              item.fieldRelevance >= 55 &&
+              item.relatedRoleSimilarity >= 70
+            )
           );
         }
       );
@@ -2757,19 +2757,6 @@ export const refreshExternalJobsForUser =
       );
     }
 
-    if (
-      selected.length <
-      DAILY_JOB_LIMIT
-    ) {
-      addFromPool(
-        unseenFallbackJobs,
-        Math.min(
-          minimumMatchScore,
-          45
-        )
-      );
-    }
-
     /*
      * If unseen jobs exist but their CV score is below
      * the preferred threshold, still prefer a relevant
@@ -2784,7 +2771,6 @@ export const refreshExternalJobsForUser =
           ...unseenExactJobs,
           ...unseenStrongJobs,
           ...unseenRelatedJobs,
-          ...unseenFallbackJobs,
         ].sort(
           sortScoredJobs
         ),
@@ -2810,7 +2796,6 @@ export const refreshExternalJobsForUser =
           ...exactJobs,
           ...strongJobs,
           ...relatedJobs,
-          ...fallbackJobs,
         ].sort(
           sortScoredJobs
         ),
