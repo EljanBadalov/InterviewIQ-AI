@@ -31,7 +31,6 @@ import {
 
 import {
   refreshExternalJobsForUser,
-  refreshGeneralExternalJobsForUser,
 } from "../services/jobAggregationService";
 
 /* =========================================================
@@ -1041,20 +1040,16 @@ export const refreshExternalJobs =
       }
 
       /*
-       * This endpoint is used by the Job Matching page.
+       * FAST USER-FACING REFRESH
        *
-       * Use the GENERAL refresh flow:
-       * - no Career Automation target-role filter
-       * - no Career Automation location filter
-       * - no Career Automation work-mode filter
-       * - all deduplicated provider vacancies are stored
-       * - CV/profile is used only to rank the complete pool
-       *
-       * The strict refreshExternalJobsForUser() function is intentionally
-       * kept for Career Automation workflows, but is NOT used here.
+       * Search Again must not wait for live ATS/provider crawling.
+       * The shared Job collection is populated separately by the
+       * ingestion/background flow. Here we only read MongoDB,
+       * apply Career Automation preferences, calculate CV match,
+       * rank the jobs, and save the current recommendations.
        */
       const result =
-        await refreshGeneralExternalJobsForUser(
+        await refreshExternalJobsForUser(
           userId
         );
 
@@ -1065,10 +1060,10 @@ export const refreshExternalJobs =
           true,
 
         message:
-          result.returned >
+          result.matched >
             0
-            ? `Loaded ${result.returned} real vacancies for Job Matching.`
-            : "External vacancy refresh completed, but no vacancies were returned.",
+            ? `Found ${result.matched} matching vacancies.`
+            : "No matching vacancies were found in the current job database.",
 
         data:
           result,

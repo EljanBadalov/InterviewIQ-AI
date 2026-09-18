@@ -1775,7 +1775,7 @@ export const refreshExternalJobsForUser =
       string
   ): Promise<IRefreshExternalJobsResult> => {
     logDivider(
-      "START STRICT ROLE-BASED JOB SEARCH"
+      "START FAST MONGODB ROLE-BASED JOB SEARCH"
     );
 
     /* =====================================================
@@ -2157,70 +2157,67 @@ export const refreshExternalJobsForUser =
     });
 
     /* =====================================================
-       FETCH JOBS
+       FAST MONGODB JOB POOL
+
+       IMPORTANT:
+       User-facing Career Automation refresh must NOT wait for
+       Greenhouse / Lever / Ashby / SuccessFactors / GitHub.
+
+       Background ingestion keeps the shared Job collection fresh.
+       This request only reads the newest active vacancies already
+       stored in MongoDB and ranks them for the current user.
     ===================================================== */
 
     logDivider(
-      "FETCHING MULTIPLE ROLE QUERIES"
+      "LOADING EXISTING JOBS FROM MONGODB"
     );
 
-    const fetchedJobs =
-      await fetchJobsForRoleQueries({
-        queries:
-          searchQueries,
+    const fetchedJobs:
+      IJob[] =
+      await Job.find({
+        isActive:
+          true,
+      })
+        .sort({
+          postedAt:
+            -1,
 
-        location:
-          sourceLocation,
+          createdAt:
+            -1,
+        })
+        .limit(
+          1_500
+        )
+        .lean<IJob[]>();
 
-        countryCode,
-      });
-
-    console.log(
-      "[JOB DEBUG] Total unique fetched jobs:",
-      fetchedJobs.length
-    );
-
-    /* =====================================================
-       STORE JOBS
-    ===================================================== */
-
+    /*
+     * Keep the existing downstream variable name so all current
+     * preference filtering, role classification, CV matching,
+     * ranking, saving, and debug summary logic stays intact.
+     *
+     * No upsert is needed because these jobs already exist in DB.
+     */
     const storedJobs:
       IJob[] =
-      [];
+      fetchedJobs;
 
-    for (
-      const fetchedJob of
-      fetchedJobs
-    ) {
-      try {
-        const stored =
-          await upsertExternalJob(
-            fetchedJob
-          );
+    console.log(
+      "[FAST JOB SEARCH] MongoDB pool loaded:",
+      {
+        jobs:
+          storedJobs.length,
 
-        storedJobs.push(
-          stored
-        );
-      } catch (
-        error
-      ) {
-        console.error(
-          "[JOB DEBUG] Could not store external vacancy:",
-          {
-            source:
-              fetchedJob.source,
+        targetRole:
+          canonicalTargetRole,
 
-            externalId:
-              fetchedJob.externalId,
+        requestedLocation:
+          rawLocation ||
+          "Any",
 
-            title:
-              fetchedJob.title,
-
-            error,
-          }
-        );
+        networkProviderRequests:
+          0,
       }
-    }
+    );
 
     /* =====================================================
        USER PREFERENCES
