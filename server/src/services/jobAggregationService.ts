@@ -169,9 +169,6 @@ const SEARCH_QUERY_RETRY_DELAY_MS =
 const GENERAL_JOB_RAW_LIMIT =
   1_000;
 
-const GENERAL_JOB_UPSERT_CONCURRENCY =
-  12;
-
 const LOCAL_JOB_SOURCES =
   new Set<string>([
     "successfactors",
@@ -1480,97 +1477,180 @@ const upsertExternalJobsWithConcurrency =
     jobs:
       IExternalJobRecord[]
   ): Promise<IJob[]> => {
-    const stored:
-      IJob[] =
-      new Array(
-        jobs.length
+    if (
+      jobs.length ===
+      0
+    ) {
+      return [];
+    }
+
+    /*
+     * GENERAL JOB MATCHING FAST UPSERT
+     *
+     * The previous implementation executed one findOneAndUpdate()
+     * for every vacancy through a worker pool. With up to 1,000 jobs,
+     * that still meant hundreds of MongoDB round trips.
+     *
+     * bulkWrite() sends the complete set of upserts to MongoDB in one
+     * bulk operation. ordered:false lets MongoDB continue processing
+     * independent vacancies even if one operation fails.
+     */
+    const operations =
+      jobs.map(
+        (
+          externalJob
+        ) => ({
+          updateOne: {
+            filter: {
+              source:
+                externalJob.source,
+
+              externalId:
+                externalJob.externalId,
+            },
+
+            update: {
+              $set: {
+                ...externalJob,
+
+                isActive:
+                  true,
+              },
+            },
+
+            upsert:
+              true,
+          },
+        })
       );
 
-    let cursor =
-      0;
-
-    const workerCount =
-      Math.max(
-        1,
-        Math.min(
-          GENERAL_JOB_UPSERT_CONCURRENCY,
-          jobs.length
-        )
-      );
-
-    const workers =
-      Array.from({
-        length:
-          workerCount,
-      }).map(
-        async () => {
-          while (
-            true
-          ) {
-            const index =
-              cursor++;
-
-            if (
-              index >=
-              jobs.length
-            ) {
-              return;
-            }
-
-            try {
-              stored[
-                index
-              ] =
-                await upsertExternalJob(
-                  jobs[
-                    index
-                  ]
-                );
-            } catch (
-              error
-            ) {
-              console.warn(
-                "[JOB MATCHING] Could not store external vacancy:",
-                {
-                  source:
-                    jobs[
-                      index
-                    ].source,
-
-                  externalId:
-                    jobs[
-                      index
-                    ].externalId,
-
-                  title:
-                    jobs[
-                      index
-                    ].title,
-
-                  error:
-                    error instanceof
-                      Error
-                      ? error.message
-                      : error,
-                }
-              );
-            }
+    try {
+      const bulkResult =
+        await Job.bulkWrite(
+          operations,
+          {
+            ordered:
+              false,
           }
+        );
+
+      console.log(
+        "[JOB MATCHING] Bulk vacancy upsert completed:",
+        {
+          requested:
+            jobs.length,
+
+          matched:
+            bulkResult.matchedCount,
+
+          modified:
+            bulkResult.modifiedCount,
+
+          upserted:
+            bulkResult.upsertedCount,
         }
       );
+    } catch (
+      error
+    ) {
+      console.error(
+        "[JOB MATCHING] Bulk vacancy upsert failed:",
+        error
+      );
 
-    await Promise.all(
-      workers
-    );
+      throw error;
+    }
 
-    return stored.filter(
-      (
-        job
-      ): job is IJob =>
-        Boolean(
+    /*
+     * bulkWrite() returns write statistics rather than the updated
+     * documents. Fetch the exact refreshed vacancy set in one query so
+     * the existing CV scoring/ranking code can continue unchanged.
+     */
+    const sourceExternalPairs =
+      jobs.map(
+        (
           job
+        ) => ({
+          source:
+            job.source,
+
+          externalId:
+            job.externalId,
+        })
+      );
+
+    const storedJobs =
+      await Job.find({
+        $or:
+          sourceExternalPairs,
+      })
+        .lean<IJob[]>();
+
+    /*
+     * Restore the input order. MongoDB does not guarantee result order
+     * for an $or query. The general ranking step will sort again later,
+     * but deterministic ordering here keeps behavior predictable.
+     */
+    const storedByKey =
+      new Map<string, IJob>(
+        storedJobs.map(
+          (
+            job
+          ) => [
+            `${normalizeLower(
+              job.source
+            )}:${normalizeLower(
+              job.externalId
+            )}`,
+            job,
+          ]
         )
-    );
+      );
+
+    const orderedStoredJobs =
+      jobs
+        .map(
+          (
+            job
+          ) =>
+            storedByKey.get(
+              `${normalizeLower(
+                job.source
+              )}:${normalizeLower(
+                job.externalId
+              )}`
+            )
+        )
+        .filter(
+          (
+            job
+          ): job is IJob =>
+            Boolean(
+              job
+            )
+        );
+
+    if (
+      orderedStoredJobs.length !==
+      jobs.length
+    ) {
+      console.warn(
+        "[JOB MATCHING] Some refreshed vacancies could not be reloaded after bulk upsert:",
+        {
+          requested:
+            jobs.length,
+
+          loaded:
+            orderedStoredJobs.length,
+
+          missing:
+            jobs.length -
+            orderedStoredJobs.length,
+        }
+      );
+    }
+
+    return orderedStoredJobs;
   };
 
 /* =========================================================
