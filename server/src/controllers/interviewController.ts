@@ -119,25 +119,101 @@ const normalizeRoleSlug = (
 };
 
 /*
- * Existing Question documents may still use the older category names.
- * Career Fields now use slugs such as "frontend-developer".
+ * Question category aliases.
  *
- * These aliases keep the old question bank working while allowing
- * new question documents to use the Career Field slug directly.
+ * Career Fields use canonical role slugs.
+ * Existing Question documents may still use older category names.
+ *
+ * This mapping keeps legacy questions compatible while allowing
+ * the new question bank to use canonical Career Field slugs.
  */
 const LEGACY_CATEGORY_ALIASES:
-  Record<
-    string,
-    string[]
-  > = {
-    "frontend-developer": [
-      "frontend-developer",
-      "frontend",
+  Record<string, string[]> = {
+    "machine-learning-engineer": [
+      "machine-learning-engineer",
+      "machine-learning",
+      "machine-learning-engineering",
+    ],
+
+    "data-analyst": [
+      "data-analyst",
+      "data-analysis",
+      "data-analytics",
+    ],
+
+    "data-engineer": [
+      "data-engineer",
+      "data-engineering",
+    ],
+
+    "data-scientist": [
+      "data-scientist",
+      "data-science",
+    ],
+
+    "database-engineer": [
+      "database-engineer",
+      "database-engineering",
+      "database",
+    ],
+
+    "ui-ux-designer": [
+      "ui-ux-designer",
+      "ui-ux-design",
+      "ui-ux",
+    ],
+
+    "cloud-engineer": [
+      "cloud-engineer",
+      "cloud-engineering",
+      "cloud",
+    ],
+
+    "devops-engineer": [
+      "devops-engineer",
+      "devops",
+      "devops-engineering",
+    ],
+
+    "qa-engineer": [
+      "qa-engineer",
+      "quality-assurance",
+      "qa",
+      "software-testing",
+    ],
+
+    "cybersecurity-engineer": [
+      "cybersecurity-engineer",
+      "cybersecurity",
+      "cyber-security",
+      "security-engineering",
     ],
 
     "backend-developer": [
       "backend-developer",
+      "backend-development",
       "backend",
+    ],
+
+    "frontend-developer": [
+      "frontend-developer",
+      "frontend-development",
+      "frontend",
+    ],
+
+    "full-stack-developer": [
+      "full-stack-developer",
+      "full-stack-development",
+      "fullstack-developer",
+      "fullstack-development",
+      "full-stack",
+      "fullstack",
+    ],
+
+    "mobile-developer": [
+      "mobile-developer",
+      "mobile-development",
+      "mobile",
     ],
 
     "software-engineer": [
@@ -145,19 +221,24 @@ const LEGACY_CATEGORY_ALIASES:
       "software-engineering",
     ],
 
-    "devops-engineer": [
-      "devops-engineer",
-      "devops",
+    "digital-marketing-specialist": [
+      "digital-marketing-specialist",
+      "digital-marketing",
+      "marketing",
     ],
 
-    "ui-ux-designer": [
-      "ui-ux-designer",
-      "ui-ux-design",
+    "financial-analyst": [
+      "financial-analyst",
+      "financial-analysis",
+      "finance",
     ],
 
-    "machine-learning-engineer": [
-      "machine-learning-engineer",
-      "machine-learning",
+    "logistics-supply-chain-specialist": [
+      "logistics-supply-chain-specialist",
+      "logistics-and-supply-chain-specialist",
+      "logistics-supply-chain",
+      "logistics",
+      "supply-chain",
     ],
   };
 
