@@ -865,7 +865,11 @@ const CareerAutomationPage: React.FC = () => {
       return;
     }
 
-    setTargetRoleInput(automation.targetRole || "");
+    setTargetRoleInput(
+      automation.jobPreferences.targetRoles?.[0] ||
+        automation.targetRole ||
+        "",
+    );
 
     setLocationInput(automation.jobPreferences.locations?.[0] || "");
 
@@ -972,13 +976,19 @@ const CareerAutomationPage: React.FC = () => {
 
   const handleOpenJobPreferences = () => {
     if (automation) {
-      setTargetRoleInput(automation.targetRole || "");
+      setTargetRoleInput(
+      automation.jobPreferences.targetRoles?.[0] ||
+        automation.targetRole ||
+        "",
+    );
 
       setLocationInput(automation.jobPreferences.locations?.[0] || "");
 
       setCountryCodeInput("");
 
-        setCityInput("");
+      setSubdivisionCodeInput("");
+
+      setCityInput("");
 
       setLocationSelectionTouched(false);
 
@@ -1000,13 +1010,19 @@ const CareerAutomationPage: React.FC = () => {
 
   const handleCancelJobPreferences = () => {
     if (automation) {
-      setTargetRoleInput(automation.targetRole || "");
+      setTargetRoleInput(
+      automation.jobPreferences.targetRoles?.[0] ||
+        automation.targetRole ||
+        "",
+    );
 
       setLocationInput(automation.jobPreferences.locations?.[0] || "");
 
       setCountryCodeInput("");
 
-        setCityInput("");
+      setSubdivisionCodeInput("");
+
+      setCityInput("");
 
       setLocationSelectionTouched(false);
 
@@ -1031,9 +1047,12 @@ const CareerAutomationPage: React.FC = () => {
 
     const selectedStructuredLocation = buildSelectedLocation();
 
-    const location = locationSelectionTouched
-      ? selectedStructuredLocation
-      : locationInput.replace(/\s+/g, " ").trim();
+    /*
+     * The dropdown is the source of truth.
+     * If the user leaves Country unselected, save [] = Any location.
+     * Do not silently restore the previously saved city.
+     */
+    const location = selectedStructuredLocation;
 
     if (!targetRole) {
       setPreferencesMessage("Target role is required.");
@@ -1081,7 +1100,16 @@ const CareerAutomationPage: React.FC = () => {
         workModes: workModeInput === "any" ? [] : [workModeInput],
       });
 
-      setAutomation(result.automation);
+      setAutomation({
+        ...result.automation,
+        targetRole,
+        jobPreferences: {
+          ...result.automation.jobPreferences,
+          targetRoles: [targetRole],
+          locations: location ? [location] : [],
+          workModes: workModeInput === "any" ? [] : [workModeInput],
+        },
+      });
 
       if (result.summary) {
         setSummary(result.summary);
@@ -1331,6 +1359,10 @@ const CareerAutomationPage: React.FC = () => {
 
   const visibleJobs = externalJobs.slice(0, DAILY_JOB_TARGET);
 
+  const selectedTargetRole =
+    automation.jobPreferences.targetRoles?.[0] ||
+    automation.targetRole;
+
   const selectedLocation =
     automation.jobPreferences.locations?.[0] || "Any location";
 
@@ -1361,7 +1393,7 @@ const CareerAutomationPage: React.FC = () => {
         <div>
           <span className="career-graph-eyebrow">AI CAREER ROADMAP</span>
 
-          <h1>{automation.targetRole}</h1>
+          <h1>{selectedTargetRole}</h1>
 
           <p>
             A role-first path built from your current evidence, target-role
@@ -1407,7 +1439,7 @@ const CareerAutomationPage: React.FC = () => {
         <div>
           <span>Target Role</span>
 
-          <strong>{automation.targetRole}</strong>
+          <strong>{selectedTargetRole}</strong>
         </div>
 
         <div>
@@ -1947,7 +1979,7 @@ const CareerAutomationPage: React.FC = () => {
 
           <span>Career goal:</span>
 
-          <strong>{automation.careerGoal}</strong>
+          <strong>{`Get a ${selectedTargetRole} job`}</strong>
         </div>
       </footer>
 

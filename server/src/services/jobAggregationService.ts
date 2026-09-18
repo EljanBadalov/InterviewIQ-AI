@@ -1858,8 +1858,8 @@ export const refreshExternalJobsForUser =
      */
     const targetRole =
       normalizeString(
-        automation.targetRole ||
-        preferenceTargetRole
+        preferenceTargetRole ||
+        automation.targetRole
       );
 
     if (
@@ -2779,8 +2779,263 @@ export const refreshExternalJobsForUser =
     }
 
     /* =====================================================
+       API FALLBACK
+
+       DB FIRST:
+       - use unseen matching vacancies already stored in MongoDB
+       - only if fewer than 3 are available, call external providers
+       - upsert provider results into MongoDB
+       - only add vacancies the user has never seen
+    ===================================================== */
+
+    if (
+      selected.length <
+      DAILY_JOB_LIMIT
+    ) {
+      const missingCount =
+        DAILY_JOB_LIMIT -
+        selected.length;
+
+      console.log(
+        "[JOB DEBUG] DB unseen pool insufficient. Fetching external vacancies:",
+        {
+          missingCount,
+          targetRole:
+            canonicalTargetRole,
+          location:
+            rawLocation ||
+            "Any",
+        }
+      );
+
+      const externalJobs =
+        await fetchJobsForRoleQueries({
+          queries:
+            searchQueries,
+
+          location:
+            sourceLocation,
+
+          countryCode,
+        });
+
+      const externalKeys =
+        externalJobs.map(
+          (job) => ({
+            source:
+              job.source,
+            externalId:
+              job.externalId,
+          })
+        );
+
+      const alreadyStoredExternalJobs =
+        externalKeys.length > 0
+          ? await Job.find({
+              $or:
+                externalKeys,
+            })
+              .select({
+                source: 1,
+                externalId: 1,
+              })
+              .lean<IJob[]>()
+          : [];
+
+      const alreadyStoredExternalKeys =
+        new Set<string>(
+          alreadyStoredExternalJobs.map(
+            (job) =>
+              `${normalizeLower(job.source)}:${normalizeLower(job.externalId)}`
+          )
+        );
+
+      const brandNewExternalJobs =
+        externalJobs.filter(
+          (job) =>
+            !alreadyStoredExternalKeys.has(
+              `${normalizeLower(job.source)}:${normalizeLower(job.externalId)}`
+            )
+        );
+
+      const externalStoredJobs:
+        IJob[] =
+        [];
+
+      for (
+        const externalJob of
+        brandNewExternalJobs
+      ) {
+        try {
+          const stored =
+            await upsertExternalJob(
+              externalJob
+            );
+
+          externalStoredJobs.push(
+            stored
+          );
+        } catch (error) {
+          console.warn(
+            "[JOB DEBUG] External fallback job could not be stored:",
+            {
+              source:
+                externalJob.source,
+              externalId:
+                externalJob.externalId,
+              title:
+                externalJob.title,
+              error,
+            }
+          );
+        }
+      }
+
+      const freshScoredJobs:
+        IScoredJob[] =
+        externalStoredJobs
+          .filter(
+            (job) => {
+              const id =
+                job._id?.toString();
+
+              if (
+                !id ||
+                previouslyShownJobIds.has(id) ||
+                selectedIds.has(id)
+              ) {
+                return false;
+              }
+
+              const locationOkay =
+                locationMatchesPreference(
+                  job,
+                  rawLocation
+                );
+
+              const workModeOkay =
+                allowedWorkModes.size === 0 ||
+                allowedWorkModes.has(
+                  job.remoteType
+                );
+
+              const normalizedEmploymentType =
+                job.employmentType ===
+                  "full-time"
+                  ? "full_time"
+                  : job.employmentType ===
+                      "part-time"
+                    ? "part_time"
+                    : job.employmentType;
+
+              const employmentOkay =
+                allowedEmploymentTypes.size === 0 ||
+                allowedEmploymentTypes.has(
+                  normalizedEmploymentType
+                );
+
+              const experienceOkay =
+                allowedExperienceSet.size === 0 ||
+                allowedExperienceSet.has(
+                  job.experienceLevel
+                ) ||
+                (
+                  allowedExperienceSet.has(
+                    "entry"
+                  ) &&
+                  job.experienceLevel ===
+                    "junior"
+                ) ||
+                (
+                  allowedExperienceSet.has(
+                    "junior"
+                  ) &&
+                  job.experienceLevel ===
+                    "entry"
+                );
+
+              return (
+                locationOkay &&
+                workModeOkay &&
+                employmentOkay &&
+                experienceOkay
+              );
+            }
+          )
+          .map(
+            (job) => {
+              const fieldClassification =
+                classifyRoleFromFieldPlan(
+                  fieldSearchPlan,
+                  job
+                );
+
+              const match =
+                calculateJobMatch(
+                  skillProfile,
+                  job,
+                  {
+                    targetRole:
+                      canonicalTargetRole,
+
+                    preferredExperienceLevels:
+                      allowedExperienceLevels,
+                  }
+                );
+
+              return {
+                job,
+                match,
+                roleTier:
+                  fieldClassification.roleTier,
+                fieldRelevance:
+                  fieldClassification.fieldRelevance,
+                relatedRoleSimilarity:
+                  fieldClassification.relatedRoleSimilarity,
+                matchedRole:
+                  fieldClassification.matchedRole,
+              };
+            }
+          )
+          .filter(
+            (item) =>
+              item.roleTier === "exact" ||
+              item.roleTier === "strong" ||
+              (
+                item.roleTier === "related" &&
+                item.fieldRelevance >= 55 &&
+                item.relatedRoleSimilarity >= 70
+              )
+          )
+          .sort(
+            sortScoredJobs
+          );
+
+      addFromPool(
+        freshScoredJobs,
+        0
+      );
+
+      console.log(
+        "[JOB DEBUG] API FALLBACK RESULT",
+        {
+          fetched:
+            externalJobs.length,
+          brandNew:
+            brandNewExternalJobs.length,
+          stored:
+            externalStoredJobs.length,
+          eligibleUnseen:
+            freshScoredJobs.length,
+          selectedAfterApi:
+            selected.length,
+        }
+      );
+    }
+
+    /* =====================================================
        PASS 2
-       Only recycle old vacancies when unseen pool is empty.
+       Recycle old vacancies only when DB + API cannot provide 3 unseen jobs.
     ===================================================== */
 
     if (
