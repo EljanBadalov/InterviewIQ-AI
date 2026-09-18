@@ -11,6 +11,8 @@ import {
   Link,
 } from "react-router-dom";
 
+import ReactMarkdown from "react-markdown";
+
 import {
   createCareerAssistantSessionId,
   sendCareerAssistantMessage,
@@ -99,7 +101,7 @@ const createMessageId = (): string => {
   if (
     typeof crypto !== "undefined" &&
     typeof crypto.randomUUID ===
-      "function"
+    "function"
   ) {
     return crypto.randomUUID();
   }
@@ -139,7 +141,7 @@ const getJobMatchCards = (
   if (
     !response ||
     response.intent !==
-      "JOB_MATCHING"
+    "JOB_MATCHING"
   ) {
     return [];
   }
@@ -147,10 +149,10 @@ const getJobMatchCards = (
   const jobMatching =
     response.data
       ?.jobMatching as
-      | {
-          jobs?: JobMatchCard[];
-        }
-      | undefined;
+    | {
+      jobs?: JobMatchCard[];
+    }
+    | undefined;
 
   if (
     !jobMatching ||
@@ -184,13 +186,13 @@ const isJobMatchingResponse = (
 ): boolean => {
   return (
     message.role ===
-      "assistant" &&
+    "assistant" &&
     message.response?.intent ===
-      "JOB_MATCHING" &&
+    "JOB_MATCHING" &&
     getJobMatchCards(
       message.response
     ).length >
-      0
+    0
   );
 };
 
@@ -303,9 +305,9 @@ const CareerAssistantPage = () => {
         (
           current
         ) => [
-          ...current,
-          userMessage,
-        ]
+            ...current,
+            userMessage,
+          ]
       );
 
       setInput(
@@ -350,12 +352,12 @@ const CareerAssistantPage = () => {
           (
             current
           ) => [
-            ...current,
-            assistantMessage,
-          ]
+              ...current,
+              assistantMessage,
+            ]
         );
       } catch (
-        requestError
+      requestError
       ) {
         console.error(
           "[Career Assistant] Request failed:",
@@ -465,10 +467,10 @@ const CareerAssistantPage = () => {
 
                     {message.role ===
                       "assistant" && (
-                      <div className="career-message-avatar">
-                        AI
-                      </div>
-                    )}
+                        <div className="career-message-avatar">
+                          AI
+                        </div>
+                      )}
 
                     {/* ===================================
                         MESSAGE CONTENT
@@ -478,7 +480,7 @@ const CareerAssistantPage = () => {
 
                       <div className="career-message-label">
                         {message.role ===
-                        "assistant"
+                          "assistant"
                           ? "Career Assistant"
                           : "You"}
                       </div>
@@ -489,9 +491,15 @@ const CareerAssistantPage = () => {
 
                       {!showJobMatching && (
                         <div className="career-message-bubble">
-                          {
+                          {message.role === "assistant" ? (
+                            <div className="career-message-markdown">
+                              <ReactMarkdown>
+                                {message.content}
+                              </ReactMarkdown>
+                            </div>
+                          ) : (
                             message.content
-                          }
+                          )}
                         </div>
                       )}
 
@@ -566,19 +574,19 @@ const CareerAssistantPage = () => {
 
                                       {typeof job.matchScore ===
                                         "number" && (
-                                        <div className="career-job-score">
-                                          <strong>
-                                            {
-                                              job.matchScore
-                                            }
-                                            %
-                                          </strong>
+                                          <div className="career-job-score">
+                                            <strong>
+                                              {
+                                                job.matchScore
+                                              }
+                                              %
+                                            </strong>
 
-                                          <span>
-                                            Match
-                                          </span>
-                                        </div>
-                                      )}
+                                            <span>
+                                              Match
+                                            </span>
+                                          </div>
+                                        )}
                                     </div>
 
                                     {/* ===================
@@ -630,7 +638,7 @@ const CareerAssistantPage = () => {
                                     ) &&
                                       job.matchedSkills
                                         .length >
-                                        0 && (
+                                      0 && (
                                         <div className="career-job-skill-section">
 
                                           <div className="career-job-section-title">
@@ -673,7 +681,7 @@ const CareerAssistantPage = () => {
                                     ) &&
                                       job.missingSkills
                                         .length >
-                                        0 && (
+                                      0 && (
                                         <div className="career-job-skill-section">
 
                                           <div className="career-job-section-title">
@@ -750,15 +758,15 @@ const CareerAssistantPage = () => {
                           {message.response
                             .data
                             ?.nextStep && (
-                            <span>
-                              {
-                                message
-                                  .response
-                                  .data
-                                  .nextStep
-                              }
-                            </span>
-                          )}
+                              <span>
+                                {
+                                  message
+                                    .response
+                                    .data
+                                    .nextStep
+                                }
+                              </span>
+                            )}
                         </div>
                       )}
 
@@ -813,54 +821,54 @@ const CareerAssistantPage = () => {
 
           {messages.length <=
             1 && (
-            <div className="career-quick-prompts">
+              <div className="career-quick-prompts">
 
-              <button
-                type="button"
-                onClick={() =>
-                  handleQuickPrompt(
-                    "Analyze my CV"
-                  )
-                }
-              >
-                Analyze my CV
-              </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleQuickPrompt(
+                      "Analyze my CV"
+                    )
+                  }
+                >
+                  Analyze my CV
+                </button>
 
-              <button
-                type="button"
-                onClick={() =>
-                  handleQuickPrompt(
-                    "Which jobs match my CV?"
-                  )
-                }
-              >
-                Find matching jobs
-              </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleQuickPrompt(
+                      "Which jobs match my CV?"
+                    )
+                  }
+                >
+                  Find matching jobs
+                </button>
 
-              <button
-                type="button"
-                onClick={() =>
-                  handleQuickPrompt(
-                    "How did I do in my last interview?"
-                  )
-                }
-              >
-                Interview feedback
-              </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleQuickPrompt(
+                      "How did I do in my last interview?"
+                    )
+                  }
+                >
+                  Interview feedback
+                </button>
 
-              <button
-                type="button"
-                onClick={() =>
-                  handleQuickPrompt(
-                    "How has my career progress changed?"
-                  )
-                }
-              >
-                Career progress
-              </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleQuickPrompt(
+                      "How has my career progress changed?"
+                    )
+                  }
+                >
+                  Career progress
+                </button>
 
-            </div>
-          )}
+              </div>
+            )}
 
           {/* =============================================
               INPUT
@@ -892,7 +900,7 @@ const CareerAssistantPage = () => {
                 ) => {
                   if (
                     event.key ===
-                      "Enter" &&
+                    "Enter" &&
                     !event.shiftKey
                   ) {
                     event.preventDefault();
