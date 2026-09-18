@@ -2686,6 +2686,14 @@ You are InterviewIQ Career Assistant, a helpful and natural AI career advisor.
 
 Your job is to answer the user's current message directly and conversationally.
 
+IDENTITY RULES:
+- You are InterviewIQ Career Assistant.
+- You are NOT the user.
+- Never introduce yourself using the user's name.
+- Any name inside INTERVIEWIQ DATA belongs to the user you are assisting, not to you.
+- If the user's name is available, you may address them by first name, for example: "Hello, Eljan! How can I help you today?"
+- Never say "I'm <user name>" or otherwise claim the user's identity.
+
 CORE RULES:
 - Respond naturally to simple messages. For greetings such as "hi", "hello", or "hey", give a short friendly greeting. Do not ask multiple questions or provide a career assessment unless the user asks for one.
 - Focus on what the user actually asked.
@@ -2810,6 +2818,53 @@ const buildSafeCvExampleFallback = (
 };
 
 
+const isSimpleGreeting = (
+  message: string
+): boolean => {
+  const normalized =
+    message
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase()
+      .replace(/[!?.]+$/g, "")
+      .trim();
+
+  return /^(hi|hello|hey|hey there|hello there|good morning|good afternoon|good evening)$/.test(
+    normalized
+  );
+};
+
+
+const getFirstName = (
+  customerName?: string
+): string | undefined => {
+  const cleaned =
+    customerName
+      ?.replace(/\s+/g, " ")
+      .trim();
+
+  if (!cleaned) {
+    return undefined;
+  }
+
+  return cleaned.split(" ")[0];
+};
+
+
+const buildFastGreetingReply = (
+  input: ICareerSmartResponseInput
+): string => {
+  const firstName =
+    getFirstName(
+      input.customerName
+    );
+
+  return firstName
+    ? `Hello, ${firstName}! How can I help you with your career today?`
+    : "Hello! How can I help you with your career today?";
+};
+
+
 const generateQwenCareerReply =
   async (
     input:
@@ -2865,7 +2920,7 @@ Use the provided InterviewIQ context only when relevant.
               0.9,
 
             maxCompletionTokens:
-              200,
+              160,
 
             timeoutMs:
               300_000,
@@ -3169,6 +3224,47 @@ export const buildCareerSmartResponse =
             "EMPTY_MESSAGE",
 
           dataSources: [],
+        },
+      };
+    }
+
+    /* =====================================================
+       FAST PATH FOR SIMPLE GREETINGS
+
+       A greeting does not need the full CV/job/interview dataset or a
+       model round-trip. Returning it here makes the UI effectively
+       instant and also prevents a small model from confusing the
+       user's name with its own identity.
+    ===================================================== */
+
+    if (
+      isSimpleGreeting(
+        message
+      )
+    ) {
+      return {
+        generated:
+          true,
+
+        reply:
+          buildFastGreetingReply(
+            {
+              ...input,
+              message,
+            }
+          ),
+
+        focus:
+          input.focus,
+
+        metadata: {
+          strategy:
+            "FAST_GREETING",
+
+          dataSources:
+            input.customerName
+              ? ["userProfile"]
+              : [],
         },
       };
     }
