@@ -1,9 +1,9 @@
 {
   "id": "bir-careers",
   "name": "Bir Careers",
-  "updatedAt": "2026-09-19T18:28:53.486Z",
+  "updatedAt": "2026-09-19T22:11:29.882Z",
   "success": true,
-  "count": 64,
+  "count": 63,
   "jobs": [
     {
       "externalId": "7657",
@@ -3324,81 +3324,6 @@
       "source": "Bir Careers"
     },
     {
-      "externalId": "8054",
-      "title": "Quality Assurance (QA) Engineer - Payment platforms tribe",
-      "company": "Kapital Bank / Bir",
-      "brand": "m10",
-      "location": "Bakı",
-      "summary": "We’re looking for a QA Automation Engineer & Manual tester to sit within our development team, support us in designing the whole testing infrastructure and bringing in knowledge, experience with testing tools and good practices. In this role you will use different automation tools, create, test, and deploy effective test automation solutions. Ultimately, you should monitor all stages of software development to identify and resolve system malfunctions to meet quality standards. Your goal is to test and automate as much of the testing effort as possible with a minimum set of code.If you have a strong technical background and can streamline all testing activities, then we would love to have you on board.\nWe’re looking for a QA Automation Engineer & Manual tester to sit within our development team, support us in designing the whole testing infrastructure and bringing in knowledge, experience with testing tools and good practices. In this role you will use different automation tools, create, test, and deploy effective test automation solutions. Ultimately, you should monitor all stages of software development to identify and resolve system malfunctions to meet quality standards. Your goal is to test and automate as much of the testing effort as possible with a minimum set of code.",
-      "description": "We’re looking for a QA Automation Engineer & Manual tester to sit within our development team, support us in designing the whole testing infrastructure and bringing in knowledge, experience with testing tools and good practices. In this role you will use different automation tools, create, test, and deploy effective test automation solutions. Ultimately, you should monitor all stages of software development to identify and resolve system malfunctions to meet quality standards. Your goal is to test and automate as much of the testing effort as possible with a minimum set of code.\nIf you have a strong technical background and can streamline all testing activities, then we would love to have you on board.",
-      "requirements": [
-        "Higher degree in Computer Science, software engineering or a similar field;",
-        "At least two years of experience in software testing, including unit testing, integration testing, functionality testing, test automation, mobile testing;",
-        "Working experience with Postman, Cucumber Framework, Appium & Selenium based tools;",
-        "Experience in at least one of the following databases: Oracle Database, MS SQL Server;",
-        "Java Knowledge, Javascript Knowledge;",
-        "Hands on experience with automated testing tools, test estimation, planning and reporting;",
-        "Excellent interpersonal and team working skills;",
-        "Excellent communication skills, both written and verbal;",
-        "Highly organized and with attention to detail;",
-        "Analytical mind and problem-solving aptitude;",
-        "Self-directed, capable of determining priorities among multiple QA tasks",
-        "Flexible, adaptable and a fast learner."
-      ],
-      "responsibilities": [
-        "Develop testing plans to verify product functionality prior to release;",
-        "Test product functionality to assure successful implementation as defined by requirements;",
-        "Document, troubleshoot and manage any issues, bugs, changes;",
-        "Collaborate with engineering teams to reproduce issues identified during testing;",
-        "Perform quality assurance and execute manual, end to end, regression testing across multiple environments and platforms, including production;",
-        "Create and execute test plans, test cases, test scenarios, regression tests, and work with developers to ensure all reported software bugs/defects are resolved;",
-        "Set up a range of testing capabilities, including UAT;",
-        "Collaborate with product owners to design measurable acceptance criteria and drive clear definitions of done."
-      ],
-      "benefits": [
-        "Opportunities for professional growth and development",
-        "Competitive salary and bonuses",
-        "Comprehensive insurance coverage",
-        "Supportive work environment",
-        "Visa Premium salary card",
-        "Corporate discounts and events",
-        "Additional vacation days",
-        "Discounted education and employee loans",
-        "New cozy studio office in Port Baku Tower 2",
-        "Strong teamwork with Agile principles, regular team buildings and themed events",
-        "Multicultural environment with foreign colleagues sharing their best experiences"
-      ],
-      "skills": [
-        "SQL",
-        "Reporting",
-        "Regression",
-        "Oracle",
-        "Automation",
-        "Test Cases",
-        "Test Plans",
-        "Regression Testing",
-        "Postman",
-        "Selenium",
-        "Java",
-        "Testing",
-        "JavaScript",
-        "Mobile Testing",
-        "Databases",
-        "Software Engineering"
-      ],
-      "employmentType": "full-time",
-      "experienceLevel": "senior",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "19.09.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8054",
-      "applyUrl": "https://careers.bir.az/vacancies/8054#attachFile",
-      "source": "Bir Careers"
-    },
-    {
       "externalId": "7817",
       "title": "Senior Backend Developer - Payments Business",
       "company": "Kapital Bank / Bir",
@@ -3537,9 +3462,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 64,
-    "detailPagesFetched": 64,
-    "acceptedJobs": 64,
+    "discoveredLinks": 63,
+    "detailPagesFetched": 63,
+    "acceptedJobs": 63,
     "rejectedJobs": 0,
     "errors": []
   }
