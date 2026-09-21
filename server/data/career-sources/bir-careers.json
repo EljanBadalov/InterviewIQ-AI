@@ -1,10 +1,59 @@
 {
   "id": "bir-careers",
   "name": "Bir Careers",
-  "updatedAt": "2026-09-21T03:36:00.009Z",
+  "updatedAt": "2026-09-21T09:41:46.878Z",
   "success": true,
-  "count": 60,
+  "count": 59,
   "jobs": [
+    {
+      "externalId": "8341",
+      "title": "Chapter Lead - Engineering and Technology Platforms Expert Center",
+      "company": "Kapital Bank / Bir",
+      "brand": "Bir",
+      "location": "Bakı",
+      "summary": "We're looking for a senior engineering leader to own the craft, people, and delivery quality of our Development discipline - Backend, Web, and Mobile - across multiple product teams.\nWorking at Bir ecosystem means creating value through technology, delivering meaningful impact to people, and building the solutions of tomorrow today. Our teams operate through open dialogue, rapid decision-making, and a culture of continuous improvement. Our offices are places where ideas emerge, products take shape, and technology enables those ideas to become reality. At Bir ecosystem, we positively impact the daily lives of millions of individuals and thousands of businesses through simple, reliable, and innovative solutions. The Fintech business (Birbank), Payments business (m10/MilliÖn), and E-commerce business (Birmarket) together form the country’s first fully integrated digital ecosystem. Driven by the professionalism and expertise of our teams, the products we develop help shape new habits and contribute to the growth of the country’s digital culture. Working here means growing within Bir ecosystem — an environment rich with opportunity. Diverse areas of expertise, multiple products, and continuous learning opportunities create the environment to unlock your potential and advance your career.",
+      "description": "We're looking for a senior engineering leader to own the craft, people, and delivery quality of our Development discipline - Backend, Web, and Mobile - across multiple product teams.",
+      "requirements": [
+        "7-9+ years in software development, including 4-5+ years leading engineers.",
+        "Proven product-team experience with direct delivery accountability - a must.",
+        "Deep mastery of at least one core stack (Java preferred) with credible breadth across others.",
+        "A track record of developing people and scaling practices across multiple teams.",
+        "Working proficiency in English."
+      ],
+      "responsibilities": [
+        "Lead and grow Development Chapter Leads across Backend, Web, and Mobile.",
+        "Own hiring and performance evaluation for the development chapters and the platform team.",
+        "Set and scale engineering standards: architecture, code quality, review practices, quality gates.",
+        "Own the direction and adoption of our internal developer platform - golden paths, templates, self-service.",
+        "Partner with Tribe Leads on release predictability, technical risk, and delivery quality.",
+        "Help lead our engineering guilds - cross-team communities where practices are aligned."
+      ],
+      "benefits": [
+        "Opportunities for professional growth and development.",
+        "Competitive salary and bonuses.",
+        "Comprehensive insurance coverage.",
+        "Supportive work environment.",
+        "Visa Premium salary card.",
+        "Corporate discounts and events.",
+        "Additional vacation days.",
+        "Discounted education and employee loans."
+      ],
+      "skills": [
+        "Java",
+        "Performance"
+      ],
+      "employmentType": "full-time",
+      "experienceLevel": "manager",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": "21.09.2026",
+      "postedAt": null,
+      "url": "https://careers.bir.az/vacancies/8341",
+      "applyUrl": "https://careers.bir.az/vacancies/8341#attachFile",
+      "source": "Bir Careers"
+    },
     {
       "externalId": "7657",
       "title": "Büdcələşdirmə və Maliyyə Modelləşdirilməsi üzrə Qrup Rəhbəri",
@@ -335,55 +384,6 @@
       "postedAt": null,
       "url": "https://careers.bir.az/vacancies/8344",
       "applyUrl": "https://careers.bir.az/vacancies/8344#attachFile",
-      "source": "Bir Careers"
-    },
-    {
-      "externalId": "8341",
-      "title": "Senior Chapter Lead - Development",
-      "company": "Kapital Bank / Bir",
-      "brand": "Bir",
-      "location": "Bakı",
-      "summary": "We're looking for a senior engineering leader to own the craft, people, and delivery quality of our Development discipline - Backend, Web, and Mobile - across multiple product teams.This is a leader-of-leaders role (~90% leadership / ~10% hands-on): you lead Chapter Leads, own our internal developer platform (built on Backstage), and act as the final technical authority for the discipline.\nWe're looking for a senior engineering leader to own the craft, people, and delivery quality of our Development discipline - Backend, Web, and Mobile - across multiple product teams.",
-      "description": "We're looking for a senior engineering leader to own the craft, people, and delivery quality of our Development discipline - Backend, Web, and Mobile - across multiple product teams.\nThis is a leader-of-leaders role (~90% leadership / ~10% hands-on): you lead Chapter Leads, own our internal developer platform (built on Backstage), and act as the final technical authority for the discipline.",
-      "requirements": [
-        "7-9+ years in software development, including 4-5+ years leading engineers.",
-        "Proven product-team experience with direct delivery accountability - a must.",
-        "Deep mastery of at least one core stack (Java preferred) with credible breadth across others.",
-        "A track record of developing people and scaling practices across multiple teams.",
-        "Working proficiency in English."
-      ],
-      "responsibilities": [
-        "Lead and grow Development Chapter Leads across Backend, Web, and Mobile.",
-        "Own hiring and performance evaluation for the development chapters and the platform team.",
-        "Set and scale engineering standards: architecture, code quality, review practices, quality gates.",
-        "Own the direction and adoption of our internal developer platform - golden paths, templates, self-service.",
-        "Partner with Tribe Leads on release predictability, technical risk, and delivery quality.",
-        "Help lead our engineering guilds - cross-team communities where practices are aligned."
-      ],
-      "benefits": [
-        "Opportunities for professional growth and development.",
-        "Competitive salary and bonuses.",
-        "Comprehensive insurance coverage.",
-        "Supportive work environment.",
-        "Visa Premium salary card.",
-        "Corporate discounts and events.",
-        "Additional vacation days.",
-        "Discounted education and employee loans."
-      ],
-      "skills": [
-        "Java",
-        "Performance"
-      ],
-      "employmentType": "full-time",
-      "experienceLevel": "manager",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "05.10.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8341",
-      "applyUrl": "https://careers.bir.az/vacancies/8341#attachFile",
       "source": "Bir Careers"
     },
     {
@@ -2590,70 +2590,6 @@
       "source": "Bir Careers"
     },
     {
-      "externalId": "8144",
-      "title": "Product Owner (Hiring Portal)",
-      "company": "Kapital Bank / Bir",
-      "brand": "Bir",
-      "location": "Bakı",
-      "summary": "The mission of this role is to become the product owner for the entire hiring domain: bring the fragmented pieces into a coherent product ecosystem, set the strategy, improve the efficiency of the hiring function, embed AI where it adds real value, and build transparent reporting.\nWorking at Bir ecosystem means creating value through technology, delivering meaningful impact to people, and building the solutions of tomorrow today. Our teams operate through open dialogue, rapid decision-making, and a culture of continuous improvement. Our offices are places where ideas emerge, products take shape, and technology enables those ideas to become reality. At Bir ecosystem, we positively impact the daily lives of millions of individuals and thousands of businesses through simple, reliable, and innovative solutions. The Fintech business (Birbank), Payments business (m10/MilliÖn), and E-commerce business (Birmarket) together form the country’s first fully integrated digital ecosystem. Driven by the professionalism and expertise of our teams, the products we develop help shape new habits and contribute to the growth of the country’s digital culture. Working here means growing within Bir ecosystem — an environment rich with opportunity. Diverse areas of expertise, multiple products, and continuous learning opportunities create the environment to unlock your potential and advance your career.",
-      "description": "The mission of this role is to become the product owner for the entire hiring domain: bring the fragmented pieces into a coherent product ecosystem, set the strategy, improve the efficiency of the hiring function, embed AI where it adds real value, and build transparent reporting.",
-      "requirements": [
-        "3+ years as a Product Owner / Product Manager; ideally with HR Tech experience, though experience with B2B / enterprise or internal products is acceptable.",
-        "Experience working in an environment with many stakeholders and several systems/integrations; the ability to prioritize under limited resources.",
-        "A data-driven approach: working with metrics independently, building reporting, and making decisions based on data.",
-        "Confident collaboration with an engineering team in Agile/Scrum: backlog, specifications, acceptance.",
-        "An understanding of how and where to apply AI/ML in products, with a realistic assessment of applicability.",
-        "Strong communication and the ability to defend product decisions to the business.",
-        "Languages: Azerbaijani / English; Russian is plus.",
-        "Experience consolidating or replacing platforms and migrating data is a plus.",
-        "Experience shipping AI features to production.",
-        "Candidate profile and sourcing tips",
-        "Prior experience at a large, established organization — explicitly: a major Telecom operator, a major Bank, or a Big 4 firm",
-        "Background in market research, strategy, competitive intelligence, or economic/financial analysis",
-        "Exposure to the payments, e-commerce, or banking/fintech sectors specifically",
-        "Working proficiency in SQL for independent data extraction and validation",
-        "Ability to build clear data visualizations to support a research narrative",
-        "Ability to design and deliver professional slide decks / presentations",
-        "Fluent Azerbaijani and English (verbal and written)"
-      ],
-      "responsibilities": [
-        "An ATS, the careers site careers.bir.az and other hiring tools — the full lifecycle (discovery → delivery → evolution).",
-        "Strategy and vision: shaping the product strategy and roadmap for the area (quarter, half-year, year).",
-        "Owning and prioritizing the backlog, writing requirements, participating in Agile processes, and being accountable for delivery and release quality.",
-        "Defining product and process metrics for hiring, building the reporting system, and working from data.",
-        "Improve the efficiency of the hiring function (time-to-fill, funnel conversion, candidate quality and experience, recruiter workload).",
-        "Embed AI where it delivers real value (e.g., candidate screening/matching, generating and optimizing job-post copy, automating recruiter routine, funnel analytics) — with a sober assessment of the benefit, not for the sake of hype.",
-        "Grow the careers site as a product.",
-        "Consolidate several systems into a coherent, data-driven hiring ecosystem."
-      ],
-      "benefits": [
-        "We value our customers and are attentive to their needs, habits, and expectations.",
-        "Multicultural environment: We appreciate the opinions and experiences of our foreign colleagues. We believe in openness, inclusiveness, and the opportunity to hold different points of view.",
-        "Competitive salary, health insurance, and an annual performance bonus.",
-        "Growth opportunities: We invest in the professional development of our employees and offer clear career paths, personal development plans, and a wide range of online courses and training programs.",
-        "Flexible working format: We offer a convenient combination of remote and office work.",
-        "Comfortable and attractive office: We provide a pleasant and exciting workplace.",
-        "Informal dress code: Dress comfortably and express your style."
-      ],
-      "skills": [
-        "SQL",
-        "Reporting",
-        "Express",
-        "Performance"
-      ],
-      "employmentType": "full-time",
-      "experienceLevel": "senior",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "26.09.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8144",
-      "applyUrl": "https://careers.bir.az/vacancies/8144#attachFile",
-      "source": "Bir Careers"
-    },
-    {
       "externalId": "8138",
       "title": "HR Data Analitiki",
       "company": "Kapital Bank / Bir",
@@ -3343,9 +3279,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 60,
-    "detailPagesFetched": 60,
-    "acceptedJobs": 60,
+    "discoveredLinks": 59,
+    "detailPagesFetched": 59,
+    "acceptedJobs": 59,
     "rejectedJobs": 0,
     "errors": []
   }

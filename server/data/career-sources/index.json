@@ -1,23 +1,23 @@
 {
-  "updatedAt": "2026-09-21T03:37:19.337Z",
+  "updatedAt": "2026-09-21T09:43:05.918Z",
   "sourceCount": 2,
   "successfulSources": 2,
   "failedSources": 0,
-  "totalJobs": 158,
+  "totalJobs": 157,
   "sources": [
     {
       "id": "bir-careers",
       "name": "Bir Careers",
       "success": true,
-      "count": 60,
-      "updatedAt": "2026-09-21T03:36:00.009Z"
+      "count": 59,
+      "updatedAt": "2026-09-21T09:41:46.878Z"
     },
     {
       "id": "abb-careers",
       "name": "ABB Careers",
       "success": true,
       "count": 98,
-      "updatedAt": "2026-09-21T03:37:19.335Z"
+      "updatedAt": "2026-09-21T09:43:05.915Z"
     }
   ]
 }
