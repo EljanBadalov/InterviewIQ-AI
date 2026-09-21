@@ -1,10 +1,58 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-09-21T09:43:05.915Z",
+  "updatedAt": "2026-09-21T17:58:43.320Z",
   "success": true,
-  "count": 98,
+  "count": 96,
   "jobs": [
+    {
+      "externalId": "5309",
+      "title": "Monitorinq şöbəsinin mütəxəssisi /aparıcı mütəxəssisi (Mikro kreditlərinin monitorinqi üzrə)",
+      "company": "ABB",
+      "location": "Azerbaijan",
+      "summary": "Mikro və rəqəmsal mikro kreditlərin monitorinqi və yerində yoxlanılması; Kredit portfelinin və əsas risk göstəricilərinin dinamik təhlili və qiymətləndirilməsi; Maliyyə, İqtisadiyyat, Bank işi, Riyaziyyat və ya əlaqəli sahə üzrə ali təhsilə malik;MS Excel və analitik hesabatlarla işləmək bacarığı olan;",
+      "description": "Mikro və rəqəmsal mikro kreditlərin monitorinqi və yerində yoxlanılması; Kredit portfelinin və əsas risk göstəricilərinin dinamik təhlili və qiymətləndirilməsi; Maliyyə, İqtisadiyyat, Bank işi, Riyaziyyat və ya əlaqəli sahə üzrə ali təhsilə malik;MS Excel və analitik hesabatlarla işləmək bacarığı olan;",
+      "requirements": [
+        "Maliyyə, İqtisadiyyat, Bank işi, Riyaziyyat və ya əlaqəli sahə üzrə ali təhsilə malik;MS Excel və analitik hesabatlarla işləmək bacarığı olan;",
+        "Güclü kommunikasiya, müşahidə və hesabat hazırlama bacarığı olan;",
+        "Sahə şəraitində müstəqil işləmə və operativ qərarvermə bacarığı olan;",
+        "Yüksək məsuliyyət və intizamlı olan;",
+        "Stressli və dinamik iş şəraitində işləmək bacarığı olan;",
+        "Etik davranış və məxfilik prinsiplərinə riayət edən;",
+        "Güclü analitik təfəkkür və problemləri həll etmə qabiliyyətinə malik;",
+        "Maliyyə hesabatlarını oxuma və təhlil etmə bacarığına malik;",
+        "Statistik analiz və maliyyə modelləşdirməsi biliklərinə malik;",
+        "Bank, BOKT və ya digər maliyyə təşkilatlarında kreditləşmə, monitorinq, risk və ya audit sahəsində iş təcrübəsi olan şəxsdir."
+      ],
+      "responsibilities": [
+        "Mikro və rəqəmsal mikro kreditlərin monitorinqi və yerində yoxlanılması;",
+        "Kredit portfelinin və əsas risk göstəricilərinin dinamik təhlili və qiymətləndirilməsi;",
+        "Risk yönümlü analitik düşüncə və kənarlaşmaları, potensial problemli kreditləri vaxtında müəyyən etmək;",
+        "Kredit sənədlərinin, müştərinin faktiki biznes fəaliyyətinin, maliyyə vəziyyətinin və əsas maliyyə göstəricilərinin təhlili və yoxlanılması;",
+        "Kredit vəsaitlərinin təyinatı üzrə istifadəsini və müştərinin müqavilə öhdəliklərinə əməl etməsinin yoxlanılması;",
+        "Fraud, sui-istifadə və digər potensial risk hallarının müəyyən edilməsi;",
+        "Müştərinin kredit tarixçəsi, ödəniş intizamı və digər maliyyə öhdəliklərini risk baxımından qiymətləndirilməsi;",
+        "EWS siqnallarının və portfeldə mənfi dinamikaların müəyyən edilməsi;",
+        "MS Excel və analitik hesabatlarla işləmək bacarığı;",
+        "Regionlara ezamiyyətə getmək;",
+        "Kredit portfelinin seqmentləşdirilməsi və risk qrupları üzrə təhlili;"
+      ],
+      "benefits": [],
+      "skills": [
+        "Excel"
+      ],
+      "employmentType": null,
+      "experienceLevel": "mid",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": null,
+      "postedAt": null,
+      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5309",
+      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5309",
+      "source": "ABB Careers"
+    },
     {
       "externalId": "5229",
       "title": "Müştərilərə satış və xidmət üzrə kiçik mütəxəssis - Zərdab",
@@ -227,57 +275,6 @@
       "postedAt": null,
       "url": "https://careers.abb-bank.az/vakansiyalar/v2/5322",
       "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5322",
-      "source": "ABB Careers"
-    },
-    {
-      "externalId": "5187",
-      "title": "İstifadəçi təcrübəsi və dizayn ekspert mərkəzinin UI/UX üzrə aparıcı / baş dizayneri",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "Məhsul sahibi və dizayn rəhbəri ilə birlikdə UX/UI dizaynlarının biznes tələblərinə və istifadəçi təcrübəsinə uyğun hazırlanması; Biznes ehtiyaclarının təhlili və dizayn həllərinə çevrilməsi, qərarların məlumatlarla əsaslandırılması; Ali təhsilli;",
-      "description": "Məhsul sahibi və dizayn rəhbəri ilə birlikdə UX/UI dizaynlarının biznes tələblərinə və istifadəçi təcrübəsinə uyğun hazırlanması; Biznes ehtiyaclarının təhlili və dizayn həllərinə çevrilməsi, qərarların məlumatlarla əsaslandırılması; Ali təhsilli;",
-      "requirements": [
-        "Ali təhsilli;",
-        "UX/UI dizayn sahəsində 3+ illik iş təcrübəsi olan;",
-        "Təcrübənizi əks etdirən portfolionun olan;",
-        "Figma, Adobe XD kimi dizayn proqramlarında yaxşı səviyyədə işləmə bacarığı olan;",
-        "Dizayn sistemləri və komponent kitabxanaları ilə iş təcrübəsi olan;",
-        "Responsive və Adaptive dizayn prinsiplərini bilən və tətbiq edən;",
-        "İstifadəçi tədqiqatları, məlumat analitikası, kəmiyyət və keyfiyyət araşdırmaları üzrə təcrübəsi olan;",
-        "Prototip və Wireframing üzrə bacarığı olan;",
-        "İstifadəyə yararlılıq testləri (Usability Testing) və A/B testlərini icra etmək bacarığı olan;",
-        "Azərbaycan və ingilis dillərində sərbəst ünsiyyət bacarığı olan şəxsdir (rus dili üstünlükdür)."
-      ],
-      "responsibilities": [
-        "Məhsul sahibi və dizayn rəhbəri ilə birlikdə UX/UI dizaynlarının biznes tələblərinə və istifadəçi təcrübəsinə uyğun hazırlanması;",
-        "Biznes ehtiyaclarının təhlili və dizayn həllərinə çevrilməsi, qərarların məlumatlarla əsaslandırılması;",
-        "Kəmiyyət və keyfiyyət UX araşdırmalarının aparılması və istifadəçi yönümlü məhsulların hazırlanması;",
-        "Fərziyyə testi, istifadəyə yararlılıq testi, A/B testləri və digər eksperimental metodlarla məhsulun istifadəyə yararlılığının yoxlanılması;",
-        "CJM (Customer Journey Maps), User Flow, Mind Maps, İnformasiya Arxitekturası, Wireframe və interaktiv prototiplərin hazırlanması və təqdimatı;",
-        "Dizayn sistemi ilə işləmək və inkişafında iştirak etmək;",
-        "Məhsullararası dizayn prinsiplərinə riayət etmək və yeni tendensiyalara uyğunlaşdırmaq;",
-        "Agile və digər iş proseslərinə uyğun dizayn prosesinə effektiv şəkildə riayət etmək;",
-        "Dizaynların texniki uyğunluğunu təmin etmək, proqramçılarla sinxron işləmək və proqramlaşdırma üçün dəqiq dizayn materialları təqdim etmək;",
-        "Mövcud məhsulların performansını təhlil etmək, UX auditi aparmaq və təkmilləşdirmə planları hazırlamaq;",
-        "Yeni texnologiya və dizayn trendlərini izləmək və komandaya innovativ həllər təklif etmək."
-      ],
-      "benefits": [],
-      "skills": [
-        "Figma",
-        "Wireframing",
-        "Usability Testing",
-        "Testing"
-      ],
-      "employmentType": null,
-      "experienceLevel": "senior",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5187",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5187",
       "source": "ABB Careers"
     },
     {
@@ -969,54 +966,6 @@
       "postedAt": null,
       "url": "https://careers.abb-bank.az/vakansiyalar/v2/5311",
       "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5311",
-      "source": "ABB Careers"
-    },
-    {
-      "externalId": "5309",
-      "title": "Monitorinq şöbəsinə mütəxəssis/aparıcı mütəxəssis (Mikro kreditlərinin monitorinqi üzrə)",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "Mikro və rəqəmsal mikro kreditlərin monitorinqi və yerində yoxlanılması; Kredit portfelinin və əsas risk göstəricilərinin dinamik təhlili və qiymətləndirilməsi; Maliyyə, İqtisadiyyat, Bank işi, Riyaziyyat və ya əlaqəli sahə üzrə ali təhsilə malik;MS Excel və analitik hesabatlarla işləmək bacarığı olan;",
-      "description": "Mikro və rəqəmsal mikro kreditlərin monitorinqi və yerində yoxlanılması; Kredit portfelinin və əsas risk göstəricilərinin dinamik təhlili və qiymətləndirilməsi; Maliyyə, İqtisadiyyat, Bank işi, Riyaziyyat və ya əlaqəli sahə üzrə ali təhsilə malik;MS Excel və analitik hesabatlarla işləmək bacarığı olan;",
-      "requirements": [
-        "Maliyyə, İqtisadiyyat, Bank işi, Riyaziyyat və ya əlaqəli sahə üzrə ali təhsilə malik;MS Excel və analitik hesabatlarla işləmək bacarığı olan;",
-        "Güclü kommunikasiya, müşahidə və hesabat hazırlama bacarığı olan;",
-        "Sahə şəraitində müstəqil işləmə və operativ qərarvermə bacarığı olan;",
-        "Yüksək məsuliyyət və intizamlı olan;",
-        "Stressli və dinamik iş şəraitində işləmək bacarığı olan;",
-        "Etik davranış və məxfilik prinsiplərinə riayət edən;",
-        "Güclü analitik təfəkkür və problemləri həll etmə qabiliyyətinə malik;",
-        "Maliyyə hesabatlarını oxuma və təhlil etmə bacarığına malik;",
-        "Statistik analiz və maliyyə modelləşdirməsi biliklərinə malik;",
-        "Bank, BOKT və ya digər maliyyə təşkilatlarında kreditləşmə, monitorinq, risk və ya audit sahəsində iş təcrübəsi olan şəxsdir."
-      ],
-      "responsibilities": [
-        "Mikro və rəqəmsal mikro kreditlərin monitorinqi və yerində yoxlanılması;",
-        "Kredit portfelinin və əsas risk göstəricilərinin dinamik təhlili və qiymətləndirilməsi;",
-        "Risk yönümlü analitik düşüncə və kənarlaşmaları, potensial problemli kreditləri vaxtında müəyyən etmək;",
-        "Kredit sənədlərinin, müştərinin faktiki biznes fəaliyyətinin, maliyyə vəziyyətinin və əsas maliyyə göstəricilərinin təhlili və yoxlanılması;",
-        "Kredit vəsaitlərinin təyinatı üzrə istifadəsini və müştərinin müqavilə öhdəliklərinə əməl etməsinin yoxlanılması;",
-        "Fraud, sui-istifadə və digər potensial risk hallarının müəyyən edilməsi;",
-        "Müştərinin kredit tarixçəsi, ödəniş intizamı və digər maliyyə öhdəliklərini risk baxımından qiymətləndirilməsi;",
-        "EWS siqnallarının və portfeldə mənfi dinamikaların müəyyən edilməsi;",
-        "MS Excel və analitik hesabatlarla işləmək bacarığı;",
-        "Regionlara ezamiyyətə getmək;",
-        "Kredit portfelinin seqmentləşdirilməsi və risk qrupları üzrə təhlili;"
-      ],
-      "benefits": [],
-      "skills": [
-        "Excel"
-      ],
-      "employmentType": null,
-      "experienceLevel": "mid",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5309",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5309",
       "source": "ABB Careers"
     },
     {
@@ -1724,45 +1673,6 @@
       "postedAt": null,
       "url": "https://careers.abb-bank.az/vakansiyalar/v2/5206",
       "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5206",
-      "source": "ABB Careers"
-    },
-    {
-      "externalId": "5278",
-      "title": "Alternativ satış kanalları üzrə kiçik mütəxəssis",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "Müxtəlif kanallardan daxil olan bütün müştəri sorğuları ilə işləmək, müştəriləri lazımi qaydada məlumatlandırmaq və bütün müştəri sorğularını üzrə yüksək keyfiyyətli xidmət göstərmək Kredit və qeyri-kredit məhsulları üzrə onlayn xidmətin təşkili, idarə olunması və yönləndirilməsi; Ali təhsilli;",
-      "description": "Müxtəlif kanallardan daxil olan bütün müştəri sorğuları ilə işləmək, müştəriləri lazımi qaydada məlumatlandırmaq və bütün müştəri sorğularını üzrə yüksək keyfiyyətli xidmət göstərmək Kredit və qeyri-kredit məhsulları üzrə onlayn xidmətin təşkili, idarə olunması və yönləndirilməsi; Ali təhsilli;",
-      "requirements": [
-        "Ali təhsilli;",
-        "Müvafiq istiqamətdə minimum 1 il təcrübəsi olan;",
-        "Cari istiqamət üzrə Mərkəzi Bankın qaydaları və bank işinin əsasları haqqında biliklərə sahib olan;",
-        "Azərbaycan (səlis), Rus və İngilis (arzuolunan) dillərini bilən;",
-        "MS Office proqramlarını mükəmməl bilən;"
-      ],
-      "responsibilities": [
-        "Müxtəlif kanallardan daxil olan bütün müştəri sorğuları ilə işləmək, müştəriləri lazımi qaydada məlumatlandırmaq və bütün müştəri sorğularını üzrə yüksək keyfiyyətli xidmət göstərmək",
-        "Kredit və qeyri-kredit məhsulları üzrə onlayn xidmətin təşkili, idarə olunması və yönləndirilməsi;",
-        "Bankın elektron kanalları vasitəsi ilə daxil olmuş kredit (Kredit kartı) sifarişlərini satışının təşkili;",
-        "Bankın mövcud həmçinin yeni müştərilərinə telefon vasitəsi ilə Bank məhsullarının satışının icra edilməsi;",
-        "Gördüyü işlərlə bağlı gündəlik,aylıq,rüblük,illik hesabatı hazırlayıb qrup rəhbərinə,şöbə müdirinə, təqdim etmək;",
-        "Aylıq, rüblük və illik hədəflər üzrə təyin edilmiş satış planlarını yerinə yetirilməsi;",
-        "Bazar araşdırması məqsədilə müştərilərə sorğu xarakterli zənglər edir.",
-        "Birbaşa rəhbər tərəfindən tapşırılan vəzifəsinə aid digər öhdəlikləri yerinə yetirmək;",
-        "Bankın Sağlamlıq və Təhlükəsizlik siyasətinin tələblərinə və verilə biləcək əlavə təhlükəsizlik tələblərinə riayət etmək"
-      ],
-      "benefits": [],
-      "skills": [],
-      "employmentType": null,
-      "experienceLevel": "junior",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5278",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5278",
       "source": "ABB Careers"
     },
     {
@@ -4161,9 +4071,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 98,
-    "detailPagesFetched": 98,
-    "acceptedJobs": 98,
+    "discoveredLinks": 96,
+    "detailPagesFetched": 96,
+    "acceptedJobs": 96,
     "rejectedJobs": 0,
     "listingFallbacks": 0,
     "errors": []
