@@ -1,10 +1,52 @@
 {
   "id": "bir-careers",
   "name": "Bir Careers",
-  "updatedAt": "2026-09-21T17:57:23.045Z",
+  "updatedAt": "2026-09-21T23:04:23.579Z",
   "success": true,
-  "count": 60,
+  "count": 56,
   "jobs": [
+    {
+      "externalId": "8286",
+      "title": "Rəqəmsal dələduzluğa qarşı mübarizə departamentinin Analitika şöbəsinin mütəxəssisi",
+      "company": "Kapital Bank / Bir",
+      "brand": "Birbank",
+      "location": "Bakı",
+      "summary": "Rəqəmsal dələduzluq hallarının təhlili, araşdırılması və qarşısının alınması, antifraud qayda və ssenarilərinin hazırlanması və təkmilləşdirilməsi istiqamətində komandamıza Analitika şöbəsinin mütəxəssisi axtarırıq.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
+      "description": "Rəqəmsal dələduzluq hallarının təhlili, araşdırılması və qarşısının alınması, antifraud qayda və ssenarilərinin hazırlanması və təkmilləşdirilməsi istiqamətində komandamıza Analitika şöbəsinin mütəxəssisi axtarırıq.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
+      "requirements": [
+        "Ali təhsil;",
+        "Antifraud, maliyyə monitorinqi, kart biznesi, fraud araşdırmaları və ya əlaqəli sahələrdə minimum 2 il iş təcrübəsi;",
+        "Visa və Mastercard kart əməliyyatlarının iş prinsipləri üzrə biliklər;",
+        "Mobil və internet bankçılıq xidmətlərinin iş prinsipləri üzrə biliklər;",
+        "Bank və rəqəmsal ödənişlər sahəsində əsas dələduzluq sxemləri haqqında biliklər;",
+        "SQL üzrə biliklər;",
+        "Güclü analitik düşüncə, məlumatların təhlili və araşdırma bacarıqları;",
+        "Azərbaycan və ingilis dillərini sərbəst bilmək, rus dili biliyi üstünlükdür."
+      ],
+      "responsibilities": [
+        "Kart və qeyri-kart əməliyyatlarının antifraud sistemləri vasitəsilə analitik təhlilinin aparılması;",
+        "Şübhəli əməliyyatların, fraud hallarının və təhlükəsizlik insidentlərinin müstəqil şəkildə araşdırılması;",
+        "Dələduzluq sxemlərinin, əlaqəli əməliyyatların və onların yaranma səbəblərinin müəyyən edilməsi;",
+        "Aşkarlanmış fraud halları və tendensiyalar əsasında antifraud qayda və ssenarilərinin hazırlanması və təkmilləşdirilməsi;",
+        "Fraud risklərinin və yeni dələduzluq sxemlərinin təhlili, onların qarşısının alınması üzrə təkliflərin hazırlanması;",
+        "Antifraud proseslərinin effektivliyinin artırılması və təkmilləşdirilməsi üzrə təşəbbüslərdə iştirak."
+      ],
+      "benefits": [],
+      "skills": [
+        "SQL"
+      ],
+      "employmentType": "full-time",
+      "experienceLevel": "mid",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": "25.09.2026",
+      "postedAt": null,
+      "url": "https://careers.bir.az/vacancies/8286",
+      "applyUrl": "https://careers.bir.az/vacancies/8286#attachFile",
+      "source": "Bir Careers"
+    },
     {
       "externalId": "8204",
       "title": "Fraud Monitorinq şöbəsi üzrə mütəxəssis / aparıcı mütəxəssis",
@@ -348,55 +390,6 @@
       "source": "Bir Careers"
     },
     {
-      "externalId": "8341",
-      "title": "Chapter Lead - Engineering and Technology Platforms Expert Center",
-      "company": "Kapital Bank / Bir",
-      "brand": "Bir",
-      "location": "Bakı",
-      "summary": "We're looking for a senior engineering leader to own the craft, people, and delivery quality of our Development discipline - Backend, Web, and Mobile - across multiple product teams.\nWorking at Bir ecosystem means creating value through technology, delivering meaningful impact to people, and building the solutions of tomorrow today. Our teams operate through open dialogue, rapid decision-making, and a culture of continuous improvement. Our offices are places where ideas emerge, products take shape, and technology enables those ideas to become reality. At Bir ecosystem, we positively impact the daily lives of millions of individuals and thousands of businesses through simple, reliable, and innovative solutions. The Fintech business (Birbank), Payments business (m10/MilliÖn), and E-commerce business (Birmarket) together form the country’s first fully integrated digital ecosystem. Driven by the professionalism and expertise of our teams, the products we develop help shape new habits and contribute to the growth of the country’s digital culture. Working here means growing within Bir ecosystem — an environment rich with opportunity. Diverse areas of expertise, multiple products, and continuous learning opportunities create the environment to unlock your potential and advance your career.",
-      "description": "We're looking for a senior engineering leader to own the craft, people, and delivery quality of our Development discipline - Backend, Web, and Mobile - across multiple product teams.",
-      "requirements": [
-        "7-9+ years in software development, including 4-5+ years leading engineers.",
-        "Proven product-team experience with direct delivery accountability - a must.",
-        "Deep mastery of at least one core stack (Java preferred) with credible breadth across others.",
-        "A track record of developing people and scaling practices across multiple teams.",
-        "Working proficiency in English."
-      ],
-      "responsibilities": [
-        "Lead and grow Development Chapter Leads across Backend, Web, and Mobile.",
-        "Own hiring and performance evaluation for the development chapters and the platform team.",
-        "Set and scale engineering standards: architecture, code quality, review practices, quality gates.",
-        "Own the direction and adoption of our internal developer platform - golden paths, templates, self-service.",
-        "Partner with Tribe Leads on release predictability, technical risk, and delivery quality.",
-        "Help lead our engineering guilds - cross-team communities where practices are aligned."
-      ],
-      "benefits": [
-        "Opportunities for professional growth and development.",
-        "Competitive salary and bonuses.",
-        "Comprehensive insurance coverage.",
-        "Supportive work environment.",
-        "Visa Premium salary card.",
-        "Corporate discounts and events.",
-        "Additional vacation days.",
-        "Discounted education and employee loans."
-      ],
-      "skills": [
-        "Java",
-        "Performance"
-      ],
-      "employmentType": "full-time",
-      "experienceLevel": "manager",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "21.09.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8341",
-      "applyUrl": "https://careers.bir.az/vacancies/8341#attachFile",
-      "source": "Bir Careers"
-    },
-    {
       "externalId": "7657",
       "title": "Büdcələşdirmə və Maliyyə Modelləşdirilməsi üzrə Qrup Rəhbəri",
       "company": "Kapital Bank / Bir",
@@ -632,89 +625,6 @@
       "postedAt": null,
       "url": "https://careers.bir.az/vacancies/8013",
       "applyUrl": "https://careers.bir.az/vacancies/8013#attachFile",
-      "source": "Bir Careers"
-    },
-    {
-      "externalId": "8344",
-      "title": "Birbaşa Satışlar Bölməsinin Kiçik Mütəxəssisi (Dağlıq Şirvan Regionu üzrə)",
-      "company": "Kapital Bank / Bir",
-      "brand": "Birbank",
-      "location": "Şirvan",
-      "summary": "Birbankın Birbaşa satışlar bölməsinə kredit və qeyri-kredit məhsullarını tanıdacaq, potensial müştərilərlə əlaqə qurub müvafiq filiallara yönləndirəcək və satış prosesi üzrə nəticələri izləyərək müştəri məmnuniyyətini təmin edəcək namizəd axtarışındayıq.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
-      "description": "Birbankın Birbaşa satışlar bölməsinə kredit və qeyri-kredit məhsullarını tanıdacaq, potensial müştərilərlə əlaqə qurub müvafiq filiallara yönləndirəcək və satış prosesi üzrə nəticələri izləyərək müştəri məmnuniyyətini təmin edəcək namizəd axtarışındayıq.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
-      "requirements": [
-        "Ali təhsil;",
-        "Satış bacarığı;",
-        "Məsuliyyətlilik;",
-        "Operativlik;",
-        "Qərar qəbul etmə bacarığı;",
-        "Kollektivdə işləmə bacarığı;",
-        "Müştəriyönümlülük;",
-        "Yüksək səviyyədə ünsiyyət bacarığı;",
-        "Microsoft Office proqramları üzrə biliklər."
-      ],
-      "responsibilities": [
-        "Bankla partnyor, qeyri-partnyor olan təşkilatlara vizitlərin edilməsi və potensial müştərilərlə görüşlərin təşkili;",
-        "Bankın kredit və qeyri-kredit məhsullarını təbliğ etmək üçün müxtəlif mərkəzlərdəki məntəqələrdə fəaliyyət göstərilməsi;",
-        "Bankın kredit və qeyri-kredit məhsullarının təbliğatı məqsədilə müştərilərlə görüşlər keçirilməsi;",
-        "Potensial müştərilərə bank məhsulları barədə təqdimatın keçirilməsi və müştəri tələbinin formalaşdırılması;",
-        "Bank məhsullarını əldə etmək istəyən potensial müştərilərin müəyyən edilməsi, ilkin təhlili, qiymətləndirilməsi;",
-        "Bankın filiallarına yönləndirilməsi;",
-        "Bank məhsullarını əldə etmiş müştərilərin məmnuniyyət dərəcəsinin ölçülməsi və həmin müştərilər vasitəsilə digər potensial müştərilərə çıxış imkanlarının dəyərləndirilməsi;",
-        "Satış prosesi ilə bağlı müvafiq hesabatların aparılması."
-      ],
-      "benefits": [],
-      "skills": [],
-      "employmentType": "full-time",
-      "experienceLevel": "junior",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "21.09.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8344",
-      "applyUrl": "https://careers.bir.az/vacancies/8344#attachFile",
-      "source": "Bir Careers"
-    },
-    {
-      "externalId": "8333",
-      "title": "İnsan Resursları Departamentinin İşə qəbul üzrə təcrübəçisi",
-      "company": "Kapital Bank / Bir",
-      "brand": "m10",
-      "location": "Bakı",
-      "summary": "Ödənişlər Biznesinin İşə qəbul komandasına recruitment proseslərinin gündəlik həyata keçirilməsində dəstək göstərəcək, bu sahədə öyrənmək və praktiki təcrübə qazanmaq istəyən İşə qəbul üzrə təcrübəçi axtarırıq.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
-      "description": "Ödənişlər Biznesinin İşə qəbul komandasına recruitment proseslərinin gündəlik həyata keçirilməsində dəstək göstərəcək, bu sahədə öyrənmək və praktiki təcrübə qazanmaq istəyən İşə qəbul üzrə təcrübəçi axtarırıq.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
-      "requirements": [
-        "Ali təhsil (İnsan Resursları, Menecment, Biznesin idarə edilməsi və ya əlaqəli ixtisaslar arzuolunandır);",
-        "İnsan Resursları və xüsusilə işə qəbul sahəsinə maraq;",
-        "Azərbaycan və ingilis dillərində sərbəst ünsiyyət bacarığı, rus dili biliyi arzuolunandır;",
-        "MS Office proqramları ilə işləmək bacarığı;",
-        "Yüksək kommunikasiya və təşkilatçılıq bacarığı;",
-        "Diqqətli, məsuliyyətli və öyrənməyə açıq olmaq;",
-        "Komandada işləmək bacarığı."
-      ],
-      "responsibilities": [
-        "Vakansiyalara daxil olan CV-lərin ilkin nəzərdən keçirilməsi və uyğun namizədlərin müəyyən edilməsinə dəstək;",
-        "Namizədlərlə əlaqə saxlanılması və müsahibələrin təyin edilməsi;",
-        "Müsahibələrin koordinasiyasının həyata keçirilməsi;",
-        "İşə qəbul prosesi boyunca namizədlərlə kommunikasiyanın aparılması;",
-        "İşə qəbul üçün tələb olunan sənədlərin namizədlərdən toplanması və müvafiq proseslərə dəstək;",
-        "Namizədlər və vakansiyalar üzrə məlumatların müvafiq sistemlərdə yenilənməsi;",
-        "İşə qəbul prosesinin digər mərhələlərində komandaya gündəlik dəstəyin göstərilməsi."
-      ],
-      "benefits": [],
-      "skills": [],
-      "employmentType": "full-time",
-      "experienceLevel": "intern",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "21.09.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8333",
-      "applyUrl": "https://careers.bir.az/vacancies/8333#attachFile",
       "source": "Bir Careers"
     },
     {
@@ -1540,48 +1450,6 @@
       "source": "Bir Careers"
     },
     {
-      "externalId": "8286",
-      "title": "Rəqəmsal dələduzluğa qarşı mübarizə departamentinin Analitika şöbəsinin mütəxəssisi",
-      "company": "Kapital Bank / Bir",
-      "brand": "Birbank",
-      "location": "Bakı",
-      "summary": "Rəqəmsal dələduzluq hallarının təhlili, araşdırılması və qarşısının alınması, antifraud qayda və ssenarilərinin hazırlanması və təkmilləşdirilməsi istiqamətində komandamıza Analitika şöbəsinin mütəxəssisi axtarırıq.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
-      "description": "Rəqəmsal dələduzluq hallarının təhlili, araşdırılması və qarşısının alınması, antifraud qayda və ssenarilərinin hazırlanması və təkmilləşdirilməsi istiqamətində komandamıza Analitika şöbəsinin mütəxəssisi axtarırıq.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
-      "requirements": [
-        "Ali təhsil;",
-        "Antifraud, maliyyə monitorinqi, kart biznesi, fraud araşdırmaları və ya əlaqəli sahələrdə minimum 2 il iş təcrübəsi;",
-        "Visa və Mastercard kart əməliyyatlarının iş prinsipləri üzrə biliklər;",
-        "Mobil və internet bankçılıq xidmətlərinin iş prinsipləri üzrə biliklər;",
-        "Bank və rəqəmsal ödənişlər sahəsində əsas dələduzluq sxemləri haqqında biliklər;",
-        "SQL üzrə biliklər;",
-        "Güclü analitik düşüncə, məlumatların təhlili və araşdırma bacarıqları;",
-        "Azərbaycan və ingilis dillərini sərbəst bilmək, rus dili biliyi üstünlükdür."
-      ],
-      "responsibilities": [
-        "Kart və qeyri-kart əməliyyatlarının antifraud sistemləri vasitəsilə analitik təhlilinin aparılması;",
-        "Şübhəli əməliyyatların, fraud hallarının və təhlükəsizlik insidentlərinin müstəqil şəkildə araşdırılması;",
-        "Dələduzluq sxemlərinin, əlaqəli əməliyyatların və onların yaranma səbəblərinin müəyyən edilməsi;",
-        "Aşkarlanmış fraud halları və tendensiyalar əsasında antifraud qayda və ssenarilərinin hazırlanması və təkmilləşdirilməsi;",
-        "Fraud risklərinin və yeni dələduzluq sxemlərinin təhlili, onların qarşısının alınması üzrə təkliflərin hazırlanması;",
-        "Antifraud proseslərinin effektivliyinin artırılması və təkmilləşdirilməsi üzrə təşəbbüslərdə iştirak."
-      ],
-      "benefits": [],
-      "skills": [
-        "SQL"
-      ],
-      "employmentType": "full-time",
-      "experienceLevel": "mid",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "23.09.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8286",
-      "applyUrl": "https://careers.bir.az/vacancies/8286#attachFile",
-      "source": "Bir Careers"
-    },
-    {
       "externalId": "8283",
       "title": "Product Designer (UX/UI)",
       "company": "Kapital Bank / Bir",
@@ -1832,50 +1700,6 @@
       "postedAt": null,
       "url": "https://careers.bir.az/vacancies/8271",
       "applyUrl": "https://careers.bir.az/vacancies/8271#attachFile",
-      "source": "Bir Careers"
-    },
-    {
-      "externalId": "8265",
-      "title": "Sürücü",
-      "company": "Kapital Bank / Bir",
-      "brand": "Milliön",
-      "location": "Bakı",
-      "summary": "Nəqliyyat şöbəsinə şirkətin gündəlik nəqliyyat və logistika proseslərinin operativ və təhlükəsiz şəkildə həyata keçirilməsini təmin edəcək məsuliyyətli və təcrübəli Sürücü axtarırıq.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
-      "description": "Nəqliyyat şöbəsinə şirkətin gündəlik nəqliyyat və logistika proseslərinin operativ və təhlükəsiz şəkildə həyata keçirilməsini təmin edəcək məsuliyyətli və təcrübəli Sürücü axtarırıq.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
-      "requirements": [
-        "Peşəkar sürücü kimi minimum 3 il iş təcrübəsi;",
-        "B və C kateqoriyalı sürücülük vəsiqəsi;",
-        "Bakı şəhərini və regionlara gedən əsas yolları yaxşı tanımaq;",
-        "Müxtəlif növ nəqliyyat vasitələrinin idarə edilməsində təcrübə;",
-        "Avtomobilin texniki vəziyyəti üzrə ilkin biliklər;",
-        "İşin tələblərinə uyğun fiziki sağlamlıq vəziyyəti;",
-        "Təhlükəsiz və diqqətli sürücülük bacarığı;",
-        "Regionlara ezamiyyətlərə hazır olmaq;",
-        "Məsuliyyətlilik, dürüstlük, punktuallıq və intizamlılıq."
-      ],
-      "responsibilities": [
-        "Şirkətdaxili sənədlərin, bağlamaların və kiçikhəcmli yüklərin təyin olunmuş ünvanlara vaxtında çatdırılması;",
-        "İnkassasiya avtomobillərinin servis və təmir məntəqələrinə aparılması və geri gətirilməsi;",
-        "Regional İnkassasiya Mərkəzlərinə (RİM) yüklərin daşınmasının həyata keçirilməsi;",
-        "Bakı şəhəri və regionlar üzrə verilən nəqliyyat tapşırıqlarının icrası;",
-        "Zərurət yarandıqda regionlara ezamiyyətlərdə iştirak edilməsi;",
-        "Nəqliyyat vasitəsinin texniki vəziyyətinə gündəlik nəzarət edilməsi;",
-        "Nəqliyyat vasitəsinin saz və səliqəli vəziyyətdə saxlanılması;",
-        "Yol hərəkəti, təhlükəsizlik və şirkətdaxili qaydalara riayət edilməsi;",
-        "Verilən tapşırıqların vaxtında və düzgün yerinə yetirilməsi."
-      ],
-      "benefits": [],
-      "skills": [],
-      "employmentType": "full-time",
-      "experienceLevel": "mid",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "21.09.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8265",
-      "applyUrl": "https://careers.bir.az/vacancies/8265#attachFile",
       "source": "Bir Careers"
     },
     {
@@ -3324,9 +3148,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 60,
-    "detailPagesFetched": 60,
-    "acceptedJobs": 60,
+    "discoveredLinks": 56,
+    "detailPagesFetched": 56,
+    "acceptedJobs": 56,
     "rejectedJobs": 0,
     "errors": []
   }
