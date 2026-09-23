@@ -11,6 +11,11 @@ import {
   type IAbbCareersJob,
 } from "../services/jobs/providers/abbCareersJobProvider";
 
+import {
+  discoverGlorriJobs,
+  type IGlorriJob,
+} from "../services/jobs/providers/glorriJobProvider";
+
 /* =========================================================
    TYPES
 ========================================================= */
@@ -62,8 +67,7 @@ const writeSourceFile =
     await fs.mkdir(
       OUTPUT_DIRECTORY,
       {
-        recursive:
-          true,
+        recursive: true,
       }
     );
 
@@ -331,6 +335,126 @@ const scrapeAbbCareers =
   };
 
 /* =========================================================
+   GLORRI
+========================================================= */
+
+const scrapeGlorri =
+  async (): Promise<ICareerSourceResult> => {
+    console.log(
+      "[CAREER SCRAPER] Starting Glorri..."
+    );
+
+    try {
+      /*
+       * companies intentionally omitted.
+       *
+       * glorriJobProvider uses its default list
+       * containing all configured Glorri companies.
+       *
+       * maxJobs intentionally omitted so the provider
+       * can collect the complete available job set.
+       */
+      const result =
+        await discoverGlorriJobs({
+          requestTimeoutMs:
+            60_000,
+
+          headless:
+            true,
+
+          detailConcurrency:
+            3,
+        });
+
+      const jobs:
+        IGlorriJob[] =
+        result.jobs;
+
+      if (
+        jobs.length ===
+        0
+      ) {
+        return {
+          id:
+            "glorri",
+
+          name:
+            "Glorri",
+
+          updatedAt:
+            new Date().toISOString(),
+
+          success:
+            false,
+
+          count:
+            0,
+
+          jobs:
+            [],
+
+          diagnostics:
+            result.diagnostics,
+
+          error:
+            "Glorri returned 0 jobs; previous snapshot preserved.",
+        };
+      }
+
+      return {
+        id:
+          "glorri",
+
+        name:
+          "Glorri",
+
+        updatedAt:
+          new Date().toISOString(),
+
+        success:
+          true,
+
+        count:
+          jobs.length,
+
+        jobs,
+
+        diagnostics:
+          result.diagnostics,
+      };
+    } catch (
+      error
+    ) {
+      return {
+        id:
+          "glorri",
+
+        name:
+          "Glorri",
+
+        updatedAt:
+          new Date().toISOString(),
+
+        success:
+          false,
+
+        count:
+          0,
+
+        jobs:
+          [],
+
+        error:
+          error instanceof Error
+            ? error.message
+            : String(
+                error
+              ),
+      };
+    }
+  };
+
+/* =========================================================
    SOURCE REGISTRY
 ========================================================= */
 
@@ -357,6 +481,17 @@ const careerSources:
 
       scrape:
         scrapeAbbCareers,
+    },
+
+    {
+      id:
+        "glorri",
+
+      name:
+        "Glorri",
+
+      scrape:
+        scrapeGlorri,
     },
   ];
 
