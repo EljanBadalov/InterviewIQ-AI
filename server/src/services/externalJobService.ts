@@ -38,6 +38,10 @@ import {
 } from "./jobs/providers/abbCareersJobProvider";
 
 import {
+  type IGlorriJob,
+} from "./jobs/providers/glorriJobProvider";
+
+import {
   ALL_CAREER_SKILLS,
 } from "./jobs/careerJobTaxonomy";
 
@@ -4858,12 +4862,14 @@ const runWithConcurrency =
 
 type ICareerSourceSnapshotJob =
   | IBirCareersJob
-  | IAbbCareersJob;
+  | IAbbCareersJob
+  | IGlorriJob;
 
 interface ICareerSourceConfig {
   id:
     "bir-careers" |
-    "abb-careers";
+    "abb-careers" |
+    "glorri";
 
   name:
     string;
@@ -4954,6 +4960,29 @@ const CAREER_SOURCE_CONFIGS:
 
       cacheKey:
         "career-source:abb-careers",
+    },
+
+    {
+      id:
+        "glorri",
+
+      name:
+        "Glorri",
+
+      sourceLabel:
+        "Glorri",
+
+      externalIdPrefix:
+        "glorri",
+
+      defaultCompany:
+        "Glorri",
+
+      snapshotUrl:
+        "https://raw.githubusercontent.com/EljanBadalov/InterviewIQ-AI/main/server/data/career-sources/glorri.json",
+
+      cacheKey:
+        "career-source:glorri",
     },
   ];
 
@@ -6401,6 +6430,38 @@ export const fetchAbbCareersJobs =
       );
   };
 
+export const fetchGlorriJobs =
+  async (
+    params:
+      IFetchExternalJobsParams
+  ): Promise<IExternalJobRecord[]> => {
+    const jobs =
+      await fetchCareerSourceJobsById(
+        "glorri"
+      );
+
+    return deduplicateJobs(
+      jobs.filter(
+        (
+          job
+        ) =>
+          matchesOptionalJobSearchQuery(
+            job.title,
+            params.query
+          ) &&
+          matchesLocation(
+            job,
+            params.location
+          )
+      )
+    )
+      .slice(
+        0,
+        params.limit ||
+        DEFAULT_LIMIT
+      );
+  };
+
 export const fetchSuccessFactorsJobs =
   async (
     params:
@@ -6873,6 +6934,8 @@ export default {
   fetchAshbyJobs,
   fetchSuccessFactorsJobs,
   fetchBirCareersJobs,
+  fetchAbbCareersJobs,
+  fetchGlorriJobs,
   fetchGeneralExternalJobs,
   fetchExternalJobs,
 };
