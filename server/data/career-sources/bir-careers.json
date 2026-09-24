@@ -1,10 +1,57 @@
 {
   "id": "bir-careers",
   "name": "Bir Careers",
-  "updatedAt": "2026-09-24T09:04:07.466Z",
+  "updatedAt": "2026-09-24T16:38:00.387Z",
   "success": true,
-  "count": 67,
+  "count": 68,
   "jobs": [
+    {
+      "externalId": "8275",
+      "title": "ATM və ekvayrinq biznesinə dəstək şöbəsinin mütəxəssisi / aparıcı mütəxəssisi",
+      "company": "Kapital Bank / Bir",
+      "brand": "Birbank",
+      "location": "Bakı",
+      "summary": "ATM və ödəniş terminallarının stabil və fasiləsiz fəaliyyətinin təmin olunması, yaranan texniki və tranzaksiya problemlərinin təhlili və həlli, həmçinin vendorlar və daxili texniki komandalarla koordinasiyanın həyata keçirilməsi üzrə komandamıza Mütəxəssis / Aparıcı mütəxəssis axtarırıq.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
+      "description": "ATM və ödəniş terminallarının stabil və fasiləsiz fəaliyyətinin təmin olunması, yaranan texniki və tranzaksiya problemlərinin təhlili və həlli, həmçinin vendorlar və daxili texniki komandalarla koordinasiyanın həyata keçirilməsi üzrə komandamıza Mütəxəssis / Aparıcı mütəxəssis axtarırıq.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
+      "requirements": [
+        "Ali təhsil;",
+        "ATM, ödəniş terminalları və əlaqəli sahələr üzrə minimum 2-3 il iş təcrübəsi;",
+        "Azərbaycan dilini mükəmməl, rus və ya ingilis dilini sərbəst səviyyədə bilmək;",
+        "ATM/Terminal avadanlıqlarının iş prinsipləri və texniki quruluşu üzrə biliklər;",
+        "Hardware və software problemlərinin diaqnostikası üzrə biliklər;",
+        "Windows əsaslı ATM sistemləri və periferik qurğularla işləmək bacarığı;",
+        "Şəbəkə, IP, TCP/IP və host bağlantıları üzrə baza bilikləri;",
+        "Log faylları və tranzaksiya məlumatlarını təhlil etmək bacarığı;",
+        "Incident və problem management prosesləri üzrə biliklər;",
+        "Analitik düşüncə və problem həll etmə bacarığı."
+      ],
+      "responsibilities": [
+        "ATM və ödəniş terminallarının quraşdırılması, sazlanması, diaqnostikası və texniki dəstəyini həyata keçirmək;",
+        "ATM və terminalların monitorinqini aparmaq, yaranan texniki nasazlıqları operativ müəyyən etmək;",
+        "ATM/Terminal əməliyyatlarında yaranan texniki və tranzaksiya problemlərini araşdırmaq və həll etmək;",
+        "Log faylları, sistem jurnalları və tranzaksiya məlumatlarını təhlil etmək;",
+        "Hardware və software problemlərini müəyyən etmək və aradan qaldırılmasında iştirak etmək;",
+        "Şəbəkə, IP, TCP/IP, host bağlantısı və timeout problemləri üzrə ilkin diaqnostika aparmaq;",
+        "ATM/Terminal vendorları ilə texniki məsələlər üzrə kommunikasiya və koordinasiyanı həyata keçirmək;",
+        "Vendorlar tərəfindən təqdim olunan proqram təminatı və texniki həllərin test və tətbiqində iştirak etmək;",
+        "Daxili IT, processing və digər aidiyyəti komandalarla koordinasiyalı işləmək;",
+        "Incident və problem management proseslərində iştirak etmək;",
+        "Texniki sənədləşdirmə və müvafiq hesabatları hazırlamaq."
+      ],
+      "benefits": [],
+      "skills": [],
+      "employmentType": "full-time",
+      "experienceLevel": "mid",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": "28.09.2026",
+      "postedAt": null,
+      "url": "https://careers.bir.az/vacancies/8275",
+      "applyUrl": "https://careers.bir.az/vacancies/8275#attachFile",
+      "source": "Bir Careers"
+    },
     {
       "externalId": "8396",
       "title": "Mikro Biznes Departamentinin Alternativ Satışlar Şöbəsi üzrə Təcrübə Proqramı",
@@ -3799,9 +3846,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 67,
-    "detailPagesFetched": 67,
-    "acceptedJobs": 67,
+    "discoveredLinks": 68,
+    "detailPagesFetched": 68,
+    "acceptedJobs": 68,
     "rejectedJobs": 0,
     "errors": []
   }
