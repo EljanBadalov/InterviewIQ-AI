@@ -1,10 +1,33 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-09-25T03:44:33.232Z",
+  "updatedAt": "2026-09-25T09:28:46.929Z",
   "success": true,
-  "count": 93,
+  "count": 94,
   "jobs": [
+    {
+      "externalId": "5348",
+      "title": "Əlaqə mərkəzi şöbəsinin məlumat mərkəzi üzrə kiçik təmsliçi",
+      "company": "ABB",
+      "location": "Azerbaijan",
+      "summary": "Əlaqə mərkəzi şöbəsinin məlumat mərkəzi üzrə kiçik təmsliçi",
+      "description": "",
+      "requirements": [],
+      "responsibilities": [],
+      "benefits": [],
+      "skills": [],
+      "employmentType": null,
+      "experienceLevel": null,
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": null,
+      "postedAt": null,
+      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5348",
+      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5348",
+      "source": "ABB Careers"
+    },
     {
       "externalId": "5347",
       "title": "İT Arxitektor",
@@ -3928,9 +3951,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 93,
-    "detailPagesFetched": 93,
-    "acceptedJobs": 93,
+    "discoveredLinks": 94,
+    "detailPagesFetched": 94,
+    "acceptedJobs": 94,
     "rejectedJobs": 0,
     "listingFallbacks": 0,
     "errors": []
