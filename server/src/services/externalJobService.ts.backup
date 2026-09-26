@@ -1,4 +1,4 @@
-﻿import {
+import {
   env,
 } from "../config/env";
 
@@ -1038,7 +1038,7 @@ const stripHtml = (
     )
     .replace(
       /<li[^>]*>/gi,
-      "â€¢ "
+      "• "
     )
     .replace(
       /<[^>]+>/g,
@@ -1088,7 +1088,7 @@ const splitIntoReadableItems = (
   return uniqueStrings(
     value
       .replace(
-        /\s*[â€¢â–ªâ—]\s*/g,
+        /\s*[•▪●]\s*/g,
         "\n"
       )
       .replace(
@@ -1726,7 +1726,7 @@ const inferExperienceRange = (
 } => {
   const range =
     description.match(
-      /(\d+)\s*[-â€“â€”]\s*(\d+)\s*(?:years?|yrs?)/i
+      /(\d+)\s*[-–—]\s*(\d+)\s*(?:years?|yrs?)/i
     );
 
   if (
@@ -1948,7 +1948,7 @@ const parseSalaryText = (
   const matches =
     [
       ...value.matchAll(
-        /(?:[$Â£â‚¬]\s*)?(\d[\d,]*(?:\.\d+)?)\s*([kK])?/g
+        /(?:[$£€]\s*)?(\d[\d,]*(?:\.\d+)?)\s*([kK])?/g
       ),
     ];
 
@@ -2023,14 +2023,14 @@ const parseSalaryText = (
       "USD";
   } else if (
     value.includes(
-      "Â£"
+      "£"
     )
   ) {
     currency =
       "GBP";
   } else if (
     value.includes(
-      "â‚¬"
+      "€"
     )
   ) {
     currency =
@@ -6574,7 +6574,7 @@ export const fetchGeneralExternalJobs =
   ): Promise<IExternalJobRecord[]> => {
     const {
       limit =
-        0,
+        1_000,
     } =
       params;
 

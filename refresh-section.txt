@@ -1,0 +1,851 @@
+      ]
+        .join(
+          "|"
+        );
+
+    if (
+      seenSemantic.has(
+        semanticKey
+      )
+    ) {
+      continue;
+    }
+
+    seenExternal.add(
+      externalKey
+    );
+
+    seenSemantic.add(
+      semanticKey
+    );
+
+    result.push(
+      job
+    );
+  }
+
+  return result;
+};
+
+/* =========================================================
+   EXPORTED SOURCE FUNCTIONS
+========================================================= */
+
+export const fetchGreenhouseJobs =
+  async (
+    params:
+      IFetchExternalJobsParams
+  ): Promise<IExternalJobRecord[]> => {
+    const sources =
+      await buildAtsSources(
+        [
+          "greenhouse",
+        ],
+        {
+          minimumCompanies:
+            30,
+
+          maximumCompanies:
+            60,
+        }
+      );
+
+    const jobs =
+      (
+        await runWithConcurrency(
+          sources,
+          async (
+            source
+          ) => {
+            try {
+              return await fetchGreenhouseBoard(
+                source
+              );
+            } catch (
+              error
+            ) {
+              console.warn(
+                "[ATS JOBS] Provider-specific board failed:",
+                {
+                  provider:
+                    source.provider,
+
+                  company:
+                    source.company,
+
+                  slug:
+                    source.slug,
+
+                  error:
+                    error instanceof
+                      Error
+                      ? error.message
+                      : error,
+                }
+              );
+
+              return [];
+            }
+          },
+          ATS_FETCH_CONCURRENCY
+        )
+      ).flat();
+
+    return deduplicateJobs(
+      jobs
+        .filter(
+          (
+            job
+          ) =>
+            matchesJobSearchQuery(
+              job.title,
+              params.query
+            ) &&
+            matchesLocation(
+              job,
+              params.location
+            )
+        )
+    )
+      .slice(
+        0,
+        params.limit ||
+        DEFAULT_LIMIT
+      );
+  };
+
+export const fetchLeverJobs =
+  async (
+    params:
+      IFetchExternalJobsParams
+  ): Promise<IExternalJobRecord[]> => {
+    const sources =
+      await buildAtsSources(
+        [
+          "lever",
+        ],
+        {
+          minimumCompanies:
+            30,
+
+          maximumCompanies:
+            60,
+        }
+      );
+
+    const jobs =
+      (
+        await runWithConcurrency(
+          sources,
+          async (
+            source
+          ) => {
+            try {
+              return await fetchLeverBoard(
+                source
+              );
+            } catch (
+              error
+            ) {
+              console.warn(
+                "[ATS JOBS] Provider-specific board failed:",
+                {
+                  provider:
+                    source.provider,
+
+                  company:
+                    source.company,
+
+                  slug:
+                    source.slug,
+
+                  error:
+                    error instanceof
+                      Error
+                      ? error.message
+                      : error,
+                }
+              );
+
+              return [];
+            }
+          },
+          ATS_FETCH_CONCURRENCY
+        )
+      ).flat();
+
+    return deduplicateJobs(
+      jobs
+        .filter(
+          (
+            job
+          ) =>
+            matchesJobSearchQuery(
+              job.title,
+              params.query
+            ) &&
+            matchesLocation(
+              job,
+              params.location
+            )
+        )
+    )
+      .slice(
+        0,
+        params.limit ||
+        DEFAULT_LIMIT
+      );
+  };
+
+export const fetchAshbyJobs =
+  async (
+    params:
+      IFetchExternalJobsParams
+  ): Promise<IExternalJobRecord[]> => {
+    const sources =
+      await buildAtsSources(
+        [
+          "ashby",
+        ],
+        {
+          minimumCompanies:
+            30,
+
+          maximumCompanies:
+            60,
+        }
+      );
+
+    const jobs =
+      (
+        await runWithConcurrency(
+          sources,
+          async (
+            source
+          ) => {
+            try {
+              return await fetchAshbyBoard(
+                source
+              );
+            } catch (
+              error
+            ) {
+              console.warn(
+                "[ATS JOBS] Provider-specific board failed:",
+                {
+                  provider:
+                    source.provider,
+
+                  company:
+                    source.company,
+
+                  slug:
+                    source.slug,
+
+                  error:
+                    error instanceof
+                      Error
+                      ? error.message
+                      : error,
+                }
+              );
+
+              return [];
+            }
+          },
+          ATS_FETCH_CONCURRENCY
+        )
+      ).flat();
+
+    return deduplicateJobs(
+      jobs
+        .filter(
+          (
+            job
+          ) =>
+            matchesJobSearchQuery(
+              job.title,
+              params.query
+            ) &&
+            matchesLocation(
+              job,
+              params.location
+            )
+        )
+    )
+      .slice(
+        0,
+        params.limit ||
+        DEFAULT_LIMIT
+      );
+  };
+
+const matchesOptionalJobSearchQuery =
+  (
+    jobTitle:
+      string,
+    query:
+      string
+  ): boolean => {
+    const normalized =
+      normalizeWhitespace(
+        query
+      )
+        .toLowerCase();
+
+    /*
+     * Useful for diagnostics and broad provider fetches.
+     * Empty / all / * means "return every vacancy from this
+     * provider", regardless of specialization.
+     */
+    if (
+      !normalized ||
+      normalized ===
+        "all" ||
+      normalized ===
+        "*" ||
+      normalized ===
+        "any"
+    ) {
+      return true;
+    }
+
+    return matchesJobSearchQuery(
+      jobTitle,
+      query
+    );
+  };
+
+export const fetchBirCareersJobs =
+  async (
+    params:
+      IFetchExternalJobsParams
+  ): Promise<IExternalJobRecord[]> => {
+    const jobs =
+      await fetchCareerSourceJobsById(
+        "bir-careers"
+      );
+
+    return deduplicateJobs(
+      jobs.filter(
+        (
+          job
+        ) =>
+          matchesOptionalJobSearchQuery(
+            job.title,
+            params.query
+          ) &&
+          matchesLocation(
+            job,
+            params.location
+          )
+      )
+    )
+      .slice(
+        0,
+        params.limit ||
+        DEFAULT_LIMIT
+      );
+  };
+
+export const fetchAbbCareersJobs =
+  async (
+    params:
+      IFetchExternalJobsParams
+  ): Promise<IExternalJobRecord[]> => {
+    const jobs =
+      await fetchCareerSourceJobsById(
+        "abb-careers"
+      );
+
+    return deduplicateJobs(
+      jobs.filter(
+        (
+          job
+        ) =>
+          matchesOptionalJobSearchQuery(
+            job.title,
+            params.query
+          ) &&
+          matchesLocation(
+            job,
+            params.location
+          )
+      )
+    )
+      .slice(
+        0,
+        params.limit ||
+        DEFAULT_LIMIT
+      );
+  };
+
+export const fetchGlorriJobs =
+  async (
+    params:
+      IFetchExternalJobsParams
+  ): Promise<IExternalJobRecord[]> => {
+    const jobs =
+      await fetchCareerSourceJobsById(
+        "glorri"
+      );
+
+    return deduplicateJobs(
+      jobs.filter(
+        (
+          job
+        ) =>
+          matchesOptionalJobSearchQuery(
+            job.title,
+            params.query
+          ) &&
+          matchesLocation(
+            job,
+            params.location
+          )
+      )
+    )
+      .slice(
+        0,
+        params.limit ||
+        DEFAULT_LIMIT
+      );
+  };
+
+export const fetchSuccessFactorsJobs =
+  async (
+    params:
+      IFetchExternalJobsParams
+  ): Promise<IExternalJobRecord[]> => {
+    /*
+     * Local SuccessFactors registry will initially contain a
+     * small number of companies, so do not require 30 boards.
+     */
+    const sources =
+      await buildAtsSources(
+        [
+          "successfactors",
+        ],
+        {
+          minimumCompanies:
+            1,
+
+          maximumCompanies:
+            20,
+        }
+      );
+
+    const jobs =
+      (
+        await runWithConcurrency(
+          sources,
+          async (
+            source
+          ) => {
+            try {
+              return await fetchSuccessFactorsBoard(
+                source
+              );
+            } catch (
+              error
+            ) {
+              console.warn(
+                "[SUCCESSFACTORS] Board failed:",
+                {
+                  company:
+                    source.company,
+
+                  slug:
+                    source.slug,
+
+                  careersUrl:
+                    source.careersUrl,
+
+                  error:
+                    error instanceof
+                      Error
+                      ? error.message
+                      : error,
+                }
+              );
+
+              return [];
+            }
+          },
+          Math.min(
+            4,
+            ATS_FETCH_CONCURRENCY
+          )
+        )
+      ).flat();
+
+    return deduplicateJobs(
+      jobs.filter(
+        (
+          job
+        ) =>
+          matchesOptionalJobSearchQuery(
+            job.title,
+            params.query
+          ) &&
+          matchesLocation(
+            job,
+            params.location
+          )
+      )
+    )
+      .slice(
+        0,
+        params.limit ||
+        DEFAULT_LIMIT
+      );
+  };
+
+/* =========================================================
+   GENERAL EXTERNAL JOB SEARCH
+
+   This powers the broad CV-based Job Matching flow.
+
+   IMPORTANT:
+   The pool includes all currently enabled ATS providers:
+   - Greenhouse
+   - Lever
+   - Ashby
+   - SuccessFactors / Azerbaijan local companies
+
+   Local vacancies are ADDITIVE. Global vacancies are not
+   deleted, replaced, or filtered out here.
+========================================================= */
+
+export const fetchGeneralExternalJobs =
+  async (
+    params:
+      IFetchGeneralExternalJobsParams = {}
+  ): Promise<IExternalJobRecord[]> => {
+    const {
+      limit =
+        1_000,
+    } =
+      params;
+
+    /*
+     * fetchAllAtsJobs() already uses the shared MongoDB ATS
+     * registry and the existing board cache.
+     */
+    const allJobs =
+      await fetchAllAtsJobs();
+
+    const deduplicated =
+      deduplicateJobs(
+        allJobs
+      );
+
+    /*
+     * Deliberately do NOT call:
+     *
+     * matchesJobSearchQuery(...)
+     * matchesLocation(...)
+     *
+     * The general matching page needs a broad pool first.
+     * jobAggregationService performs the CV/skill ranking.
+     */
+    const sorted =
+      [
+        ...deduplicated,
+      ]
+        .sort(
+          (
+            a,
+            b
+          ) => {
+            const postedDifference =
+              new Date(
+                b.postedAt
+              ).getTime() -
+              new Date(
+                a.postedAt
+              ).getTime();
+
+            if (
+              postedDifference !==
+              0
+            ) {
+              return postedDifference;
+            }
+
+            const companyDifference =
+              a.company.localeCompare(
+                b.company
+              );
+
+            if (
+              companyDifference !==
+              0
+            ) {
+              return companyDifference;
+            }
+
+            return a.title.localeCompare(
+              b.title
+            );
+          }
+        );
+
+    /*
+     * General Job Matching must expose the complete provider pool.
+     *
+     * limit <= 0 means "no limit".
+     * A positive limit is still supported for tests/debug tools.
+     */
+    const safeLimit =
+      Number.isFinite(
+        limit
+      )
+        ? Math.floor(
+            Number(
+              limit
+            )
+          )
+        : 1_000;
+
+    const returned =
+      safeLimit >
+        0
+        ? sorted.slice(
+            0,
+            safeLimit
+          )
+        : sorted;
+
+    const localAzerbaijanReturned =
+      returned.filter(
+        (
+          job
+        ) => {
+          const source =
+            normalizeSearchText(
+              job.source ||
+              ""
+            );
+
+          const location =
+            normalizeSearchText(
+              job.location ||
+              ""
+            );
+
+          const company =
+            normalizeSearchText(
+              job.company ||
+              ""
+            );
+
+          return (
+            source.includes(
+              "successfactors"
+            ) ||
+            source.includes(
+              "bir careers"
+            ) ||
+            location.includes(
+              "azerbaijan"
+            ) ||
+            location.includes(
+              "baku"
+            ) ||
+            company.includes(
+              "azercell"
+            )
+          );
+        }
+      ).length;
+
+    console.log(
+      "[ATS JOBS] General vacancy pool:",
+      {
+        totalAtsJobs:
+          allJobs.length,
+
+        uniqueJobs:
+          deduplicated.length,
+
+        requestedLimit:
+          safeLimit,
+
+        returned:
+          returned.length,
+
+        localAzerbaijanReturned,
+
+        mode:
+          "general-cv-ranking",
+      }
+    );
+
+    return returned;
+  };
+
+/* =========================================================
+   MAIN EXTERNAL JOB SEARCH
+========================================================= */
+
+export const fetchExternalJobs =
+  async (
+    params:
+      IFetchExternalJobsParams
+  ): Promise<IExternalJobRecord[]> => {
+    const {
+      query,
+      location,
+      limit =
+        DEFAULT_LIMIT,
+    } =
+      params;
+
+    /*
+     * A broad MongoDB-selected ATS company pool is fetched
+     * once per cache cycle.
+     *
+     * Related-role searches performed by jobAggregationService
+     * reuse the same selected companies and cached board data,
+     * instead of repeatedly hitting ATS APIs.
+     */
+
+    const allJobs =
+      await fetchAllAtsJobs();
+
+    const deduplicated =
+      deduplicateJobs(
+        allJobs
+      );
+
+    const queryFiltered =
+      deduplicated.filter(
+        (
+          job
+        ) =>
+          matchesJobSearchQuery(
+            job.title,
+            query
+          )
+      );
+
+    const locationFiltered =
+      queryFiltered.filter(
+        (
+          job
+        ) =>
+          matchesLocation(
+            job,
+            location
+          )
+      );
+
+    /*
+     * Prefer recently posted vacancies.
+     *
+     * Final profile / role / CV ranking still happens later
+     * inside jobAggregationService.
+     */
+    const sorted =
+      [
+        ...locationFiltered,
+      ]
+        .sort(
+          (
+            a,
+            b
+          ) => {
+            const aQueryScore =
+              calculateSearchQueryScore(
+                a.title,
+                query
+              );
+
+            const bQueryScore =
+              calculateSearchQueryScore(
+                b.title,
+                query
+              );
+
+            /*
+             * Query relevance always comes first.
+             */
+            if (
+              bQueryScore !==
+              aQueryScore
+            ) {
+              return (
+                bQueryScore -
+                aQueryScore
+              );
+            }
+
+            /*
+             * If relevance is equal,
+             * prefer the newer vacancy.
+             */
+            return (
+              new Date(
+                b.postedAt
+              ).getTime() -
+              new Date(
+                a.postedAt
+              ).getTime()
+            );
+          }
+        );
+
+    const topQueryMatches =
+      sorted
+        .slice(
+          0,
+          10
+        )
+        .map(
+          (
+            job
+          ) => ({
+            title:
+              job.title,
+
+            company:
+              job.company,
+
+            queryScore:
+              calculateSearchQueryScore(
+                job.title,
+                query
+              ),
+
+            location:
+              job.location,
+
+            source:
+              job.source,
+          })
+        );
+
+    console.log(
+      "[ATS JOBS] Top query matches:",
+      {
+        query,
+
+        matches:
+          topQueryMatches,
+      }
+    );
+
+    console.log(
+      "[ATS JOBS] Search summary:",
+      {
+        query,
+
+        location:
+          location ||
+          "Any",
+
+        totalAtsJobs:
+          allJobs.length,
+
+        uniqueJobs:

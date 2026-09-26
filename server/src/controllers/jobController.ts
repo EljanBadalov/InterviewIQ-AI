@@ -30,7 +30,8 @@ import {
 } from "../services/careerSkillProfileService";
 
 import {
-  refreshExternalJobsForUser,
+  refreshGeneralExternalJobsForUser,
+  refreshSharedJobCatalog,
 } from "../services/jobAggregationService";
 
 /* =========================================================
@@ -302,20 +303,32 @@ export const getJobs =
       } =
         req.query;
 
+      /*
+       * Job Matching exposes vacancies from every
+       * supported external source.
+       *
+       * IMPORTANT:
+       * Glorri must be included here or Glorri jobs
+       * stored in MongoDB will never reach frontend.
+       */
+      const supportedSources = [
+        "Greenhouse",
+        "Lever",
+        "Ashby",
+        "SuccessFactors",
+        "Bir Careers",
+        "ABB Careers",
+        "Glorri",
+      ];
+
       const filter:
         Record<string, unknown> = {
         isActive:
           true,
 
         source: {
-          $in: [
-            "Greenhouse",
-            "Lever",
-            "Ashby",
-            "SuccessFactors",
-            "Bir Careers",
-            "ABB Careers"
-          ],
+          $in:
+            supportedSources,
         },
       };
 
@@ -341,15 +354,14 @@ export const getJobs =
             .toLowerCase();
       }
 
+      /*
+       * Source filtering is optional.
+       * Only supported source names are accepted.
+       */
       const allowedSources =
-        new Set([
-          "Greenhouse",
-          "Lever",
-          "Ashby",
-          "SuccessFactors",
-          "Bir Careers",
-          "ABB Careers",
-        ]);
+        new Set(
+          supportedSources
+        );
 
       if (
         typeof source ===
@@ -373,7 +385,9 @@ export const getJobs =
             experienceLevel.trim()
           );
 
-        if (experienceFilter) {
+        if (
+          experienceFilter
+        ) {
           Object.assign(
             filter,
             experienceFilter
@@ -435,6 +449,13 @@ export const getJobs =
             userId
           );
 
+      /*
+       * Load the COMPLETE active vacancy pool.
+       *
+       * There is intentionally NO .limit(1000).
+       *
+       * MongoDB returns newest vacancies first.
+       */
       const [
         jobs,
         automation,
@@ -444,11 +465,6 @@ export const getJobs =
           Job.find(
             filter
           )
-            /*
-             * Job Matching intentionally exposes only the newest
-             * 1,000 active vacancies. Frontend pagination/search/filter
-             * works over this fresh pool.
-             */
             .sort({
               postedAt:
                 -1,
@@ -456,9 +472,6 @@ export const getJobs =
               createdAt:
                 -1,
             })
-            .limit(
-              1_000
-            )
             .lean(),
 
           getUserAutomation(
@@ -486,6 +499,10 @@ export const getJobs =
               ?.activeResumeId,
         });
 
+      /*
+       * If there is no CV/career profile yet,
+       * still return the complete vacancy pool.
+       */
       if (
         careerProfile.totalSkills ===
         0
@@ -527,11 +544,10 @@ export const getJobs =
       }
 
       /*
-       * Job Matching page is intentionally broad.
+       * Calculate CV/profile matching for every vacancy.
        *
-       * Career Automation target role / location / experience settings
-       * must not filter or dominate this page. The page's own UI filters
-       * handle those choices. CV/profile is used for ranking only.
+       * Career Automation target role/location/etc.
+       * does NOT filter the general Job Matching page.
        */
       const rankedJobs =
         rankJobsForProfile(
@@ -539,6 +555,93 @@ export const getJobs =
           jobs,
           {}
         );
+
+      /*
+       * Job Matching page is freshness-first.
+       *
+       * rankJobsForProfile() calculates match data,
+       * but final frontend order is:
+       *
+       * newest -> oldest
+       *
+       * Match score is preserved and returned,
+       * but it does not control the primary ordering.
+       */
+      const sortedJobs =
+        [
+          ...rankedJobs,
+        ].sort(
+          (
+            a,
+            b
+          ) => {
+            /*
+             * Primary sorting:
+             * newest vacancy -> oldest vacancy
+             */
+            const aPostedAt =
+              a.job.postedAt
+                ? new Date(
+                  a.job.postedAt
+                ).getTime()
+                : 0;
+
+            const bPostedAt =
+              b.job.postedAt
+                ? new Date(
+                  b.job.postedAt
+                ).getTime()
+                : 0;
+
+            const safeAPostedAt =
+              Number.isFinite(
+                aPostedAt
+              )
+                ? aPostedAt
+                : 0;
+
+            const safeBPostedAt =
+              Number.isFinite(
+                bPostedAt
+              )
+                ? bPostedAt
+                : 0;
+
+            const postedDifference =
+              safeBPostedAt -
+              safeAPostedAt;
+
+            if (
+              postedDifference !==
+              0
+            ) {
+              return postedDifference;
+            }
+
+            /*
+             * If postedAt is identical,
+             * match score is only a tie-breaker.
+             */
+            return (
+              b.match.matchScore -
+              a.match.matchScore
+            );
+          }
+        );
+
+      console.log(
+        "[GET JOBS] Complete job pool loaded:",
+        {
+          total:
+            jobs.length,
+
+          returned:
+            sortedJobs.length,
+
+          sources:
+            supportedSources,
+        }
+      );
 
       res.status(
         200
@@ -582,7 +685,7 @@ export const getJobs =
 
         data: {
           jobs:
-            rankedJobs.map(
+            sortedJobs.map(
               ({
                 job,
                 match,
@@ -594,7 +697,7 @@ export const getJobs =
             ),
 
           total:
-            rankedJobs.length,
+            sortedJobs.length,
         },
       });
     } catch (
@@ -1048,10 +1151,34 @@ export const refreshExternalJobs =
        * apply Career Automation preferences, calculate CV match,
        * rank the jobs, and save the current recommendations.
        */
+      /*
+ * First synchronize the complete external provider catalog
+ * with MongoDB. This pulls the latest GitHub career snapshots
+ * (Bir, ABB, Glorri, etc.), upserts current vacancies and
+ * deactivates stale vacancies.
+ */
+      const catalogSync =
+        await refreshSharedJobCatalog();
+
+      /*
+       * After MongoDB is fresh, calculate CV matching against the
+       * complete active vacancy pool.
+       */
       const result =
-        await refreshExternalJobsForUser(
+        await refreshGeneralExternalJobsForUser(
           userId
         );
+
+      console.log(
+        "[JOB REFRESH] Catalog synchronized and matching completed:",
+        {
+          catalogSync,
+          analyzed:
+            result.analyzed,
+          returned:
+            result.returned,
+        }
+      );
 
       res.status(
         200
@@ -1060,9 +1187,9 @@ export const refreshExternalJobs =
           true,
 
         message:
-          result.matched >
+          result.returned >
             0
-            ? `Found ${result.matched} matching vacancies.`
+            ? `Found ${result.returned} matching vacancies.`
             : "No matching vacancies were found in the current job database.",
 
         data:
