@@ -1,4 +1,4 @@
-import {
+﻿import {
   Types,
 } from "mongoose";
 
@@ -162,12 +162,11 @@ const SEARCH_QUERY_RETRY_DELAY_MS =
 /*
  * Keep Job Matching fast and fresh.
  *
- * Every manual refresh pulls the newest 1,000 deduplicated vacancies
+ * Every manual refresh uses the complete deduplicated vacancy pool
  * from the complete provider pool. No Career Automation location/role
  * filter is applied here.
  */
-const GENERAL_JOB_RAW_LIMIT =
-  1_000;
+const GENERAL_JOB_RAW_LIMIT = 0;
 
 const LOCAL_JOB_SOURCES =
   new Set<string>([
@@ -340,7 +339,7 @@ const getCountryCodeFromLocation = (
       "baku"
     ) ||
     normalized.includes(
-      "bakı"
+      "bakÄ±"
     ) ||
     /\bazerbaijani\b/.test(
       normalized
@@ -476,7 +475,7 @@ const isGlobalRemoteLocation = (
 
   return (
     normalized ===
-      "remote" ||
+    "remote" ||
     normalized.includes(
       "remote, global"
     ) ||
@@ -537,12 +536,12 @@ const containsAzerbaijanOrBaku = (
       "baku"
     ) ||
     normalized.includes(
-      "bakı"
+      "bakÄ±"
     ) ||
     /\bbaku,\s*az\b/.test(
       normalized
     ) ||
-    /\bbakı,\s*az\b/.test(
+    /\bbakÄ±,\s*az\b/.test(
       normalized
     ) ||
     /\baz,\s*azerbaijan\b/.test(
@@ -568,7 +567,7 @@ const prefersAzerbaijan = (
       "baku"
     ) ||
     normalized.includes(
-      "bakı"
+      "bakÄ±"
     ) ||
     /\bazerbaijani\b/.test(
       normalized
@@ -637,7 +636,7 @@ const isExplicitlyForeignOnly = (
      */
     "azerbaijan",
     "baku",
-    "bakı",
+    "bakÄ±",
   ];
 
   const hasForeign =
@@ -685,9 +684,9 @@ const locationMatchesPreference = (
   if (
     !preference ||
     preference ===
-      "anywhere" ||
+    "anywhere" ||
     preference ===
-      "any"
+    "any"
   ) {
     return true;
   }
@@ -702,7 +701,7 @@ const locationMatchesPreference = (
    */
   if (
     job.remoteType ===
-      "remote" &&
+    "remote" &&
     isGlobalRemoteLocation(
       jobLocation
     )
@@ -726,7 +725,7 @@ const locationMatchesPreference = (
     /*
      * Direct local vacancy:
      * - Baku
-     * - Bakı
+     * - BakÄ±
      * - Baku, AZ
      * - Baku, Azerbaijan
      * - Azerbaijan
@@ -745,7 +744,7 @@ const locationMatchesPreference = (
      */
     if (
       job.remoteType ===
-        "remote" &&
+      "remote" &&
       isGlobalRemoteLocation(
         jobLocation
       )
@@ -800,7 +799,7 @@ const locationMatchesPreference = (
      */
     if (
       job.remoteType ===
-        "remote" &&
+      "remote" &&
       isUSLocation(
         jobLocation
       )
@@ -869,7 +868,7 @@ const locationMatchesPreference = (
   if (
     preferenceLooksUS &&
     job.remoteType ===
-      "remote" &&
+    "remote" &&
     isUSLocation(
       jobLocation
     )
@@ -957,13 +956,13 @@ const fetchJobsForSingleRoleQuery =
     countryCode,
   }: {
     query:
-      string;
+    string;
 
     location?:
-      string;
+    string;
 
     countryCode:
-      string;
+    string;
   }): Promise<IExternalJobRecord[]> => {
     try {
       console.log(
@@ -988,7 +987,7 @@ const fetchJobsForSingleRoleQuery =
 
       return jobs;
     } catch (
-      firstError
+    firstError
     ) {
       console.warn(
         `[JOB DEBUG] Query "${query}" failed once. Retrying...`,
@@ -1018,7 +1017,7 @@ const fetchJobsForSingleRoleQuery =
 
         return jobs;
       } catch (
-        secondError
+      secondError
       ) {
         console.error(
           `[JOB DEBUG] Query "${query}" failed after retry:`,
@@ -1037,13 +1036,13 @@ const fetchJobsForRoleQueries =
     countryCode,
   }: {
     queries:
-      string[];
+    string[];
 
     location?:
-      string;
+    string;
 
     countryCode:
-      string;
+    string;
   }): Promise<IExternalJobRecord[]> => {
     const normalizedQueries =
       uniqueStrings(
@@ -1096,7 +1095,7 @@ const fetchJobsForRoleQueries =
               await fetchJobsForSingleRoleQuery({
                 query:
                   normalizedQueries[
-                    index
+                  index
                   ],
 
                 location,
@@ -1188,9 +1187,9 @@ const getGeneralProfileSkillSet = (
           (
             item
           ) => [
-            item.name,
-            item.normalizedName,
-          ]
+              item.name,
+              item.normalizedName,
+            ]
         ),
 
       ...(profile.strongestSkills || [])
@@ -1198,9 +1197,9 @@ const getGeneralProfileSkillSet = (
           (
             item
           ) => [
-            item.name,
-            item.normalizedName,
-          ]
+              item.name,
+              item.normalizedName,
+            ]
         ),
     ];
 
@@ -1277,7 +1276,7 @@ const isAzerbaijanLocalJob = (
       "birmarket"
     ) ||
     company ===
-      "bir"
+    "bir"
   ) {
     return true;
   }
@@ -1315,15 +1314,15 @@ const calculateGeneralPreStoreScore = (
 
   const skillScore =
     jobSkills.length >
-    0
+      0
       ? (
-          matchedSkillCount /
-          Math.min(
-            jobSkills.length,
-            12
-          )
-        ) *
-        100
+        matchedSkillCount /
+        Math.min(
+          jobSkills.length,
+          12
+        )
+      ) *
+      100
       : 15;
 
   const ageDays =
@@ -1340,13 +1339,13 @@ const calculateGeneralPreStoreScore = (
 
   const recencyScore =
     ageDays <=
-    7
+      7
       ? 100
       : ageDays <=
-          30
+        30
         ? 80
         : ageDays <=
-            90
+          90
           ? 55
           : 25;
 
@@ -1355,7 +1354,7 @@ const calculateGeneralPreStoreScore = (
       job.description?.length ||
       0
     ) >=
-    250
+      250
       ? 100
       : 55;
 
@@ -1365,11 +1364,11 @@ const calculateGeneralPreStoreScore = (
    */
   return (
     skillScore *
-      0.65 +
+    0.65 +
     recencyScore *
-      0.25 +
+    0.25 +
     descriptionEvidence *
-      0.10
+    0.10
   );
 };
 
@@ -1551,7 +1550,7 @@ const upsertExternalJobsWithConcurrency =
         }
       );
     } catch (
-      error
+    error
     ) {
       console.error(
         "[JOB MATCHING] Bulk vacancy upsert failed:",
@@ -1597,13 +1596,13 @@ const upsertExternalJobsWithConcurrency =
           (
             job
           ) => [
-            `${normalizeLower(
-              job.source
-            )}:${normalizeLower(
-              job.externalId
-            )}`,
-            job,
-          ]
+              `${normalizeLower(
+                job.source
+              )}:${normalizeLower(
+                job.externalId
+              )}`,
+              job,
+            ]
         )
       );
 
@@ -1662,7 +1661,7 @@ const roleTierWeight = (
     RoleTier
 ): number => {
   switch (
-    tier
+  tier
   ) {
     case "exact":
       return 5;
@@ -1883,9 +1882,9 @@ export const refreshExternalJobsForUser =
 
     const sourceLocation =
       rawLocation &&
-      normalizeLower(
-        rawLocation
-      ) !==
+        normalizeLower(
+          rawLocation
+        ) !==
         "remote"
         ? rawLocation
         : undefined;
@@ -1901,11 +1900,11 @@ export const refreshExternalJobsForUser =
 
     const activeResumeId =
       automation.activeResumeId &&
-      Types.ObjectId.isValid(
-        automation
-          .activeResumeId
-          .toString()
-      )
+        Types.ObjectId.isValid(
+          automation
+            .activeResumeId
+            .toString()
+        )
         ? automation
           .activeResumeId
           .toString()
@@ -2329,7 +2328,7 @@ export const refreshExternalJobsForUser =
 
           const workModeOkay =
             allowedWorkModes.size ===
-              0 ||
+            0 ||
             allowedWorkModes.has(
               job.remoteType
             );
@@ -2343,13 +2342,13 @@ export const refreshExternalJobsForUser =
               "full-time"
               ? "full_time"
               : job.employmentType ===
-                  "part-time"
+                "part-time"
                 ? "part_time"
                 : job.employmentType;
 
           const employmentOkay =
             allowedEmploymentTypes.size ===
-              0 ||
+            0 ||
             allowedEmploymentTypes.has(
               normalizedEmploymentType
             );
@@ -2360,7 +2359,7 @@ export const refreshExternalJobsForUser =
 
           const experienceOkay =
             allowedExperienceSet.size ===
-              0 ||
+            0 ||
             allowedExperienceSet.has(
               job.experienceLevel
             ) ||
@@ -2369,14 +2368,14 @@ export const refreshExternalJobsForUser =
                 "entry"
               ) &&
               job.experienceLevel ===
-                "junior"
+              "junior"
             ) ||
             (
               allowedExperienceSet.has(
                 "junior"
               ) &&
               job.experienceLevel ===
-                "entry"
+              "entry"
             );
 
           return (
@@ -2575,16 +2574,16 @@ export const refreshExternalJobsForUser =
           sortScoredJobs
         );
 
-        /* =====================================================
-       SEARCH AGAIN ROTATION + DAILY TOP 3
+    /* =====================================================
+   SEARCH AGAIN ROTATION + DAILY TOP 3
 
-       Search #1 -> A B C
-       Search #2 -> D E F
-       Search #3 -> G H I
+   Search #1 -> A B C
+   Search #2 -> D E F
+   Search #3 -> G H I
 
-       Previously shown vacancies are skipped while unseen,
-       valid vacancies are available.
-    ===================================================== */
+   Previously shown vacancies are skipped while unseen,
+   valid vacancies are available.
+===================================================== */
 
     const previouslyShownJobIds =
       new Set<string>(
@@ -2832,14 +2831,14 @@ export const refreshExternalJobsForUser =
       const alreadyStoredExternalJobs =
         externalKeys.length > 0
           ? await Job.find({
-              $or:
-                externalKeys,
+            $or:
+              externalKeys,
+          })
+            .select({
+              source: 1,
+              externalId: 1,
             })
-              .select({
-                source: 1,
-                externalId: 1,
-              })
-              .lean<IJob[]>()
+            .lean<IJob[]>()
           : [];
 
       const alreadyStoredExternalKeys =
@@ -2924,7 +2923,7 @@ export const refreshExternalJobsForUser =
                   "full-time"
                   ? "full_time"
                   : job.employmentType ===
-                      "part-time"
+                    "part-time"
                     ? "part_time"
                     : job.employmentType;
 
@@ -2944,14 +2943,14 @@ export const refreshExternalJobsForUser =
                     "entry"
                   ) &&
                   job.experienceLevel ===
-                    "junior"
+                  "junior"
                 ) ||
                 (
                   allowedExperienceSet.has(
                     "junior"
                   ) &&
                   job.experienceLevel ===
-                    "entry"
+                  "entry"
                 );
 
               return (
@@ -3063,7 +3062,7 @@ export const refreshExternalJobsForUser =
         0,
         DAILY_JOB_LIMIT
       );
-      
+
     /* =====================================================
        DEBUG ROLE POOLS
     ===================================================== */
@@ -3250,12 +3249,12 @@ export const refreshExternalJobsForUser =
             (
               item
             ) => [
-              item
-                .jobId
-                .toString(),
+                item
+                  .jobId
+                  .toString(),
 
-              item,
-            ]
+                item,
+              ]
           )
       );
 
@@ -3489,7 +3488,7 @@ const isBlockedJobSource = (
 
   return (
     normalized ===
-      "adzuna" ||
+    "adzuna" ||
     normalized.includes(
       "adzuna"
     )
@@ -3731,14 +3730,14 @@ export const refreshGeneralExternalJobsForUser =
 
     const activeResumeId =
       automation?.activeResumeId &&
-      Types.ObjectId.isValid(
-        automation
-          .activeResumeId
-          .toString()
-      )
-        ? automation
+        Types.ObjectId.isValid(
+          automation
             .activeResumeId
             .toString()
+        )
+        ? automation
+          .activeResumeId
+          .toString()
         : undefined;
 
     const skillProfile =
@@ -3809,24 +3808,24 @@ export const refreshGeneralExternalJobsForUser =
             a,
             b
           ) => {
-            const scoreDifference =
-              b.match.matchScore -
-              a.match.matchScore;
-
-            if (
-              scoreDifference !==
-              0
-            ) {
-              return scoreDifference;
-            }
-
-            return (
+            const postedDifference =
               new Date(
                 b.job.postedAt
               ).getTime() -
               new Date(
                 a.job.postedAt
-              ).getTime()
+              ).getTime();
+
+            if (
+              postedDifference !==
+              0
+            ) {
+              return postedDifference;
+            }
+
+            return (
+              b.match.matchScore -
+              a.match.matchScore
             );
           }
         );
@@ -3897,3 +3896,6 @@ export default {
   refreshGeneralExternalJobsForUser,
   refreshSharedJobCatalog,
 };
+
+
+

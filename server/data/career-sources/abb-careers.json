@@ -1,9 +1,9 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-09-26T09:13:01.797Z",
+  "updatedAt": "2026-09-26T19:07:03.962Z",
   "success": true,
-  "count": 94,
+  "count": 93,
   "jobs": [
     {
       "externalId": "5348",
@@ -226,42 +226,6 @@
       "postedAt": null,
       "url": "https://careers.abb-bank.az/vakansiyalar/v2/5304",
       "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5304",
-      "source": "ABB Careers"
-    },
-    {
-      "externalId": "5340",
-      "title": "Müştərilərə satış və xidmət üzrə kiçik mütəxəssis - Şabran",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "Təhkim olunmuş cari korporativ və pərakəndə müştərilərin idarə edilməsi, məhsul satışının həyata keçirilməsi; Yeni korporativ və pərakəndə müştərilərin banka cəlbini və məhsul satışını həyata keçirmək; Ali iqtisadi təhsilə;",
-      "description": "Təhkim olunmuş cari korporativ və pərakəndə müştərilərin idarə edilməsi, məhsul satışının həyata keçirilməsi; Yeni korporativ və pərakəndə müştərilərin banka cəlbini və məhsul satışını həyata keçirmək; Ali iqtisadi təhsilə;",
-      "requirements": [
-        "Ali iqtisadi təhsilə;",
-        "Azərbaycan dilini səlis bilənə; rus və ingilis dili arzu olunandır;",
-        "Korporativ müştərilərlə iş sahəsində minimum 1 il təcrübəyə;",
-        "Yüksək səviyyədə ünsiyyət qurma bacarığına;",
-        "Stresə davamlılığa;",
-        "Yüksək səviyyədə satıcılıq xüsusiyyətlərinə sahib olan şəxsdir."
-      ],
-      "responsibilities": [
-        "Təhkim olunmuş cari korporativ və pərakəndə müştərilərin idarə edilməsi, məhsul satışının həyata keçirilməsi;",
-        "Yeni korporativ və pərakəndə müştərilərin banka cəlbini və məhsul satışını həyata keçirmək;",
-        "Müştərilərin sorğularını lazımi struktur orqanlarla koordinasiya etmək, əməkdaşlıq və müraciət zamanı prosesi təqib etmək, yarana biləcək problemlərin həllinə sonadək dəstək olmaq;",
-        "Portfelində olan müştərilər üzrə gecikmələrin ilkin təqibini həyata keçirmək;",
-        "Təyin edilmiş rüblük və illik hədəflərə çatmaq üçün lazımi işlərin görülməsi."
-      ],
-      "benefits": [],
-      "skills": [],
-      "employmentType": null,
-      "experienceLevel": "junior",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5340",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5340",
       "source": "ABB Careers"
     },
     {
@@ -3951,9 +3915,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 94,
-    "detailPagesFetched": 94,
-    "acceptedJobs": 94,
+    "discoveredLinks": 93,
+    "detailPagesFetched": 93,
+    "acceptedJobs": 93,
     "rejectedJobs": 0,
     "listingFallbacks": 0,
     "errors": []
