@@ -30,7 +30,8 @@ import {
 } from "../services/careerSkillProfileService";
 
 import {
-  refreshExternalJobsForUser,
+  refreshGeneralExternalJobsForUser,
+  refreshSharedJobCatalog,
 } from "../services/jobAggregationService";
 
 /* =========================================================
@@ -1437,10 +1438,36 @@ export const refreshExternalJobs =
        * apply Career Automation preferences, calculate CV match,
        * rank the jobs, and save the current recommendations.
        */
+      /*
+  * First synchronize the complete shared vacancy catalog.
+  *
+  * This refreshes Greenhouse / Lever / Ashby /
+  * SuccessFactors / Bir Careers / ABB Careers / Glorri
+  * data in MongoDB before calculating the user's matches.
+  */
+      const catalogSync =
+        await refreshSharedJobCatalog();
+
+      /*
+       * MongoDB is now fresh.
+       * Calculate CV matching against the complete
+       * active vacancy pool.
+       */
       const result =
-        await refreshExternalJobsForUser(
+        await refreshGeneralExternalJobsForUser(
           userId
         );
+
+      console.log(
+        "[JOB REFRESH] Catalog synchronized and matching completed:",
+        {
+          catalogSync,
+          analyzed:
+            result.analyzed,
+          returned:
+            result.returned,
+        }
+      );
 
       res.status(
         200
@@ -1449,9 +1476,9 @@ export const refreshExternalJobs =
           true,
 
         message:
-          result.matched >
+          result.returned >
             0
-            ? `Found ${result.matched} matching vacancies.`
+            ? `Found ${result.returned} matching vacancies.`
             : "No matching vacancies were found in the current job database.",
 
         data:
