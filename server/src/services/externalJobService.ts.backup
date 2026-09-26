@@ -6574,7 +6574,7 @@ export const fetchGeneralExternalJobs =
   ): Promise<IExternalJobRecord[]> => {
     const {
       limit =
-        0,
+        1_000,
     } =
       params;
 

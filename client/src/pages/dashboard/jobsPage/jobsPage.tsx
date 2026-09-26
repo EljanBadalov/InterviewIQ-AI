@@ -457,72 +457,154 @@ const jobsPage: React.FC = () => {
     );
 
   const fetchJobs =
-    useCallback(
-      async ({
-        showFullPageLoading =
-          false,
+  useCallback(
+    async ({
+      showFullPageLoading = false,
+      updateCache = true,
+    }: {
+      showFullPageLoading?: boolean;
+      updateCache?: boolean;
+    } = {}) => {
+      try {
+        if (showFullPageLoading) {
+          setLoading(true);
+        }
 
-        updateCache =
-          true,
-      }: {
-        showFullPageLoading?:
-          boolean;
+        setError("");
 
-        updateCache?:
-          boolean;
-      } = {}) => {
-        try {
-          if (
-            showFullPageLoading
-          ) {
-            setLoading(
-              true
-            );
-          }
+        const params =
+          new URLSearchParams();
 
-          setError("");
+        const normalizedSearch =
+          search.trim();
 
-          const response =
-            await apiClient.get<JobsApiResponse>(
-              "/jobs"
-            );
+        const normalizedLocation =
+          locationFilter.trim();
 
-          applyJobsResponse(
+        const normalizedMinimumSalary =
+          minimumSalary.trim();
+
+        if (normalizedSearch) {
+          params.set(
+            "search",
+            normalizedSearch
+          );
+        }
+
+        if (
+          experienceFilter !==
+          "all"
+        ) {
+          params.set(
+            "experienceLevel",
+            experienceFilter
+          );
+        }
+
+        if (
+          selectedEmploymentTypes.length ===
+          1
+        ) {
+          params.set(
+            "employmentType",
+            selectedEmploymentTypes[0]
+          );
+        }
+
+        if (
+          selectedWorkModes.length ===
+          1
+        ) {
+          params.set(
+            "remoteType",
+            selectedWorkModes[0]
+          );
+        }
+
+        if (
+          selectedSources.length ===
+          1
+        ) {
+          params.set(
+            "source",
+            selectedSources[0]
+          );
+        }
+
+        if (normalizedLocation) {
+          params.set(
+            "location",
+            normalizedLocation
+          );
+        }
+
+        if (normalizedMinimumSalary) {
+          params.set(
+            "minimumSalary",
+            normalizedMinimumSalary
+          );
+        }
+
+        if (
+          marketFilter !==
+          "all"
+        ) {
+          params.set(
+            "market",
+            marketFilter
+          );
+        }
+
+        const queryString =
+          params.toString();
+
+        const endpoint =
+          queryString
+            ? `/jobs?${queryString}`
+            : "/jobs";
+
+        const response =
+          await apiClient.get<JobsApiResponse>(
+            endpoint
+          );
+
+        applyJobsResponse(
+          response.data
+        );
+
+        if (updateCache) {
+          writeJobsCache(
             response.data
           );
-
-          if (
-            updateCache
-          ) {
-            writeJobsCache(
-              response.data
-            );
-          }
-        } catch (
-          err: any
-        ) {
-          const message =
-            err?.response?.data
-              ?.message ||
-            "Could not load jobs. Please try again.";
-
-          setError(
-            message
-          );
-        } finally {
-          if (
-            showFullPageLoading
-          ) {
-            setLoading(
-              false
-            );
-          }
         }
-      },
-      [
-        applyJobsResponse,
-      ]
-    );
+      } catch (err: any) {
+        const message =
+          err?.response?.data?.message ||
+          "Could not load jobs. Please try again.";
+
+        setError(
+          message
+        );
+      } finally {
+        if (showFullPageLoading) {
+          setLoading(
+            false
+          );
+        }
+      }
+    },
+    [
+      applyJobsResponse,
+      search,
+      experienceFilter,
+      selectedEmploymentTypes,
+      selectedWorkModes,
+      selectedSources,
+      locationFilter,
+      minimumSalary,
+      marketFilter,
+    ]
+  );
 
   const handleRefreshJobs =
     useCallback(
