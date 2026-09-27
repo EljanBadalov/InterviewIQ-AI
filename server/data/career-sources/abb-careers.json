@@ -1,10 +1,80 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-09-27T16:33:13.795Z",
+  "updatedAt": "2026-09-27T22:54:17.844Z",
   "success": true,
-  "count": 93,
+  "count": 94,
   "jobs": [
+    {
+      "externalId": "5350",
+      "title": "Partnyorlarla iş departamenti üzrə təcrübə proqramı",
+      "company": "ABB",
+      "location": "Azerbaijan",
+      "summary": "Ali təhsilə malik olan və ya son kursda təhsil alan (İqtisadiyyat, Maliyyə, Marketinq, Biznesin idarə edilməsi və ya əlaqəli ixtisaslar üzrə);",
+      "description": "Ali təhsilə malik olan və ya son kursda təhsil alan (İqtisadiyyat, Maliyyə, Marketinq, Biznesin idarə edilməsi və ya əlaqəli ixtisaslar üzrə);",
+      "requirements": [
+        "Ali təhsilə malik olan və ya son kursda təhsil alan (İqtisadiyyat, Maliyyə, Marketinq, Biznesin idarə edilməsi və ya əlaqəli ixtisaslar üzrə);",
+        "MS Excel və PowerPoint proqramları üzrə əsas biliklərə;",
+        "Azərbaycan dilində səlis yazılı və şifahi ünsiyyət bacarığına (İngilis və Rus dili biliyi üstünlükdür);",
+        "Güclü ünsiyyət və inandırma bacarığına, komandada işləmək qabiliyyətinə;",
+        "Nəticəyönümlü yanaşmaya, məsuliyyət hissinə və öyrənməyə həvəsə sahib olan şəxsdir."
+      ],
+      "responsibilities": [],
+      "benefits": [],
+      "skills": [
+        "Excel"
+      ],
+      "employmentType": null,
+      "experienceLevel": null,
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": null,
+      "postedAt": null,
+      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5350",
+      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5350",
+      "source": "ABB Careers"
+    },
+    {
+      "externalId": "5349",
+      "title": "Strateji partnyorlarla iş şöbəsinin kiçik mütəxəssisi / mütəxəssisi",
+      "company": "ABB",
+      "location": "Azerbaijan",
+      "summary": "Strateji tərəfdaşlarla birgə reallaşdırılan layihələrin idarə edilməsində iştirak etmək; Əməkdaşlıq modellərinin və kommersiya şərtlərinin hazırlanması; Ali təhsilli;",
+      "description": "Strateji tərəfdaşlarla birgə reallaşdırılan layihələrin idarə edilməsində iştirak etmək; Əməkdaşlıq modellərinin və kommersiya şərtlərinin hazırlanması; Ali təhsilli;",
+      "requirements": [
+        "Ali təhsilli;",
+        "Satış, tərəfdaşlıq (partnership) və ya B2B əlaqələrinin idarə edilməsi sahəsində minimum 1 il iş təcrübəsi olan;",
+        "Danışıqlar aparmaq və kommersiya təklifləri hazırlamaq bacarığı olan;",
+        "Analitik düşüncə və təşəbbüskarlıq nümayiş etdirən;",
+        "Azərbaycan və rus dillərini sərbəst bilən (ingilis dili arzuolunandır)."
+      ],
+      "responsibilities": [
+        "Strateji tərəfdaşlarla birgə reallaşdırılan layihələrin idarə edilməsində iştirak etmək;",
+        "Əməkdaşlıq modellərinin və kommersiya şərtlərinin hazırlanması;",
+        "\"Co-brand\" kart layihələri üzrə yeni partnyorların cəlb edilməsi;",
+        "Loyallıq proqramları üzrə partnyor şəbəkəsinin inkişaf etdirilməsi;",
+        "Bank ekosisteminin genişləndirilməsi istiqamətində müvafiq işlərin görülməsi;",
+        "Əlavə dəyər xidmətlərinin (sığorta, səhiyyə, turizm, rəqəmsal xidmətlər və s.) bank məhsulları ilə inteqrasiyasının təşkili;",
+        "Brend təsirinin ölçülməsi və strateji təqdimatların hazırlanması;",
+        "Potensial tərəfdaşlar (holdinqlər, iri şirkətlər, dövlət qurumları) üzrə bazar araşdırmalarının aparılması;",
+        "Müştəri davranışı analitikası əsasında strateji təkliflərin hazırlanması."
+      ],
+      "benefits": [],
+      "skills": [],
+      "employmentType": null,
+      "experienceLevel": "junior",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": null,
+      "postedAt": null,
+      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5349",
+      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5349",
+      "source": "ABB Careers"
+    },
     {
       "externalId": "5348",
       "title": "Əlaqə mərkəzi şöbəsinin məlumat mərkəzi üzrə kiçik təmsliçi",
@@ -2216,45 +2286,6 @@
       "source": "ABB Careers"
     },
     {
-      "externalId": "5264",
-      "title": "Strateji partnyorlarla iş şöbəsinin kiçik mütəxəssisi / mütəxəssisi",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "Strateji tərəfdaşlarla birgə reallaşdırılan layihələrin idarə edilməsində iştirak etmək; Əməkdaşlıq modellərinin və kommersiya şərtlərinin hazırlanması; Ali təhsilli;",
-      "description": "Strateji tərəfdaşlarla birgə reallaşdırılan layihələrin idarə edilməsində iştirak etmək; Əməkdaşlıq modellərinin və kommersiya şərtlərinin hazırlanması; Ali təhsilli;",
-      "requirements": [
-        "Ali təhsilli;",
-        "Satış, tərəfdaşlıq (partnership) və ya B2B əlaqələrinin idarə edilməsi sahəsində minimum 1 il iş təcrübəsi olan;",
-        "Danışıqlar aparmaq və kommersiya təklifləri hazırlamaq bacarığı olan;",
-        "Analitik düşüncə və təşəbbüskarlıq nümayiş etdirən;",
-        "Azərbaycan və rus dillərini sərbəst bilən (ingilis dili arzuolunandır)."
-      ],
-      "responsibilities": [
-        "Strateji tərəfdaşlarla birgə reallaşdırılan layihələrin idarə edilməsində iştirak etmək;",
-        "Əməkdaşlıq modellərinin və kommersiya şərtlərinin hazırlanması;",
-        "\"Co-brand\" kart layihələri üzrə yeni partnyorların cəlb edilməsi;",
-        "Loyallıq proqramları üzrə partnyor şəbəkəsinin inkişaf etdirilməsi;",
-        "Bank ekosisteminin genişləndirilməsi istiqamətində müvafiq işlərin görülməsi;",
-        "Əlavə dəyər xidmətlərinin (sığorta, səhiyyə, turizm, rəqəmsal xidmətlər və s.) bank məhsulları ilə inteqrasiyasının təşkili;",
-        "Brend təsirinin ölçülməsi və strateji təqdimatların hazırlanması;",
-        "Potensial tərəfdaşlar (holdinqlər, iri şirkətlər, dövlət qurumları) üzrə bazar araşdırmalarının aparılması;",
-        "Müştəri davranışı analitikası əsasında strateji təkliflərin hazırlanması."
-      ],
-      "benefits": [],
-      "skills": [],
-      "employmentType": null,
-      "experienceLevel": "junior",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5264",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5264",
-      "source": "ABB Careers"
-    },
-    {
       "externalId": "5272",
       "title": "Xəzinə bölməsi üzrə kiçik mütəxəssis xəzinədar-əməliyyatçı - Bərdə ASAN",
       "company": "ABB",
@@ -3915,9 +3946,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 93,
-    "detailPagesFetched": 93,
-    "acceptedJobs": 93,
+    "discoveredLinks": 94,
+    "detailPagesFetched": 94,
+    "acceptedJobs": 94,
     "rejectedJobs": 0,
     "listingFallbacks": 0,
     "errors": []
