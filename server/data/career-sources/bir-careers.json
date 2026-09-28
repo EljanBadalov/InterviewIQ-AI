@@ -1,7 +1,7 @@
 {
   "id": "bir-careers",
   "name": "Bir Careers",
-  "updatedAt": "2026-09-28T03:58:55.559Z",
+  "updatedAt": "2026-09-28T10:41:19.898Z",
   "success": true,
   "count": 60,
   "jobs": [
@@ -3214,12 +3214,12 @@
     },
     {
       "externalId": "8117",
-      "title": "Senior Product Security Engineer / Product Security Manager",
+      "title": "Penetration tester",
       "company": "Kapital Bank / Bir",
       "brand": "Bir",
       "location": "Bakı",
-      "summary": "The Senior Product Security Engineer will serve as a technical leader within the Product Security team, driving security assessments, threat modeling, and security architecture reviews across all products and services. This role requires deep expertise in offensive security techniques and the ability to collaborate cross-functionally with development, DevOps, Cyber Defense and architecture teams\nWorking at Bir ecosystem means creating value through technology, delivering meaningful impact to people, and building the solutions of tomorrow today. Our teams operate through open dialogue, rapid decision-making, and a culture of continuous improvement. Our offices are places where ideas emerge, products take shape, and technology enables those ideas to become reality. At Bir ecosystem, we positively impact the daily lives of millions of individuals and thousands of businesses through simple, reliable, and innovative solutions. The Fintech business (Birbank), Payments business (m10/MilliÖn), and E-commerce business (Birmarket) together form the country’s first fully integrated digital ecosystem. Driven by the professionalism and expertise of our teams, the products we develop help shape new habits and contribute to the growth of the country’s digital culture. Working here means growing within Bir ecosystem — an environment rich with opportunity. Diverse areas of expertise, multiple products, and continuous learning opportunities create the environment to unlock your potential and advance your career.",
-      "description": "The Senior Product Security Engineer will serve as a technical leader within the Product Security team, driving security assessments, threat modeling, and security architecture reviews across all products and services. This role requires deep expertise in offensive security techniques and the ability to collaborate cross-functionally with development, DevOps, Cyber Defense and architecture teams",
+      "summary": "The Penetration tester will serve as a technical leader within the Product Security team, driving security assessments, threat modeling, and security architecture reviews across all products and services. This role requires deep expertise in offensive security techniques and the ability to collaborate cross-functionally with development, DevOps, Cyber Defense and architecture teams\nWorking at Bir ecosystem means creating value through technology, delivering meaningful impact to people, and building the solutions of tomorrow today. Our teams operate through open dialogue, rapid decision-making, and a culture of continuous improvement. Our offices are places where ideas emerge, products take shape, and technology enables those ideas to become reality. At Bir ecosystem, we positively impact the daily lives of millions of individuals and thousands of businesses through simple, reliable, and innovative solutions. The Fintech business (Birbank), Payments business (m10/MilliÖn), and E-commerce business (Birmarket) together form the country’s first fully integrated digital ecosystem. Driven by the professionalism and expertise of our teams, the products we develop help shape new habits and contribute to the growth of the country’s digital culture. Working here means growing within Bir ecosystem — an environment rich with opportunity. Diverse areas of expertise, multiple products, and continuous learning opportunities create the environment to unlock your potential and advance your career.",
+      "description": "The Penetration tester will serve as a technical leader within the Product Security team, driving security assessments, threat modeling, and security architecture reviews across all products and services. This role requires deep expertise in offensive security techniques and the ability to collaborate cross-functionally with development, DevOps, Cyber Defense and architecture teams",
       "requirements": [
         "4+ years of experience in Application Security, Product Security, or Penetration Testing roles.",
         "Hands-on experience with Active Directory attacks including Kerberoasting, Pass-the-Hash, DCSync, LDAP enumeration, and privilege escalation paths; proficiency with tools such as BloodHound, Impacket, Mimikatz, CrackMapExec, and Rubeus.",

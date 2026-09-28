@@ -1,28 +1,46 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-09-28T04:00:13.858Z",
+  "updatedAt": "2026-09-28T10:42:37.785Z",
   "success": true,
-  "count": 94,
+  "count": 93,
   "jobs": [
     {
-      "externalId": "5350",
-      "title": "Partnyorlarla iş departamenti üzrə təcrübə proqramı",
+      "externalId": "5352",
+      "title": "Rəqəmsal kanallar sahəsinin android üzrə baş proqramçısı",
       "company": "ABB",
       "location": "Azerbaijan",
-      "summary": "Ali təhsilə malik olan və ya son kursda təhsil alan (İqtisadiyyat, Maliyyə, Marketinq, Biznesin idarə edilməsi və ya əlaqəli ixtisaslar üzrə);",
-      "description": "Ali təhsilə malik olan və ya son kursda təhsil alan (İqtisadiyyat, Maliyyə, Marketinq, Biznesin idarə edilməsi və ya əlaqəli ixtisaslar üzrə);",
+      "summary": "Dizayna uyğun olaraq mobil-app hazırlamaq və lazım gəldikdə texniki məslələri dizaynerlərə bildirmək; Ən son proqramlaşdırma prinsiplərini və sənaye standardlarını tətbiq etmək; Müvafiq sahədə ən azı 3 il iş təcrübəsinə;",
+      "description": "Dizayna uyğun olaraq mobil-app hazırlamaq və lazım gəldikdə texniki məslələri dizaynerlərə bildirmək; Ən son proqramlaşdırma prinsiplərini və sənaye standardlarını tətbiq etmək; Müvafiq sahədə ən azı 3 il iş təcrübəsinə;",
       "requirements": [
-        "Ali təhsilə malik olan və ya son kursda təhsil alan (İqtisadiyyat, Maliyyə, Marketinq, Biznesin idarə edilməsi və ya əlaqəli ixtisaslar üzrə);",
-        "MS Excel və PowerPoint proqramları üzrə əsas biliklərə;",
-        "Azərbaycan dilində səlis yazılı və şifahi ünsiyyət bacarığına (İngilis və Rus dili biliyi üstünlükdür);",
-        "Güclü ünsiyyət və inandırma bacarığına, komandada işləmək qabiliyyətinə;",
-        "Nəticəyönümlü yanaşmaya, məsuliyyət hissinə və öyrənməyə həvəsə sahib olan şəxsdir."
+        "Müvafiq sahədə ən azı 3 il iş təcrübəsinə;",
+        "Android SDK, Android müxtəlif versiyaları və ekran ölçüləri ilə bağlı güclü biliklərə;",
+        "RESTFul APİ-ların mobil tətbiqdən back-end servislərə qoşulmasını təmin etmə bacarığına;",
+        "Android Uİ dizayn prinsipləri və praktikaları ilə bağlı biliklərə;",
+        "“Android memory management, threading” və performans optimizasiyası üzrə biliklərə;",
+        "Biznes tələblərini anlama və onu texniki tələblərə çevirmək bacarığına;",
+        "FCM üzrə biliklərə;",
+        "Git üzrə sərbəst işləmə bacarığına;",
+        "“Continuous integration” barədə məlumatlılığa;",
+        "Agile komandada işləmək təcrübəsinə (arzu olunandır);",
+        "Retrofit, Picasso və Glide kitabxanaları ilə işləmək qabiliyyətinə;",
+        "MVP və ya MVVM üzrə işləmək bacarığına;",
+        "Android Architecture Components üzrə biliklərə;",
+        "Kotlin və ya Java üzrə güclü biliklərə sahib olan şəxsdir."
       ],
-      "responsibilities": [],
+      "responsibilities": [
+        "Dizayna uyğun olaraq mobil-app hazırlamaq və lazım gəldikdə texniki məslələri dizaynerlərə bildirmək;",
+        "Ən son proqramlaşdırma prinsiplərini və sənaye standardlarını tətbiq etmək;",
+        "Back-end proqramçılarla bərabər işləmək və API-ların inteqrasiyasını təmin etmək;",
+        "Unit və UI testəri yazmaq və avtomatlaşdırılmış testlərin işini təmin etmək;",
+        "Yeni ideyaların tətbiqinə fokuslanmaq, effektiv olmayan həllərin tətbiqindən uzaq durmaq."
+      ],
       "benefits": [],
       "skills": [
-        "Excel"
+        "Git",
+        "Java",
+        "Android",
+        "Kotlin"
       ],
       "employmentType": null,
       "experienceLevel": null,
@@ -32,8 +50,40 @@
       "salaryCurrency": null,
       "deadline": null,
       "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5350",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5350",
+      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5352",
+      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5352",
+      "source": "ABB Careers"
+    },
+    {
+      "externalId": "5351",
+      "title": "İnkassasiya və qiymətlilərin daşınması şöbəsinin inkassatoru",
+      "company": "ABB",
+      "location": "Azerbaijan",
+      "summary": "Nağd pul və digər qiymətlilərin təhvil-təslimi zamanı bağlamaların və qablaşdırılmanın bütövlüyünü, zədəsiz olmasını və rekvizitlərin mövcudluğunu yoxlamaq; Nağd pul və digər qiymətlilərin təhvil-təslimi zamanı inkassasiya prosesini müşayət edən sənədləşmənin düzgünlüyünün yoxlanılması; Ali və ya orta ixtisas təhsili olan;",
+      "description": "Nağd pul və digər qiymətlilərin təhvil-təslimi zamanı bağlamaların və qablaşdırılmanın bütövlüyünü, zədəsiz olmasını və rekvizitlərin mövcudluğunu yoxlamaq; Nağd pul və digər qiymətlilərin təhvil-təslimi zamanı inkassasiya prosesini müşayət edən sənədləşmənin düzgünlüyünün yoxlanılması; Ali və ya orta ixtisas təhsili olan;",
+      "requirements": [
+        "Ali və ya orta ixtisas təhsili olan;",
+        "Komandada işləmək bacarığı olan;",
+        "İşdə dəqiqlik, detallara fikir vermək və yüksək məsuliyyət qabiliyyəti olan şəxsdir.",
+        "Hərbi qulluqçular, hüquq-mühafizə və xüsusi xidmət orqanlarının əməkdaşlarına üstünlük verilir."
+      ],
+      "responsibilities": [
+        "Nağd pul və digər qiymətlilərin təhvil-təslimi zamanı bağlamaların və qablaşdırılmanın bütövlüyünü, zədəsiz olmasını və rekvizitlərin mövcudluğunu yoxlamaq;",
+        "Nağd pul və digər qiymətlilərin təhvil-təslimi zamanı inkassasiya prosesini müşayət edən sənədləşmənin düzgünlüyünün yoxlanılması;",
+        "Nağd pul və digər qiymətlilərin inkassasiyası prosesləri zamanı qiymətlilərin bütövlüyünün və təhlükəsizliyinin təmin edilməsi."
+      ],
+      "benefits": [],
+      "skills": [],
+      "employmentType": null,
+      "experienceLevel": null,
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": null,
+      "postedAt": null,
+      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5351",
+      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5351",
       "source": "ABB Careers"
     },
     {
@@ -2129,40 +2179,6 @@
       "source": "ABB Careers"
     },
     {
-      "externalId": "4958",
-      "title": "ATM və ÖT şəbəkəsinə dəstək şöbəsinin mütəxəssisi",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "ATM və ÖT şəbəkəsinə texniki dəstək, proqramlarla iş, terminalların və qurğuların bərpa və profilaktikası",
-      "description": "ATM və ÖT şəbəkəsinə texniki dəstək, proqramlarla iş, terminalların və qurğuların bərpa və profilaktikası",
-      "requirements": [
-        "ATM və ÖT şəbəkəsinə texniki dəstək, proqramlarla iş, terminalların və qurğuların bərpa və profilaktikası",
-        "ATM-lərin texniki vəziyyətinə dair gündəlik monitorinqin aparılması, uzaqdan idarəetmə komandalarının göndərilməsi",
-        "ATM və ödəniş terminallarının (ÖT) müvafiq proqram təminatı ilə təmin edilməsi",
-        "Terminallar üçün modemlərin quraşdırılması və sazlanmasının həyata keçirilməsi",
-        "Peşə təhsili olan (Ali təhsilin olması üstünlükdür);",
-        "Orta səviyyədə İngilis və Rus dili bilikləri olan;",
-        "Komandada işləmək bacarığı olan;",
-        "Zərurət yarandıqda rayonlara ezama getmək imkanı olan;",
-        "Avtomobili idarə edə bilən;",
-        "İşdə dəqiqlik, detallara fikir vermək və yüksək məsuliyyət qabiliyyəti olan şəxsdir."
-      ],
-      "responsibilities": [],
-      "benefits": [],
-      "skills": [],
-      "employmentType": null,
-      "experienceLevel": null,
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/4958",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/4958",
-      "source": "ABB Careers"
-    },
-    {
       "externalId": "5274",
       "title": "Korporativ və KOS məhsullar sahəsinin back-end üzrə aparıcı proqramçısı",
       "company": "ABB",
@@ -3552,55 +3568,6 @@
       "source": "ABB Careers"
     },
     {
-      "externalId": "4980",
-      "title": "Rəqəmsal kanallar sahəsinin android üzrə baş proqramçısı",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "Dizayna uyğun olaraq mobil-app hazırlamaq və lazım gəldikdə texniki məslələri dizaynerlərə bildirmək; Ən son proqramlaşdırma prinsiplərini və sənaye standardlarını tətbiq etmək; Müvafiq sahədə ən azı 3 il iş təcrübəsinə;",
-      "description": "Dizayna uyğun olaraq mobil-app hazırlamaq və lazım gəldikdə texniki məslələri dizaynerlərə bildirmək; Ən son proqramlaşdırma prinsiplərini və sənaye standardlarını tətbiq etmək; Müvafiq sahədə ən azı 3 il iş təcrübəsinə;",
-      "requirements": [
-        "Müvafiq sahədə ən azı 3 il iş təcrübəsinə;",
-        "Android SDK, Android müxtəlif versiyaları və ekran ölçüləri ilə bağlı güclü biliklərə;",
-        "RESTFul APİ-ların mobil tətbiqdən back-end servislərə qoşulmasını təmin etmə bacarığına;",
-        "Android Uİ dizayn prinsipləri və praktikaları ilə bağlı biliklərə;",
-        "“Android memory management, threading” və performans optimizasiyası üzrə biliklərə;",
-        "Biznes tələblərini anlama və onu texniki tələblərə çevirmək bacarığına;",
-        "FCM üzrə biliklərə;",
-        "Git üzrə sərbəst işləmə bacarığına;",
-        "“Continuous integration” barədə məlumatlılığa;",
-        "Agile komandada işləmək təcrübəsinə (arzu olunandır);",
-        "Retrofit, Picasso və Glide kitabxanaları ilə işləmək qabiliyyətinə;",
-        "MVP və ya MVVM üzrə işləmək bacarığına;",
-        "Android Architecture Components üzrə biliklərə;",
-        "Kotlin və ya Java üzrə güclü biliklərə sahib olan şəxsdir."
-      ],
-      "responsibilities": [
-        "Dizayna uyğun olaraq mobil-app hazırlamaq və lazım gəldikdə texniki məslələri dizaynerlərə bildirmək;",
-        "Ən son proqramlaşdırma prinsiplərini və sənaye standardlarını tətbiq etmək;",
-        "Back-end proqramçılarla bərabər işləmək və API-ların inteqrasiyasını təmin etmək;",
-        "Unit və UI testəri yazmaq və avtomatlaşdırılmış testlərin işini təmin etmək;",
-        "Yeni ideyaların tətbiqinə fokuslanmaq, effektiv olmayan həllərin tətbiqindən uzaq durmaq."
-      ],
-      "benefits": [],
-      "skills": [
-        "Git",
-        "Java",
-        "Android",
-        "Kotlin"
-      ],
-      "employmentType": null,
-      "experienceLevel": null,
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/4980",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/4980",
-      "source": "ABB Careers"
-    },
-    {
       "externalId": "4727",
       "title": "Data sahəsinə data scientist",
       "company": "ABB",
@@ -3946,9 +3913,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 94,
-    "detailPagesFetched": 94,
-    "acceptedJobs": 94,
+    "discoveredLinks": 93,
+    "detailPagesFetched": 93,
+    "acceptedJobs": 93,
     "rejectedJobs": 0,
     "listingFallbacks": 0,
     "errors": []
