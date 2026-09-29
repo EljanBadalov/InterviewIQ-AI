@@ -1,9 +1,9 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-09-29T10:29:43.216Z",
+  "updatedAt": "2026-09-29T17:48:07.694Z",
   "success": true,
-  "count": 93,
+  "count": 92,
   "jobs": [
     {
       "externalId": "5352",
@@ -3525,49 +3525,6 @@
       "source": "ABB Careers"
     },
     {
-      "externalId": "5039",
-      "title": "Korporativ və KOS məhsullar sahəsinə biznes analitika üzrə aparıcı mütəxəssis",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "• Biznes proseslərin texniki analizinin verilənlər bazası modelinin tərtibatı səviyyəsinə qədər detallaşdırılması; • Biznes proseslər üzrə texniki sənəd (istifadəçi və texniki səviyyədə -use case) hazırlanması; • Ali təhsilə;",
-      "description": "• Biznes proseslərin texniki analizinin verilənlər bazası modelinin tərtibatı səviyyəsinə qədər detallaşdırılması; • Biznes proseslər üzrə texniki sənəd (istifadəçi və texniki səviyyədə -use case) hazırlanması; • Ali təhsilə;",
-      "requirements": [
-        "• Ali təhsilə;",
-        "• Sahə üzrə minimum 2 il təcrübəyə;",
-        "• Bank məhsulları haqqında biliklərə;",
-        "• Bank modulları (Flexcube arzuolunandır), BPM prosesləri və ya analitik məlumatların emalı sistemləri ilə iş təcrübəsinə;",
-        "• Texniki tapşırıq (istifadəçi və texniki səviyyədə sənəd hazırlama, ardıcıllıq alqoritmi qurma) hazırlama bacarığına;",
-        "• Verilənlər bazasının (SQL) sorğulanması üzrə biliyə;",
-        "• Xarici dil biliklərinə (Texniki tapşırığı anlamaq və tərtib etmək səviyyəsində);",
-        "• Web servis üzrə biliklərə sahib: Arxitektura növü (Rest/Soap), APİ Server-lərin sorğulanması bacarığı, Sorğulama formatları (JSON / XML) barədə anlayışa malik;",
-        "• Agile (Scrum) metodologiyası və blok sxemlər (BPMN) üzrə biliklərə sahib olan şəxsdir."
-      ],
-      "responsibilities": [
-        "• Biznes proseslərin texniki analizinin verilənlər bazası modelinin tərtibatı səviyyəsinə qədər detallaşdırılması;",
-        "• Biznes proseslər üzrə texniki sənəd (istifadəçi və texniki səviyyədə -use case) hazırlanması;",
-        "• Biznes proses üzrə minimal test planların və test ssenarilərinin hazırlanmasında iştirak;",
-        "• Texniki tapşırıq üzrə dəyişikliyin icra dövründə monitorinq edilməsi və dəyişikliyin tələblərə uyğunluğunun yoxlanılması;",
-        "• Dəyişiklik edilmiş biznes prosesin test mərhələsində sifarişçiyə və Bank Sistemlərinə dəstək komandasına təqdim olunmasında iştirak;",
-        "• Biznes prosesin proqramlaşdırma (Flex, BPM, Rəhbərlik) komandası ilə razılaşdırılması və görülən işlər barədə hesabatların təqdim edilməsi;",
-        "• İT departamenti, sifarişçi struktur və digər tərəfdaşlarla (3-cü şəxslər) texniki məsələlərin müzakirə edilməsi və uyğunluğun təmin edilməsi."
-      ],
-      "benefits": [],
-      "skills": [
-        "SQL"
-      ],
-      "employmentType": null,
-      "experienceLevel": "mid",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5039",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5039",
-      "source": "ABB Careers"
-    },
-    {
       "externalId": "4727",
       "title": "Data sahəsinə data scientist",
       "company": "ABB",
@@ -3913,9 +3870,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 93,
-    "detailPagesFetched": 93,
-    "acceptedJobs": 93,
+    "discoveredLinks": 92,
+    "detailPagesFetched": 92,
+    "acceptedJobs": 92,
     "rejectedJobs": 0,
     "listingFallbacks": 0,
     "errors": []
