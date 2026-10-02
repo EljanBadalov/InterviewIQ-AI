@@ -1,10 +1,57 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-10-02T04:21:54.683Z",
+  "updatedAt": "2026-10-02T14:33:29.847Z",
   "success": true,
-  "count": 104,
+  "count": 103,
   "jobs": [
+    {
+      "externalId": "5388",
+      "title": "Hiper avtomatlaşdırma üzrə ekspert mərkəzinə proseslərin avtomatlaşdırılması üzrə analitik",
+      "company": "ABB",
+      "location": "Azerbaijan",
+      "summary": "SQL scriptlərin yazılması; BPMN 2.0 yanaşması üzrə iş görülməsi; Ali təhsilə;",
+      "description": "SQL scriptlərin yazılması; BPMN 2.0 yanaşması üzrə iş görülməsi; Ali təhsilə;",
+      "requirements": [
+        "Ali təhsilə;",
+        "SQL scriptlərin yazılması üzrə təcrübəyə;",
+        "BPMN 2.0 notasiyası üzrə orta səviyyədə biliklərə;",
+        "Verilənlər bazasının strukturlaşdırılması və formalaşdırılması üzrə bacarıqlara;",
+        "UML diaqramların formalaşdırılması və tətbiqi üzrə təcrübəyə;",
+        "İstifadəçi təcrübəsi və istifadəçi interfeysi dizaynı üzrə bacarıqlara;",
+        "Layihənin arxitektura həllərinin verilməsi üzrə bacarıqlara;",
+        "Agile metodologiya üzrə təcrübəyə;",
+        "JIRA, Confluence, Monitoring tool-lar üzrə təcrübəyə;",
+        "Proseslərin avtomatlaşdırılması üzrə texniki təcrübəyə sahib olan şəxsdir"
+      ],
+      "responsibilities": [
+        "SQL scriptlərin yazılması;",
+        "BPMN 2.0 yanaşması üzrə iş görülməsi;",
+        "Verilənlər bazasının strukturlaşdırılması və formalaşdırılması;",
+        "UML diaqramların formalaşdırılması və tətbiqi;",
+        "İstifadəçi təcrübəsi və istifadəçi interfeysi dizaynının hazırlanması;",
+        "Layihənin arxitektura həllərinin verilməsi;",
+        "Agile metodologiyası əsasında işlərin təşkili;",
+        "JIRA, Confluence, Monitoring tool-larda iş aparılması;",
+        "Proseslərin avtomatlaşdırılması üzrə texniki işlərin görülməsidir."
+      ],
+      "benefits": [],
+      "skills": [
+        "SQL",
+        "Monitoring"
+      ],
+      "employmentType": null,
+      "experienceLevel": "senior",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": null,
+      "postedAt": null,
+      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5388",
+      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5388",
+      "source": "ABB Careers"
+    },
     {
       "externalId": "5357",
       "title": "Mikromaliyyələşmə məhsullarının ərazi üzrə kiçik satış mütəxəssisi - Lənkəran",
@@ -1074,59 +1121,6 @@
       "postedAt": null,
       "url": "https://careers.abb-bank.az/vakansiyalar/v2/5304",
       "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5304",
-      "source": "ABB Careers"
-    },
-    {
-      "externalId": "5335",
-      "title": "POS-terminalların quraşdırılması və texniki dəstək üzrə mütəxəssis / aparıcı mütəxəssis",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "• POS-terminal avadanlıqlarının quraşdırılması, konfiqurasiyası və proqram təminatının yüklənməsi və yenilənməsi; • POS terminallar üzrə host (prosessinq sistemi) ilə əlaqənin qurulması və test əməliyyatlarının icrası; • Ali təhsil (İT, kompüter mühəndisliyi və ya əlaqəli sahələr üzrə);",
-      "description": "• POS-terminal avadanlıqlarının quraşdırılması, konfiqurasiyası və proqram təminatının yüklənməsi və yenilənməsi; • POS terminallar üzrə host (prosessinq sistemi) ilə əlaqənin qurulması və test əməliyyatlarının icrası; • Ali təhsil (İT, kompüter mühəndisliyi və ya əlaqəli sahələr üzrə);",
-      "requirements": [
-        "• Ali təhsil (İT, kompüter mühəndisliyi və ya əlaqəli sahələr üzrə);",
-        "• POS terminallar, ödəniş sistemləri və ekvayrinq prosesləri üzrə baza bilikləri;",
-        "• Şəbəkə bilikləri (TCP/IP, APN, VPN, router/switch əsasları) üzrə bacarıq;",
-        "• Linux/Android əsaslı POS cihazları ilə işləmə təcrübəsi üstünlükdür;",
-        "• Prosessinq sistemləri və kart ödəniş standartları (EMV, Contactless, NFC) barədə anlayış;",
-        "• Texniki sənədlərlə işləmə və log analiz etmə bacarığı;",
-        "• MS Office (xüsusilə Excel) ilə işləmə bacarığı;",
-        "• Azərbaycan və rus dilində sərbəst, ingilis dili texniki səviyyədə arzuolunandır;",
-        "• Analitik düşünmə, problem həll etmə və operativ qərarvermə bacarığı;",
-        "• Komandada işləmək və müştəriyönümlü yanaşma;",
-        "• Sahə işlərinə hazır olmaq (ezamiyyət və obyekt ziyarətləri daxil olmaqla);",
-        "• Yeni texnologiyaları tez mənimsəmək və özünü inkişaf etdirmək istəyi olan şəxsdir."
-      ],
-      "responsibilities": [
-        "• POS-terminal avadanlıqlarının quraşdırılması, konfiqurasiyası və proqram təminatının yüklənməsi və yenilənməsi;",
-        "• POS terminallar üzrə host (prosessinq sistemi) ilə əlaqənin qurulması və test əməliyyatlarının icrası;",
-        "• Müştərilərdən daxil olan texniki müraciətlərin operativ araşdırılması, nasazlıqların yerində və ya uzaqdan həlli;",
-        "• POS terminallarda yaranan kommunikasiya problemlərinin (GPRS, Ethernet, Wi-Fi) aşkarlanması və aradan qaldırılması;",
-        "• POS-terminalların uçotu, inventarizasiyası, qeydiyyatı və müvafiq sistemlərdə (TMS və ya daxili platformalar) idarə olunması;",
-        "• POS terminalların kassa aparatları və digər inteqrasiya həlləri ilə qoşulmasının təmin edilməsi;",
-        "• Kart ödənişləri üzrə əməliyyat axınının (authorization, clearing, settlement) test edilməsi və monitorinqi;",
-        "• Yeni terminalların pilot testlərdə yoxlanılması, sertifikasiya və qəbul proseslərində iştirak;",
-        "• Terminal parametrlərinin sazlanmasında iştirak;",
-        "• Nasaz avadanlıqların texniki baxışı, dəyişdirilməsi və vendorlarla koordinasiya;",
-        "• Müntəzəm texniki hesabatların hazırlanması və görülmüş işlər üzrə sənədləşmələrin hazırlanması."
-      ],
-      "benefits": [],
-      "skills": [
-        "Excel",
-        "Linux",
-        "Authorization",
-        "Android"
-      ],
-      "employmentType": null,
-      "experienceLevel": "mid",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5335",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5335",
       "source": "ABB Careers"
     },
     {
@@ -3192,42 +3186,6 @@
       "source": "ABB Careers"
     },
     {
-      "externalId": "5207",
-      "title": "Hüquqi təhlil və korporativ işlər şöbəsi üzrə aparıcı hüquqşünas",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "Şöbənin fəaliyyət istiqamətləri üzrə hüquqi məsələlərə dair hüquqi araşdırma aparmaq və hüquqi rəylər hazırlamaq; Bank fəaliyyətinin inkişafı və səmərəli təşkili məqsədilə yaradılan yeni məhsulların (xidmətlərin) və layihələrin hüquqi ekspertizasını həyata keçirmək; Ali hüquq təhsilli;",
-      "description": "Şöbənin fəaliyyət istiqamətləri üzrə hüquqi məsələlərə dair hüquqi araşdırma aparmaq və hüquqi rəylər hazırlamaq; Bank fəaliyyətinin inkişafı və səmərəli təşkili məqsədilə yaradılan yeni məhsulların (xidmətlərin) və layihələrin hüquqi ekspertizasını həyata keçirmək; Ali hüquq təhsilli;",
-      "requirements": [
-        "Ali hüquq təhsilli;",
-        "İş təcrübəsi 2 ildən artıq;",
-        "Analitik düşünmə və təhlil qabiliyyəti olan;",
-        "Dil bilikləri: Azərbaycan dili - əla, İngilis dili – orta, Rus dili – orta;",
-        "MS Office (əsasən MS Word və MS PowerPoint) proqramlarında sərbəst işləmək bacarığına sahib olan şəxsdir."
-      ],
-      "responsibilities": [
-        "Şöbənin fəaliyyət istiqamətləri üzrə hüquqi məsələlərə dair hüquqi araşdırma aparmaq və hüquqi rəylər hazırlamaq;",
-        "Bank fəaliyyətinin inkişafı və səmərəli təşkili məqsədilə yaradılan yeni məhsulların (xidmətlərin) və layihələrin hüquqi ekspertizasını həyata keçirmək;",
-        "Şöbənin fəaliyyəti, o cümlədən korporativ hüquqi məsələlər üzrə sənədlərin layihələrini hazırlamaq, bütün zəruri işləri görmək;",
-        "Bankların fəaliyyəti ilə bağlı qanunvericilikdə olan yeniliklərin və dəyişikliklərin monitorinqini aparmaq;",
-        "Öz fəaliyyəti ilə şöbənin işinin təkmilləşdirilməsinə dəstək göstərmək;",
-        "Bankın fəaliyyətinə dair struktur bölmələrdən daxil olan, o cümlədən bank əməliyyatlarının həyata keçirilməsinə dair hüquqi araşdırma tələb edən sorğularla bağlı hüquqi rəylər vermək."
-      ],
-      "benefits": [],
-      "skills": [],
-      "employmentType": null,
-      "experienceLevel": null,
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5207",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5207",
-      "source": "ABB Careers"
-    },
-    {
       "externalId": "5205",
       "title": "Xadimə - Xankəndi",
       "company": "ABB",
@@ -4362,9 +4320,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 104,
-    "detailPagesFetched": 104,
-    "acceptedJobs": 104,
+    "discoveredLinks": 103,
+    "detailPagesFetched": 103,
+    "acceptedJobs": 103,
     "rejectedJobs": 0,
     "listingFallbacks": 0,
     "errors": []
