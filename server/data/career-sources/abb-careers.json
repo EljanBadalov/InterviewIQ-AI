@@ -1,10 +1,57 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-10-06T11:06:29.511Z",
+  "updatedAt": "2026-10-06T18:03:24.525Z",
   "success": true,
   "count": 102,
   "jobs": [
+    {
+      "externalId": "5393",
+      "title": "Korporativ və KOS məhsullar sahəsinin biznes analitika üzrə aparıcı mütəxəssisi",
+      "company": "ABB",
+      "location": "Azerbaijan",
+      "summary": "Biznes proseslərin texniki analizinin verilənlər bazası modelinin tərtibatı səviyyəsinə qədər detallaşdırılması; Biznes proseslər üzrə texniki sənəd (istifadəçi və texniki səviyyədə -use case) hazırlanması; Ali təhsilə;",
+      "description": "Biznes proseslərin texniki analizinin verilənlər bazası modelinin tərtibatı səviyyəsinə qədər detallaşdırılması; Biznes proseslər üzrə texniki sənəd (istifadəçi və texniki səviyyədə -use case) hazırlanması; Ali təhsilə;",
+      "requirements": [
+        "Ali təhsilə;",
+        "Sahə üzrə minimum 3-5 il təcrübəyə;",
+        "Bank məhsulları haqqında biliklərə;",
+        "Bank modulları (Flexcube arzuolunandır), Mobile application ilə bağlı iş təcrübəsinə( minimum 1 il);",
+        "Texniki tapşırıq (istifadəçi və texniki səviyyədə sənəd hazırlama, ardıcıllıq alqoritmi qurma) hazırlama bacarığına;",
+        "Verilənlər bazasının (SQL) sorğulanması üzrə biliyə;",
+        "Xarici dil biliklərinə (Texniki tapşırığı anlamaq və tərtib etmək səviyyəsində);",
+        "Web servis üzrə biliklərə sahib: Arxitektura növü (Rest/Soap), APİ Server-lərin sorğulanması bacarığı, Sorğulama formatları (JSON / XML) barədə anlayışa malik;",
+        "Agile (Scrum) metodologiyası və blok sxemlər (BPMN) üzrə biliklərə sahib olan şəxsdir."
+      ],
+      "responsibilities": [
+        "Biznes proseslərin texniki analizinin verilənlər bazası modelinin tərtibatı səviyyəsinə qədər detallaşdırılması;",
+        "Biznes proseslər üzrə texniki sənəd (istifadəçi və texniki səviyyədə -use case) hazırlanması;",
+        "Biznes proses üzrə minimal test planların və test ssenarilərinin hazırlanmasında iştirak;",
+        "Texniki tapşırıq üzrə dəyişikliyin icra dövründə monitorinq edilməsi və dəyişikliyin tələblərə uyğunluğunun yoxlanılması;",
+        "Biznes prosesi\\arxitekturanı\\dəyişikliyi əlaqəli bütün steykholderlərlə razılaşdırmaq;",
+        "Biznes prosesin proqramlaşdırma (Flex, BPM, Rəhbərlik) komandası ilə razılaşdırılması və görülən işlər barədə hesabatların təqdim edilməsi;",
+        "Analiz zamanı report hazırlanmasının mümkünlüyünün təmin edilməsi və yarana biləcək potensial risklərin müəyyən edilməsi;",
+        "Deployment ve reliz proseslərinin hazırlanması və izlənməsi, deadline-lara uyğun getməsi üçün teamə dəsdək olmaq;",
+        "Prosesin və ya dəyişikliyin texniki dəsdək komandasına ötürülməsi;",
+        "İT, sifarişçi struktur və digər tərəfdaşlarla (3-cü şəxslər) texniki məsələlərin müzakirə edilməsi və uyğunluğun təmin edilməsi"
+      ],
+      "benefits": [],
+      "skills": [
+        "SQL",
+        "Deployment"
+      ],
+      "employmentType": null,
+      "experienceLevel": "mid",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": null,
+      "postedAt": null,
+      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5393",
+      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5393",
+      "source": "ABB Careers"
+    },
     {
       "externalId": "5390",
       "title": "Müştərilərə satış və xidmət üzrə kiçik mütəxəssis - Sabirabad",
@@ -1140,45 +1187,6 @@
       "postedAt": null,
       "url": "https://careers.abb-bank.az/vakansiyalar/v2/5347",
       "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5347",
-      "source": "ABB Careers"
-    },
-    {
-      "externalId": "5346",
-      "title": "Alternativ satış kanalları üzrə kiçik mütəxəssis",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "Müxtəlif kanallardan daxil olan bütün müştəri sorğuları ilə işləmək, müştəriləri lazımi qaydada məlumatlandırmaq və bütün müştəri sorğularını üzrə yüksək keyfiyyətli xidmət göstərmək Kredit və qeyri-kredit məhsulları üzrə onlayn xidmətin təşkili, idarə olunması və yönləndirilməsi; Ali təhsilli;",
-      "description": "Müxtəlif kanallardan daxil olan bütün müştəri sorğuları ilə işləmək, müştəriləri lazımi qaydada məlumatlandırmaq və bütün müştəri sorğularını üzrə yüksək keyfiyyətli xidmət göstərmək Kredit və qeyri-kredit məhsulları üzrə onlayn xidmətin təşkili, idarə olunması və yönləndirilməsi; Ali təhsilli;",
-      "requirements": [
-        "Ali təhsilli;",
-        "Müvafiq istiqamətdə minimum 1 il təcrübəsi olan;",
-        "Cari istiqamət üzrə Mərkəzi Bankın qaydaları və bank işinin əsasları haqqında biliklərə sahib olan;",
-        "Azərbaycan (səlis), Rus və İngilis (arzuolunan) dillərini bilən;",
-        "MS Office proqramlarını mükəmməl bilən;"
-      ],
-      "responsibilities": [
-        "Müxtəlif kanallardan daxil olan bütün müştəri sorğuları ilə işləmək, müştəriləri lazımi qaydada məlumatlandırmaq və bütün müştəri sorğularını üzrə yüksək keyfiyyətli xidmət göstərmək",
-        "Kredit və qeyri-kredit məhsulları üzrə onlayn xidmətin təşkili, idarə olunması və yönləndirilməsi;",
-        "Bankın elektron kanalları vasitəsi ilə daxil olmuş kredit (Kredit kartı) sifarişlərini satışının təşkili;",
-        "Bankın mövcud həmçinin yeni müştərilərinə telefon vasitəsi ilə Bank məhsullarının satışının icra edilməsi;",
-        "Gördüyü işlərlə bağlı gündəlik,aylıq,rüblük,illik hesabatı hazırlayıb qrup rəhbərinə,şöbə müdirinə, təqdim etmək;",
-        "Aylıq, rüblük və illik hədəflər üzrə təyin edilmiş satış planlarını yerinə yetirilməsi;",
-        "Bazar araşdırması məqsədilə müştərilərə sorğu xarakterli zənglər edir.",
-        "Birbaşa rəhbər tərəfindən tapşırılan vəzifəsinə aid digər öhdəlikləri yerinə yetirmək;",
-        "Bankın Sağlamlıq və Təhlükəsizlik siyasətinin tələblərinə və verilə biləcək əlavə təhlükəsizlik tələblərinə riayət etmək"
-      ],
-      "benefits": [],
-      "skills": [],
-      "employmentType": null,
-      "experienceLevel": "junior",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5346",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5346",
       "source": "ABB Careers"
     },
     {

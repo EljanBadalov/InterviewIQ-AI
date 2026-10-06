@@ -1,10 +1,99 @@
 {
   "id": "bir-careers",
   "name": "Bir Careers",
-  "updatedAt": "2026-10-06T11:05:03.019Z",
+  "updatedAt": "2026-10-06T18:02:02.457Z",
   "success": true,
-  "count": 61,
+  "count": 63,
   "jobs": [
+    {
+      "externalId": "8513",
+      "title": "Strategiya, Büdcə və Analitika Şöbəsinin Baş Data Analitiki",
+      "company": "Kapital Bank / Bir",
+      "brand": "Birbank",
+      "location": "Bakı",
+      "summary": "Bu rol bankın əsas biznes göstəricilərinin data əsasında təhlil olunması və nəticələrin biznes qərarlarına çevrilməsinə fokuslanır. Vəzifə kredit və depozit portfeli, komissiya gəlirləri və müştəri seqmentləri üzrə analitik yanaşmanın formalaşdırılmasını əhatə edir. Rol çərçivəsində müxtəlif biznes sahələri ilə əməkdaşlıq edərək analitik ehtiyacların müəyyənləşdirilməsi, dashboard və hesabatların hazırlanması gözlənilir. Eyni zamanda, əldə olunan nəticələrin menecmentə aydın və biznes yönümlü şəkildə təqdim edilməsi rolun əsas məsuliyyətlərindəndir.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
+      "description": "Bu rol bankın əsas biznes göstəricilərinin data əsasında təhlil olunması və nəticələrin biznes qərarlarına çevrilməsinə fokuslanır. Vəzifə kredit və depozit portfeli, komissiya gəlirləri və müştəri seqmentləri üzrə analitik yanaşmanın formalaşdırılmasını əhatə edir. Rol çərçivəsində müxtəlif biznes sahələri ilə əməkdaşlıq edərək analitik ehtiyacların müəyyənləşdirilməsi, dashboard və hesabatların hazırlanması gözlənilir. Eyni zamanda, əldə olunan nəticələrin menecmentə aydın və biznes yönümlü şəkildə təqdim edilməsi rolun əsas məsuliyyətlərindəndir.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
+      "requirements": [
+        "Maliyyə, iqtisadiyyat, riyaziyyat, statistika, informasiya texnologiyaları və ya əlaqədar sahə üzrə bakalavr dərəcəsinin olması",
+        "Data analitika sahəsində minimum 3–5 il, bunun ən azı 2 ili bank/maliyyə sektorunda olmaqla iş təcrübəsinin olması",
+        "SQL üzrə yüksək səviyyədə biliklərin olması (Window Functions, CTE, mürəkkəb JOIN-lar, performans optimizasiyası)",
+        "Power BI və ya Tableau ilə real layihə təcrübəsinin olması (Data Model, DAX/LOD, RLS)",
+        "Python və ya R vasitəsilə data emalı və statistik analiz bacarıqlarının olması (minimum Pandas, NumPy səviyyəsində)",
+        "Seqmentasiya, korrelyasiya, reqressiya və zaman sıraları üzrə proqnozlaşdırma kimi statistik metodlar üzrə bilik və təcrübənin olması"
+      ],
+      "responsibilities": [
+        "Kredit və depozit portfeli, komissiya gəlirləri və müştəri seqmentləri üzrə müntəzəm və ad-hoc analizlərin hazırlanması",
+        "Data anbarından (DWH) SQL vasitəsilə məlumatların çıxarılması, təmizlənməsi və biznes məntiqinə uyğun strukturlaşdırılması",
+        "İdarəetmə hesabatlığı üçün dashboard-ların Power BI və ya Tableau vasitəsilə hazırlanması və dəstəklənməsi",
+        "Biznes sahibləri ilə tələblərin toplanması və analitik məsələlərin düzgün formalaşdırılması",
+        "Data keyfiyyəti ilə bağlı problemlərin aşkarlanması və müvafiq komandalarla birgə həll edilməsi",
+        "Analiz nəticələrinin menecment üçün aydın və interpretasiya yönümlü formatda, biznes izahı ilə təqdim edilməsi",
+        "Junior analitiklərə metodoloji dəstəyin göstərilməsi və işlərinin nəzərdən keçirilməsi"
+      ],
+      "benefits": [],
+      "skills": [
+        "Python",
+        "SQL",
+        "Power BI",
+        "Tableau",
+        "pandas"
+      ],
+      "employmentType": "full-time",
+      "experienceLevel": "senior",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": "11.10.2026",
+      "postedAt": null,
+      "url": "https://careers.bir.az/vacancies/8513",
+      "applyUrl": "https://careers.bir.az/vacancies/8513#attachFile",
+      "source": "Bir Careers"
+    },
+    {
+      "externalId": "8511",
+      "title": "Product marketing intern",
+      "company": "Kapital Bank / Bir",
+      "brand": "Birbank",
+      "location": "Bakı",
+      "summary": "As a Product Marketing Intern at Bir Ecosystem, you’ll support the team in bringing products to market, understanding customer needs, and creating engaging marketing campaigns. You’ll gain hands-on experience in market research, content creation, product positioning, and campaign execution while working closely with product and marketing teams.\nWorking at Bir ecosystem means creating value through technology, delivering meaningful impact to people, and building the solutions of tomorrow today. Our teams operate through open dialogue, rapid decision-making, and a culture of continuous improvement. Our offices are places where ideas emerge, products take shape, and technology enables those ideas to become reality. At Bir ecosystem, we positively impact the daily lives of millions of individuals and thousands of businesses through simple, reliable, and innovative solutions. The Fintech business (Birbank), Payments business (m10/MilliÖn), and E-commerce business (Birmarket) together form the country’s first fully integrated digital ecosystem. Driven by the professionalism and expertise of our teams, the products we develop help shape new habits and contribute to the growth of the country’s digital culture. Working here means growing within Bir ecosystem — an environment rich with opportunity. Diverse areas of expertise, multiple products, and continuous learning opportunities create the environment to unlock your potential and advance your career.",
+      "description": "As a Product Marketing Intern at Bir Ecosystem, you’ll support the team in bringing products to market, understanding customer needs, and creating engaging marketing campaigns. You’ll gain hands-on experience in market research, content creation, product positioning, and campaign execution while working closely with product and marketing teams.",
+      "requirements": [
+        "Age: 21-25",
+        "Experience: In banking sphere (it is not mandatory)",
+        "Language: Azerbaijani - fluent, Ru/Eng – desired",
+        "Education: Bachelor’s degree in Marketing, Business, or a related field.",
+        "Analytical Skills: Basic ability to analyze data and use insights to enhance marketing strategies and product offerings."
+      ],
+      "responsibilities": [
+        "Assist with product marketing plan and execute sub-tasks to achieve key business goals.",
+        "Study the target audience and participate in analytical work to prepare marketing campaigns according to the needs of the audience.",
+        "Support to manage marketing campaigns, promotions, and special projects to drive product awareness, adoption and sales.",
+        "Participate in market research and competitive analysis, gather data and conduct analysis to understand product benefits.",
+        "Learn the overall customer experience and journey, and support marketing efforts to align with that experience.",
+        "Participate in developing marketing content and A/B testing. Learn how to write communication messages and support in communication.",
+        "Support and participate in monitoring of the effectiveness of marketing activities by defining success metrics."
+      ],
+      "benefits": [
+        "-"
+      ],
+      "skills": [
+        "A/B Testing",
+        "Monitoring",
+        "Testing"
+      ],
+      "employmentType": "full-time",
+      "experienceLevel": "intern",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": "08.10.2026",
+      "postedAt": null,
+      "url": "https://careers.bir.az/vacancies/8511",
+      "applyUrl": "https://careers.bir.az/vacancies/8511#attachFile",
+      "source": "Bir Careers"
+    },
     {
       "externalId": "8000",
       "title": "Maliyyə Menecmenti Departamentinin Strategiya, Büdcə və Analitika Şöbəsinin Aparıcı Mütəxəssisi",
@@ -3420,9 +3509,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 61,
-    "detailPagesFetched": 61,
-    "acceptedJobs": 61,
+    "discoveredLinks": 63,
+    "detailPagesFetched": 63,
+    "acceptedJobs": 63,
     "rejectedJobs": 0,
     "errors": []
   }
