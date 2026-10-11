@@ -1,45 +1,10 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-10-11T14:44:52.590Z",
+  "updatedAt": "2026-10-11T20:00:16.837Z",
   "success": true,
-  "count": 107,
+  "count": 106,
   "jobs": [
-    {
-      "externalId": "5409",
-      "title": "Kart mərkəzinin fəaliyyətinə dair assistent",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "Kart və sənədlərin müştərilərə fiziki olaraq çatdırılması; Planşet üzərindən müştərilərə təklif olunacaq xidmət və məhsullar barədə ətraflı məlumatın verilməsi; Orta təhsilli;",
-      "description": "Kart və sənədlərin müştərilərə fiziki olaraq çatdırılması; Planşet üzərindən müştərilərə təklif olunacaq xidmət və məhsullar barədə ətraflı məlumatın verilməsi; Orta təhsilli;",
-      "requirements": [
-        "Orta təhsilli;",
-        "Ünsiyyət qabiliyyəti yüksək;",
-        "Məsuliyyətli;",
-        "Şəxsi avtomobili və motosikleti olan şəxsdir."
-      ],
-      "responsibilities": [
-        "Kart və sənədlərin müştərilərə fiziki olaraq çatdırılması;",
-        "Planşet üzərindən müştərilərə təklif olunacaq xidmət və məhsullar barədə ətraflı məlumatın verilməsi;",
-        "İmtiyazlı müştərilərin Bank məhsullarına aid suallarının cavablandırılması;",
-        "Gündəlik çatdırılma işləri ilə bağlı hesabatın Excel üzərindən hazırlanması."
-      ],
-      "benefits": [],
-      "skills": [
-        "Excel"
-      ],
-      "employmentType": null,
-      "experienceLevel": null,
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5409",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5409",
-      "source": "ABB Careers"
-    },
     {
       "externalId": "5338",
       "title": "İstifadəçi təcrübəsi və dizayn ekspert mərkəzinin UI/UX üzrə aparıcı / baş dizayneri",
@@ -4435,9 +4400,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 107,
-    "detailPagesFetched": 107,
-    "acceptedJobs": 107,
+    "discoveredLinks": 106,
+    "detailPagesFetched": 106,
+    "acceptedJobs": 106,
     "rejectedJobs": 0,
     "listingFallbacks": 0,
     "errors": []
