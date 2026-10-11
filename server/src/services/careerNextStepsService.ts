@@ -24,6 +24,11 @@ import {
   type ICareerRoadmapMilestone,
 } from "../models/CareerAutomation";
 
+import {
+  buildCareerKnowledgeContext,
+  type ICareerKnowledgeContext,
+} from "./careerKnowledgeService";
+
 /* =========================================================
    TYPES
 ========================================================= */
@@ -45,10 +50,10 @@ export interface ICareerNextStep {
   id: string;
 
   category:
-    CareerNextStepCategory;
+  CareerNextStepCategory;
 
   priority:
-    CareerNextStepPriority;
+  CareerNextStepPriority;
 
   title: string;
 
@@ -68,16 +73,21 @@ export interface ICareerNextStep {
 
 export interface ICareerNextStepsContext {
   resume?:
-    ICareerResumeContext;
+  ICareerResumeContext;
 
   jobMatches?:
-    ICareerJobMatchingResult;
+  ICareerJobMatchingResult;
 
   interview?:
-    ICareerInterviewContext;
+  ICareerInterviewContext;
 
   progress?:
-    ICareerProgressContext;
+  ICareerProgressContext;
+
+  careerKnowledge?:
+  ICareerKnowledgeContext;
+
+  knowledgeSubject?: string;
 
   targetRole?: string;
 
@@ -90,27 +100,27 @@ export interface ICareerNextStepsContext {
   contextualMode?: string;
 
   personalizedRoadmapAvailable?:
-    boolean;
+  boolean;
 
   personalizedRoadmapSections?:
-    number;
+  number;
 
   steps:
-    ICareerNextStep[];
+  ICareerNextStep[];
 
   topStep?:
-    ICareerNextStep;
+  ICareerNextStep;
 }
 
 export interface ICareerNextStepsResult {
   found: boolean;
 
   data?:
-    ICareerNextStepsContext;
+  ICareerNextStepsContext;
 
   reason?:
-    | "USER_ID_REQUIRED"
-    | "NO_CAREER_DATA";
+  | "USER_ID_REQUIRED"
+  | "NO_CAREER_DATA";
 }
 
 export interface ICareerNextStepsInput {
@@ -121,6 +131,8 @@ export interface ICareerNextStepsInput {
   activeInterviewId?: string;
 
   targetRole?: string;
+
+  knowledgeSubject?: string;
 
   careerGoal?: string;
 
@@ -322,7 +334,7 @@ const roadmapCategoryToNextStepCategory = (
     CareerRoadmapCategory
 ): CareerNextStepCategory => {
   switch (
-    category
+  category
   ) {
     case "CORE_SKILLS":
     case "ROLE_SKILLS":
@@ -385,10 +397,10 @@ const resolveStoredRoadmap = async (
 
     return (
       automation.roadmap as
-        ICareerRoadmapMilestone[]
+      ICareerRoadmapMilestone[]
     );
   } catch (
-    error
+  error
   ) {
     console.error(
       "[Career Next Steps] Stored personalized roadmap failed:",
@@ -403,29 +415,29 @@ const buildPersonalizedRoadmapSteps = ({
   roadmap,
   categories,
   maxSteps =
-    12,
+  12,
 }: {
   roadmap:
-    ICareerRoadmapMilestone[];
+  ICareerRoadmapMilestone[];
 
   categories?:
-    CareerRoadmapCategory[];
+  CareerRoadmapCategory[];
 
   maxSteps?:
-    number;
+  number;
 }): ICareerNextStep[] => {
   const categoryFilter =
     categories
       ? new Set<
-          CareerRoadmapCategory
-        >(
-          categories
-        )
+        CareerRoadmapCategory
+      >(
+        categories
+      )
       : undefined;
 
   const result:
     ICareerNextStep[] =
-      [];
+    [];
 
   const seen =
     new Set<string>();
@@ -582,7 +594,7 @@ const buildPersonalizedRoadmapSteps = ({
             .readinessScore ===
             "number"
             ? milestone
-                .readinessScore
+              .readinessScore
             : undefined,
 
         metadata: {
@@ -654,7 +666,7 @@ const mergeUniqueSteps = (
 ): ICareerNextStep[] => {
   const result:
     ICareerNextStep[] =
-      [];
+    [];
 
   const seen =
     new Set<string>();
@@ -778,7 +790,7 @@ const buildCVSteps = (
 
       priority:
         resume.atsScore <
-        60
+          60
           ? "high"
           : "medium",
 
@@ -824,7 +836,7 @@ const buildCVSteps = (
 
       priority:
         resume.structureScore <
-        60
+          60
           ? "high"
           : "medium",
 
@@ -870,7 +882,7 @@ const buildCVSteps = (
 
       priority:
         resume.skillsScore <
-        60
+          60
           ? "high"
           : "medium",
 
@@ -979,7 +991,7 @@ const buildJobSteps = (
 
       priority:
         best.match.matchScore >=
-        90
+          90
           ? "high"
           : "medium",
 
@@ -1136,10 +1148,10 @@ const buildInterviewSteps = (
   if (
     typeof interview
       .averageTechnicalAccuracy ===
-      "number" &&
+    "number" &&
     interview
       .averageTechnicalAccuracy <
-      80
+    80
   ) {
     steps.push({
       id:
@@ -1183,10 +1195,10 @@ const buildInterviewSteps = (
   if (
     typeof interview
       .averageCommunication ===
-      "number" &&
+    "number" &&
     interview
       .averageCommunication <
-      80
+    80
   ) {
     steps.push({
       id:
@@ -1230,10 +1242,10 @@ const buildInterviewSteps = (
   if (
     typeof interview
       .averageCompleteness ===
-      "number" &&
+    "number" &&
     interview
       .averageCompleteness <
-      80
+    80
   ) {
     steps.push({
       id:
@@ -1332,9 +1344,9 @@ const buildProgressSteps = (
 
   if (
     ats.direction ===
-      "declined" &&
+    "declined" &&
     typeof ats.change ===
-      "number"
+    "number"
   ) {
     steps.push({
       id:
@@ -1375,9 +1387,9 @@ const buildProgressSteps = (
 
   if (
     structure.direction ===
-      "declined" &&
+    "declined" &&
     typeof structure.change ===
-      "number"
+    "number"
   ) {
     steps.push({
       id:
@@ -1418,9 +1430,9 @@ const buildProgressSteps = (
 
   if (
     communication.direction ===
-      "declined" &&
+    "declined" &&
     typeof communication.change ===
-      "number" &&
+    "number" &&
     Math.abs(
       communication.change
     ) >= 5
@@ -1563,9 +1575,9 @@ const sortSteps = (
 
       if (
         typeof a.score ===
-          "number" &&
+        "number" &&
         typeof b.score ===
-          "number"
+        "number"
       ) {
         return (
           a.score -
@@ -1620,16 +1632,31 @@ export const buildCareerNextStepsContext =
 
     let storedRoadmap:
       ICareerRoadmapMilestone[] =
-        [];
+      [];
+
+    let careerKnowledge:
+      ICareerKnowledgeContext | undefined;
 
     /* =====================================================
        PERSONALIZED STORED ROADMAP
     ===================================================== */
 
-    storedRoadmap =
-      await resolveStoredRoadmap(
-        userId
-      );
+    /*
+ * Stored personalized roadmap belongs to the user's
+ * saved career automation.
+ *
+ * For an explicit SKILL_GAP request we must NOT blindly
+ * use that roadmap, because the requested role may be
+ * different from the user's saved career goal.
+ */
+    if (
+      !input.knowledgeSubject
+    ) {
+      storedRoadmap =
+        await resolveStoredRoadmap(
+          userId
+        );
+    }
 
     /* =====================================================
        RESUME
@@ -1652,12 +1679,85 @@ export const buildCareerNextStepsContext =
           resumeResult.data;
       }
     } catch (
-      error
+    error
     ) {
       console.error(
         "[Career Next Steps] Resume context failed:",
         error
       );
+    }
+
+    /* =====================================================
+   TARGET ROLE CAREER KNOWLEDGE
+===================================================== */
+
+    const requestedKnowledgeRole =
+      normalizeString(
+        input.knowledgeSubject
+      );
+
+    if (
+      requestedKnowledgeRole
+    ) {
+      try {
+        careerKnowledge =
+          await buildCareerKnowledgeContext({
+            targetRole:
+              requestedKnowledgeRole,
+
+            userSkills:
+              (
+                resume?.skillsDetected ??
+                []
+              ).map(
+                (skill) => ({
+                  name:
+                    skill,
+                })
+              ),
+
+            includeStrongTopics:
+              false,
+
+            maxTopics:
+              16,
+
+            maxPriorityTopics:
+              12,
+          });
+
+        console.log(
+          "[Career Next Steps] CareerKnowledge loaded:",
+          {
+            knowledgeSubject:
+              requestedKnowledgeRole,
+
+            savedTargetRole:
+              input.targetRole,
+
+            found:
+              careerKnowledge.found,
+
+            resolvedRole:
+              careerKnowledge
+                .resolvedRole
+                ?.title,
+
+            priorityTopics:
+              careerKnowledge
+                .priorityTopics
+                ?.map(
+                  (item) =>
+                    item.topic.name
+                ),
+          }
+        );
+      } catch (error) {
+        console.error(
+          "[Career Next Steps] CareerKnowledge failed:",
+          error
+        );
+      }
     }
 
     /* =====================================================
@@ -1689,7 +1789,7 @@ export const buildCareerNextStepsContext =
             jobResult;
         }
       } catch (
-        error
+      error
       ) {
         console.error(
           "[Career Next Steps] Job context failed:",
@@ -1719,7 +1819,7 @@ export const buildCareerNextStepsContext =
           interviewResult.data;
       }
     } catch (
-      error
+    error
     ) {
       console.error(
         "[Career Next Steps] Interview context failed:",
@@ -1745,7 +1845,7 @@ export const buildCareerNextStepsContext =
           progressResult.data;
       }
     } catch (
-      error
+    error
     ) {
       console.error(
         "[Career Next Steps] Progress context failed:",
@@ -1763,7 +1863,7 @@ export const buildCareerNextStepsContext =
       !interview &&
       !progress &&
       storedRoadmap.length ===
-        0 &&
+      0 &&
       !input.targetRole &&
       !input.careerGoal
     ) {
@@ -1807,7 +1907,7 @@ export const buildCareerNextStepsContext =
       });
 
     switch (
-      contextualMode
+    contextualMode
     ) {
       case "JOB_SKILL_ROADMAP": {
         const personalizedSkillRoadmap =
@@ -1830,19 +1930,19 @@ export const buildCareerNextStepsContext =
           personalizedSkillRoadmap.length >
             0
             ? sortSteps(
-                personalizedSkillRoadmap
-              )
+              personalizedSkillRoadmap
+            )
             : sortSteps(
-                mergeUniqueSteps([
-                  buildJobSteps(
-                    jobMatches
-                  ),
+              mergeUniqueSteps([
+                buildJobSteps(
+                  jobMatches
+                ),
 
-                  buildCVSteps(
-                    resume
-                  ),
-                ])
-              );
+                buildCVSteps(
+                  resume
+                ),
+              ])
+            );
 
         break;
       }
@@ -1969,6 +2069,11 @@ export const buildCareerNextStepsContext =
 
         progress,
 
+        careerKnowledge,
+
+        knowledgeSubject:
+          input.knowledgeSubject,
+
         targetRole:
           input.targetRole,
 
@@ -2057,10 +2162,10 @@ export const buildCareerNextStepsReply =
           ? `Based on the ${context.targetRole} job-search direction we were discussing, here is a focused roadmap for the skills you should strengthen:`
           : "Based on the job-search direction we were discussing, here is a focused roadmap for the skills you should strengthen:"
         : context.contextualMode ===
-            "CV_FOCUS"
+          "CV_FOCUS"
           ? "Based on the CV topic we were discussing, these should be your next CV priorities:"
           : context.contextualMode ===
-              "INTERVIEW_FOCUS"
+            "INTERVIEW_FOCUS"
             ? "Based on the interview topic we were discussing, these should be your next interview priorities:"
             : context.targetRole
               ? `Based on your current InterviewIQ data and your target role of ${context.targetRole}, these should be your next priorities:`

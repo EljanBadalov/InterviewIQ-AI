@@ -334,7 +334,7 @@ const callFastAPIQwen = async (
     Math.max(
       0,
       options.retries ??
-        DEFAULT_RETRIES
+      DEFAULT_RETRIES
     );
 
   const { system, user } =
@@ -387,6 +387,16 @@ const callFastAPIQwen = async (
       console.log(
         `[Qwen Service] POST /generate attempt ${attempt + 1}/${retries + 1} | timeout=${timeoutMs}ms | maxTokens=${payload.max_tokens}`
       );
+
+      if (
+        process.env.QWEN_DEBUG === "true"
+      ) {
+        console.log(
+          "[Qwen Service][CALLER TRACE]"
+        );
+
+        console.trace();
+      }
 
       const response =
         await fetch(
@@ -447,9 +457,8 @@ const callFastAPIQwen = async (
           ) {
             lastError =
               new Error(
-                `Qwen Service returned HTTP ${response.status}: ${
-                  rawPreview ||
-                  "Empty response body"
+                `Qwen Service returned HTTP ${response.status}: ${rawPreview ||
+                "Empty response body"
                 }`
               );
 
@@ -479,9 +488,8 @@ const callFastAPIQwen = async (
           }
 
           throw new Error(
-            `Qwen Service returned invalid JSON with HTTP ${response.status}: ${
-              rawPreview ||
-              "Empty response body"
+            `Qwen Service returned invalid JSON with HTTP ${response.status}: ${rawPreview ||
+            "Empty response body"
             }`
           );
         }
@@ -492,10 +500,9 @@ const callFastAPIQwen = async (
         requestStartedAt;
 
       console.log(
-        `[Qwen Service] HTTP ${response.status} in ${elapsedMs}ms | responseType=${typeof parsed.response} | responseLength=${
-          typeof parsed.response === "string"
-            ? parsed.response.length
-            : 0
+        `[Qwen Service] HTTP ${response.status} in ${elapsedMs}ms | responseType=${typeof parsed.response} | responseLength=${typeof parsed.response === "string"
+          ? parsed.response.length
+          : 0
         } | finishReason=${parsed.finish_reason ?? "unknown"}`
       );
 
@@ -513,7 +520,7 @@ const callFastAPIQwen = async (
       if (response.ok) {
         if (
           typeof parsed.response !==
-            "string" ||
+          "string" ||
           !parsed.response.trim()
         ) {
           throw new Error(
@@ -529,10 +536,10 @@ const callFastAPIQwen = async (
           "string"
           ? parsed.detail
           : parsed.detail
-          ? JSON.stringify(
+            ? JSON.stringify(
               parsed.detail
             )
-          : `Qwen Service request failed with status ${response.status}`;
+            : `Qwen Service request failed with status ${response.status}`;
 
       lastError =
         new Error(
@@ -559,7 +566,7 @@ const callFastAPIQwen = async (
       if (
         error instanceof Error &&
         error.name ===
-          "AbortError"
+        "AbortError"
       ) {
         lastError =
           new Error(
@@ -570,8 +577,8 @@ const callFastAPIQwen = async (
           error instanceof Error
             ? error
             : new Error(
-                "Unknown Qwen Service request error"
-              );
+              "Unknown Qwen Service request error"
+            );
       }
 
       console.warn(
@@ -741,9 +748,8 @@ export const generateQwenChatText = async (
     console.warn(
       `[Qwen Service] Conversational response failed after ${elapsedSeconds.toFixed(
         2
-      )}s: ${
-        result.error ||
-        "Unknown error"
+      )}s: ${result.error ||
+      "Unknown error"
       }`
     );
   }

@@ -283,7 +283,8 @@ export const getJobs =
       if (!userId) {
         res.status(401).json({
           success: false,
-          message: "Not authorized",
+          message:
+            "Not authorized",
         });
 
         return;
@@ -291,21 +292,43 @@ export const getJobs =
 
       const {
         search,
-        location,
         experienceLevel,
         employmentType,
         remoteType,
         source,
-        market,
+        location,
         minimumSalary,
+        market,
         matchLevel,
-      } = req.query;
+        page,
+        limit,
+      } =
+        req.query;
+
+      /* =====================================================
+         PAGINATION
+      ===================================================== */
+
+      const parsedPage =
+        Math.max(
+          1,
+          Number(page) || 1
+        );
+
+      const parsedLimit =
+        Math.min(
+          100,
+          Math.max(
+            1,
+            Number(limit) || 18
+          )
+        );
 
       /* =====================================================
          BASE FILTER
       ===================================================== */
 
-      const allowedSources = [
+      const allowedJobSources = [
         "Greenhouse",
         "Lever",
         "Ashby",
@@ -317,19 +340,21 @@ export const getJobs =
 
       const filter:
         Record<string, any> = {
-        isActive: true,
+          isActive: true,
 
-        source: {
-          $in: allowedSources,
-        },
-      };
+          source: {
+            $in:
+              allowedJobSources,
+          },
+        };
 
       /* =====================================================
          SEARCH
       ===================================================== */
 
       if (
-        typeof search === "string" &&
+        typeof search ===
+          "string" &&
         search.trim()
       ) {
         const escapedSearch =
@@ -348,33 +373,42 @@ export const getJobs =
 
         filter.$or = [
           {
-            title: regex,
+            title:
+              regex,
           },
           {
-            company: regex,
+            company:
+              regex,
           },
           {
-            location: regex,
+            location:
+              regex,
           },
           {
-            skills: regex,
+            skills:
+              regex,
           },
           {
-            keywords: regex,
+            keywords:
+              regex,
           },
         ];
       }
 
       /* =====================================================
          EMPLOYMENT TYPE
+         Supports:
+         full-time
+         OR
+         full-time,contract
       ===================================================== */
 
       if (
         typeof employmentType ===
-        "string" &&
+          "string" &&
         employmentType.trim()
       ) {
-        const employmentTypes =
+        const values =
           employmentType
             .split(",")
             .map(
@@ -386,15 +420,15 @@ export const getJobs =
             .filter(Boolean);
 
         if (
-          employmentTypes.length === 1
+          values.length === 1
         ) {
           filter.employmentType =
-            employmentTypes[0];
+            values[0];
         } else if (
-          employmentTypes.length > 1
+          values.length > 1
         ) {
           filter.employmentType = {
-            $in: employmentTypes,
+            $in: values,
           };
         }
       }
@@ -404,10 +438,11 @@ export const getJobs =
       ===================================================== */
 
       if (
-        typeof remoteType === "string" &&
+        typeof remoteType ===
+          "string" &&
         remoteType.trim()
       ) {
-        const remoteTypes =
+        const values =
           remoteType
             .split(",")
             .map(
@@ -418,40 +453,17 @@ export const getJobs =
             )
             .filter(Boolean);
 
-        if (remoteTypes.length === 1) {
+        if (
+          values.length === 1
+        ) {
           filter.remoteType =
-            remoteTypes[0];
+            values[0];
         } else if (
-          remoteTypes.length > 1
+          values.length > 1
         ) {
           filter.remoteType = {
-            $in: remoteTypes,
+            $in: values,
           };
-        }
-      }
-
-      /* =====================================================
-         EXPERIENCE
-      ===================================================== */
-
-      if (
-        typeof experienceLevel ===
-        "string" &&
-        experienceLevel.trim() &&
-        experienceLevel !== "all"
-      ) {
-        const experienceFilterResult =
-          getExperienceFilter(
-            experienceLevel.trim()
-          );
-
-        if (
-          experienceFilterResult
-        ) {
-          Object.assign(
-            filter,
-            experienceFilterResult
-          );
         }
       }
 
@@ -460,7 +472,8 @@ export const getJobs =
       ===================================================== */
 
       if (
-        typeof source === "string" &&
+        typeof source ===
+          "string" &&
         source.trim()
       ) {
         const requestedSources =
@@ -472,168 +485,155 @@ export const getJobs =
             )
             .filter(
               (value) =>
-                allowedSources.includes(
-                  value
-                )
+                allowedJobSources
+                  .some(
+                    (
+                      allowedSource
+                    ) =>
+                      allowedSource
+                        .toLowerCase() ===
+                      value
+                        .toLowerCase()
+                  )
+            )
+            .map(
+              (value) =>
+                allowedJobSources
+                  .find(
+                    (
+                      allowedSource
+                    ) =>
+                      allowedSource
+                        .toLowerCase() ===
+                      value
+                        .toLowerCase()
+                  )!
             );
 
         if (
-          requestedSources.length === 1
+          requestedSources.length ===
+          1
         ) {
           filter.source =
             requestedSources[0];
         } else if (
-          requestedSources.length > 1
+          requestedSources.length >
+          1
         ) {
           filter.source = {
-            $in: requestedSources,
+            $in:
+              requestedSources,
           };
         }
       }
 
       /* =====================================================
-   LOCATION + MARKET
-   ===================================================== */
-
-      const locationConditions:
-        Record<string, unknown>[] = [];
-
-      /*
-       * Azerbaijan locations.
-       *
-       * Used both for:
-       * - market=azerbaijan
-       * - excluding Azerbaijan from market=global
-       */
-      const azerbaijanLocationRegex =
-        /(?:\bazerbaijan\b|\bazərbaycan\b|\bbaku\b|\bbakı\b|\bganja\b|\bgəncə\b|\bsumqayit\b|\bsumqayıt\b|\bmingachevir\b|\bmingəçevir\b|\byevelakh\b|\byevlakh\b|\byevlax\b|\bqusar\b|\bquba\b|\bshaki\b|\bşəki\b|\blankaran\b|\blənkəran\b|\bnakhchivan\b|\bnaxçıvan\b|\barda\b|\bbarda\b|\bbərdə\b|\bkhirdalan\b|\bxırdalan\b)/i;
-
-      /*
-       * USA detection.
-       *
-       * Supports:
-       * USA
-       * US
-       * U.S.
-       * U.S.A.
-       * United States
-       * United States of America
-       *
-       * Also supports normal US city/state strings:
-       * Boston, MA
-       * New York, NY
-       * Austin, TX
-       * San Francisco, CA
-       *
-       * IMPORTANT:
-       * State abbreviations are expected as standalone
-       * uppercase-style tokens in the stored location.
-       */
-      const usaLocationRegex =
-        /(?:\bUSA\b|\bU\.?S\.?A?\.?\b|\bUnited States(?: of America)?\b|(?:^|,\s*|\s)(?:AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|ID|IL|IN|IA|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY|DC)(?:\s|,|$))/i;
-
-      /* =====================================================
-         LOCATION FILTER
-         ===================================================== */
+         EXPERIENCE
+      ===================================================== */
 
       if (
-        typeof location === "string" &&
+        typeof experienceLevel ===
+          "string" &&
+        experienceLevel.trim() &&
+        experienceLevel !== "all"
+      ) {
+        const experienceFilter =
+          getExperienceFilter(
+            experienceLevel.trim()
+          );
+
+        if (
+          experienceFilter
+        ) {
+          Object.assign(
+            filter,
+            experienceFilter
+          );
+        }
+      }
+
+      /* =====================================================
+         LOCATION / MARKET
+      ===================================================== */
+
+      const locationConditions:
+        Record<string, any>[] =
+        [];
+
+      const azerbaijanLocationRegex =
+        /(^|[\s,;(\/-])(azerbaijan|azerbaycan|azərbaycan|baku|bakı|ganja|gəncə|sumqayit|sumqayıt|mingachevir|mingəçevir|nakhchivan|naxçıvan|shirvan|şirvan|shaki|şəki|lankaran|lənkəran|yevlakh|yevlax|barda|bərdə|quba|qusar|gabala|qəbələ|salyan|samukh|samux|goychay|göyçay)(?=$|[\s,;.)\/-])/i;
+
+      if (
+        typeof location ===
+          "string" &&
         location.trim()
       ) {
-        const rawLocation =
-          location.trim();
-
         const normalizedLocation =
-          rawLocation.toLowerCase();
+          location
+            .trim()
+            .toLowerCase();
 
-        const usaAliases =
-          new Set([
+        let locationRegex:
+          RegExp;
+
+        if (
+          [
             "usa",
             "us",
             "u.s.",
             "u.s.a.",
             "united states",
             "united states of america",
-          ]);
-
-        const azerbaijanAliases =
-          new Set([
+          ].includes(
+            normalizedLocation
+          )
+        ) {
+          locationRegex =
+            /(^|[\s,;(\/-])(usa|us|u\.s\.|u\.s\.a\.|united states|united states of america)(?=$|[\s,;.)\/-])/i;
+        } else if (
+          [
             "azerbaijan",
+            "azerbaycan",
             "azərbaycan",
-          ]);
-
-        /*
-         * USA
-         */
-        if (
-          usaAliases.has(
+          ].includes(
             normalizedLocation
           )
         ) {
-          locationConditions.push({
-            location:
-              usaLocationRegex,
-          });
-        }
-
-        /*
-         * Azerbaijan
-         */
-        else if (
-          azerbaijanAliases.has(
-            normalizedLocation
-          )
-        ) {
-          locationConditions.push({
-            location:
-              azerbaijanLocationRegex,
-          });
-        }
-
-        /*
-         * Normal city/country/location search.
-         *
-         * Examples:
-         * Germany
-         * Berlin
-         * London
-         * Boston
-         * Canada
-         */
-        else {
+          locationRegex =
+            azerbaijanLocationRegex;
+        } else {
           const escapedLocation =
-            rawLocation.replace(
-              /[.*+?^${}()|[\]\\]/g,
-              "\\$&"
-            );
+            location
+              .trim()
+              .replace(
+                /[.*+?^${}()|[\]\\]/g,
+                "\\$&"
+              );
 
-          locationConditions.push({
-            location:
-              new RegExp(
-                escapedLocation,
-                "i"
-              ),
-          });
+          locationRegex =
+            new RegExp(
+              escapedLocation,
+              "i"
+            );
         }
+
+        locationConditions.push({
+          location:
+            locationRegex,
+        });
       }
 
-      /* =====================================================
-         MARKET FILTER
-         ===================================================== */
-
       if (
-        typeof market === "string" &&
-        market.trim()
+        typeof market ===
+          "string" &&
+        market.trim() &&
+        market !== "all"
       ) {
         const normalizedMarket =
           market
             .trim()
             .toLowerCase();
 
-        /*
-         * Azerbaijan market:
-         * only Azerbaijan vacancies.
-         */
         if (
           normalizedMarket ===
           "azerbaijan"
@@ -644,26 +644,6 @@ export const getJobs =
           });
         }
 
-        /*
-         * Global market:
-         * exclude Azerbaijan vacancies.
-         *
-         * IMPORTANT:
-         * This is additive.
-         *
-         * Therefore:
-         *
-         * location=USA
-         * market=global
-         *
-         * becomes:
-         *
-         * USA location
-         * AND
-         * NOT Azerbaijan
-         *
-         * instead of one filter overwriting another.
-         */
         if (
           normalizedMarket ===
           "global"
@@ -677,12 +657,9 @@ export const getJobs =
         }
       }
 
-      /* =====================================================
-         APPLY LOCATION CONDITIONS
-         ===================================================== */
-
       if (
-        locationConditions.length > 0
+        locationConditions.length >
+        0
       ) {
         filter.$and = [
           ...(
@@ -692,7 +669,6 @@ export const getJobs =
               ? filter.$and
               : []
           ),
-
           ...locationConditions,
         ];
       }
@@ -703,7 +679,7 @@ export const getJobs =
 
       if (
         typeof minimumSalary ===
-        "string" &&
+          "string" &&
         minimumSalary.trim()
       ) {
         const parsedMinimumSalary =
@@ -718,11 +694,13 @@ export const getJobs =
           parsedMinimumSalary > 0
         ) {
           filter.$and = [
-            ...(Array.isArray(
-              filter.$and
-            )
-              ? filter.$and
-              : []),
+            ...(
+              Array.isArray(
+                filter.$and
+              )
+                ? filter.$and
+                : []
+            ),
 
             {
               $or: [
@@ -751,7 +729,7 @@ export const getJobs =
       }
 
       /* =====================================================
-         USER
+         USER DATA
       ===================================================== */
 
       const userObjectId =
@@ -759,24 +737,15 @@ export const getJobs =
           userId
         );
 
-      /* =====================================================
-         DATABASE
-      ===================================================== */
-
       const [
         jobs,
         automation,
         latestResume,
       ] =
         await Promise.all([
-          Job.find(filter)
-            /*
-             * IMPORTANT:
-             * No 1000-job cap.
-             *
-             * Return the complete matching pool.
-             * Newest vacancies first.
-             */
+          Job.find(
+            filter
+          )
             .sort({
               postedAt: -1,
               createdAt: -1,
@@ -788,7 +757,8 @@ export const getJobs =
           ),
 
           ResumeAnalysis.findOne({
-            user: userObjectId,
+            user:
+              userObjectId,
           })
             .sort({
               createdAt: -1,
@@ -815,8 +785,48 @@ export const getJobs =
       ===================================================== */
 
       if (
-        careerProfile.totalSkills === 0
+        careerProfile.totalSkills ===
+        0
       ) {
+        const total =
+          jobs.length;
+
+        const totalPages =
+          Math.max(
+            1,
+            Math.ceil(
+              total /
+                parsedLimit
+            )
+          );
+
+        const safePage =
+          Math.min(
+            parsedPage,
+            totalPages
+          );
+
+        const startIndex =
+          (
+            safePage -
+            1
+          ) *
+          parsedLimit;
+
+        const paginatedJobs =
+          jobs
+            .slice(
+              startIndex,
+              startIndex +
+                parsedLimit
+            )
+            .map(
+              (job) => ({
+                ...job,
+                match: null,
+              })
+            );
+
         res.status(200).json({
           success: true,
 
@@ -831,17 +841,30 @@ export const getJobs =
           message:
             "Add resume or skill evidence to see personalized job matches.",
 
+          resume:
+            latestResume,
+
           data: {
             jobs:
-              jobs.map(
-                (job) => ({
-                  ...job,
-                  match: null,
-                })
-              ),
+              paginatedJobs,
 
-            total:
-              jobs.length,
+            total,
+
+            page:
+              safePage,
+
+            limit:
+              parsedLimit,
+
+            totalPages,
+
+            hasNextPage:
+              safePage <
+              totalPages,
+
+            hasPreviousPage:
+              safePage >
+              1,
           },
         });
 
@@ -849,7 +872,14 @@ export const getJobs =
       }
 
       /* =====================================================
-         CALCULATE MATCH
+         CALCULATE CV MATCH
+
+         Keep match information because:
+         - matchLevel filter needs it
+         - Job Details needs it
+
+         The frontend job card will simply stop displaying
+         the large percentage box.
       ===================================================== */
 
       let jobsWithMatch =
@@ -883,12 +913,12 @@ export const getJobs =
         );
 
       /* =====================================================
-         MATCH LEVEL FILTER
+         MATCH LEVEL
       ===================================================== */
 
       if (
         typeof matchLevel ===
-        "string" &&
+          "string" &&
         matchLevel.trim() &&
         matchLevel !== "all"
       ) {
@@ -901,18 +931,15 @@ export const getJobs =
           jobsWithMatch.filter(
             (job) =>
               job.match
-                ?.matchLevel
-                ?.toLowerCase() ===
+                .matchLevel
+                .toLowerCase() ===
               normalizedMatchLevel
           );
       }
 
       /* =====================================================
-         FINAL SORT
+         SORT
          NEWEST -> OLDEST
-
-         Match score remains available for display,
-         but does not control the primary order.
       ===================================================== */
 
       jobsWithMatch.sort(
@@ -934,14 +961,14 @@ export const getJobs =
               ).getTime()
               : 0;
 
-          const postedDifference =
-            bPostedAt -
-            aPostedAt;
-
           if (
-            postedDifference !== 0
+            bPostedAt !==
+            aPostedAt
           ) {
-            return postedDifference;
+            return (
+              bPostedAt -
+              aPostedAt
+            );
           }
 
           const aCreatedAt =
@@ -966,6 +993,42 @@ export const getJobs =
       );
 
       /* =====================================================
+         BACKEND PAGINATION
+      ===================================================== */
+
+      const total =
+        jobsWithMatch.length;
+
+      const totalPages =
+        Math.max(
+          1,
+          Math.ceil(
+            total /
+              parsedLimit
+          )
+        );
+
+      const safePage =
+        Math.min(
+          parsedPage,
+          totalPages
+        );
+
+      const startIndex =
+        (
+          safePage -
+          1
+        ) *
+        parsedLimit;
+
+      const paginatedJobs =
+        jobsWithMatch.slice(
+          startIndex,
+          startIndex +
+            parsedLimit
+        );
+
+      /* =====================================================
          RESPONSE
       ===================================================== */
 
@@ -985,14 +1048,33 @@ export const getJobs =
 
         data: {
           jobs:
-            jobsWithMatch,
+            paginatedJobs,
 
-          total:
-            jobsWithMatch.length,
+          total,
+
+          page:
+            safePage,
+
+          limit:
+            parsedLimit,
+
+          totalPages,
+
+          hasNextPage:
+            safePage <
+            totalPages,
+
+          hasPreviousPage:
+            safePage >
+            1,
         },
       });
-    } catch (error) {
-      next(error);
+    } catch (
+      error
+    ) {
+      next(
+        error
+      );
     }
   };
 

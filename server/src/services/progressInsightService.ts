@@ -77,8 +77,8 @@ export interface ProgressInsightInput {
    * role-specific interview history to resolve a role.
    */
   roleSkillProgress?:
-    ProgressRoleSkillInsightInput |
-    null;
+  ProgressRoleSkillInsightInput |
+  null;
 }
 
 export interface ProgressAIInsights {
@@ -143,19 +143,19 @@ const buildFallbackInsights = (
       ? "Your technical and behavioral performance is currently balanced."
       : gap > 0
         ? `Your behavioral performance is ${Math.abs(
-            gap
-          )} points stronger than your technical performance.`
+          gap
+        )} points stronger than your technical performance.`
         : `Your technical performance is ${Math.abs(
-            gap
-          )} points stronger than your behavioral performance.`;
+          gap
+        )} points stronger than your behavioral performance.`;
 
   const progressQualitySummary =
     input.recentChange > 0
       ? `Your recent five-interview average improved by ${input.recentChange} points compared with the previous five, with ${input.consistencyScore}% consistency.`
       : input.recentChange < 0
         ? `Your recent five-interview average is ${Math.abs(
-            input.recentChange
-          )} points lower than the previous five, while consistency is ${input.consistencyScore}%.`
+          input.recentChange
+        )} points lower than the previous five, while consistency is ${input.consistencyScore}%.`
         : `Your recent five-interview average is stable, with ${input.consistencyScore}% consistency across completed sessions.`;
 
   const difficultySummary =
@@ -165,21 +165,20 @@ const buildFallbackInsights = (
 
   const recurringPatternsSummary =
     input.recurringWeaknesses.length >
-    0
-      ? `The most repeated improvement theme is: ${
-          input.recurringWeaknesses[
-            0
-          ]?.label ??
-          "review lower-scoring answers"
-        }`
+      0
+      ? `The most repeated improvement theme is: ${input.recurringWeaknesses[
+        0
+      ]?.label ??
+      "review lower-scoring answers"
+      }`
       : "No recurring weakness pattern has been detected yet.";
 
   const nextPriority =
     input.technicalAverage <
-    input.behavioralAverage
+      input.behavioralAverage
       ? "Prioritize technical interview practice while keeping your behavioral performance steady."
       : input.behavioralAverage <
-          input.technicalAverage
+        input.technicalAverage
         ? "Prioritize behavioral interview practice, especially structured examples and clear outcomes."
         : "Keep both interview types balanced and focus on the lowest-scoring individual answers.";
 
@@ -196,12 +195,12 @@ const buildFallbackInsights = (
 
   const firstFocus =
     role?.focusSkills[
-      0
+    0
     ];
 
   const roleSkillNextFocus =
     role &&
-    firstFocus
+      firstFocus
       ? firstFocus.score ===
         null
         ? `Collect direct evidence for ${firstFocus.name} next so InterviewIQ can determine your current level in that required skill.`
@@ -236,7 +235,7 @@ const normalizeInsights = (
 ): ProgressAIInsights => {
   if (
     typeof raw !==
-      "object" ||
+    "object" ||
     raw === null ||
     Array.isArray(
       raw
@@ -247,10 +246,10 @@ const normalizeInsights = (
 
   const data =
     raw as
-      Record<
-        string,
-        unknown
-      >;
+    Record<
+      string,
+      unknown
+    >;
 
   return {
     typeComparisonSummary:
@@ -364,11 +363,11 @@ Recurring weaknesses: ${JSON.stringify(
 
 ROLE SKILL PROGRESS
 ${JSON.stringify(
-  input.roleSkillProgress ??
+    input.roleSkillProgress ??
     null,
-  null,
-  2
-)}
+    null,
+    2
+  )}
 
 Return ONLY valid JSON with exactly these fields:
 {
@@ -397,11 +396,24 @@ const cache =
     string,
     {
       expiresAt:
-        number;
+      number;
 
       data:
-        ProgressAIInsights;
+      ProgressAIInsights;
     }
+  >();
+
+/*
+* Tracks an AI generation that is already running for
+* the same progress input.
+*
+* This prevents multiple identical frontend requests
+* from starting multiple Qwen generations at once.
+*/
+const inFlight =
+  new Map<
+    string,
+    Promise<ProgressAIInsights>
   >();
 
 /* =========================================================
@@ -423,6 +435,10 @@ export const generateProgressInsights =
         input
       );
 
+    /* =====================================================
+       1. COMPLETED CACHE
+    ===================================================== */
+
     const cached =
       cache.get(
         cacheKey
@@ -431,66 +447,184 @@ export const generateProgressInsights =
     if (
       cached &&
       cached.expiresAt >
-        Date.now()
+      Date.now()
     ) {
+      console.log(
+        "[Progress Insight Service] Returning cached insights"
+      );
+
       return cached.data;
     }
 
-    try {
-      const response:
-        IQwenJSONResult<ProgressAIInsights> =
-        await qwenService.generateQwenJSON<ProgressAIInsights>({
-          messages: [
-            {
-              role:
-                "user",
+    /* =====================================================
+       2. IN-FLIGHT REQUEST
+    ===================================================== */
 
-              content:
-                createPrompt(
-                  input
-                ),
-            },
-          ],
-
-          temperature:
-            0.15,
-        });
-
-      if (
-        !response.success ||
-        !response.data
-      ) {
-        return fallback;
-      }
-
-      const normalized =
-        normalizeInsights(
-          response.data,
-          fallback
-        );
-
-      cache.set(
-        cacheKey,
-        {
-          expiresAt:
-            Date.now() +
-            CACHE_TTL_MS,
-
-          data:
-            normalized,
-        }
+    const existingRequest =
+      inFlight.get(
+        cacheKey
       );
 
-      return normalized;
-    } catch (
-      error
+    if (
+      existingRequest
     ) {
-      console.error(
-        "[Progress Insight Service] Qwen insight generation failed:",
-        error
+      console.log(
+        "[Progress Insight Service] Reusing in-flight Qwen request"
       );
 
-      return fallback;
+      return existingRequest;
+    }
+
+    /* =====================================================
+       3. CREATE ONE GENERATION
+    ===================================================== */
+
+    const generationPromise =
+      (
+        async (): Promise<ProgressAIInsights> => {
+          try {
+            const response:
+              IQwenJSONResult<ProgressAIInsights> =
+              await qwenService.generateQwenJSON<ProgressAIInsights>({
+                messages: [
+                  {
+                    role:
+                      "user",
+
+                    content:
+                      createPrompt(
+                        input
+                      ),
+                  },
+                ],
+
+                temperature:
+                  0.15,
+
+                topP:
+                  0.85,
+
+                /*
+                 * Progress insights should stay compact.
+                 */
+                maxCompletionTokens:
+                  420,
+
+                /*
+                 * Do not let a background progress request
+                 * occupy the local model for a long time.
+                 */
+                timeoutMs:
+                  20_000,
+
+                /*
+                 * The deterministic fallback is preferable
+                 * to retrying an expensive local generation.
+                 */
+                retries:
+                  0,
+              });
+
+            /* =================================================
+               4. QWEN FAILURE -> FALLBACK
+            ================================================= */
+
+            if (
+              !response.success ||
+              !response.data
+            ) {
+              console.warn(
+                "[Progress Insight Service] Qwen returned no usable insight. Using fallback."
+              );
+
+              cache.set(
+                cacheKey,
+                {
+                  expiresAt:
+                    Date.now() +
+                    CACHE_TTL_MS,
+
+                  data:
+                    fallback,
+                }
+              );
+
+              return fallback;
+            }
+
+            /* =================================================
+               5. SUCCESS
+            ================================================= */
+
+            const normalized =
+              normalizeInsights(
+                response.data,
+                fallback
+              );
+
+            cache.set(
+              cacheKey,
+              {
+                expiresAt:
+                  Date.now() +
+                  CACHE_TTL_MS,
+
+                data:
+                  normalized,
+              }
+            );
+
+            return normalized;
+          } catch (
+          error
+          ) {
+            /* =================================================
+               6. EXCEPTION -> FALLBACK
+            ================================================= */
+
+            console.error(
+              "[Progress Insight Service] Qwen insight generation failed:",
+              error
+            );
+
+            cache.set(
+              cacheKey,
+              {
+                expiresAt:
+                  Date.now() +
+                  CACHE_TTL_MS,
+
+                data:
+                  fallback,
+              }
+            );
+
+            return fallback;
+          }
+        }
+      )();
+
+    /*
+     * Register the Promise immediately.
+     *
+     * Any identical request arriving while Qwen is still
+     * generating will reuse this exact Promise.
+     */
+    inFlight.set(
+      cacheKey,
+      generationPromise
+    );
+
+    try {
+      return await generationPromise;
+    } finally {
+      /*
+       * Always remove the completed request from inFlight.
+       * The completed result remains available through cache.
+       */
+      inFlight.delete(
+        cacheKey
+      );
     }
   };
 

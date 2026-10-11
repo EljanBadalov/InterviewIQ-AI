@@ -111,15 +111,15 @@ interface Job {
   location?: string;
 
   remoteType:
-    | "onsite"
-    | "hybrid"
-    | "remote";
+  | "onsite"
+  | "hybrid"
+  | "remote";
 
   employmentType:
-    | "full-time"
-    | "part-time"
-    | "contract"
-    | "internship";
+  | "full-time"
+  | "part-time"
+  | "contract"
+  | "internship";
 
   experienceMin: number;
 
@@ -169,8 +169,12 @@ interface JobsApiResponse {
 
   data: {
     jobs: Job[];
-
     total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
   };
 }
 
@@ -228,7 +232,7 @@ const readJobsCache =
       if (
         !parsed ||
         typeof parsed.cachedAt !==
-          "number" ||
+        "number" ||
         !parsed.response
       ) {
         sessionStorage.removeItem(
@@ -240,7 +244,7 @@ const readJobsCache =
 
       if (
         Date.now() -
-          parsed.cachedAt >
+        parsed.cachedAt >
         JOBS_CACHE_TTL_MS
       ) {
         sessionStorage.removeItem(
@@ -268,11 +272,11 @@ const writeJobsCache =
     try {
       const value:
         JobsPageCache = {
-          cachedAt:
-            Date.now(),
+        cachedAt:
+          Date.now(),
 
-          response,
-        };
+        response,
+      };
 
       sessionStorage.setItem(
         JOBS_CACHE_KEY,
@@ -413,6 +417,54 @@ const jobsPage: React.FC = () => {
     useState("");
 
   const [
+    debouncedSearch,
+    setDebouncedSearch,
+  ] =
+    useState(search);
+
+  const [
+    debouncedLocation,
+    setDebouncedLocation,
+  ] =
+    useState(locationFilter);
+
+  const [
+    debouncedMinimumSalary,
+    setDebouncedMinimumSalary,
+  ] =
+    useState(minimumSalary);
+
+  useEffect(() => {
+    const timeout =
+      window.setTimeout(
+        () => {
+          setDebouncedSearch(
+            search
+          );
+
+          setDebouncedLocation(
+            locationFilter
+          );
+
+          setDebouncedMinimumSalary(
+            minimumSalary
+          );
+        },
+        500
+      );
+
+    return () => {
+      window.clearTimeout(
+        timeout
+      );
+    };
+  }, [
+    search,
+    locationFilter,
+    minimumSalary,
+  ]);
+
+  const [
     selectedSources,
     setSelectedSources,
   ] =
@@ -434,6 +486,30 @@ const jobsPage: React.FC = () => {
   ] =
     useState(1);
 
+  const [
+    totalJobs,
+    setTotalJobs,
+  ] =
+    useState(0);
+
+  const [
+    totalPages,
+    setTotalPages,
+  ] =
+    useState(1);
+
+  const [
+    hasNextPage,
+    setHasNextPage,
+  ] =
+    useState(false);
+
+  const [
+    hasPreviousPage,
+    setHasPreviousPage,
+  ] =
+    useState(false);
+
   const applyJobsResponse =
     useCallback(
       (
@@ -442,7 +518,7 @@ const jobsPage: React.FC = () => {
       ) => {
         setJobs(
           payload.data.jobs ||
-            []
+          []
         );
 
         setHasResume(
@@ -452,159 +528,225 @@ const jobsPage: React.FC = () => {
         setResume(
           payload.resume
         );
+
+        setTotalJobs(
+          payload.data.total || 0
+        );
+
+        setCurrentPage(
+          payload.data.page || 1
+        );
+
+        setTotalPages(
+          Math.max(
+            1,
+            payload.data.totalPages || 1
+          )
+        );
+
+        setHasNextPage(
+          Boolean(
+            payload.data.hasNextPage
+          )
+        );
+
+        setHasPreviousPage(
+          Boolean(
+            payload.data.hasPreviousPage
+          )
+        );
       },
       []
     );
 
   const fetchJobs =
-  useCallback(
-    async ({
-      showFullPageLoading = false,
-      updateCache = true,
-    }: {
-      showFullPageLoading?: boolean;
-      updateCache?: boolean;
-    } = {}) => {
-      try {
-        if (showFullPageLoading) {
-          setLoading(true);
-        }
+    useCallback(
+      async ({
+        showFullPageLoading = false,
+        updateCache = true,
+      }: {
+        showFullPageLoading?: boolean;
+        updateCache?: boolean;
+      } = {}) => {
+        try {
+          if (
+            showFullPageLoading
+          ) {
+            setLoading(
+              true
+            );
+          }
 
-        setError("");
+          setError("");
 
-        const params =
-          new URLSearchParams();
+          const params =
+            new URLSearchParams();
 
-        const normalizedSearch =
-          search.trim();
+          const normalizedSearch =
+            debouncedSearch.trim();
 
-        const normalizedLocation =
-          locationFilter.trim();
+          const normalizedLocation =
+            debouncedLocation.trim();
 
-        const normalizedMinimumSalary =
-          minimumSalary.trim();
+          const normalizedMinimumSalary =
+            debouncedMinimumSalary.trim();
 
-        if (normalizedSearch) {
-          params.set(
-            "search",
+          if (
             normalizedSearch
-          );
-        }
+          ) {
+            params.set(
+              "search",
+              normalizedSearch
+            );
+          }
 
-        if (
-          experienceFilter !==
-          "all"
-        ) {
-          params.set(
-            "experienceLevel",
-            experienceFilter
-          );
-        }
+          if (
+            experienceFilter !==
+            "all"
+          ) {
+            params.set(
+              "experienceLevel",
+              experienceFilter
+            );
+          }
 
-        if (
-          selectedEmploymentTypes.length ===
-          1
-        ) {
-          params.set(
-            "employmentType",
-            selectedEmploymentTypes[0]
-          );
-        }
+          if (
+            selectedEmploymentTypes.length >
+            0
+          ) {
+            params.set(
+              "employmentType",
+              selectedEmploymentTypes.join(",")
+            );
+          }
 
-        if (
-          selectedWorkModes.length ===
-          1
-        ) {
-          params.set(
-            "remoteType",
-            selectedWorkModes[0]
-          );
-        }
+          if (
+            selectedWorkModes.length >
+            0
+          ) {
+            params.set(
+              "remoteType",
+              selectedWorkModes.join(",")
+            );
+          }
 
-        if (
-          selectedSources.length ===
-          1
-        ) {
-          params.set(
-            "source",
-            selectedSources[0]
-          );
-        }
+          if (
+            selectedSources.length >
+            0
+          ) {
+            params.set(
+              "source",
+              selectedSources.join(",")
+            );
+          }
 
-        if (normalizedLocation) {
-          params.set(
-            "location",
+          if (
             normalizedLocation
-          );
-        }
+          ) {
+            params.set(
+              "location",
+              normalizedLocation
+            );
+          }
 
-        if (normalizedMinimumSalary) {
-          params.set(
-            "minimumSalary",
+          if (
             normalizedMinimumSalary
-          );
-        }
+          ) {
+            params.set(
+              "minimumSalary",
+              normalizedMinimumSalary
+            );
+          }
 
-        if (
-          marketFilter !==
-          "all"
-        ) {
+          if (
+            marketFilter !==
+            "all"
+          ) {
+            params.set(
+              "market",
+              marketFilter
+            );
+          }
+
+          if (
+            matchFilter !==
+            "all"
+          ) {
+            params.set(
+              "matchLevel",
+              matchFilter
+            );
+          }
+
           params.set(
-            "market",
-            marketFilter
-          );
-        }
-
-        const queryString =
-          params.toString();
-
-        const endpoint =
-          queryString
-            ? `/jobs?${queryString}`
-            : "/jobs";
-
-        const response =
-          await apiClient.get<JobsApiResponse>(
-            endpoint
+            "page",
+            String(currentPage)
           );
 
-        applyJobsResponse(
-          response.data
-        );
+          params.set(
+            "limit",
+            String(ITEMS_PER_PAGE)
+          );
 
-        if (updateCache) {
-          writeJobsCache(
+          const queryString =
+            params.toString();
+
+          const endpoint =
+            queryString
+              ? `/jobs?${queryString}`
+              : "/jobs";
+
+          const response =
+            await apiClient.get<JobsApiResponse>(
+              endpoint
+            );
+
+          applyJobsResponse(
             response.data
           );
-        }
-      } catch (err: any) {
-        const message =
-          err?.response?.data?.message ||
-          "Could not load jobs. Please try again.";
 
-        setError(
-          message
-        );
-      } finally {
-        if (showFullPageLoading) {
-          setLoading(
-            false
+          if (
+            updateCache
+          ) {
+            writeJobsCache(
+              response.data
+            );
+          }
+        } catch (
+        err: any
+        ) {
+          const message =
+            err?.response?.data
+              ?.message ||
+            "Could not load jobs. Please try again.";
+
+          setError(
+            message
           );
+        } finally {
+          if (
+            showFullPageLoading
+          ) {
+            setLoading(
+              false
+            );
+          }
         }
-      }
-    },
-    [
-      applyJobsResponse,
-      search,
-      experienceFilter,
-      selectedEmploymentTypes,
-      selectedWorkModes,
-      selectedSources,
-      locationFilter,
-      minimumSalary,
-      marketFilter,
-    ]
-  );
+      },
+      [
+        applyJobsResponse,
+        debouncedSearch,
+        experienceFilter,
+        selectedEmploymentTypes,
+        selectedWorkModes,
+        selectedSources,
+        debouncedLocation,
+        debouncedMinimumSalary,
+        marketFilter,
+        matchFilter,
+        currentPage,
+      ]
+    );
 
   const handleRefreshJobs =
     useCallback(
@@ -645,7 +787,7 @@ const jobsPage: React.FC = () => {
               true,
           });
         } catch (
-          err: any
+        err: any
         ) {
           const message =
             err?.response?.data
@@ -668,45 +810,11 @@ const jobsPage: React.FC = () => {
     );
 
   useEffect(() => {
-    /*
-     * First try session cache.
-     *
-     * When the user opens a job detail and comes back, the
-     * component mounts again but we immediately restore the
-     * previous results without another /jobs request.
-     */
-    const cached =
-      readJobsCache();
-
-    if (
-      cached
-    ) {
-      applyJobsResponse(
-        cached.response
-      );
-
-      setLoading(
-        false
-      );
-
-      return;
-    }
-
-    /*
-     * Only the first uncached visit loads /jobs.
-     *
-     * GET /jobs reads already stored vacancies; it does not
-     * trigger an ATS refresh.
-     */
     void fetchJobs({
-      showFullPageLoading:
-        true,
-
-      updateCache:
-        true,
+      showFullPageLoading: true,
+      updateCache: true,
     });
   }, [
-    applyJobsResponse,
     fetchJobs,
   ]);
 
@@ -729,16 +837,16 @@ const jobsPage: React.FC = () => {
         value
       )
         ? values.filter(
-            (
-              item
-            ) =>
-              item !==
-              value
-          )
+          (
+            item
+          ) =>
+            item !==
+            value
+        )
         : [
-            ...values,
-            value,
-          ]
+          ...values,
+          value,
+        ]
     );
   };
 
@@ -912,7 +1020,7 @@ const jobsPage: React.FC = () => {
 
       return (
         source ===
-          "successfactors" ||
+        "successfactors" ||
         source.includes(
           "azerbaijan-local"
         ) ||
@@ -943,215 +1051,52 @@ const jobsPage: React.FC = () => {
       }
 
       switch (
-        experienceFilter
+      experienceFilter
       ) {
         case "0-1":
           return (
             job.experienceMin ===
-              0 &&
+            0 &&
             job.experienceMax ===
-              1
+            1
           );
 
         case "1-2":
           return (
             job.experienceMin ===
-              1 &&
+            1 &&
             job.experienceMax ===
-              2
+            2
           );
 
         case "2-4":
           return (
             job.experienceMin ===
-              2 &&
+            2 &&
             job.experienceMax ===
-              4
+            4
           );
 
         case "4-6":
           return (
             job.experienceMin ===
-              4 &&
+            4 &&
             job.experienceMax ===
-              6
+            6
           );
 
         case "6+":
           return (
             job.experienceMin >=
-              6 &&
+            6 &&
             job.experienceMax ===
-              null
+            null
           );
 
         default:
           return true;
       }
     };
-
-  const filteredJobs =
-    useMemo(() => {
-      return jobs.filter(
-        (job) => {
-          const normalizedSearch =
-            search
-              .trim()
-              .toLowerCase();
-
-          const matchesSearch =
-            !normalizedSearch ||
-            job.title
-              .toLowerCase()
-              .includes(
-                normalizedSearch
-              ) ||
-            job.company
-              .toLowerCase()
-              .includes(
-                normalizedSearch
-              ) ||
-            (
-              job.location || ""
-            )
-              .toLowerCase()
-              .includes(
-                normalizedSearch
-              ) ||
-            job.skills.some(
-              (skill) =>
-                skill
-                  .toLowerCase()
-                  .includes(
-                    normalizedSearch
-                  )
-            );
-
-          const matchesMatchLevel =
-            matchFilter ===
-              "all" ||
-            job.match
-              ?.matchLevel ===
-              matchFilter;
-
-          const matchesEmploymentType =
-            selectedEmploymentTypes
-              .length ===
-              0 ||
-            selectedEmploymentTypes
-              .includes(
-                job.employmentType
-              );
-
-          const matchesWorkMode =
-            selectedWorkModes
-              .length ===
-              0 ||
-            selectedWorkModes
-              .includes(
-                job.remoteType
-              );
-
-          const matchesExperience =
-            matchesExperienceFilter(
-              job
-            );
-
-          const normalizedLocation =
-            locationFilter
-              .trim()
-              .toLowerCase();
-
-          const matchesLocation =
-            !normalizedLocation ||
-            (
-              job.location ||
-              ""
-            )
-              .toLowerCase()
-              .includes(
-                normalizedLocation
-              );
-
-          const parsedMinimumSalary =
-            Number(
-              minimumSalary
-            );
-
-          const matchesSalary =
-            !minimumSalary.trim() ||
-            (
-              Number.isFinite(
-                parsedMinimumSalary
-              ) &&
-              (
-                job.salary ||
-                0
-              ) >=
-                parsedMinimumSalary
-            );
-
-          const matchesSource =
-            selectedSources
-              .length ===
-              0 ||
-            selectedSources.some(
-              (
-                source
-              ) =>
-                (
-                  job.source ||
-                  ""
-                )
-                  .toLowerCase() ===
-                source
-                  .toLowerCase()
-            );
-
-          const localAzerbaijanJob =
-            isAzerbaijanJob(
-              job
-            );
-
-          const matchesMarket =
-            marketFilter ===
-              "all" ||
-            (
-              marketFilter ===
-                "azerbaijan" &&
-              localAzerbaijanJob
-            ) ||
-            (
-              marketFilter ===
-                "global" &&
-              !localAzerbaijanJob
-            );
-
-          return (
-            matchesSearch &&
-            matchesMatchLevel &&
-            matchesEmploymentType &&
-            matchesWorkMode &&
-            matchesExperience &&
-            matchesLocation &&
-            matchesSalary &&
-            matchesSource &&
-            matchesMarket
-          );
-        }
-      );
-    }, [
-      jobs,
-      search,
-      matchFilter,
-      selectedEmploymentTypes,
-      selectedWorkModes,
-      experienceFilter,
-      locationFilter,
-      minimumSalary,
-      selectedSources,
-      marketFilter,
-    ]);
 
   useEffect(() => {
     setCurrentPage(
@@ -1169,15 +1114,6 @@ const jobsPage: React.FC = () => {
     marketFilter,
   ]);
 
-  const totalPages =
-    Math.max(
-      1,
-      Math.ceil(
-        filteredJobs.length /
-          ITEMS_PER_PAGE
-      )
-    );
-
   useEffect(() => {
     if (
       currentPage >
@@ -1192,28 +1128,19 @@ const jobsPage: React.FC = () => {
     totalPages,
   ]);
 
-  const paginatedJobs =
-    useMemo(() => {
-      const startIndex =
-        (
-          currentPage -
-          1
-        ) *
-        ITEMS_PER_PAGE;
-
-      const endIndex =
-        startIndex +
-        ITEMS_PER_PAGE;
-
-      return filteredJobs.slice(
-        startIndex,
-        endIndex
-      );
-    }, [
-      filteredJobs,
-      currentPage,
-    ]);
-
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [
+    debouncedSearch,
+    matchFilter,
+    selectedEmploymentTypes,
+    selectedWorkModes,
+    experienceFilter,
+    debouncedLocation,
+    debouncedMinimumSalary,
+    selectedSources,
+    marketFilter,
+  ]);
 
   const paginationItems =
     useMemo<
@@ -1289,7 +1216,7 @@ const jobsPage: React.FC = () => {
     Math.max(
       0,
       jobs.length -
-        localJobsCount
+      localJobsCount
     );
 
   const strongMatches =
@@ -1307,17 +1234,6 @@ const jobsPage: React.FC = () => {
           ?.matchLevel ===
         "good"
     ).length;
-
-  const getMatchClass =
-    (
-      level?: MatchLevel
-    ) => {
-      if (!level) {
-        return "no-match";
-      }
-
-      return level;
-    };
 
   const formatEmploymentType =
     (
@@ -1361,11 +1277,10 @@ const jobsPage: React.FC = () => {
       if (
         min === max
       ) {
-        return `${min} ${
-          min === 1
-            ? "year"
-            : "years"
-        }`;
+        return `${min} ${min === 1
+          ? "year"
+          : "years"
+          }`;
       }
 
       return `${min}–${max} years`;
@@ -1770,12 +1685,11 @@ const jobsPage: React.FC = () => {
 
         <button
           type="button"
-          className={`jobs-filter-trigger ${
-            activeFilterCount >
+          className={`jobs-filter-trigger ${activeFilterCount >
             0
-              ? "has-active-filters"
-              : ""
-          }`}
+            ? "has-active-filters"
+            : ""
+            }`}
           onClick={() =>
             setFilterPanelOpen(
               true
@@ -1790,10 +1704,10 @@ const jobsPage: React.FC = () => {
 
           {activeFilterCount >
             0 && (
-            <strong>
-              {activeFilterCount}
-            </strong>
-          )}
+              <strong>
+                {activeFilterCount}
+              </strong>
+            )}
         </button>
       </section>
 
@@ -1805,7 +1719,7 @@ const jobsPage: React.FC = () => {
 
           <h2>
             {
-              filteredJobs.length
+              totalJobs
             }{" "}
             opportunities found
           </h2>
@@ -1813,30 +1727,30 @@ const jobsPage: React.FC = () => {
 
         <span className="jobs-ranked-label">
           Showing{" "}
-          {filteredJobs.length ===
-          0
+          {totalJobs ===
+            0
             ? 0
             : (
-                currentPage -
-                1
-              ) *
-                ITEMS_PER_PAGE +
-              1}
+              currentPage -
+              1
+            ) *
+            ITEMS_PER_PAGE +
+            1}
           –
           {Math.min(
             currentPage *
-              ITEMS_PER_PAGE,
-            filteredJobs.length
+            ITEMS_PER_PAGE,
+            totalJobs
           )}{" "}
           of{" "}
           {
-            filteredJobs.length
+            totalJobs
           }
         </span>
       </section>
 
-      {filteredJobs.length ===
-      0 ? (
+      {totalJobs ===
+        0 ? (
         <div className="jobs-empty">
           <FiSearch />
 
@@ -1853,7 +1767,7 @@ const jobsPage: React.FC = () => {
       ) : (
         <>
           <section className="jobs-grid">
-            {paginatedJobs.map(
+            {jobs.map(
               (job) => {
                 const match =
                   job.match;
@@ -1949,13 +1863,13 @@ const jobsPage: React.FC = () => {
                       {job.skills
                         .length >
                         visibleSkills.length && (
-                        <span>
-                          +
-                          {job.skills
-                            .length -
-                            visibleSkills.length}
-                        </span>
-                      )}
+                          <span>
+                            +
+                            {job.skills
+                              .length -
+                              visibleSkills.length}
+                          </span>
+                        )}
                     </div>
 
                     {match && (
@@ -1990,14 +1904,13 @@ const jobsPage: React.FC = () => {
 
                     {match && (
                       <div
-                        className={`missing-skills-preview ${
-                          match
-                            .missingSkills
-                            .length ===
+                        className={`missing-skills-preview ${match
+                          .missingSkills
+                          .length ===
                           0
-                            ? "no-missing-skills"
-                            : ""
-                        }`}
+                          ? "no-missing-skills"
+                          : ""
+                          }`}
                       >
                         <span>
                           Missing skills
@@ -2006,7 +1919,7 @@ const jobsPage: React.FC = () => {
                         {match
                           .missingSkills
                           .length >
-                        0 ? (
+                          0 ? (
                           <p>
                             {match.missingSkills.join(
                               " · "
@@ -2018,35 +1931,6 @@ const jobsPage: React.FC = () => {
                             skills detected
                           </p>
                         )}
-                      </div>
-                    )}
-
-                    {match ? (
-                      <div
-                        className={`job-match-footer ${getMatchClass(
-                          match.matchLevel
-                        )}`}
-                      >
-                        <strong>
-                          {
-                            match.matchScore
-                          }
-                          %
-                        </strong>
-
-                        <span>
-                          {
-                            match.matchLabel
-                          }
-                        </span>
-                      </div>
-                    ) : (
-                      <div className="job-match-footer no-match">
-                        <span>
-                          Upload your
-                          resume to see
-                          compatibility
-                        </span>
                       </div>
                     )}
 
@@ -2089,98 +1973,94 @@ const jobsPage: React.FC = () => {
 
           {totalPages >
             1 && (
-            <div className="jobs-pagination">
-              <button
-                type="button"
-                className="pagination-nav-btn"
-                onClick={
-                  handlePreviousPage
-                }
-                disabled={
-                  currentPage ===
-                  1
-                }
-              >
-                <FiChevronLeft />
+              <div className="jobs-pagination">
+                <button
+                  type="button"
+                  className="pagination-nav-btn"
+                  onClick={
+                    handlePreviousPage
+                  }
+                  disabled={
+                    !hasPreviousPage
+                  }
+                >
+                  <FiChevronLeft />
 
-                Previous
-              </button>
+                  Previous
+                </button>
 
-              <div className="pagination-pages">
-                {paginationItems.map(
-                  (
-                    item
-                  ) => {
-                    if (
-                      typeof item ===
-                      "string"
-                    ) {
+                <div className="pagination-pages">
+                  {paginationItems.map(
+                    (
+                      item
+                    ) => {
+                      if (
+                        typeof item ===
+                        "string"
+                      ) {
+                        return (
+                          <span
+                            key={item}
+                            className="pagination-ellipsis"
+                            aria-hidden="true"
+                          >
+                            …
+                          </span>
+                        );
+                      }
+
                       return (
-                        <span
+                        <button
+                          type="button"
                           key={item}
-                          className="pagination-ellipsis"
-                          aria-hidden="true"
-                        >
-                          …
-                        </span>
-                      );
-                    }
-
-                    return (
-                      <button
-                        type="button"
-                        key={item}
-                        className={`pagination-page-btn ${
-                          currentPage ===
-                          item
+                          className={`pagination-page-btn ${currentPage ===
+                            item
                             ? "active"
                             : ""
-                        }`}
-                        onClick={() =>
-                          handlePageClick(
-                            item
-                          )
-                        }
-                        aria-current={
-                          currentPage ===
-                          item
-                            ? "page"
-                            : undefined
-                        }
-                      >
-                        {item}
-                      </button>
-                    );
+                            }`}
+                          onClick={() =>
+                            handlePageClick(
+                              item
+                            )
+                          }
+                          aria-current={
+                            currentPage ===
+                              item
+                              ? "page"
+                              : undefined
+                          }
+                        >
+                          {item}
+                        </button>
+                      );
+                    }
+                  )}
+                </div>
+
+                <button
+                  type="button"
+                  className="pagination-nav-btn"
+                  onClick={
+                    handleNextPage
                   }
-                )}
+                  disabled={
+                    !hasNextPage
+                  }
+                >
+                  Next
+
+                  <FiChevronRight />
+                </button>
               </div>
-
-              <button
-                type="button"
-                className="pagination-nav-btn"
-                onClick={
-                  handleNextPage
-                }
-                disabled={
-                  currentPage ===
-                  totalPages
-                }
-              >
-                Next
-
-                <FiChevronRight />
-              </button>
-            </div>
-          )}
+            )}
         </>
       )}
 
       <div
-        className={`jobs-filter-overlay ${
-          filterPanelOpen
-            ? "is-open"
-            : ""
-        }`}
+        className={`jobs-filter-overlay ${filterPanelOpen
+          ? "is-open"
+          : ""
+          }`}
         onMouseDown={(event) => {
           if (
             event.target ===
@@ -2196,11 +2076,10 @@ const jobsPage: React.FC = () => {
         }
       >
         <aside
-          className={`jobs-filter-drawer ${
-            filterPanelOpen
-              ? "is-open"
-              : ""
-          }`}
+          className={`jobs-filter-drawer ${filterPanelOpen
+            ? "is-open"
+            : ""
+            }`}
           role="dialog"
           aria-modal="true"
           aria-label="Job filters"
@@ -2331,11 +2210,10 @@ const jobsPage: React.FC = () => {
                         key={
                           value
                         }
-                        className={`filter-chip ${
-                          selected
-                            ? "selected"
-                            : ""
-                        }`}
+                        className={`filter-chip ${selected
+                          ? "selected"
+                          : ""
+                          }`}
                         onClick={() =>
                           toggleArrayValue(
                             value,
@@ -2406,11 +2284,10 @@ const jobsPage: React.FC = () => {
                         key={
                           value
                         }
-                        className={`filter-chip ${
-                          selected
-                            ? "selected"
-                            : ""
-                        }`}
+                        className={`filter-chip ${selected
+                          ? "selected"
+                          : ""
+                          }`}
                         onClick={() =>
                           toggleArrayValue(
                             value,
@@ -2579,12 +2456,11 @@ const jobsPage: React.FC = () => {
                       key={
                         option.value
                       }
-                      className={`filter-chip ${
-                        matchFilter ===
+                      className={`filter-chip ${matchFilter ===
                         option.value
-                          ? "selected"
-                          : ""
-                      }`}
+                        ? "selected"
+                        : ""
+                        }`}
                       onClick={() =>
                         setMatchFilter(
                           option.value as MatchFilter
@@ -2616,12 +2492,11 @@ const jobsPage: React.FC = () => {
               <div className="filter-chip-grid three-columns">
                 <button
                   type="button"
-                  className={`filter-chip ${
-                    marketFilter ===
+                  className={`filter-chip ${marketFilter ===
                     "all"
-                      ? "selected"
-                      : ""
-                  }`}
+                    ? "selected"
+                    : ""
+                    }`}
                   onClick={() =>
                     setMarketFilter(
                       "all"
@@ -2633,12 +2508,11 @@ const jobsPage: React.FC = () => {
 
                 <button
                   type="button"
-                  className={`filter-chip ${
-                    marketFilter ===
+                  className={`filter-chip ${marketFilter ===
                     "azerbaijan"
-                      ? "selected"
-                      : ""
-                  }`}
+                    ? "selected"
+                    : ""
+                    }`}
                   onClick={() =>
                     setMarketFilter(
                       "azerbaijan"
@@ -2650,12 +2524,11 @@ const jobsPage: React.FC = () => {
 
                 <button
                   type="button"
-                  className={`filter-chip ${
-                    marketFilter ===
+                  className={`filter-chip ${marketFilter ===
                     "global"
-                      ? "selected"
-                      : ""
-                  }`}
+                    ? "selected"
+                    : ""
+                    }`}
                   onClick={() =>
                     setMarketFilter(
                       "global"
@@ -2705,11 +2578,10 @@ const jobsPage: React.FC = () => {
                         key={
                           source
                         }
-                        className={`filter-chip ${
-                          selected
-                            ? "selected"
-                            : ""
-                        }`}
+                        className={`filter-chip ${selected
+                          ? "selected"
+                          : ""
+                          }`}
                         onClick={() =>
                           toggleArrayValue(
                             source,
@@ -2753,7 +2625,7 @@ const jobsPage: React.FC = () => {
             >
               Show{" "}
               {
-                filteredJobs.length
+                totalJobs
               }{" "}
               jobs
             </button>

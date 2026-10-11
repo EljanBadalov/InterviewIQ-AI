@@ -350,7 +350,7 @@ const buildRecentConversationHistory = (
 ): ICareerConversationTurn[] => {
   if (
     typeof conversation !==
-      "object" ||
+    "object" ||
     conversation === null
   ) {
     return [];
@@ -371,10 +371,10 @@ const buildRecentConversationHistory = (
 
   const history: ICareerConversationTurn[] =
     rawConversation.messages
-      .map((raw) => {
+      .map((raw): ICareerConversationTurn | undefined => {
         if (
           typeof raw !==
-            "object" ||
+          "object" ||
           raw === null
         ) {
           return undefined;
@@ -390,16 +390,16 @@ const buildRecentConversationHistory = (
           typeof item.sender ===
             "string"
             ? item.sender
-                .toLowerCase()
-                .trim()
+              .toLowerCase()
+              .trim()
             : "";
 
         const text =
           typeof item.text ===
             "string"
             ? normalizeMessage(
-                item.text
-              )
+              item.text
+            )
             : "";
 
         if (!text) {
@@ -408,9 +408,9 @@ const buildRecentConversationHistory = (
 
         if (
           sender ===
-            "customer" ||
+          "customer" ||
           sender ===
-            "user"
+          "user"
         ) {
           return {
             role:
@@ -426,29 +426,45 @@ const buildRecentConversationHistory = (
 
         if (
           sender ===
-            "assistant" ||
+          "assistant" ||
           sender ===
-            "bot"
+          "bot"
         ) {
-          return {
-            role:
-              "assistant" as const,
+          const metadata =
+            typeof item.metadata === "object" &&
+              item.metadata !== null
+              ? (item.metadata as Record<string, unknown>)
+              : undefined;
 
-            content:
-              text.slice(
-                0,
-                650
-              ),
+          const careerSubject =
+            typeof metadata?.careerSubject === "string"
+              ? metadata.careerSubject
+              : undefined;
+
+          const recommendedTopics =
+            Array.isArray(metadata?.recommendedTopics)
+              ? metadata.recommendedTopics.filter(
+                (topic): topic is string =>
+                  typeof topic === "string"
+              )
+              : undefined;
+
+          return {
+            role: "assistant" as const,
+            content: text.slice(0, 650),
+
+            metadata: {
+              careerSubject,
+              recommendedTopics,
+            },
           };
         }
 
         return undefined;
       })
       .filter(
-        (
-          item
-        ): item is ICareerConversationTurn =>
-          Boolean(item)
+        (item): item is ICareerConversationTurn =>
+          item !== undefined
       );
 
   /*
@@ -463,16 +479,16 @@ const buildRecentConversationHistory = (
 
   const last =
     history[
-      history.length - 1
+    history.length - 1
     ];
 
   if (
     last?.role ===
-      "user" &&
+    "user" &&
     normalizeMessage(
       last.content
     ) ===
-      normalizedCurrent
+    normalizedCurrent
   ) {
     history.pop();
   }
@@ -483,6 +499,153 @@ const buildRecentConversationHistory = (
       limit
     )
   );
+};
+
+const buildCareerRecommendationHistory = (
+  conversation: unknown
+): ICareerConversationTurn[] => {
+  if (
+    typeof conversation !== "object" ||
+    conversation === null
+  ) {
+    return [];
+  }
+
+  const messages = (
+    conversation as { messages?: unknown[] }
+  ).messages;
+
+  if (!Array.isArray(messages)) {
+    return [];
+  }
+
+  return messages.flatMap(
+    (raw): ICareerConversationTurn[] => {
+      if (
+        typeof raw !== "object" ||
+        raw === null
+      ) {
+        return [];
+      }
+
+      const item = raw as Record<string, unknown>;
+
+      const sender =
+        typeof item.sender === "string"
+          ? item.sender.toLowerCase().trim()
+          : "";
+
+      if (sender !== "assistant" && sender !== "bot") {
+        return [];
+      }
+
+      const metadata =
+        typeof item.metadata === "object" &&
+          item.metadata !== null
+          ? item.metadata as Record<string, unknown>
+          : undefined;
+
+      const careerSubject =
+        typeof metadata?.careerSubject === "string"
+          ? metadata.careerSubject
+          : undefined;
+
+      const recommendedTopics =
+        Array.isArray(metadata?.recommendedTopics)
+          ? metadata.recommendedTopics.filter(
+            (topic): topic is string =>
+              typeof topic === "string"
+          )
+          : [];
+
+      if (!careerSubject || recommendedTopics.length === 0) {
+        return [];
+      }
+
+      return [{
+        role: "assistant",
+        content: "",
+        metadata: {
+          careerSubject,
+          recommendedTopics,
+        },
+      }];
+    }
+  );
+};
+
+const buildFullAssistantAnswerHistory = (
+  conversation: unknown
+): string[] => {
+  if (
+    typeof conversation !== "object" ||
+    conversation === null
+  ) {
+    return [];
+  }
+
+  const rawConversation =
+    conversation as {
+      messages?: unknown[];
+    };
+
+  if (
+    !Array.isArray(
+      rawConversation.messages
+    )
+  ) {
+    return [];
+  }
+
+  return rawConversation.messages
+    .map((raw) => {
+      if (
+        typeof raw !== "object" ||
+        raw === null
+      ) {
+        return undefined;
+      }
+
+      const item =
+        raw as Record<
+          string,
+          unknown
+        >;
+
+      const sender =
+        typeof item.sender === "string"
+          ? item.sender
+            .toLowerCase()
+            .trim()
+          : "";
+
+      if (
+        sender !== "assistant" &&
+        sender !== "bot"
+      ) {
+        return undefined;
+      }
+
+      const text =
+        typeof item.text === "string"
+          ? normalizeMessage(
+            item.text
+          )
+          : "";
+
+      if (!text) {
+        return undefined;
+      }
+
+      return text.slice(
+        0,
+        2000
+      );
+    })
+    .filter(
+      (item): item is string =>
+        Boolean(item)
+    );
 };
 
 /* =========================================================
@@ -580,7 +743,7 @@ const getCachedResponseSafely =
           options.context,
       });
     } catch (
-      error
+    error
     ) {
       console.error(
         "[Career Response Cache] Lookup failed:",
@@ -629,7 +792,7 @@ const saveCachedResponseSafely =
           options.context,
       });
     } catch (
-      error
+    error
     ) {
       console.error(
         "[Career Response Cache] Save failed:",
@@ -694,17 +857,17 @@ const syncCareerContext =
   ): Promise<void> => {
     const hasUpdate =
       input.activeResumeId !==
-        undefined ||
+      undefined ||
       input.activeJobId !==
-        undefined ||
+      undefined ||
       input.activeInterviewId !==
-        undefined ||
+      undefined ||
       input.targetRole !==
-        undefined ||
+      undefined ||
       input.careerGoal !==
-        undefined ||
+      undefined ||
       input.skillsFocus !==
-        undefined;
+      undefined;
 
     if (
       !hasUpdate
@@ -810,7 +973,7 @@ const collectLearningCandidateSafely =
         },
       });
     } catch (
-      error
+    error
     ) {
       console.error(
         "[Career Assistant Learning] Failed to collect candidate:",
@@ -987,6 +1150,132 @@ const buildCVImprovementResponse = (
   );
 };
 
+/* =========================================================
+   CURRENT QUESTION KNOWLEDGE SUBJECT
+========================================================= */
+
+const resolveKnowledgeSubject = (
+  message: string
+): string | undefined => {
+  const normalized =
+    message
+      .trim()
+      .toLowerCase();
+
+  if (!normalized) {
+    return undefined;
+  }
+
+  const rolePatterns: Array<{
+    subject: string;
+    patterns: RegExp[];
+  }> = [
+      {
+        subject: "Backend Developer",
+        patterns: [
+          /\bbackend\b/i,
+          /\bback-end\b/i,
+          /\bbackend developer\b/i,
+          /\bbackend engineer\b/i,
+        ],
+      },
+      {
+        subject: "Frontend Developer",
+        patterns: [
+          /\bfrontend\b/i,
+          /\bfront-end\b/i,
+          /\bfrontend developer\b/i,
+          /\bfrontend engineer\b/i,
+        ],
+      },
+      {
+        subject: "Full Stack Developer",
+        patterns: [
+          /\bfull[\s-]?stack\b/i,
+          /\bfull[\s-]?stack developer\b/i,
+        ],
+      },
+      {
+        subject: "Data Analyst",
+        patterns: [
+          /\bdata analyst\b/i,
+          /\bdata analytics\b/i,
+        ],
+      },
+      {
+        subject: "Data Engineer",
+        patterns: [
+          /\bdata engineer\b/i,
+          /\bdata engineering\b/i,
+        ],
+      },
+      {
+        subject: "Data Scientist",
+        patterns: [
+          /\bdata scientist\b/i,
+          /\bdata science\b/i,
+        ],
+      },
+      {
+        subject: "Machine Learning Engineer",
+        patterns: [
+          /\bmachine learning\b/i,
+          /\bml engineer\b/i,
+        ],
+      },
+      {
+        subject: "QA Engineer",
+        patterns: [
+          /\bqa engineer\b/i,
+          /\bquality assurance\b/i,
+          /\bsoftware tester\b/i,
+        ],
+      },
+      {
+        subject: "Cybersecurity",
+        patterns: [
+          /\bcybersecurity\b/i,
+          /\bcyber security\b/i,
+          /\bsecurity engineer\b/i,
+        ],
+      },
+      {
+        subject: "DevOps",
+        patterns: [
+          /\bdevops\b/i,
+          /\bdevops engineer\b/i,
+        ],
+      },
+      {
+        subject: "Cloud",
+        patterns: [
+          /\bcloud engineer\b/i,
+          /\bcloud engineering\b/i,
+        ],
+      },
+      {
+        subject: "Mobile Developer",
+        patterns: [
+          /\bmobile developer\b/i,
+          /\bmobile development\b/i,
+        ],
+      },
+    ];
+
+  for (const role of rolePatterns) {
+    if (
+      role.patterns.some(
+        (pattern) =>
+          pattern.test(normalized)
+      )
+    ) {
+      return role.subject;
+    }
+  }
+
+  return undefined;
+};
+
 const buildSkillGapResponse = (
   resume: ICareerResumeContext,
   targetRole?: string
@@ -1013,13 +1302,13 @@ const buildSkillGapResponse = (
     parts.push(
       targetRole
         ? `For your target role of ${targetRole}, the saved CV analysis suggests strengthening or adding: ${formatList(
-            resume.missingSkills,
-            5
-          )}.`
+          resume.missingSkills,
+          5
+        )}.`
         : `The saved CV analysis suggests strengthening or adding: ${formatList(
-            resume.missingSkills,
-            5
-          )}.`
+          resume.missingSkills,
+          5
+        )}.`
     );
   } else {
     parts.push(
@@ -1197,19 +1486,19 @@ const buildCareerResponseData = (
 ): Record<string, unknown> => {
   const data:
     Record<string, unknown> = {
-      careerAssistant:
-        true,
+    careerAssistant:
+      true,
 
-      intent,
+    intent,
 
-      nextStep:
-        responseMetadata.nextStep,
+    nextStep:
+      responseMetadata.nextStep,
 
-      requiresInterviewIQData:
-        DATA_DRIVEN_INTENTS.has(
-          intent
-        ),
-    };
+    requiresInterviewIQData:
+      DATA_DRIVEN_INTENTS.has(
+        intent
+      ),
+  };
 
   if (
     context.activeResumeId
@@ -1249,7 +1538,7 @@ const buildCareerResponseData = (
   if (
     context.skillsFocus &&
     context.skillsFocus.length >
-      0
+    0
   ) {
     data.skillsFocus =
       context.skillsFocus;
@@ -1513,6 +1802,25 @@ export const processCustomerMessage =
        CONTEXT-AWARE EFFECTIVE INTENT
     ===================================================== */
 
+    console.log(
+      "[Career Intent Debug]",
+      {
+        message,
+        predictedIntent:
+          prediction.intent,
+        previousIntent:
+          currentContext.previousIntent,
+        lastResolvedIntent:
+          currentContext.lastResolvedIntent,
+        awaitingField:
+          currentContext.awaitingField,
+        targetRole:
+          currentContext.targetRole,
+        careerGoal:
+          currentContext.careerGoal,
+      }
+    );
+
     const contextualIntent =
       resolveCareerConversationIntent({
         message,
@@ -1536,8 +1844,82 @@ export const processCustomerMessage =
           currentContext.careerGoal,
       });
 
+    console.log(
+      "[Career Intent Resolved]",
+      {
+        originalIntent:
+          contextualIntent.originalIntent,
+        resolvedIntent:
+          contextualIntent.intent,
+        inheritedIntent:
+          contextualIntent.inheritedIntent,
+        reason:
+          contextualIntent.reason,
+        metadata:
+          contextualIntent.metadata,
+      }
+    );
+
     const effectiveIntent =
       contextualIntent.intent;
+
+    const explicitKnowledgeSubject =
+      resolveKnowledgeSubject(
+        message
+      );
+
+    const memoryKnowledgeSubject =
+      typeof currentContext.metadata
+        ?.knowledgeSubject === "string"
+        ? currentContext.metadata
+          .knowledgeSubject
+          .trim()
+        : undefined;
+
+    /*
+     * Current-message subject always wins.
+     *
+     * If the user does not explicitly mention a new subject,
+     * preserve the subject from the current conversation.
+     */
+    const knowledgeSubject =
+      explicitKnowledgeSubject ||
+      memoryKnowledgeSubject;
+
+    /*
+     * Persist an explicitly detected subject so follow-up
+     * messages such as "what else?" or "tell me more"
+     * continue using the same career knowledge.
+     */
+    if (
+      explicitKnowledgeSubject &&
+      explicitKnowledgeSubject !==
+      memoryKnowledgeSubject
+    ) {
+      await updateConversationMemory(
+        sessionId,
+        {
+          metadata: {
+            knowledgeSubject:
+              explicitKnowledgeSubject,
+          },
+        }
+      );
+    }
+
+    console.log(
+      "[Career Assistant] Knowledge subject:",
+      {
+        explicit:
+          explicitKnowledgeSubject,
+
+        remembered:
+          memoryKnowledgeSubject,
+
+        effective:
+          knowledgeSubject,
+      }
+    );
 
     const isContextualOverride =
       contextualIntent.contextual;
@@ -1691,7 +2073,7 @@ export const processCustomerMessage =
 
     let needsClarification =
       fieldWasResolved ||
-      isContextualOverride
+        isContextualOverride
         ? false
         : prediction.needsClarification;
 
@@ -1895,7 +2277,7 @@ export const processCustomerMessage =
 
     if (
       effectiveIntent ===
-        "JOB_MATCHING" &&
+      "JOB_MATCHING" &&
       updatedContext.userId
     ) {
       jobMatches =
@@ -1916,7 +2298,7 @@ export const processCustomerMessage =
       if (
         jobMatches.found &&
         jobMatches.matchedJobs.length >
-          0
+        0
       ) {
         needsClarification =
           false;
@@ -1965,7 +2347,7 @@ export const processCustomerMessage =
 
           reply:
             jobMatches.reason ===
-            "NO_ACTIVE_JOBS"
+              "NO_ACTIVE_JOBS"
               ? "I found your CV analysis, but there are currently no active jobs available to match against it."
               : "I couldn't find suitable active jobs for your current CV right now.",
 
@@ -1998,7 +2380,7 @@ export const processCustomerMessage =
 
     if (
       effectiveIntent ===
-        "INTERVIEW_FEEDBACK" &&
+      "INTERVIEW_FEEDBACK" &&
       interview
     ) {
       needsClarification =
@@ -2049,7 +2431,7 @@ export const processCustomerMessage =
 
     if (
       effectiveIntent ===
-        "INTERVIEW_PREP" &&
+      "INTERVIEW_PREP" &&
       updatedContext.userId
     ) {
       const prepResult =
@@ -2080,7 +2462,7 @@ export const processCustomerMessage =
         if (
           interviewPrep.resume?.id &&
           updatedContext.activeResumeId !==
-            interviewPrep.resume.id
+          interviewPrep.resume.id
         ) {
           await setActiveResume(
             sessionId,
@@ -2093,9 +2475,9 @@ export const processCustomerMessage =
             .previousInterview
             ?.id &&
           updatedContext.activeInterviewId !==
-            interviewPrep
-              .previousInterview
-              .id
+          interviewPrep
+            .previousInterview
+            .id
         ) {
           await setActiveInterview(
             sessionId,
@@ -2162,22 +2544,22 @@ export const processCustomerMessage =
 
           reply:
             prepResult.reason ===
-            "RESUME_NOT_FOUND"
+              "RESUME_NOT_FOUND"
               ? "I couldn't find a saved CV analysis for your account. Please analyze or upload a CV first so I can build personalized interview preparation."
               : "I couldn't build personalized interview preparation from your current InterviewIQ data.",
 
           action:
             prepResult.reason ===
-            "RESUME_NOT_FOUND"
+              "RESUME_NOT_FOUND"
               ? "ASK_RESUME"
               : "REPLY",
 
           requiredFields:
             prepResult.reason ===
-            "RESUME_NOT_FOUND"
+              "RESUME_NOT_FOUND"
               ? [
-                  "activeResumeId",
-                ]
+                "activeResumeId",
+              ]
               : [],
 
           metadata: {
@@ -2209,7 +2591,7 @@ export const processCustomerMessage =
 
     if (
       effectiveIntent ===
-        "CAREER_PROGRESS" &&
+      "CAREER_PROGRESS" &&
       updatedContext.userId
     ) {
       const progressResult =
@@ -2263,7 +2645,7 @@ export const processCustomerMessage =
 
           reply:
             progressResult.reason ===
-            "NO_PROGRESS_DATA"
+              "NO_PROGRESS_DATA"
               ? "I don't have enough saved CV or completed interview data yet to measure your career progress."
               : "I couldn't load your career progress data right now.",
 
@@ -2301,8 +2683,10 @@ export const processCustomerMessage =
       string | undefined;
 
     if (
-      effectiveIntent ===
-        "NEXT_STEPS" &&
+      (
+        effectiveIntent === "NEXT_STEPS" ||
+        effectiveIntent === "SKILL_GAP"
+      ) &&
       updatedContext.userId
     ) {
       const nextStepsResult =
@@ -2318,6 +2702,9 @@ export const processCustomerMessage =
 
           targetRole:
             updatedContext.targetRole,
+
+          knowledgeSubject:
+            knowledgeSubject,
 
           careerGoal:
             updatedContext.careerGoal,
@@ -2336,13 +2723,28 @@ export const processCustomerMessage =
         nextSteps =
           nextStepsResult.data;
 
+        console.log(
+          "\n================ NEXT STEPS DEBUG ================\n",
+          JSON.stringify(
+            {
+              intent: effectiveIntent,
+              targetRole: updatedContext.targetRole,
+              careerGoal: updatedContext.careerGoal,
+              nextSteps: nextSteps,
+            },
+            null,
+            2
+          ),
+          "\n==================================================\n"
+        );
+
         needsClarification =
           false;
 
         if (
           nextSteps.resume?.id &&
           updatedContext.activeResumeId !==
-            nextSteps.resume.id
+          nextSteps.resume.id
         ) {
           await setActiveResume(
             sessionId,
@@ -2353,7 +2755,7 @@ export const processCustomerMessage =
         if (
           nextSteps.interview?.id &&
           updatedContext.activeInterviewId !==
-            nextSteps.interview.id
+          nextSteps.interview.id
         ) {
           await setActiveInterview(
             sessionId,
@@ -2371,43 +2773,77 @@ export const processCustomerMessage =
             conversation
           );
 
-        response = {
-          ...response,
+        if (
+          effectiveIntent ===
+          "NEXT_STEPS"
+        ) {
+          response = {
+            ...response,
 
-          reply:
-            buildCareerNextStepsReply(
-              nextSteps
-            ),
+            reply:
+              buildCareerNextStepsReply(
+                nextSteps
+              ),
 
-          action:
-            "REPLY",
+            action:
+              "REPLY",
 
-          requiredFields:
-            [],
+            requiredFields:
+              [],
 
-          metadata: {
-            ...response.metadata,
+            metadata: {
+              ...response.metadata,
 
-            nextStepsDataLoaded:
-              true,
+              nextStepsDataLoaded:
+                true,
 
-            personalized:
-              true,
+              personalized:
+                true,
 
-            totalSteps:
-              nextSteps
-                .steps
-                .length,
+              totalSteps:
+                nextSteps
+                  .steps
+                  .length,
 
-            topStepId:
-              nextSteps
-                .topStep
-                ?.id,
+              topStepId:
+                nextSteps
+                  .topStep
+                  ?.id,
 
-            nextStep:
-              "NEXT_STEPS_COMPLETED",
-          },
-        };
+              nextStep:
+                "NEXT_STEPS_COMPLETED",
+            },
+          };
+        } else {
+          /*
+           * SKILL_GAP:
+           * Roadmap data is loaded as context.
+           * Qwen will generate the final personalized answer.
+           */
+          response = {
+            ...response,
+
+            metadata: {
+              ...response.metadata,
+
+              nextStepsDataLoaded:
+                true,
+
+              personalized:
+                true,
+
+              totalSteps:
+                nextSteps
+                  .steps
+                  .length,
+
+              topStepId:
+                nextSteps
+                  .topStep
+                  ?.id,
+            },
+          };
+        }
       } else {
         nextStepsFailureReason =
           nextStepsResult.reason;
@@ -2417,7 +2853,7 @@ export const processCustomerMessage =
 
           reply:
             nextStepsResult.reason ===
-            "NO_CAREER_DATA"
+              "NO_CAREER_DATA"
               ? "I don't have enough career data yet to build personalized next steps. Start with a CV analysis or complete an interview first."
               : "I couldn't build your personalized next steps right now.",
 
@@ -2456,7 +2892,7 @@ export const processCustomerMessage =
 
     if (
       effectiveIntent ===
-        "CAREER_GOAL" &&
+      "CAREER_GOAL" &&
       updatedContext.userId
     ) {
       const goalResult =
@@ -2480,7 +2916,7 @@ export const processCustomerMessage =
       if (
         !goalResult.found &&
         goalResult.reason ===
-          "TARGET_ROLE_REQUIRED"
+        "TARGET_ROLE_REQUIRED"
       ) {
         response = {
           ...response,
@@ -2526,7 +2962,7 @@ export const processCustomerMessage =
         if (
           careerGoalContext.resume?.id &&
           updatedContext.activeResumeId !==
-            careerGoalContext.resume.id
+          careerGoalContext.resume.id
         ) {
           await setActiveResume(
             sessionId,
@@ -2537,7 +2973,7 @@ export const processCustomerMessage =
         if (
           careerGoalContext.interview?.id &&
           updatedContext.activeInterviewId !==
-            careerGoalContext.interview.id
+          careerGoalContext.interview.id
         ) {
           await setActiveInterview(
             sessionId,
@@ -2599,7 +3035,7 @@ export const processCustomerMessage =
       if (
         !goalResult.found &&
         goalResult.reason !==
-          "TARGET_ROLE_REQUIRED"
+        "TARGET_ROLE_REQUIRED"
       ) {
         careerGoalFailureReason =
           goalResult.reason;
@@ -2609,7 +3045,7 @@ export const processCustomerMessage =
 
           reply:
             goalResult.reason ===
-            "NO_CAREER_DATA"
+              "NO_CAREER_DATA"
               ? "I know your target role, but I don't have enough InterviewIQ career data yet to evaluate your readiness."
               : "I couldn't evaluate your career goal right now.",
 
@@ -2648,7 +3084,7 @@ export const processCustomerMessage =
 
     if (
       effectiveIntent ===
-        "JOB_SEARCH_HELP" &&
+      "JOB_SEARCH_HELP" &&
       updatedContext.userId
     ) {
       const jobSearchResult =
@@ -2680,7 +3116,7 @@ export const processCustomerMessage =
         if (
           jobSearchHelp.resume?.id &&
           updatedContext.activeResumeId !==
-            jobSearchHelp.resume.id
+          jobSearchHelp.resume.id
         ) {
           await setActiveResume(
             sessionId,
@@ -2750,7 +3186,7 @@ export const processCustomerMessage =
       if (
         !jobSearchResult.found &&
         jobSearchResult.reason ===
-          "RESUME_NOT_FOUND"
+        "RESUME_NOT_FOUND"
       ) {
         jobSearchHelpFailureReason =
           jobSearchResult.reason;
@@ -2790,7 +3226,7 @@ export const processCustomerMessage =
       if (
         !jobSearchResult.found &&
         jobSearchResult.reason ===
-          "NO_JOB_DATA"
+        "NO_JOB_DATA"
       ) {
         jobSearchHelpFailureReason =
           jobSearchResult.reason;
@@ -2829,9 +3265,9 @@ export const processCustomerMessage =
       if (
         !jobSearchResult.found &&
         jobSearchResult.reason !==
-          "RESUME_NOT_FOUND" &&
+        "RESUME_NOT_FOUND" &&
         jobSearchResult.reason !==
-          "NO_JOB_DATA"
+        "NO_JOB_DATA"
       ) {
         jobSearchHelpFailureReason =
           jobSearchResult.reason;
@@ -2876,6 +3312,35 @@ export const processCustomerMessage =
         12
       );
 
+    const careerRecommendationHistory =
+      buildCareerRecommendationHistory(
+        conversation
+      );
+
+    const fullAssistantAnswerHistory =
+      buildFullAssistantAnswerHistory(
+        conversation
+      );
+
+    console.log(
+      "[Career History Debug]",
+      JSON.stringify(
+        {
+          rawMessageCount:
+            Array.isArray(
+              (conversation as any)?.messages
+            )
+              ? (conversation as any)
+                .messages.length
+              : 0,
+
+          recentConversationHistory,
+        },
+        null,
+        2
+      )
+    );
+
     const dynamicResponse =
       await buildCareerDynamicOrQwenResponse({
         userId:
@@ -2892,6 +3357,11 @@ export const processCustomerMessage =
 
         conversationHistory:
           recentConversationHistory,
+
+        careerRecommendationHistory:
+          careerRecommendationHistory,
+
+        fullAssistantAnswerHistory,
 
         message,
 
@@ -2971,6 +3441,11 @@ export const processCustomerMessage =
           responseDataSources:
             dynamicResponse.metadata
               .dataSources,
+          careerSubject:
+            dynamicResponse.metadata.careerSubject,
+
+          recommendedTopics:
+            dynamicResponse.metadata.recommendedTopics,
         },
       };
     }
@@ -2986,17 +3461,17 @@ export const processCustomerMessage =
           effectiveIntent
         ) ||
         effectiveIntent ===
-          "INTERVIEW_FEEDBACK" ||
+        "INTERVIEW_FEEDBACK" ||
         effectiveIntent ===
-          "INTERVIEW_PREP" ||
+        "INTERVIEW_PREP" ||
         effectiveIntent ===
-          "CAREER_PROGRESS" ||
+        "CAREER_PROGRESS" ||
         effectiveIntent ===
-          "NEXT_STEPS" ||
+        "NEXT_STEPS" ||
         effectiveIntent ===
-          "CAREER_GOAL" ||
+        "CAREER_GOAL" ||
         effectiveIntent ===
-          "JOB_SEARCH_HELP"
+        "JOB_SEARCH_HELP"
       ) &&
       !updatedContext.userId
     ) {
@@ -3065,7 +3540,7 @@ export const processCustomerMessage =
 
     if (
       effectiveIntent ===
-        "INTERVIEW_FEEDBACK" &&
+      "INTERVIEW_FEEDBACK" &&
       updatedContext.userId &&
       !interview
     ) {
@@ -3114,7 +3589,7 @@ export const processCustomerMessage =
 
     const canMarkResolved =
       response.action ===
-        "REPLY" &&
+      "REPLY" &&
       (
         !DATA_DRIVEN_INTENTS.has(
           effectiveIntent
@@ -3129,49 +3604,49 @@ export const processCustomerMessage =
         ) ||
         (
           effectiveIntent ===
-            "JOB_MATCHING" &&
+          "JOB_MATCHING" &&
           Boolean(
             jobMatches?.found
           )
         ) ||
         (
           effectiveIntent ===
-            "INTERVIEW_FEEDBACK" &&
+          "INTERVIEW_FEEDBACK" &&
           Boolean(
             interview
           )
         ) ||
         (
           effectiveIntent ===
-            "INTERVIEW_PREP" &&
+          "INTERVIEW_PREP" &&
           Boolean(
             interviewPrep
           )
         ) ||
         (
           effectiveIntent ===
-            "CAREER_PROGRESS" &&
+          "CAREER_PROGRESS" &&
           Boolean(
             careerProgress
           )
         ) ||
         (
           effectiveIntent ===
-            "NEXT_STEPS" &&
+          "NEXT_STEPS" &&
           Boolean(
             nextSteps
           )
         ) ||
         (
           effectiveIntent ===
-            "CAREER_GOAL" &&
+          "CAREER_GOAL" &&
           Boolean(
             careerGoalContext
           )
         ) ||
         (
           effectiveIntent ===
-            "JOB_SEARCH_HELP" &&
+          "JOB_SEARCH_HELP" &&
           Boolean(
             jobSearchHelp
           )
@@ -3295,7 +3770,7 @@ export const processCustomerMessage =
         finalContext.userId
       ) &&
       response.action ===
-        "REPLY" &&
+      "REPLY" &&
       !needsClarification &&
       canUseResponseCache(
         effectiveIntent,
@@ -3368,6 +3843,12 @@ export const processCustomerMessage =
         metadata: {
           domain:
             "career_assistant",
+
+          careerSubject:
+            response.metadata?.careerSubject,
+
+          recommendedTopics:
+            response.metadata?.recommendedTopics,
 
           action:
             response.action,

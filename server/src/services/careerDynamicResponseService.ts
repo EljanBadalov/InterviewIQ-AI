@@ -70,8 +70,12 @@ export interface ICareerDynamicResponseInput {
 
 export interface ICareerConversationTurn {
   role: "user" | "assistant";
-
   content: string;
+
+  metadata?: {
+    careerSubject?: string;
+    recommendedTopics?: string[];
+  };
 }
 
 /*
@@ -90,6 +94,10 @@ export interface ICareerSmartResponseInput
   skillsFocus?: string[];
 
   conversationHistory?: ICareerConversationTurn[];
+
+  careerRecommendationHistory?: ICareerConversationTurn[];
+
+  fullAssistantAnswerHistory?: string[];
 
   resumeId?: string;
 
@@ -115,6 +123,10 @@ export interface ICareerDynamicResponseResult {
     strategy: string;
 
     dataSources: string[];
+
+    careerSubject?: string;
+
+    recommendedTopics?: string[];
   };
 }
 
@@ -280,7 +292,7 @@ const buildCVAnalysisDynamicReply = (
   }
 
   switch (
-    input.focus
+  input.focus
   ) {
     case "OVERVIEW": {
       const lowest =
@@ -357,9 +369,9 @@ const buildCVAnalysisDynamicReply = (
 
       if (
         resume.atsSuggestions.length >
-          0 &&
+        0 &&
         lowest.label ===
-          "ATS readiness"
+        "ATS readiness"
       ) {
         parts.push(
           `For ATS specifically, I would focus on ${formatList(
@@ -653,10 +665,6 @@ const buildJobSearchDynamicReply = (
   const recommendedTitles =
     strategy.recommendedTitles ?? [];
 
-  /*
-    These fields are optional because the job-search service may
-    evolve without forcing this response layer to break.
-  */
   const extendedStrategy =
     strategy as typeof strategy & {
       prioritySkills?: string[];
@@ -674,7 +682,7 @@ const buildJobSearchDynamicReply = (
     extendedStrategy.suggestedApproach ?? [];
 
   switch (
-    input.focus
+  input.focus
   ) {
     case "JOB_ALIGNMENT":
     case "OVERVIEW": {
@@ -717,8 +725,8 @@ const buildJobSearchDynamicReply = (
       return parts.length >
         0
         ? parts.join(
-            " "
-          )
+          " "
+        )
         : undefined;
     }
 
@@ -752,9 +760,9 @@ const buildJobSearchDynamicReply = (
 
       if (
         parts.length ===
-          0 &&
+        0 &&
         recommendedTitles.length >
-          0
+        0
       ) {
         parts.push(
           `Your current profile is best aligned with roles such as ${formatList(
@@ -767,8 +775,8 @@ const buildJobSearchDynamicReply = (
       return parts.length >
         0
         ? parts.join(
-            " "
-          )
+          " "
+        )
         : undefined;
     }
 
@@ -813,8 +821,8 @@ const buildJobSearchDynamicReply = (
       return parts.length >
         0
         ? parts.join(
-            " "
-          )
+          " "
+        )
         : undefined;
     }
 
@@ -864,7 +872,7 @@ const buildInterviewDynamicReply = (
       ?.summary;
 
   switch (
-    input.focus
+  input.focus
   ) {
     case "OVERVIEW": {
       const parts:
@@ -899,28 +907,25 @@ const buildInterviewDynamicReply = (
     }
 
     case "INTERVIEW_TECHNICAL":
-      return `Your technical accuracy score is ${technicalAccuracy}/100. ${
-        improvements.length >
+      return `Your technical accuracy score is ${technicalAccuracy}/100. ${improvements.length >
         0
-          ? `A useful technical improvement area is: ${improvements[0]}`
-          : "Your saved feedback does not currently identify a specific technical weakness."
-      }`;
+        ? `A useful technical improvement area is: ${improvements[0]}`
+        : "Your saved feedback does not currently identify a specific technical weakness."
+        }`;
 
     case "INTERVIEW_COMMUNICATION":
-      return `Your communication score is ${communication}/100. ${
-        recommendations.length >
+      return `Your communication score is ${communication}/100. ${recommendations.length >
         0
-          ? `A useful next step is: ${recommendations[0]}`
-          : "Your communication performance is currently strong."
-      }`;
+        ? `A useful next step is: ${recommendations[0]}`
+        : "Your communication performance is currently strong."
+        }`;
 
     case "INTERVIEW_COMPLETENESS":
-      return `Your completeness score is ${completeness}/100. ${
-        improvements.length >
+      return `Your completeness score is ${completeness}/100. ${improvements.length >
         0
-          ? `One useful area to improve is: ${improvements[0]}`
-          : "Focus on answering every part of the question and supporting your reasoning with concrete examples."
-      }`;
+        ? `One useful area to improve is: ${improvements[0]}`
+        : "Focus on answering every part of the question and supporting your reasoning with concrete examples."
+        }`;
 
     case "WEAKNESSES":
       if (
@@ -970,11 +975,11 @@ const buildProgressDynamicReply = (
 
   if (
     input.focus !==
-      "PROGRESS" &&
+    "PROGRESS" &&
     input.focus !==
-      "COMPARISON" &&
+    "COMPARISON" &&
     input.focus !==
-      "OVERVIEW"
+    "OVERVIEW"
   ) {
     return undefined;
   }
@@ -1021,8 +1026,8 @@ const buildProgressDynamicReply = (
   return parts.length >
     0
     ? parts.join(
-        " "
-      )
+      " "
+    )
     : undefined;
 };
 
@@ -1043,9 +1048,9 @@ const buildNextStepsDynamicReply = (
 
   if (
     input.focus !==
-      "ROADMAP" &&
+    "ROADMAP" &&
     input.focus !==
-      "PRIORITIES"
+    "PRIORITIES"
   ) {
     return undefined;
   }
@@ -1102,9 +1107,9 @@ const buildCareerGoalDynamicReply = (
 
   if (
     input.focus !==
-      "GOAL_READINESS" &&
+    "GOAL_READINESS" &&
     input.focus !==
-      "OVERVIEW"
+    "OVERVIEW"
   ) {
     return undefined;
   }
@@ -1226,19 +1231,15 @@ export const buildCareerDynamicResponse =
     let reply:
       string | undefined;
 
-    /* =====================================================
-       CV
-    ===================================================== */
-
     if (
       input.intent ===
-        "CV_ANALYSIS" ||
+      "CV_ANALYSIS" ||
       input.intent ===
-        "CV_IMPROVEMENT" ||
+      "CV_IMPROVEMENT" ||
       input.intent ===
-        "SKILL_GAP" ||
+      "SKILL_GAP" ||
       input.intent ===
-        "PROFILE_SUMMARY"
+      "PROFILE_SUMMARY"
     ) {
       reply =
         buildCVAnalysisDynamicReply(
@@ -1246,14 +1247,10 @@ export const buildCareerDynamicResponse =
         );
     }
 
-    /* =====================================================
-       JOB SEARCH
-    ===================================================== */
-
     if (
       !reply &&
       input.intent ===
-        "JOB_SEARCH_HELP"
+      "JOB_SEARCH_HELP"
     ) {
       reply =
         buildJobSearchDynamicReply(
@@ -1261,14 +1258,10 @@ export const buildCareerDynamicResponse =
         );
     }
 
-    /* =====================================================
-       INTERVIEW
-    ===================================================== */
-
     if (
       !reply &&
       input.intent ===
-        "INTERVIEW_FEEDBACK"
+      "INTERVIEW_FEEDBACK"
     ) {
       reply =
         buildInterviewDynamicReply(
@@ -1276,14 +1269,10 @@ export const buildCareerDynamicResponse =
         );
     }
 
-    /* =====================================================
-       PROGRESS
-    ===================================================== */
-
     if (
       !reply &&
       input.intent ===
-        "CAREER_PROGRESS"
+      "CAREER_PROGRESS"
     ) {
       reply =
         buildProgressDynamicReply(
@@ -1291,14 +1280,10 @@ export const buildCareerDynamicResponse =
         );
     }
 
-    /* =====================================================
-       NEXT STEPS
-    ===================================================== */
-
     if (
       !reply &&
       input.intent ===
-        "NEXT_STEPS"
+      "NEXT_STEPS"
     ) {
       reply =
         buildNextStepsDynamicReply(
@@ -1306,14 +1291,10 @@ export const buildCareerDynamicResponse =
         );
     }
 
-    /* =====================================================
-       CAREER GOAL
-    ===================================================== */
-
     if (
       !reply &&
       input.intent ===
-        "CAREER_GOAL"
+      "CAREER_GOAL"
     ) {
       reply =
         buildCareerGoalDynamicReply(
@@ -1419,10 +1400,6 @@ const canUseSmartCache = (
       input.intent
     );
 
-  /*
-   * Avoid reusing personalized cached answers when we cannot
-   * prove which resume/interview they belong to.
-   */
   if (
     RESUME_CONTEXT_INTENTS.has(
       intent
@@ -1602,7 +1579,7 @@ const toDatasetRecord = (
 > | undefined => {
   if (
     typeof value !==
-      "object" ||
+    "object" ||
     value === null ||
     Array.isArray(
       value
@@ -2094,14 +2071,6 @@ const buildVerifiedEducationEntries = (
 };
 
 
-/*
- * Builds a deliberately SMALL, WHITELISTED resume dataset.
- *
- * We do not stringify the whole resume object anymore. Only fields that
- * are explicitly known to be factual/analytical InterviewIQ outputs are
- * included. This prevents unrelated Mongo fields or prior generated text
- * from becoming accidental "facts" for Qwen.
- */
 const buildVerifiedResumeContext = (
   resume:
     ICareerResumeContext
@@ -2266,51 +2235,51 @@ const buildVerifiedResumeContext = (
       string,
       unknown
     > = {
-      factualAvailability: {
-        hasStructuredExperience:
-          experience.length >
-          0,
+    factualAvailability: {
+      hasStructuredExperience:
+        experience.length >
+        0,
 
-        hasExperienceBullets:
-          experience.some(
-            (
-              item
-            ) =>
-              Array.isArray(
-                item.bullets
-              ) &&
-              item.bullets.length >
-                0
-          ),
+      hasExperienceBullets:
+        experience.some(
+          (
+            item
+          ) =>
+            Array.isArray(
+              item.bullets
+            ) &&
+            item.bullets.length >
+            0
+        ),
 
-        hasStructuredProjects:
-          projects.length >
-          0,
+      hasStructuredProjects:
+        projects.length >
+        0,
 
-        hasStructuredEducation:
-          education.length >
-          0,
+      hasStructuredEducation:
+        education.length >
+        0,
 
-        hasCurrentSkills:
-          currentSkills.length >
-          0,
+      hasCurrentSkills:
+        currentSkills.length >
+        0,
 
-        hasSuggestedSkills:
-          suggestedSkills.length >
-          0,
-      },
+      hasSuggestedSkills:
+        suggestedSkills.length >
+        0,
+    },
 
-      importantInterpretation: {
-        currentSkills:
-          "These are skills detected/listed as present in the CV.",
+    importantInterpretation: {
+      currentSkills:
+        "These are skills detected/listed as present in the CV.",
 
-        suggestedSkills:
-          "These are suggestions or gaps. They MUST NOT be described as skills the candidate already has.",
+      suggestedSkills:
+        "These are suggestions or gaps. They MUST NOT be described as skills the candidate already has.",
 
-        analysisText:
-          "Strengths, weaknesses, suggestions, and recommendations are analysis outputs, not proof of a specific employer, project, technology, metric, date, or achievement.",
-      },
-    };
+      analysisText:
+        "Strengths, weaknesses, suggestions, and recommendations are analysis outputs, not proof of a specific employer, project, technology, metric, date, or achievement.",
+    },
+  };
 
   if (
     Object.keys(
@@ -2452,210 +2421,232 @@ const buildVerifiedResumeContext = (
 };
 
 
-/*
- * Conversation history is used for conversational references only.
- *
- * CRITICAL: we intentionally exclude prior ASSISTANT messages from the
- * Qwen dataset. A previous assistant reply might itself contain a mistake.
- * Feeding it back as context can turn one hallucination into a repeated
- * "fact". User messages are sufficient to preserve the topic and resolve
- * follow-ups such as "why?", "after that?", or "give me an example".
- */
 const normalizeConversationHistory = (
   value?: ICareerConversationTurn[]
 ): ICareerConversationTurn[] => {
-  if (
-    !Array.isArray(
-      value
-    )
-  ) {
+  if (!Array.isArray(value)) {
     return [];
   }
 
   return value
     .filter(
-      (
-        item
-      ) =>
+      (item) =>
         item &&
-        item.role ===
-          "user" &&
-        typeof item.content ===
-          "string" &&
-        item.content
-          .trim()
-          .length >
-          0
+        (item.role === "user" ||
+          item.role === "assistant") &&
+        typeof item.content === "string" &&
+        item.content.trim().length > 0
     )
-    .slice(
-      -6
-    )
-    .map(
-      (
-        item
-      ) => ({
-        role:
-          "user" as const,
+    .slice(-12)
+    .map((item) => ({
+      role: item.role,
 
-        content:
-          item.content
-            .replace(
-              /\s+/g,
-              " "
-            )
-            .trim()
-            .slice(
-              0,
-              500
-            ),
-      })
+      content: item.content
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(
+          0,
+          item.role === "assistant"
+            ? 1200
+            : 500
+        ),
+      metadata: item.metadata,
+    }));
+};
+
+const normalizeTopicForComparison = (
+  value: string
+): string =>
+  value
+    .toLowerCase()
+    .replace(/[^a-z0-9+#.]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+
+/* =========================================================
+   DETERMINISTIC RECOMMENDATION TRACKING (ROOT CAUSE FIX)
+========================================================= */
+
+const extractCareerKnowledgeTopics = (
+  careerKnowledge: unknown
+): string[] => {
+  if (
+    typeof careerKnowledge !== "object" ||
+    careerKnowledge === null
+  ) {
+    return [];
+  }
+
+  const knowledge =
+    careerKnowledge as Record<
+      string,
+      unknown
+    >;
+
+  const roleContext =
+    typeof knowledge.roleContext === "object" &&
+      knowledge.roleContext !== null
+      ? knowledge.roleContext as Record<
+        string,
+        unknown
+      >
+      : undefined;
+
+  const possibleTopicArrays = [
+    knowledge.priorityTopics,
+    roleContext?.priorityTopics,
+    knowledge.missingTopics,
+    roleContext?.missingTopics,
+  ];
+
+  const topicItems =
+    possibleTopicArrays.flatMap(
+      (items) =>
+        Array.isArray(items)
+          ? items
+          : []
     );
+
+  if (topicItems.length === 0) {
+    return [];
+  }
+
+  const topics: string[] = [];
+  const seen = new Set<string>();
+
+  for (const rawItem of topicItems) {
+    if (
+      typeof rawItem !== "object" ||
+      rawItem === null
+    ) {
+      continue;
+    }
+
+    const item =
+      rawItem as Record<
+        string,
+        unknown
+      >;
+
+    const topic =
+      typeof item.topic === "object" &&
+        item.topic !== null
+        ? item.topic as Record<
+          string,
+          unknown
+        >
+        : item;
+
+    const name =
+      typeof topic.name === "string"
+        ? topic.name.trim()
+        : "";
+
+    if (!name) {
+      continue;
+    }
+
+    const normalizedName =
+      normalizeTopicForComparison(
+        name
+      );
+
+    if (!normalizedName || seen.has(normalizedName)) {
+      continue;
+    }
+
+    seen.add(normalizedName);
+    topics.push(name);
+  }
+
+  return topics;
+};
+
+const getPreviouslyRecommendedTopicsForSubject = (
+  history: ICareerConversationTurn[],
+  currentSubject: string
+): string[] => {
+  const recommendedTopics = new Map<string, string>();
+
+  const normalize = (value: string): string =>
+    value
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, " ");
+
+  const targetSubject = normalize(currentSubject);
+
+  for (const turn of history) {
+    if (turn.role !== "assistant") {
+      continue;
+    }
+
+    const metadata = turn.metadata;
+
+    if (!metadata) {
+      continue;
+    }
+
+    const turnSubject = metadata.careerSubject;
+
+    if (!turnSubject) {
+      continue;
+    }
+
+    if (normalize(turnSubject) !== targetSubject) {
+      continue;
+    }
+
+    const topics = metadata.recommendedTopics;
+
+    if (!Array.isArray(topics)) {
+      continue;
+    }
+
+    for (const topic of topics) {
+      if (typeof topic !== "string") {
+        continue;
+      }
+
+      const cleanTopic = topic.trim();
+
+      if (!cleanTopic) {
+        continue;
+      }
+
+      const normalizedTopic = normalize(cleanTopic);
+
+      if (!recommendedTopics.has(normalizedTopic)) {
+        recommendedTopics.set(
+          normalizedTopic,
+          cleanTopic
+        );
+      }
+    }
+  }
+
+  return Array.from(recommendedTopics.values());
 };
 
 
 const buildQwenCareerDataset = (
-  input:
-    ICareerSmartResponseInput
-): Record<
-  string,
-  unknown
-> => {
-  const dataset:
-    Record<
-      string,
-      unknown
-    > = {
-    detectedIntent:
-      input.intent,
-
-    responseFocus:
-      input.focus,
+  input: ICareerSmartResponseInput
+): Record<string, unknown> => {
+  const dataset: Record<string, unknown> = {
+    intent: input.intent,
+    focus: input.focus,
 
     groundingPolicy: {
-      rule:
-        "Only explicit values in this dataset may be treated as personalized facts.",
-
-      priorAssistantMessagesAreEvidence:
-        false,
-
-      databaseContextIsSupportingEvidence:
-        true,
-
-      inventMissingResumeDetails:
-        false,
+      useOnlyProvidedPersonalizedFacts: true,
+      inventMissingFacts: false,
     },
   };
 
-  if (
-    input.customerName
-  ) {
+  if (input.customerName) {
     dataset.user = {
-      name:
-        input.customerName,
+      name: input.customerName,
     };
-  }
-
-  if (
-    input.targetRole
-  ) {
-    dataset.targetRole =
-      input.targetRole;
-  }
-
-  if (
-    input.careerGoalText
-  ) {
-    dataset.careerGoal =
-      input.careerGoalText;
-  }
-
-  if (
-    Array.isArray(
-      input.skillsFocus
-    ) &&
-    input.skillsFocus.length >
-      0
-  ) {
-    dataset.skillsFocus =
-      cleanDatasetStringArray(
-        input.skillsFocus,
-        12,
-        140
-      );
-  }
-
-  if (
-    input.resume
-  ) {
-    dataset.verifiedResume =
-      buildVerifiedResumeContext(
-        input.resume
-      );
-  }
-
-  /*
-   * These contexts are produced by dedicated InterviewIQ services.
-   * They are still bounded to keep the local 4B prompt small enough
-   * for reliable CPU inference.
-   */
-  if (
-    input.jobMatches
-  ) {
-    dataset.jobMatches =
-      toSafeDatasetValue(
-        input.jobMatches,
-        1000
-      );
-  }
-
-  if (
-    input.interview
-  ) {
-    dataset.interview =
-      toSafeDatasetValue(
-        input.interview,
-        1000
-      );
-  }
-
-  if (
-    input.progress
-  ) {
-    dataset.careerProgress =
-      toSafeDatasetValue(
-        input.progress,
-        900
-      );
-  }
-
-  if (
-    input.nextSteps
-  ) {
-    dataset.savedNextSteps =
-      toSafeDatasetValue(
-        input.nextSteps,
-        800
-      );
-  }
-
-  if (
-    input.careerGoal
-  ) {
-    dataset.careerGoalEvaluation =
-      toSafeDatasetValue(
-        input.careerGoal,
-        800
-      );
-  }
-
-  if (
-    input.jobSearchHelp
-  ) {
-    dataset.jobSearchContext =
-      toSafeDatasetValue(
-        input.jobSearchHelp,
-        900
-      );
   }
 
   const history =
@@ -2663,12 +2654,232 @@ const buildQwenCareerDataset = (
       input.conversationHistory
     );
 
+  const additionalInformationRequested =
+    requestsAdditionalInformation(
+      input.message
+    );
+
+  const repeatedOrSimilarQuestion =
+    isRepeatedOrSimilarQuestion(
+      input.message,
+      history
+    );
+
   if (
-    history.length >
-    0
+    additionalInformationRequested
   ) {
-    dataset.recentUserMessages =
-      history;
+    dataset.additionalInformationRequested =
+      true;
+  }
+
+  if (
+    repeatedOrSimilarQuestion
+  ) {
+    dataset.repeatedOrSimilarQuestion =
+      true;
+  }
+
+  if (history.length > 0) {
+    dataset.recentConversation =
+      history.slice(-6);
+  }
+
+  const knowledgeSubject =
+    input.nextSteps?.knowledgeSubject;
+
+  const questionKnowledge =
+    input.nextSteps?.careerKnowledge;
+
+  if (
+    knowledgeSubject &&
+    questionKnowledge?.found
+  ) {
+    const allKnowledgeTopics = extractCareerKnowledgeTopics(questionKnowledge);
+    const previouslyRecommended =
+      getPreviouslyRecommendedTopicsForSubject(
+        input.careerRecommendationHistory ?? history,
+        knowledgeSubject
+      );
+
+    const availableTopics = allKnowledgeTopics.filter(
+      topic => !previouslyRecommended.some(rec => normalizeTopicForComparison(rec) === normalizeTopicForComparison(topic))
+    );
+
+    const questionDataset:
+      Record<string, unknown> = {
+      subject:
+        knowledgeSubject,
+
+      careerKnowledge:
+        toSafeDatasetValue(
+          questionKnowledge,
+          3200
+        ),
+    };
+
+    const batchSize = 4;
+    const freshTopicCandidates = availableTopics.slice(0, batchSize);
+    const isExhausted = additionalInformationRequested && availableTopics.length === 0;
+
+    questionDataset.freshTopicCandidates = freshTopicCandidates;
+    questionDataset.freshTopicsExhausted = isExhausted;
+
+    if (freshTopicCandidates.length > 0) {
+      questionDataset.freshTopicInstruction =
+        `STRICT DIVERSITY REQUIREMENT: You MUST recommend ONLY these specific unused topics: ${freshTopicCandidates.join(", ")}. Do NOT repeat any previously covered skills.`;
+    }
+
+    dataset.question =
+      questionDataset;
+  }
+
+  const needsResumeEvidence =
+    new Set([
+      "CV_ANALYSIS",
+      "CV_IMPROVEMENT",
+      "SKILL_GAP",
+      "PROFILE_SUMMARY",
+      "JOB_MATCHING",
+      "JOB_SEARCH_HELP",
+      "INTERVIEW_PREP",
+      "NEXT_STEPS",
+      "CAREER_GOAL",
+    ]).has(
+      normalizeSmartIntent(
+        input.intent
+      )
+    );
+
+  if (
+    needsResumeEvidence &&
+    input.resume
+  ) {
+    const resumeEvidence =
+      buildVerifiedResumeContext(
+        input.resume
+      );
+
+    if (
+      normalizeSmartIntent(
+        input.intent
+      ) === "SKILL_GAP" &&
+      knowledgeSubject
+    ) {
+      delete resumeEvidence.suggestedSkills;
+      delete resumeEvidence.analysisSummary;
+      delete resumeEvidence.weaknesses;
+      delete resumeEvidence.recommendations;
+      delete resumeEvidence.atsSuggestions;
+      delete resumeEvidence.formattingFeedback;
+
+      const factualAvailability =
+        toDatasetRecord(
+          resumeEvidence.factualAvailability
+        );
+
+      if (
+        factualAvailability
+      ) {
+        factualAvailability.hasSuggestedSkills =
+          false;
+      }
+    }
+
+    dataset.resumeEvidence =
+      resumeEvidence;
+  }
+
+  switch (
+  normalizeSmartIntent(
+    input.intent
+  )
+  ) {
+    case "INTERVIEW_FEEDBACK": {
+      if (input.interview) {
+        dataset.interview =
+          toSafeDatasetValue(
+            input.interview,
+            1400
+          );
+      }
+      break;
+    }
+
+    case "CAREER_PROGRESS": {
+      if (input.progress) {
+        dataset.careerProgress =
+          toSafeDatasetValue(
+            input.progress,
+            1200
+          );
+      }
+      break;
+    }
+
+    case "JOB_MATCHING": {
+      if (input.jobMatches) {
+        dataset.jobMatches =
+          toSafeDatasetValue(
+            input.jobMatches,
+            1600
+          );
+      }
+      break;
+    }
+
+    case "JOB_SEARCH_HELP": {
+      if (input.jobSearchHelp) {
+        dataset.jobSearchContext =
+          toSafeDatasetValue(
+            input.jobSearchHelp,
+            1400
+          );
+      }
+      break;
+    }
+
+    case "CAREER_GOAL": {
+      if (input.careerGoal) {
+        dataset.careerGoalEvaluation =
+          toSafeDatasetValue(
+            input.careerGoal,
+            1400
+          );
+      }
+
+      if (input.careerGoalText) {
+        dataset.careerGoal =
+          input.careerGoalText;
+      }
+      break;
+    }
+
+    case "NEXT_STEPS": {
+      if (
+        !knowledgeSubject &&
+        input.nextSteps?.steps
+      ) {
+        dataset.nextSteps =
+          input.nextSteps.steps
+            .slice(0, 6)
+            .map(
+              (step) => ({
+                title:
+                  step.title,
+
+                description:
+                  step.description,
+
+                category:
+                  step.category,
+
+                priority:
+                  step.priority,
+              })
+            );
+      }
+      break;
+    }
   }
 
   return dataset;
@@ -2676,150 +2887,68 @@ const buildQwenCareerDataset = (
 
 
 const buildQwenCareerSystemPrompt = (
-  input: ICareerSmartResponseInput
+  input: ICareerSmartResponseInput,
+  providedDataset?: Record<string, unknown>
 ): string => {
   const dataset =
+    providedDataset ??
     buildQwenCareerDataset(
       input
     );
 
   const serializedDataset =
     JSON.stringify(
-      dataset,
-      null,
-      2
+      dataset
     );
 
   return `
 You are InterviewIQ Career Assistant.
 
-You are a professional AI career advisor that answers questions using the user's real InterviewIQ profile, resume, projects, experience, interview results, job matches, and career data.
+Answer the user's CURRENT question directly.
 
-Your goal is not to produce generic career advice when personalized evidence is available.
+RULES:
 
-==================================================
-IDENTITY
-==================================================
-- You are InterviewIQ Career Assistant.
-- You are NOT the user.
-- Names in INTERVIEWIQ DATA belong to the user.
-- You may address the user by first name.
-- Never introduce yourself using the user's name.
-- Never claim the user's experience, projects, education, skills, or achievements as your own.
+1. Use the supplied context when it is relevant to the question.
 
-==================================================
-MOST IMPORTANT RULE
-==================================================
-Answer the CURRENT USER MESSAGE.
+2. Personalized facts must come only from the supplied context.
+Never invent experience, projects, skills, employers, education,
+scores, achievements, technologies, dates, or metrics.
 
-Before answering a personalized question:
-1. Read the relevant INTERVIEWIQ DATA.
-2. Find the strongest available evidence.
-3. Answer using that evidence.
-4. Explain why the evidence supports the conclusion.
+3. The subject of the current question has priority over any saved
+career target or previous career context.
 
-Do not ask the user for information that is already available in INTERVIEWIQ DATA.
-Do not replace available personalized information with generic advice.
+4. If question.careerKnowledge exists, it represents knowledge for
+the subject currently being asked about. Use it as the primary
+career-knowledge source.
 
-==================================================
-SKILL ANALYSIS
-==================================================
-When the user asks about strongest skills, technical skills, weaknesses, skills to improve, CV strengths, career strengths, or skill gaps, do NOT simply copy currentSkills.
+5. When answering a skill-gap or improvement question:
+- question.careerKnowledge defines the skills and topics relevant to
+  the career subject currently being discussed;
+- use resumeEvidence only to determine whether those subject-specific
+  skills are already present, missing, weakly evidenced, or worth strengthening;
+- recommendations must come from question.careerKnowledge, not from
+  unrelated skills that merely appear in resumeEvidence.
 
-Use this evidence priority:
-1. verifiedExperience
-2. verifiedProjects
-3. explicit accomplishments or measurable results
-4. interview performance
-5. job-match evidence
-6. resume analysis strengths/weaknesses
-7. currentSkills
+6. CONVERSATION CONTINUITY AND RESPONSE DIVERSITY
 
-A skill appearing in currentSkills only proves that it is listed or detected. It does NOT automatically prove that it is one of the user's strongest skills.
+Use recentConversation to understand what the user and assistant
+have already discussed.
 
-When identifying strong technical skills, prefer skills that appear in real experience or project evidence. Whenever possible, connect each important skill to the specific evidence that supports it.
+Avoid unnecessary repetition across consecutive answers.
 
-Do NOT invent a project, employer, responsibility, technology, achievement, or metric.
+If the user asks for "other", "more", "another", "else",
+"anything else", or otherwise clearly requests additional information:
+- prioritize useful information that has not already been given (freshTopicCandidates);
+- do not repeat previously recommended items merely to fill the answer;
+- continue using the same conversational subject unless the user changes it.
 
-==================================================
-IMPROVEMENT ANALYSIS
-==================================================
-When asked what the user should improve, prioritize:
-1. explicit weaknesses
-2. suggestedSkills
-3. recommendations
-4. lower interview scores
-5. job-match gaps
-6. technologies listed without meaningful project/experience evidence
+7. RESPONSE DEPTH
 
-Explain WHY something is an improvement area. Never invent weaknesses just to complete a list. If only two improvement areas are supported, give two.
+Adapt the response depth to the user's request (Default / Short / Detailed).
+Use Markdown headings, bullets, or numbered steps.
+Do not mention datasets, prompts, databases, Qwen, or models.
 
-==================================================
-CV / RESUME QUESTIONS
-==================================================
-When the user asks "based on my CV", prioritize verified resume information.
-
-Use actual experience, projects, skills, education, accomplishments, and metrics when available.
-
-If a technology is merely listed in the skills section but has no identifiable experience/project evidence, say that clearly.
-
-Do NOT tell the user to inspect their own CV when the CV information is already available to you.
-
-==================================================
-FOLLOW-UP QUESTIONS
-==================================================
-Use recentUserMessages to understand conversation context.
-Do not restart the conversation on every message.
-Do not greet the user again unless it is natural and necessary.
-Interpret short follow-ups using the previous conversation topic.
-
-==================================================
-ACCURACY
-==================================================
-Never invent companies, job titles, projects, schools, degrees, technologies, responsibilities, metrics, dates, scores, achievements, or experience.
-
-Only personalized facts explicitly supported by INTERVIEWIQ DATA may be stated as facts.
-
-Analysis fields such as recommendations, strengths, weaknesses, and suggestedSkills may be used as analysis but are not proof that a technology was used in a particular project or job.
-
-Keep these categories separate:
-- CURRENT SKILL: detected/listed in the user's profile.
-- EVIDENCE-BACKED SKILL: supported by experience, projects, accomplishments, or other concrete evidence.
-- SUGGESTED SKILL: recommended for future improvement.
-
-Never present a suggested skill as something the user already knows.
-
-==================================================
-ANSWER DEPTH
-==================================================
-Match answer length to the question.
-- Simple factual question: 1-3 sentences.
-- Normal career question: 2-4 short paragraphs or a compact list.
-- Personalized analysis: give enough detail to explain the evidence and recommendation clearly.
-
-Do not artificially make every answer short or long.
-
-==================================================
-WRITING STYLE
-==================================================
-Write naturally. Sound like a useful career advisor, not a database report.
-Answer the question immediately.
-
-Do not begin with phrases such as:
-- "Based on the provided InterviewIQ data, I have analyzed..."
-- "According to the dataset..."
-- "Based on the provided context..."
-
-Use Markdown when useful. Use **bold** for important skills, conclusions, scores, or recommendations. Use compact bullet points when several items need comparison.
-
-Avoid filler, unnecessary disclaimers, repetitive conclusions, and generic questionnaires.
-
-Do not mention INTERVIEWIQ DATA, dataset, prompt, database, Qwen, model, or internal system.
-Return only the final user-facing answer.
-
-==================================================
-INTERVIEWIQ DATA
-==================================================
+CONTEXT:
 ${serializedDataset}
 `.trim();
 };
@@ -2882,31 +3011,31 @@ const buildSafeCvExampleFallback = (
   const verified =
     input.resume
       ? buildVerifiedResumeContext(
-          input.resume
-        )
+        input.resume
+      )
       : undefined;
 
   const currentSkills =
     verified &&
-    Array.isArray(
-      verified.currentSkills
-    )
+      Array.isArray(
+        verified.currentSkills
+      )
       ? (
-          verified.currentSkills as string[]
-        )
+        verified.currentSkills as string[]
+      )
       : [];
 
   const skillHint =
     currentSkills.length >
-    0
+      0
       ? ` You can use one of your verified skills where appropriate, such as ${currentSkills
-          .slice(
-            0,
-            3
-          )
-          .join(
-            ", "
-          )}, but only if that skill was actually used in the experience you are rewriting.`
+        .slice(
+          0,
+          3
+        )
+        .join(
+          ", "
+        )}, but only if that skill was actually used in the experience you are rewriting.`
       : "";
 
   return (
@@ -2916,6 +3045,152 @@ const buildSafeCvExampleFallback = (
   );
 };
 
+const requestsAdditionalInformation = (
+  message: string
+): boolean => {
+  const normalized =
+    message
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, " ");
+
+  const patterns = [
+    /\bwhat else\b/i,
+    /\banything else\b/i,
+    /\bsomething else\b/i,
+    /\bany other\b/i,
+    /\bother (?:skills?|things?|areas?|topics?|recommendations?|options?|ways?)\b/i,
+    /\bmore (?:skills?|things?|areas?|topics?|recommendations?|options?|ways?|information|advice)\b/i,
+    /\banother (?:skill|thing|area|topic|recommendation|option|way|example)\b/i,
+    /\badditional (?:skills?|things?|areas?|topics?|recommendations?|information|advice)\b/i,
+    /\bwhat more\b/i,
+    /\bwhich other\b/i,
+  ];
+
+  return patterns.some(
+    (pattern) =>
+      pattern.test(normalized)
+  );
+};
+
+const normalizeQuestionForComparison = (
+  value: string
+): string =>
+  value
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+
+const isRepeatedOrSimilarQuestion = (
+  currentMessage: string,
+  history: ICareerConversationTurn[]
+): boolean => {
+  const current =
+    normalizeQuestionForComparison(
+      currentMessage
+    );
+
+  if (!current) {
+    return false;
+  }
+
+  if (requestsAdditionalInformation(currentMessage)) {
+    return false;
+  }
+
+  const previousUserMessages =
+    history
+      .filter(
+        (item) =>
+          item.role === "user"
+      )
+      .slice(-6)
+      .map(
+        (item) =>
+          normalizeQuestionForComparison(
+            item.content
+          )
+      )
+      .filter(Boolean);
+
+  if (
+    previousUserMessages.includes(
+      current
+    )
+  ) {
+    return true;
+  }
+
+  const currentWords =
+    new Set(
+      current
+        .split(" ")
+        .filter(
+          (word) =>
+            word.length >= 3
+        )
+    );
+
+  if (currentWords.size === 0) {
+    return false;
+  }
+
+  for (
+    const previous of
+    previousUserMessages
+  ) {
+    const previousWords =
+      new Set(
+        previous
+          .split(" ")
+          .filter(
+            (word) =>
+              word.length >= 3
+          )
+      );
+
+    if (
+      previousWords.size === 0
+    ) {
+      continue;
+    }
+
+    let shared = 0;
+
+    for (
+      const word of
+      currentWords
+    ) {
+      if (
+        previousWords.has(
+          word
+        )
+      ) {
+        shared += 1;
+      }
+    }
+
+    const smallerSize =
+      Math.min(
+        currentWords.size,
+        previousWords.size
+      );
+
+    const similarity =
+      shared /
+      smallerSize;
+
+    if (
+      similarity >= 0.7
+    ) {
+      return true;
+    }
+  }
+
+  return false;
+};
 
 const isSimpleCareerGreeting = (
   message: string
@@ -2963,27 +3238,89 @@ const buildCareerGreetingReply = (
   return "Hi! I'm your InterviewIQ Career Assistant. How can I help you today?";
 };
 
+const buildFreshTopicsExhaustedReply = (
+  input: ICareerSmartResponseInput,
+  dataset: Record<string, unknown>
+): string => {
+  const question =
+    typeof dataset.question === "object" &&
+      dataset.question !== null
+      ? dataset.question as Record<
+        string,
+        unknown
+      >
+      : undefined;
+
+  const subject =
+    typeof question?.subject === "string" &&
+      question.subject.trim()
+      ? question.subject.trim()
+      : input.targetRole?.trim() ||
+      "this career path";
+
+  return (
+    `We've already covered the main ${subject} skill areas available ` +
+    `in your current career knowledge, so I don't want to repeat the same ` +
+    `skills as if they were new recommendations. ` +
+    `The most useful next step is to go deeper into those areas—for example, ` +
+    `I can prioritize them for you, build a learning roadmap, suggest practical ` +
+    `projects and exercises, or explain the advanced subtopics you should learn next.`
+  );
+};
+
 
 const generateQwenCareerReply =
   async (
     input:
       ICareerSmartResponseInput
   ): Promise<
-    string | undefined
+    { reply?: string; recommendedTopics?: string[]; subject?: string } | undefined
   > => {
     if (
       isSimpleCareerGreeting(
         input.message
       )
     ) {
-      return buildCareerGreetingReply(
+      return { reply: buildCareerGreetingReply(input) };
+    }
+
+    const dataset =
+      buildQwenCareerDataset(
         input
       );
+
+    const question =
+      typeof dataset.question === "object" &&
+        dataset.question !== null
+        ? dataset.question as Record<
+          string,
+          unknown
+        >
+        : undefined;
+
+    const freshTopicsExhausted =
+      question?.freshTopicsExhausted ===
+      true;
+
+    const additionalInformationRequested =
+      dataset.additionalInformationRequested ===
+      true;
+
+    if (
+      freshTopicsExhausted &&
+      additionalInformationRequested
+    ) {
+      return {
+        reply: buildFreshTopicsExhaustedReply(input, dataset),
+        recommendedTopics: [],
+        subject: typeof question?.subject === "string" ? question.subject : undefined
+      };
     }
 
     const systemPrompt =
       buildQwenCareerSystemPrompt(
-        input
+        input,
+        dataset
       );
 
     const userPrompt = `
@@ -2993,25 +3330,10 @@ ${input.message.trim()}
 """
 
 Answer the CURRENT USER MESSAGE directly.
-
-Use the user's existing InterviewIQ information before asking for more information.
-
-For personalized questions:
-- find the relevant evidence first;
-- distinguish listed skills from evidence-backed skills;
-- distinguish current skills from suggested skills;
-- explain important conclusions using the available real evidence;
-- never invent missing evidence.
-
-Match the amount of detail to the user's question.
 Return only the final answer.
 `.trim();
 
     try {
-      console.log(
-        "[Career Assistant] Calling Qwen conversational text endpoint..."
-      );
-
       const response =
         await qwenService
           .generateQwenChatText({
@@ -3040,7 +3362,7 @@ Return only the final answer.
               0.85,
 
             maxCompletionTokens:
-              420,
+              700,
 
             timeoutMs:
               300_000,
@@ -3049,43 +3371,10 @@ Return only the final answer.
               0,
           });
 
-      console.log(
-        "[Career Assistant][QWEN RESULT]",
-        JSON.stringify(
-          {
-            success:
-              response.success,
-
-            hasText:
-              Boolean(
-                response.text
-              ),
-
-            textLength:
-              response.text
-                ?.length ??
-              0,
-
-            finishReason:
-              response.finishReason,
-
-            error:
-              response.error,
-          },
-          null,
-          2
-        )
-      );
-
       if (
         !response.success ||
         !response.text
       ) {
-        console.warn(
-          "[Career Assistant] Qwen chat generation failed.",
-          response.error
-        );
-
         return undefined;
       }
 
@@ -3102,22 +3391,9 @@ Return only the final answer.
           .trim();
 
       if (!reply) {
-        console.warn(
-          "[Career Assistant] Qwen returned an empty reply after normalization."
-        );
-
         return undefined;
       }
 
-      /*
-       * Final server-side grounding guard.
-       *
-       * Prompt rules are not enough for a small local model. When the user
-       * explicitly asks for an example "using my CV" but our verified dataset
-       * contains no real experience bullet, we NEVER allow generated details
-       * through. This makes the behavior deterministic and prevents invented
-       * companies, roles, technologies, and metrics from reaching the user.
-       */
       if (
         messageRequestsCvSpecificExample(
           input.message
@@ -3126,39 +3402,41 @@ Return only the final answer.
           input
         )
       ) {
-        console.warn(
-          "[Career Assistant] Grounding guard replaced an unverifiable CV-specific example."
-        );
-
-        return buildSafeCvExampleFallback(
-          input
-        );
+        return { reply: buildSafeCvExampleFallback(input) };
       }
 
-      console.log(
-        `[Career Assistant] Fresh grounded Qwen reply ready (${reply.length} chars).`
+      const freshCandidates = Array.isArray(question?.freshTopicCandidates)
+        ? (question.freshTopicCandidates as string[])
+        : [];
+
+      const normalizeTopicText = (value: string): string =>
+        value
+          .toLowerCase()
+          .normalize("NFKC")
+          .replace(/\s+/g, " ")
+          .trim();
+
+      const normalizedReply = normalizeTopicText(reply);
+
+      const recommendedTopics = freshCandidates.filter(
+        (topic) =>
+          normalizedReply.includes(
+            normalizeTopicText(topic)
+          )
       );
 
-      return reply;
-    } catch (error) {
-      console.warn(
-        "[Career Assistant] Qwen conversational generation threw an exception.",
-        error
-      );
+      const finalRecommended = recommendedTopics;
 
+      return {
+        reply,
+        recommendedTopics: finalRecommended,
+        subject: typeof question?.subject === "string" ? question.subject : undefined
+      };
+    } catch {
       return undefined;
     }
   };
 
-
-/* =========================================================
-   QWEN PRIMARY RESPONSE GENERATOR
-
-   IMPORTANT:
-   - Every incoming message generates a fresh response.
-   - Cached responses are never directly reused.
-   - Rule-based builders remain only for backward compatibility.
-========================================================= */
 
 export const buildCareerDynamicOrQwenResponse =
   async (
@@ -3167,51 +3445,20 @@ export const buildCareerDynamicOrQwenResponse =
   ): Promise<
     ICareerDynamicResponseResult
   > => {
-    console.log(
-      "===================================================="
-    );
-
-    console.log(
-      "🤖 [Career Assistant] Generating a NEW Qwen response..."
-    );
-
-    console.log(
-      "🧠 [Career Assistant] Conversation context + InterviewIQ dataset injected."
-    );
-
-    console.log(
-      "===================================================="
-    );
-
-    const startedAt =
-      Date.now();
-
-    const qwenReply =
+    const qwenResult =
       await generateQwenCareerReply(
         input
       );
 
     if (
-      qwenReply
+      qwenResult?.reply
     ) {
-      console.log(
-        `✅ [Career Assistant] Fresh Qwen response generated in ${(
-          (
-            Date.now() -
-            startedAt
-          ) /
-          1000
-        ).toFixed(
-          2
-        )}s`
-      );
-
       return {
         generated:
           true,
 
         reply:
-          qwenReply,
+          qwenResult.reply,
 
         focus:
           input.focus,
@@ -3225,61 +3472,60 @@ export const buildCareerDynamicOrQwenResponse =
 
             ...(input.resume
               ? [
-                  "resume",
-                ]
+                "resume",
+              ]
               : []),
 
             ...(input.jobMatches
               ? [
-                  "jobMatches",
-                ]
+                "jobMatching",
+              ]
               : []),
 
             ...(input.interview
               ? [
-                  "interview",
-                ]
+                "interview",
+              ]
               : []),
 
             ...(input.progress
               ? [
-                  "careerProgress",
-                ]
+                "careerProgress",
+              ]
               : []),
 
             ...(input.nextSteps
               ? [
-                  "nextSteps",
-                ]
+                "nextSteps",
+              ]
               : []),
 
             ...(input.careerGoal
               ? [
-                  "careerGoal",
-                ]
+                "careerGoal",
+              ]
               : []),
 
             ...(input.jobSearchHelp
               ? [
-                  "jobSearchHelp",
-                ]
+                "jobSearchHelp",
+              ]
               : []),
 
             ...(input.conversationHistory &&
-            input.conversationHistory.length >
+              input.conversationHistory.length >
               0
               ? [
-                  "conversationHistory",
-                ]
+                "conversationHistory",
+              ]
               : []),
           ],
+
+          careerSubject: qwenResult.subject,
+          recommendedTopics: qwenResult.recommendedTopics,
         },
       };
     }
-
-    console.warn(
-      "⚠️ [Career Assistant] Qwen failed to generate a fresh response."
-    );
 
     return {
       generated:
@@ -3303,17 +3549,6 @@ export const buildCareerDynamicOrQwenResponse =
   };
 
 
-/*
- * Smart response order:
- *
- * 1. Qwen direct contextual generation for EVERY new message
- * 2. Save successful fresh Qwen response to MongoDB
- * 3. Never return a cached response directly
- * 4. Existing deterministic builders are preserved only for backward compatibility
- *
- * The original synchronous buildCareerDynamicResponse() is kept
- * unchanged for backward compatibility and emergency reliability.
- */
 export const buildCareerSmartResponse =
   async (
     input:
@@ -3358,25 +3593,8 @@ export const buildCareerSmartResponse =
         input
       );
 
-    /* =====================================================
-       1. FRESH QWEN GENERATION
-
-       IMPORTANT:
-       Cached responses are NEVER returned directly.
-       Every incoming user message receives a brand-new
-       contextual answer from Qwen.
-    ===================================================== */
-
-    console.log(
-      "[Career Assistant] Fresh-response mode enabled. Cached replies will not be reused."
-    );
-
-    console.log(
-      "[Career Assistant] Qwen is preparing a brand-new contextual response."
-    );
-
-    const qwenReply =
-      await generateQwenCareerReply(
+    const result =
+      await buildCareerDynamicOrQwenResponse(
         {
           ...input,
           message,
@@ -3384,44 +3602,9 @@ export const buildCareerSmartResponse =
       );
 
     if (
-      !qwenReply
-    ) {
-      console.warn(
-        "[Career Assistant] Qwen failed to generate a fresh response."
-      );
-
-      return {
-        generated:
-          true,
-
-        reply:
-          "I couldn't generate a fresh personalized response right now. Please try again in a moment.",
-
-        focus:
-          input.focus,
-
-        metadata: {
-          strategy:
-            "QWEN_FRESH_GENERATION_FAILED",
-
-          dataSources: [
-            "qwen",
-          ],
-        },
-      };
-    }
-
-    /* =====================================================
-       2. SAVE FRESH QWEN RESPONSE
-
-       Cache is kept for persistence / analytics / future
-       optimization, but it is NOT used as a direct reply
-       source in fresh-response mode.
-    ===================================================== */
-
-    if (
       cacheEnabled &&
-      input.userId
+      input.userId &&
+      result.reply
     ) {
       await trySaveCareerResponseCache(
         {
@@ -3435,7 +3618,7 @@ export const buildCareerSmartResponse =
             input.intent,
 
           response:
-            qwenReply,
+            result.reply,
 
           context:
             cacheContext,
@@ -3446,62 +3629,9 @@ export const buildCareerSmartResponse =
       );
     }
 
-    return {
-      generated:
-        true,
-
-      reply:
-        qwenReply,
-
-      focus:
-        input.focus,
-
-      metadata: {
-        strategy:
-          "QWEN_FRESH_CONTEXTUAL",
-
-        dataSources:
-          Array.from(
-            new Set([
-              "qwen",
-              ...(input.resume
-                ? ["resume"]
-                : []),
-              ...(input.jobMatches
-                ? ["jobMatching"]
-                : []),
-              ...(input.interview
-                ? ["interview"]
-                : []),
-              ...(input.progress
-                ? ["progress"]
-                : []),
-              ...(input.nextSteps
-                ? ["nextSteps"]
-                : []),
-              ...(input.careerGoal
-                ? ["careerGoal"]
-                : []),
-              ...(input.jobSearchHelp
-                ? ["jobSearchHelp"]
-                : []),
-              ...(input.conversationHistory &&
-              input.conversationHistory.length > 0
-                ? ["conversationHistory"]
-                : []),
-              ...(cacheEnabled
-                ? ["careerResponseCacheWriteOnly"]
-                : []),
-            ])
-          ),
-      },
-    };
+    return result;
   };
 
-
-/* =========================================================
-   DEFAULT EXPORT
-========================================================= */
 
 export default {
   buildCareerDynamicResponse,

@@ -28,12 +28,12 @@ export interface ICareerConversationContextResult {
   inheritedIntent?: string;
 
   reason?:
-    | "AWAITING_FIELD"
-    | "ROADMAP_FOLLOW_UP"
-    | "IMPROVEMENT_FOLLOW_UP"
-    | "REFERENCE_FOLLOW_UP"
-    | "CONTINUE_PREVIOUS_TOPIC"
-    | "NO_CONTEXT_OVERRIDE";
+  | "AWAITING_FIELD"
+  | "ROADMAP_FOLLOW_UP"
+  | "IMPROVEMENT_FOLLOW_UP"
+  | "REFERENCE_FOLLOW_UP"
+  | "CONTINUE_PREVIOUS_TOPIC"
+  | "NO_CONTEXT_OVERRIDE";
 
   metadata: {
     hasReferenceLanguage: boolean;
@@ -385,32 +385,32 @@ const hasStrongExplicitIntent =
   ): boolean => {
     const patterns:
       RegExp[] = [
-      /\b(cv|resume)\b.*\b(analyze|analysis|review|score)\b/i,
+        /\b(cv|resume)\b.*\b(analyze|analysis|review|score)\b/i,
 
-      /\b(analyze|review)\b.*\b(cv|resume)\b/i,
+        /\b(analyze|review)\b.*\b(cv|resume)\b/i,
 
-      /\bjob\b.*\b(match|matching)\b/i,
+        /\bjob\b.*\b(match|matching)\b/i,
 
-      /\bmatch\b.*\b(job|jobs|vacancy|vacancies)\b/i,
+        /\bmatch\b.*\b(job|jobs|vacancy|vacancies)\b/i,
 
-      /\binterview\b.*\b(feedback|performance|score|result)\b/i,
+        /\binterview\b.*\b(feedback|performance|score|result)\b/i,
 
-      /\bprepare\b.*\binterview\b/i,
+        /\bprepare\b.*\binterview\b/i,
 
-      /\binterview\b.*\bprepare|preparation|practice\b/i,
+        /\binterview\b.*\bprepare|preparation|practice\b/i,
 
-      /\bcareer progress\b/i,
+        /\bcareer progress\b/i,
 
-      /\bcareer goal\b/i,
+        /\bcareer goal\b/i,
 
-      /\bprofile summary\b/i,
+        /\bprofile summary\b/i,
 
-      /\bskill gap\b/i,
+        /\bskill gap\b/i,
 
-      /\bmissing skills\b/i,
+        /\bmissing skills\b/i,
 
-      /\bjob search\b/i,
-    ];
+        /\bjob search\b/i,
+      ];
 
     return matchesAny(
       message,
@@ -431,7 +431,7 @@ const resolveRoadmapIntent = (
   previousTopic?: string
 ): string => {
   switch (
-    previousTopic
+  previousTopic
   ) {
     case "INTERVIEW_FEEDBACK":
     case "INTERVIEW_PREP":
@@ -459,7 +459,7 @@ const resolveImprovementIntent = (
   previousTopic?: string
 ): string => {
   switch (
-    previousTopic
+  previousTopic
   ) {
     /* =====================================================
        CV
@@ -643,9 +643,9 @@ export const resolveCareerConversationIntent =
       (
         hasReferenceLanguage ||
         originalIntent ===
-          "GENERAL_CAREER_HELP" ||
+        "GENERAL_CAREER_HELP" ||
         originalIntent ===
-          "NEXT_STEPS"
+        "NEXT_STEPS"
       )
     ) {
       const resolvedIntent =
@@ -690,7 +690,18 @@ export const resolveCareerConversationIntent =
     if (
       previousTopic &&
       hasImprovementLanguage &&
-      hasReferenceLanguage
+      (
+        hasReferenceLanguage ||
+        hasContinuationLanguage ||
+        originalIntent ===
+        "GENERAL_CAREER_HELP" ||
+        originalIntent ===
+        "JOB_SEARCH_HELP" ||
+        originalIntent ===
+        "JOB_MATCHING" ||
+        originalIntent ===
+        "SKILL_GAP"
+      )
     ) {
       const resolvedIntent =
         resolveImprovementIntent(
@@ -763,11 +774,8 @@ export const resolveCareerConversationIntent =
     if (
       previousTopic &&
       hasContinuationLanguage &&
-      (
-        originalIntent ===
-          "GENERAL_CAREER_HELP" ||
-        originalIntent ===
-          "GREETING"
+      !hasStrongExplicitIntent(
+        message
       )
     ) {
       return {
