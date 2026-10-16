@@ -1,9 +1,9 @@
 {
   "id": "bir-careers",
   "name": "Bir Careers",
-  "updatedAt": "2026-10-15T16:27:29.867Z",
+  "updatedAt": "2026-10-16T03:24:35.128Z",
   "success": true,
-  "count": 79,
+  "count": 76,
   "jobs": [
     {
       "externalId": "7657",
@@ -2827,51 +2827,6 @@
       "source": "Bir Careers"
     },
     {
-      "externalId": "8137",
-      "title": "Biznes analitik - Birbank Biznes sahəsi",
-      "company": "Kapital Bank / Bir",
-      "brand": "Birbank",
-      "location": "Bakı",
-      "summary": "Bu rolun əsas məqsədi, Bir ekosisteminin Fintek biznesində məlumatların (data) effektiv idarə olunması və təhlili vasitəsilə biznes qərar qəbuletməni dəstəkləmək, və analitik yanaşmalarla strateji fəaliyyətin optimallaşdırılmasına töhfə verməkdir.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
-      "description": "Bu rolun əsas məqsədi, Bir ekosisteminin Fintek biznesində məlumatların (data) effektiv idarə olunması və təhlili vasitəsilə biznes qərar qəbuletməni dəstəkləmək, və analitik yanaşmalarla strateji fəaliyyətin optimallaşdırılmasına töhfə verməkdir.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
-      "requirements": [
-        "Ali təhsil",
-        "Əla səviyyədə Azərbaycan dili, yaxşı səviyyədə ingilis və rus dili",
-        "Biznes, Maliyyə və İqtisadi sahə üzrə bakalavr dərəcəsi üstünlük hesab edilir",
-        "Müvafiq sahədə ən azı 1 il iş təcrübəsi",
-        "Analitik düşünmə qabiliyyət və iri həcmli məlumatlar ilə işləmə bacarığı",
-        "Məsuliyyətlilik, operativlik və dəqiqlik",
-        "Komanda ilə işləmək bacarığı",
-        "Yüksək səviyyədə Microsoft Excel üzrə biliklər",
-        "İri həcmli məlumat bazası və SQL sorğu dili ilə işləmək bacarığı",
-        "Vizuallaşdırma alətlərindən ən azı biri ilə işləmə bacarığı (Tableau və ya PowerBI)"
-      ],
-      "responsibilities": [
-        "Yeni biznes imkanlarını və inkişaf strategiyalarını müəyyən etmək üçün Product komandası ilə əməkdaşlıq etmək",
-        "Bazar tendensiyalarını, müştəri ehtiyaclarını və rəqiblərin fəaliyyətini anlamaq məqsədilə bazar araşdırmaları və təhlillər aparmaq",
-        "Məhsul performansını və müştəri məmnuniyyətini artırmaq üçün imkanları müəyyən etmək məqsədilə məlumatları təhlil etmək",
-        "Yeni məhsul ideyalarını və biznes təşəbbüslərini qiymətləndirmək üçün maliyyə modelləri və feasibility study-lər hazırlamaq",
-        "Əldə olunan nəticələri və tövsiyələri rəhbərlik və digər maraqlı tərəflər üçün ümumiləşdirən hesabat və təqdimatlar hazırlamaq"
-      ],
-      "benefits": [],
-      "skills": [
-        "SQL",
-        "Excel",
-        "Tableau"
-      ],
-      "employmentType": "full-time",
-      "experienceLevel": "mid",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "15.10.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8137",
-      "applyUrl": "https://careers.bir.az/vacancies/8137#attachFile",
-      "source": "Bir Careers"
-    },
-    {
       "externalId": "7954",
       "title": "Sistem dayanıqlığı üzrə mühəndis (SRE)- Birbank",
       "company": "Kapital Bank / Bir",
@@ -3015,58 +2970,6 @@
       "postedAt": null,
       "url": "https://careers.bir.az/vacancies/8455",
       "applyUrl": "https://careers.bir.az/vacancies/8455#attachFile",
-      "source": "Bir Careers"
-    },
-    {
-      "externalId": "8454",
-      "title": "Müştəri təcrübəsi üzrə tədqiqatçı",
-      "company": "Kapital Bank / Bir",
-      "brand": "Bir",
-      "location": "Bakı",
-      "summary": "Bir ekosisteminin CX CoE komandasına qoşulmaq və müştəri məlumatlarını praktiki nəticələrə çevirmək üçün Müştəri Təcrübəsi üzrə Analitika və Tədqiqatlar üzrə Mütəxəssis axtarırıq.Bu vəzifədə siz müştəri rəylərini, müştəri səyahəti üzrə məlumatları və davranış göstəricilərini təhlil edərək müştəri loyallığını və məmnuniyyətini artırmaq, eləcə də biznesin inkişafına töhfə vermək üçün təkmilləşdirmə imkanlarını müəyyən edəcəksiniz.CX komandası, məhsul sahibləri və marketinq komandaları ilə sıx əməkdaşlıq edərək müştərilərin qarşılaşdığı əsas çətinliklərin təsirini ölçəcək və müştəri təcrübəsinin təkmilləşdirilməsi üzrə təşəbbüslərin nəticələrini qiymətləndirəcəksiniz.Bu rol məlumatlara əsaslanaraq müştəri təcrübəsini yaxşılaşdırmağa həvəsli, araşdırmağı sevən, analitik düşüncə tərzinə və biznes yönümlü yanaşmaya malik mütəxəssislər üçün ideal fürsətdir.\nBir ekosisteminin CX CoE komandasına qoşulmaq və müştəri məlumatlarını praktiki nəticələrə çevirmək üçün Müştəri Təcrübəsi üzrə Analitika və Tədqiqatlar üzrə Mütəxəssis axtarırıq.",
-      "description": "Bir ekosisteminin CX CoE komandasına qoşulmaq və müştəri məlumatlarını praktiki nəticələrə çevirmək üçün Müştəri Təcrübəsi üzrə Analitika və Tədqiqatlar üzrə Mütəxəssis axtarırıq.Bu vəzifədə siz müştəri rəylərini, müştəri səyahəti üzrə məlumatları və davranış göstəricilərini təhlil edərək müştəri loyallığını və məmnuniyyətini artırmaq, eləcə də biznesin inkişafına töhfə vermək üçün təkmilləşdirmə imkanlarını müəyyən edəcəksiniz.CX komandası, məhsul sahibləri və marketinq komandaları ilə sıx əməkdaşlıq edərək müştərilərin qarşılaşdığı əsas çətinliklərin təsirini ölçəcək və müştəri təcrübəsinin təkmilləşdirilməsi üzrə təşəbbüslərin nəticələrini qiymətləndirəcəksiniz.Bu rol məlumatlara əsaslanaraq müştəri təcrübəsini yaxşılaşdırmağa həvəsli, araşdırmağı sevən, analitik düşüncə tərzinə və biznes yönümlü yanaşmaya malik mütəxəssislər üçün ideal fürsətdir.\nBir ekosisteminin CX CoE komandasına qoşulmaq və müştəri məlumatlarını praktiki nəticələrə çevirmək üçün Müştəri Təcrübəsi üzrə Analitika və Tədqiqatlar üzrə Mütəxəssis axtarırıq.",
-      "requirements": [
-        "Biznesin idarə edilməsi, Statistika, İqtisadiyyat, Marketinq Analitikası və ya əlaqəli sahə üzrə bakalavr dərəcəsi (magistr dərəcəsinə üstünlük verilir).",
-        "Müştəri təcrübəsi üzrə tədqiqat, biznes analitikası, marketinq tədqiqatları və ya məlumatların təhlili sahəsində 2–3 illik iş təcrübəsi.",
-        "Power BI və Tableau kimi alətlərdən istifadə təcrübəsi ilə güclü analitik bacarıqlar.",
-        "Excel və SQL üzrə yüksək səviyyədə biliklər, məlumatların emalı və təhlili üçün Python və ya R ilə işləmək bacarığı.",
-        "Sorğu platformaları (QuestionPro, Qualtrics, SurveyMonkey və s.) və müştəri rəylərinin idarə edilməsi sistemləri ilə işləmək təcrübəsi.",
-        "Tədqiqat layihələrinin hazırlanması və həyata keçirilməsi üzrə təcrübə.",
-        "CX göstəricilərini (NPS, CSAT, CES, müştəri itkisi — churn, müştəri saxlama göstəricisi — retention, müştərinin həyat dövrü üzrə dəyəri — LTV) və onların biznesə təsirini anlamaq.",
-        "Məlumatları effektiv şəkildə təqdim etmək və kommunikasiya bacarıqları — analitik nəticələri texniki bilikləri olmayan maraqlı tərəflərə aydın və anlaşılan şəkildə izah etmək bacarığı.",
-        "Güclü problem həll etmə bacarığı və müştəri davranışlarını araşdırmağa maraq.",
-        "Komanda ilə əməkdaşlıq etmək və müxtəlif funksional istiqamətlər üzrə komandalarla birgə işləmək bacarığı.",
-        "Detallara yüksək diqqət, məlumatların keyfiyyətinə və dəqiqliyinə görə məsuliyyət daşımaq bacarığı."
-      ],
-      "responsibilities": [
-        "NPS, CSAT və müştəri itkisinə (churn) təsir edən tendensiyaları və əsas səbəbləri müəyyən etmək üçün əsasən sorğulardan, eləcə də zəng səbəbləri və rəqəmsal analitika kimi digər mənbələrdən əldə olunan kəmiyyət və keyfiyyət məlumatlarını təhlil etmək.",
-        "Müştəri təcrübəsi (CX) üzrə dashboard-ları idarə etmək və onlarla işləmək.",
-        "Onboarding, xidmət və müştəri loyallığının qorunması mərhələlərində müştəri təcrübəsinin effektivliyini ölçmək üçün müştəri səyahətinin müxtəlif mərhələləri üzrə analitik təhlillər aparmaq.",
-        "Mürəkkəb məlumatları CX, Məhsul və Əməliyyatlar komandaları üçün biznes yönümlü, əsaslandırılmış tövsiyələrə çevirmək.",
-        "Müştəri davranışlarına və dəyər seqmentlərinə görə təcrübə fərqlərini anlamaq üçün müştəri seqmentasiyası və kohort təhlilləri aparmaq.",
-        "Müştəri təcrübəsi göstəricilərini maliyyə nəticələri ilə (məsələn, gəlir, müştəri saxlama səviyyəsi və müştəriyə xidmət xərcləri) əlaqələndirən CX metrikaları çərçivəsini hazırlamaq və təkmilləşdirmək.",
-        "Müştəri təcrübəsi üzrə əldə edilən nəticələri biznes göstəriciləri ilə əlaqələndirən hesabatlar hazırlamaq və təqdim etmək.",
-        "Yeni sorğu formaları hazırlamaq və sorğuların keçirilməsini təşkil etmək.",
-        "Yeni avtomatlaşdırılmış sorğuların sistemə inteqrasiyasını təmin etmək üçün sorğuların avtomatlaşdırılması prosesi üzrə tapşırıqların backlog-unu idarə etmək."
-      ],
-      "benefits": [],
-      "skills": [
-        "Python",
-        "SQL",
-        "Excel",
-        "Power BI",
-        "Tableau"
-      ],
-      "employmentType": "full-time",
-      "experienceLevel": "mid",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "15.10.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8454",
-      "applyUrl": "https://careers.bir.az/vacancies/8454#attachFile",
       "source": "Bir Careers"
     },
     {
@@ -3803,53 +3706,6 @@
       "source": "Bir Careers"
     },
     {
-      "externalId": "7919",
-      "title": "Flutter developer - Ödənişlər biznesi",
-      "company": "Kapital Bank / Bir",
-      "brand": "m10",
-      "location": "Bakı",
-      "summary": "Flutter Developer IOS və Android üçün yüksək keyfiyyətli mobil tətbiqlərin hazırlanması və saxlanılmasına, məhsul, dizayn, backend, QA və DevOps komandaları ilə əməkdaşlıq edərək stabil və performanslı həllər yaradılmasında dəstək olacaqsınız.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
-      "description": "Flutter Developer IOS və Android üçün yüksək keyfiyyətli mobil tətbiqlərin hazırlanması və saxlanılmasına, məhsul, dizayn, backend, QA və DevOps komandaları ilə əməkdaşlıq edərək stabil və performanslı həllər yaradılmasında dəstək olacaqsınız.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
-      "requirements": [
-        "Flutter və Dart ilə kommersiya layihələrində 2-3+ il iş təcrübəsi",
-        "BLoC və ya oxşar state management yanaşmaları ilə işləmə bacarığı",
-        "REST API-lərlə inteqrasiya təcrübəsi",
-        "Çoxmodullu arxitektura prinsiplərini başa düşmək və tətbiq etmək bacarığı",
-        "Dependency injection alətləri (GetIT və ya oxşar) ilə işləmə təcrübəsi",
-        "AutoRoute və ya oxşar naviqasiya həlləri ilə işləmə təcrübəsi",
-        "Unit, Integration və Widget testlərinin yazılması üzrə təcrübə",
-        "DevOps prosesləri və CI/CD alətləri haqqında baza biliklər"
-      ],
-      "responsibilities": [
-        "IOS və Android üçün Flutter əsaslı mobil tətbiqlərin hazırlanması, təkmilləşdirilməsi və saxlanılması",
-        "Məhsul, dizayn, backend, QA və DevOps komandaları ilə sıx əməkdaşlıq",
-        "Mövcud tətbiqin çoxmodullu arxitekturaya keçidinin həyata keçirilməsi",
-        "Tətbiqin keyfiyyətini artırmaq üçün avtomatlaşdırılmış testləşdirməyə keçidin təmin edilməsi",
-        "API-lərlə inteqrasiya və performans optimizasiyasının aparılması",
-        "Texniki borcun azaldılması və kod keyfiyyətinin davamlı olaraq yaxşılaşdırılması"
-      ],
-      "benefits": [],
-      "skills": [
-        "CI/CD",
-        "REST API",
-        "State Management",
-        "Android",
-        "iOS",
-        "Flutter"
-      ],
-      "employmentType": "full-time",
-      "experienceLevel": "senior",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "15.10.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/7919",
-      "applyUrl": "https://careers.bir.az/vacancies/7919#attachFile",
-      "source": "Bir Careers"
-    },
-    {
       "externalId": "8205",
       "title": "UX Researcher",
       "company": "Kapital Bank / Bir",
@@ -3910,9 +3766,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 79,
-    "detailPagesFetched": 79,
-    "acceptedJobs": 79,
+    "discoveredLinks": 76,
+    "detailPagesFetched": 76,
+    "acceptedJobs": 76,
     "rejectedJobs": 0,
     "errors": []
   }
