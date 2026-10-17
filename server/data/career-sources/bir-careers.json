@@ -1,10 +1,55 @@
 {
   "id": "bir-careers",
   "name": "Bir Careers",
-  "updatedAt": "2026-10-17T03:13:59.787Z",
+  "updatedAt": "2026-10-17T08:19:18.955Z",
   "success": true,
-  "count": 69,
+  "count": 70,
   "jobs": [
+    {
+      "externalId": "8430",
+      "title": "Xadimə (Lökbatan anbarı)",
+      "company": "Kapital Bank / Bir",
+      "brand": "Birmarket",
+      "location": "Bakı",
+      "summary": "Xadimə şirkətin ofis və digər iş sahələrinin təmizliyinin və səliqəsinin təmin edilməsinə cavabdehdir. Rolun əsas məqsədi təmiz, gigiyenik və rahat iş mühitinin davamlı şəkildə qorunmasını təmin etməkdir.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
+      "description": "Xadimə şirkətin ofis və digər iş sahələrinin təmizliyinin və səliqəsinin təmin edilməsinə cavabdehdir. Rolun əsas məqsədi təmiz, gigiyenik və rahat iş mühitinin davamlı şəkildə qorunmasını təmin etməkdir.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
+      "requirements": [
+        "Təmizlik sahəsində iş təcrübəsi üstünlükdür;",
+        "Təmizlik vasitələri və avadanlıqlarından istifadə bacarığı;",
+        "Gigiyena və sanitariya qaydalarını bilməli;",
+        "Səliqəli, məsuliyyətli və diqqətli olmalı;",
+        "Fiziki işə uyğun olmalı;",
+        "Verilən tapşırıqları vaxtında və keyfiyyətlə yerinə yetirməli;",
+        "İş intizamına riayət etməli;",
+        "Komandada işləmək bacarığı;",
+        "İşə ciddi və məsuliyyətli yanaşmalı."
+      ],
+      "responsibilities": [
+        "Ofis və iş sahələrinin gündəlik təmizliyini və səliqəsini təmin etmək;",
+        "İş otaqları, dəhlizlər, mətbəx və sanitar qovşaqların təmizliyini həyata keçirmək;",
+        "Döşəmə, mebel, şüşə və digər səthlərin təmizlənməsini təmin etmək;",
+        "Təmizlik vasitələri və avadanlıqlarından düzgün istifadə etmək;",
+        "Sanitar-gigiyenik qaydalara riayət etmək;",
+        "Tullantıların vaxtında toplanması və müəyyən edilmiş ərazilərə daşınmasını təmin etmək;",
+        "Təmizlik vasitələrinin və inventarların düzgün istifadəsinə və saxlanılmasına nəzarət etmək;",
+        "Təmizlik zamanı aşkar edilən nasazlıq və çatışmazlıqlar barədə məsul şəxsi məlumatlandırmaq;",
+        "Təmizlik inventarlarının və vasitələrinin ehtiyacını vaxtında bildirmək;",
+        "Rəhbərlik tərəfindən verilən digər müvafiq tapşırıqları yerinə yetirmək."
+      ],
+      "benefits": [],
+      "skills": [],
+      "employmentType": "full-time",
+      "experienceLevel": "junior",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": "19.10.2026",
+      "postedAt": null,
+      "url": "https://careers.bir.az/vacancies/8430",
+      "applyUrl": "https://careers.bir.az/vacancies/8430#attachFile",
+      "source": "Bir Careers"
+    },
     {
       "externalId": "7695",
       "title": "Kateqoriya üzrə menecer (elektronika üzrə)",
@@ -3419,9 +3464,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 69,
-    "detailPagesFetched": 69,
-    "acceptedJobs": 69,
+    "discoveredLinks": 70,
+    "detailPagesFetched": 70,
+    "acceptedJobs": 70,
     "rejectedJobs": 0,
     "errors": []
   }
