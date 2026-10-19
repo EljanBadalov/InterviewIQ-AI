@@ -1,9 +1,9 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-10-19T03:32:19.497Z",
+  "updatedAt": "2026-10-19T09:42:02.380Z",
   "success": true,
-  "count": 105,
+  "count": 104,
   "jobs": [
     {
       "externalId": "5338",
@@ -2233,42 +2233,6 @@
       "source": "ABB Careers"
     },
     {
-      "externalId": "5324",
-      "title": "Monitorinq və nəzarətin təşkili üzrə aparıcı/baş mütəxəssis",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "Şübhəli əməliyyatların və sanksiya aid uyğungəlmənin araşdırılması; Yeni indikatorların testləşdirilməsi prosesində iştirak etməsi. Ali təhsili olan;",
-      "description": "Şübhəli əməliyyatların və sanksiya aid uyğungəlmənin araşdırılması; Yeni indikatorların testləşdirilməsi prosesində iştirak etməsi. Ali təhsili olan;",
-      "requirements": [
-        "Ali təhsili olan;",
-        "İnduktiv və analitik təhlil bacarığına;",
-        "Bank sahəsində 1-3 ilə qədər iş təcrübəsi olan (üstünlükdür);",
-        "ƏL/TMM sahəsində Beynəlxalq sertifikatlar (üstünlükdür);",
-        "SQL və ya Python üzrə bilik və praktiki bacarıqlar (üstünlükdür) ;",
-        "ƏL/TMM sahəsinin tənzimləyən qanunvericilik bazası ilə tanışlığı olan şəxsdir."
-      ],
-      "responsibilities": [
-        "Şübhəli əməliyyatların və sanksiya aid uyğungəlmənin araşdırılması;",
-        "Yeni indikatorların testləşdirilməsi prosesində iştirak etməsi."
-      ],
-      "benefits": [],
-      "skills": [
-        "Python",
-        "SQL"
-      ],
-      "employmentType": null,
-      "experienceLevel": "senior",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5324",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5324",
-      "source": "ABB Careers"
-    },
-    {
       "externalId": "5309",
       "title": "Monitorinq şöbəsinin mütəxəssisi /aparıcı mütəxəssisi (Mikro kreditlərinin monitorinqi üzrə)",
       "company": "ABB",
@@ -4395,9 +4359,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 105,
-    "detailPagesFetched": 105,
-    "acceptedJobs": 105,
+    "discoveredLinks": 104,
+    "detailPagesFetched": 104,
+    "acceptedJobs": 104,
     "rejectedJobs": 0,
     "listingFallbacks": 0,
     "errors": []
