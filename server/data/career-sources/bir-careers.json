@@ -1,9 +1,9 @@
 {
   "id": "bir-careers",
   "name": "Bir Careers",
-  "updatedAt": "2026-10-20T16:27:49.354Z",
+  "updatedAt": "2026-10-20T22:59:21.196Z",
   "success": true,
-  "count": 63,
+  "count": 62,
   "jobs": [
     {
       "externalId": "8715",
@@ -776,43 +776,6 @@
       "postedAt": null,
       "url": "https://careers.bir.az/vacancies/8034",
       "applyUrl": "https://careers.bir.az/vacancies/8034#attachFile",
-      "source": "Bir Careers"
-    },
-    {
-      "externalId": "8156",
-      "title": "Kiçik və Orta Sahibkarlarla İş Departamentinin Təcrübəçisi",
-      "company": "Kapital Bank / Bir",
-      "brand": "Birbank",
-      "location": "Bakı",
-      "summary": "Bu rolda ölkədə kiçik və orta biznesin inkişafına dəstək olan Birbankın KOS komandasında real layihələrə və proseslərə dəstək göstərəcəksən. Müştəri portfelinin analizi, biznes müraciətlərinin ilkin qiymətləndirilməsində komandaya köməklik olunması, bazar araşdırmalarının aparılması və departament daxili hesabatlılığın hazırlanmasında iştirak etmək sənin əsas fəaliyyət istiqamətlərin olacaq.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
-      "description": "Bu rolda ölkədə kiçik və orta biznesin inkişafına dəstək olan Birbankın KOS komandasında real layihələrə və proseslərə dəstək göstərəcəksən. Müştəri portfelinin analizi, biznes müraciətlərinin ilkin qiymətləndirilməsində komandaya köməklik olunması, bazar araşdırmalarının aparılması və departament daxili hesabatlılığın hazırlanmasında iştirak etmək sənin əsas fəaliyyət istiqamətlərin olacaq.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
-      "requirements": [
-        "Maliyyə, iqtisadiyyat, biznesin idarə edilməsi və ya əlaqəli sahələr üzrə ali təhsil;",
-        "Təqdimat bacarığı;",
-        "Effektiv kommunikasiya və komandaya sürətli uyğunlaşma;",
-        "Analitik düşüncə və məlumatlara əsaslanan qərarvermə;",
-        "Müştəriyönümlü yanaşma;",
-        "Səlis azərbaycan dili biliyi (rus dili biliyi üstünlükdür)"
-      ],
-      "responsibilities": [
-        "KOS kateqoriyaya aid olan yeni müştərilər cəlb etmək;",
-        "Müştərilərin ehtiyaclarını müəyyən edərək onlarla uzunmüddətli iş prespektivində maliyyə məsləhətləri vermək;",
-        "Bu kateqoriyaya aid müştərilərdən sifarişləri qəbul etmək, sifarişi təhlil edərək müvafiq Kredit Komitəsinə təqdim etmək üçün məlumatları Kredit Anderraytinqi Departamentinə ötürmək;",
-        "Yeni müştərilərə tariflər təklifini hazırlamaq, təqdimatlar həyata keçirtmək və mövcud müştərilərin tariflərini yenidən nəzərdən keçirmək;",
-        "Görülmüş işlər üzrə hesabatlar vermək."
-      ],
-      "benefits": [],
-      "skills": [],
-      "employmentType": "full-time",
-      "experienceLevel": "intern",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "20.10.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8156",
-      "applyUrl": "https://careers.bir.az/vacancies/8156#attachFile",
       "source": "Bir Careers"
     },
     {
@@ -3132,9 +3095,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 63,
-    "detailPagesFetched": 63,
-    "acceptedJobs": 63,
+    "discoveredLinks": 62,
+    "detailPagesFetched": 62,
+    "acceptedJobs": 62,
     "rejectedJobs": 0,
     "errors": []
   }
