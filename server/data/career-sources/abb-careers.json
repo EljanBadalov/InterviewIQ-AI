@@ -1,9 +1,9 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-10-22T16:46:56.255Z",
+  "updatedAt": "2026-10-22T23:03:24.488Z",
   "success": true,
-  "count": 103,
+  "count": 102,
   "jobs": [
     {
       "externalId": "5426",
@@ -2747,41 +2747,6 @@
       "source": "ABB Careers"
     },
     {
-      "externalId": "5295",
-      "title": "Bank fəaliyyətinə dəstək bölməsinin müştəri bələdçisi - Bərdə",
-      "company": "ABB",
-      "location": "Bərdə",
-      "summary": "Məktubların müvafiq vasitələrdən istifadə etməklə qeydiyyatını aparmaq və bazasını formalaşdırmaq; Daxili təchizat-təminat məsələlərini idarə etmək; Ali təhsili;",
-      "description": "Məktubların müvafiq vasitələrdən istifadə etməklə qeydiyyatını aparmaq və bazasını formalaşdırmaq; Daxili təchizat-təminat məsələlərini idarə etmək; Ali təhsili;",
-      "requirements": [
-        "Ali təhsili;",
-        "Vəzifəsindən irəli gələn daxili qaydalara, məhsul və xidmətlərə, eyni zamanda daxili tariflərə dair yenilikləri izləyən və yüksək səviyyədə bilən;",
-        "Yüksək ünsiyyət bacarığına;",
-        "MS Office proqramları ilə iş səriştəsinə;",
-        "Səlis Azərbaycan dili, Rus dili(arzuolunandır) biliklərinə;",
-        "Riyazi və məntiqi biliklərə;",
-        "Komandada işləmək bacarığına sahib olan şəxsdir."
-      ],
-      "responsibilities": [
-        "Məktubların müvafiq vasitələrdən istifadə etməklə qeydiyyatını aparmaq və bazasını formalaşdırmaq;",
-        "Daxili təchizat-təminat məsələlərini idarə etmək;",
-        "Müştəriləri nəzakətli qarşılamaq, ilkin tələbatlarını öyrənmək və onları məlumatlandırmaq."
-      ],
-      "benefits": [],
-      "skills": [],
-      "employmentType": null,
-      "experienceLevel": null,
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5295",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5295",
-      "source": "ABB Careers"
-    },
-    {
       "externalId": "5292",
       "title": "Xəzinə bölməsi üzrə kiçik mütəxəssis - Quba",
       "company": "ABB",
@@ -4279,9 +4244,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 103,
-    "detailPagesFetched": 103,
-    "acceptedJobs": 103,
+    "discoveredLinks": 102,
+    "detailPagesFetched": 102,
+    "acceptedJobs": 102,
     "rejectedJobs": 0,
     "listingFallbacks": 0,
     "errors": []
