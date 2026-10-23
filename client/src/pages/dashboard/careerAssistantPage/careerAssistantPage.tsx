@@ -264,6 +264,24 @@ const CareerAssistantPage = () => {
     storedUser?.id ||
     storedUser?._id;
 
+  const normalizeAssistantMarkdown = (text: string): string => {
+    return text
+      .replace(/\r\n/g, "\n")
+      .replace(
+        /([.!?])\s+(?=\d+\.\s+\*\*)/g,
+        "$1\n\n"
+      )
+      .replace(
+        /(\S)\s+(?=\d+\.\s+\*\*)/g,
+        "$1\n"
+      )
+      .replace(
+        /(\n)(\d+\.\s+\*\*)/g,
+        "\n$2"
+      )
+      .trim();
+  };
+
   /* =======================================================
      SEND MESSAGE
   ======================================================= */
@@ -494,7 +512,7 @@ const CareerAssistantPage = () => {
                           {message.role === "assistant" ? (
                             <div className="career-message-markdown">
                               <ReactMarkdown>
-                                {message.content}
+                                {normalizeAssistantMarkdown(message.content)}
                               </ReactMarkdown>
                             </div>
                           ) : (
