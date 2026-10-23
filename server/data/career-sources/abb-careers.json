@@ -1,10 +1,81 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-10-23T03:39:18.186Z",
+  "updatedAt": "2026-10-23T09:12:14.781Z",
   "success": true,
-  "count": 102,
+  "count": 100,
   "jobs": [
+    {
+      "externalId": "5428",
+      "title": "Kiçik və orta biznes müştəriləri ilə iş şöbəsinin mütəxəssisi - (Bakı, Şirvan, Bərdə)",
+      "company": "ABB",
+      "location": "Bakı",
+      "summary": "KOS müştərilərin Banka cəlbini və məhsul satışını həyata keçirmək; KOS subyekti olan müştərilər üzrə əməliyyat sorğularını lazımi struktur orqanlarla əlaqələndirmək, əməkdaşlıq və müraciət zamanı prosesi təqib etmək, yarana biləcək problemlərin həllinə sonadək dəstək olmaq; Ali iqtisadi təhsilinə;",
+      "description": "KOS müştərilərin Banka cəlbini və məhsul satışını həyata keçirmək; KOS subyekti olan müştərilər üzrə əməliyyat sorğularını lazımi struktur orqanlarla əlaqələndirmək, əməkdaşlıq və müraciət zamanı prosesi təqib etmək, yarana biləcək problemlərin həllinə sonadək dəstək olmaq; Ali iqtisadi təhsilinə;",
+      "requirements": [
+        "Ali iqtisadi təhsilinə;",
+        "Satış üzrə 1-3 il iş təcrübəsinə;",
+        "Azərbaycan dilini səlis biliklərinə;",
+        "Yüksək səviyyədə ünsiyyət qurma bacarığına;",
+        "Yüksək səviyyədə satıcılıq xüsusiyyətlərinə sahib olan şəxsdir."
+      ],
+      "responsibilities": [
+        "KOS müştərilərin Banka cəlbini və məhsul satışını həyata keçirmək;",
+        "KOS subyekti olan müştərilər üzrə əməliyyat sorğularını lazımi struktur orqanlarla əlaqələndirmək, əməkdaşlıq və müraciət zamanı prosesi təqib etmək, yarana biləcək problemlərin həllinə sonadək dəstək olmaq;",
+        "Kredit sifarişi üzrə təhlil prosesində məlumatların yığılmasında iştirak etmək;",
+        "KOS subyekti olan müştərilər üzrə gecikmələrin ilkin təqibini həyata keçirmək;",
+        "KOS subyekti olan müştərilər üzrə ilkin sənəd dövriyyəsini həyata keçirmək;",
+        "Mövcud müştəri portfeli üzrə əməkdaşlıq və müraciət zamanı prosesi təqib etmək, yarana biləcək problemlərin həllinə sonadək dəstək olmaq."
+      ],
+      "benefits": [],
+      "skills": [],
+      "employmentType": null,
+      "experienceLevel": null,
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": null,
+      "postedAt": null,
+      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5428",
+      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5428",
+      "source": "ABB Careers"
+    },
+    {
+      "externalId": "5299",
+      "title": "Bank fəaliyyətinə dəstək bölməsinin müştəri bələdçisi - Yeni Suqmayıt",
+      "company": "ABB",
+      "location": "Azerbaijan",
+      "summary": "Məktubların müvafiq vasitələrdən istifadə etməklə qeydiyyatını aparmaq və bazasını formalaşdırmaq; Daxili təchizat-təminat məsələlərini idarə etmək; Ali təhsili;",
+      "description": "Məktubların müvafiq vasitələrdən istifadə etməklə qeydiyyatını aparmaq və bazasını formalaşdırmaq; Daxili təchizat-təminat məsələlərini idarə etmək; Ali təhsili;",
+      "requirements": [
+        "Ali təhsili;",
+        "Vəzifəsindən irəli gələn daxili qaydalara, məhsul və xidmətlərə, eyni zamanda daxili tariflərə dair yenilikləri izləyən və yüksək səviyyədə bilən;",
+        "Yüksək ünsiyyət bacarığına;",
+        "MS Office proqramları ilə iş səriştəsinə;",
+        "Səlis Azərbaycan dili, Rus dili(arzuolunandır) biliklərinə;",
+        "Riyazi və məntiqi biliklərə;",
+        "Komandada işləmək bacarığına sahib olan şəxsdir."
+      ],
+      "responsibilities": [
+        "Məktubların müvafiq vasitələrdən istifadə etməklə qeydiyyatını aparmaq və bazasını formalaşdırmaq;",
+        "Daxili təchizat-təminat məsələlərini idarə etmək;",
+        "Müştəriləri nəzakətli qarşılamaq, ilkin tələbatlarını öyrənmək və onları məlumatlandırmaq."
+      ],
+      "benefits": [],
+      "skills": [],
+      "employmentType": null,
+      "experienceLevel": null,
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": null,
+      "postedAt": null,
+      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5299",
+      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5299",
+      "source": "ABB Careers"
+    },
     {
       "externalId": "5426",
       "title": "Əlaqə mərkəzi şöbəsinin məlumat mərkəzi üzrə kiçik təmsilçi",
@@ -329,42 +400,6 @@
       "postedAt": null,
       "url": "https://careers.abb-bank.az/vakansiyalar/v2/5398",
       "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5398",
-      "source": "ABB Careers"
-    },
-    {
-      "externalId": "5322",
-      "title": "Müştərilərə satış və xidmət üzrə kiçik mütəxəssis - Bakı",
-      "company": "ABB",
-      "location": "Bakı",
-      "summary": "Təhkim olunmuş cari korporativ və pərakəndə müştərilərin idarə edilməsi, məhsul satışının həyata keçirilməsi; Yeni korporativ və pərakəndə müştərilərin banka cəlbini və məhsul satışını həyata keçirmək; Ali iqtisadi təhsilə;",
-      "description": "Təhkim olunmuş cari korporativ və pərakəndə müştərilərin idarə edilməsi, məhsul satışının həyata keçirilməsi; Yeni korporativ və pərakəndə müştərilərin banka cəlbini və məhsul satışını həyata keçirmək; Ali iqtisadi təhsilə;",
-      "requirements": [
-        "Ali iqtisadi təhsilə;",
-        "Azərbaycan dilini səlis bilənə; rus və ingilis dili arzu olunandır;",
-        "Korporativ müştərilərlə iş sahəsində minimum 1 il təcrübəyə;",
-        "Yüksək səviyyədə ünsiyyət qurma bacarığına;",
-        "Stresə davamlılığa;",
-        "Yüksək səviyyədə satıcılıq xüsusiyyətlərinə sahib olan şəxsdir."
-      ],
-      "responsibilities": [
-        "Təhkim olunmuş cari korporativ və pərakəndə müştərilərin idarə edilməsi, məhsul satışının həyata keçirilməsi;",
-        "Yeni korporativ və pərakəndə müştərilərin banka cəlbini və məhsul satışını həyata keçirmək;",
-        "Müştərilərin sorğularını lazımi struktur orqanlarla koordinasiya etmək, əməkdaşlıq və müraciət zamanı prosesi təqib etmək, yarana biləcək problemlərin həllinə sonadək dəstək olmaq;",
-        "Portfelində olan müştərilər üzrə gecikmələrin ilkin təqibini həyata keçirmək;",
-        "Təyin edilmiş rüblük və illik hədəflərə çatmaq üçün lazımi işlərin görülməsi."
-      ],
-      "benefits": [],
-      "skills": [],
-      "employmentType": null,
-      "experienceLevel": "junior",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5322",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5322",
       "source": "ABB Careers"
     },
     {
@@ -1354,53 +1389,6 @@
       "postedAt": null,
       "url": "https://careers.abb-bank.az/vakansiyalar/v2/5390",
       "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5390",
-      "source": "ABB Careers"
-    },
-    {
-      "externalId": "5388",
-      "title": "Hiper avtomatlaşdırma üzrə ekspert mərkəzinə proseslərin avtomatlaşdırılması üzrə analitik",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "SQL scriptlərin yazılması; BPMN 2.0 yanaşması üzrə iş görülməsi; Ali təhsilə;",
-      "description": "SQL scriptlərin yazılması; BPMN 2.0 yanaşması üzrə iş görülməsi; Ali təhsilə;",
-      "requirements": [
-        "Ali təhsilə;",
-        "SQL scriptlərin yazılması üzrə təcrübəyə;",
-        "BPMN 2.0 notasiyası üzrə orta səviyyədə biliklərə;",
-        "Verilənlər bazasının strukturlaşdırılması və formalaşdırılması üzrə bacarıqlara;",
-        "UML diaqramların formalaşdırılması və tətbiqi üzrə təcrübəyə;",
-        "İstifadəçi təcrübəsi və istifadəçi interfeysi dizaynı üzrə bacarıqlara;",
-        "Layihənin arxitektura həllərinin verilməsi üzrə bacarıqlara;",
-        "Agile metodologiya üzrə təcrübəyə;",
-        "JIRA, Confluence, Monitoring tool-lar üzrə təcrübəyə;",
-        "Proseslərin avtomatlaşdırılması üzrə texniki təcrübəyə sahib olan şəxsdir"
-      ],
-      "responsibilities": [
-        "SQL scriptlərin yazılması;",
-        "BPMN 2.0 yanaşması üzrə iş görülməsi;",
-        "Verilənlər bazasının strukturlaşdırılması və formalaşdırılması;",
-        "UML diaqramların formalaşdırılması və tətbiqi;",
-        "İstifadəçi təcrübəsi və istifadəçi interfeysi dizaynının hazırlanması;",
-        "Layihənin arxitektura həllərinin verilməsi;",
-        "Agile metodologiyası əsasında işlərin təşkili;",
-        "JIRA, Confluence, Monitoring tool-larda iş aparılması;",
-        "Proseslərin avtomatlaşdırılması üzrə texniki işlərin görülməsidir."
-      ],
-      "benefits": [],
-      "skills": [
-        "SQL",
-        "Monitoring"
-      ],
-      "employmentType": null,
-      "experienceLevel": "senior",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5388",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5388",
       "source": "ABB Careers"
     },
     {
@@ -2677,41 +2665,6 @@
       "source": "ABB Careers"
     },
     {
-      "externalId": "5299",
-      "title": "Bank fəaliyyətinə dəstək bölməsinin müştəri bələdçisi - Yeni Suqmayıt",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "Məktubların müvafiq vasitələrdən istifadə etməklə qeydiyyatını aparmaq və bazasını formalaşdırmaq; Daxili təchizat-təminat məsələlərini idarə etmək; Ali təhsili;",
-      "description": "Məktubların müvafiq vasitələrdən istifadə etməklə qeydiyyatını aparmaq və bazasını formalaşdırmaq; Daxili təchizat-təminat məsələlərini idarə etmək; Ali təhsili;",
-      "requirements": [
-        "Ali təhsili;",
-        "Vəzifəsindən irəli gələn daxili qaydalara, məhsul və xidmətlərə, eyni zamanda daxili tariflərə dair yenilikləri izləyən və yüksək səviyyədə bilən;",
-        "Yüksək ünsiyyət bacarığına;",
-        "MS Office proqramları ilə iş səriştəsinə;",
-        "Səlis Azərbaycan dili, Rus dili(arzuolunandır) biliklərinə;",
-        "Riyazi və məntiqi biliklərə;",
-        "Komandada işləmək bacarığına sahib olan şəxsdir."
-      ],
-      "responsibilities": [
-        "Məktubların müvafiq vasitələrdən istifadə etməklə qeydiyyatını aparmaq və bazasını formalaşdırmaq;",
-        "Daxili təchizat-təminat məsələlərini idarə etmək;",
-        "Müştəriləri nəzakətli qarşılamaq, ilkin tələbatlarını öyrənmək və onları məlumatlandırmaq."
-      ],
-      "benefits": [],
-      "skills": [],
-      "employmentType": null,
-      "experienceLevel": null,
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5299",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5299",
-      "source": "ABB Careers"
-    },
-    {
       "externalId": "5296",
       "title": "Bank fəaliyyətinə dəstək bölməsinin müştəri bələdçisi - Naxçıvan",
       "company": "ABB",
@@ -3820,41 +3773,6 @@
       "source": "ABB Careers"
     },
     {
-      "externalId": "5081",
-      "title": "Bank fəaliyyətinə dəstək bölməsinin müştəri bələdçisi - Saatlı",
-      "company": "ABB",
-      "location": "Saatlı",
-      "summary": "Məktubların müvafiq vasitələrdən istifadə etməklə qeydiyyatını aparmaq və bazasını formalaşdırmaq; Daxili təchizat-təminat məsələlərini idarə etmək; Ali təhsili;",
-      "description": "Məktubların müvafiq vasitələrdən istifadə etməklə qeydiyyatını aparmaq və bazasını formalaşdırmaq; Daxili təchizat-təminat məsələlərini idarə etmək; Ali təhsili;",
-      "requirements": [
-        "Ali təhsili;",
-        "Vəzifəsindən irəli gələn daxili qaydalara, məhsul və xidmətlərə, eyni zamanda daxili tariflərə dair yenilikləri izləyən və yüksək səviyyədə bilən;",
-        "Yüksək ünsiyyət bacarığına;",
-        "MS Office proqramları ilə iş səriştəsinə;",
-        "Səlis Azərbaycan dili, Rus dili(arzuolunandır) biliklərinə;",
-        "Riyazi və məntiqi biliklərə;",
-        "Komandada işləmək bacarığına sahib olan şəxsdir."
-      ],
-      "responsibilities": [
-        "Məktubların müvafiq vasitələrdən istifadə etməklə qeydiyyatını aparmaq və bazasını formalaşdırmaq;",
-        "Daxili təchizat-təminat məsələlərini idarə etmək;",
-        "Müştəriləri nəzakətli qarşılamaq, ilkin tələbatlarını öyrənmək və onları məlumatlandırmaqdır."
-      ],
-      "benefits": [],
-      "skills": [],
-      "employmentType": null,
-      "experienceLevel": null,
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5081",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5081",
-      "source": "ABB Careers"
-    },
-    {
       "externalId": "4841",
       "title": "İnsan resurslarının strategiyası və ekspertiza idarəetməsi şöbəsinin mütəxəssisi/aparıcı mütəxəssisi",
       "company": "ABB",
@@ -4244,9 +4162,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 102,
-    "detailPagesFetched": 102,
-    "acceptedJobs": 102,
+    "discoveredLinks": 100,
+    "detailPagesFetched": 100,
+    "acceptedJobs": 100,
     "rejectedJobs": 0,
     "listingFallbacks": 0,
     "errors": []
