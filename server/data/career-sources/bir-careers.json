@@ -1,9 +1,9 @@
 {
   "id": "bir-careers",
   "name": "Bir Careers",
-  "updatedAt": "2026-10-26T18:29:46.590Z",
+  "updatedAt": "2026-10-26T23:38:48.331Z",
   "success": true,
-  "count": 74,
+  "count": 72,
   "jobs": [
     {
       "externalId": "8000",
@@ -52,57 +52,6 @@
       "postedAt": null,
       "url": "https://careers.bir.az/vacancies/8000",
       "applyUrl": "https://careers.bir.az/vacancies/8000#attachFile",
-      "source": "Bir Careers"
-    },
-    {
-      "externalId": "8046",
-      "title": "Maliyyə Menecmenti Departamentinin Strategiya, Büdcə və Analitika Şöbəsinin Meneceri",
-      "company": "Kapital Bank / Bir",
-      "brand": "Birbank",
-      "location": "Bakı",
-      "summary": "Birbankın Maliyyə Menecmenti Departamentinin Strategiya, büdcə və analitika şöbəsinin meneceri vəzifəsinə maliyyə planlaşdırılması, büdcələşdirmə və analitika sahəsində təcrübəyə, güclü analitik düşüncəyə və maliyyə modelləri ilə işləmək bacarığına malik peşəkar axtarırıq.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
-      "description": "Birbankın Maliyyə Menecmenti Departamentinin Strategiya, büdcə və analitika şöbəsinin meneceri vəzifəsinə maliyyə planlaşdırılması, büdcələşdirmə və analitika sahəsində təcrübəyə, güclü analitik düşüncəyə və maliyyə modelləri ilə işləmək bacarığına malik peşəkar axtarırıq.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
-      "requirements": [
-        "Maliyyə, İqtisadiyyat və ya əlaqəli sahə üzrə ali təhsil;",
-        "Maliyyə planlaşdırılması, büdcələşdirmə və ya maliyyə təhlili sahəsində minimum 5 il iş və rəhbərlik təcrübəsi;",
-        "Maliyyə modelləşdirilməsi və büdcə planlaşdırılması üzrə təcrübə;",
-        "Yüksək səviyyədə MS Excel bilikləri;",
-        "SQL bilikləri arzuolunandır;",
-        "Yüksək səviyyədə Azərbaycan dili və ingilis dili bilikləri;",
-        "Güclü analitik düşünmə və riyazi/statistik təhlil bacarığı;",
-        "Detallara diqqət və yüksək dəqiqliklə işləmə bacarığı;",
-        "Prioritetləri düzgün müəyyən etmə və vaxtı effektiv idarə etmə bacarığı;",
-        "Komanda ilə işləmə və kommunikasiya bacarığı;",
-        "Yüksək məsuliyyətlilik və təşəbbüskarlıq."
-      ],
-      "responsibilities": [
-        "Bankın illik və çoxillik (3-5 illik) maliyyə modellərini hazırlamaq;",
-        "Büdcə planlaşdırma prosesini idarə etmək: illik büdcəni formalaşdırmaq, icrasına nəzarət və kənarlaşmaları təhlil etmək;",
-        "Xərcləri bölüşdürülməsi (cost allocation) metodologiyalarını hazırlamaq və tətbiq etmək, o cümlədən kanallar (rəqəmsal, filial) üzrə OPEX bölgüsünü həyata keçirmək;",
-        "Aylıq-rüblük maliyyə hesabatlarını hazırlamaq və rəhbərliyə təqdim olunması üçün material və analitik dəstəyi təmin etmək;",
-        "Bankın maliyyə göstəricilərini hesablamaq və təhlil etmək;",
-        "Biznes bölmələri ilə əməkdaşlıq əsasında məlumat toplamaq, fərziyyələr formalaşdırmaq və maliyyə proqnozları qurmaq;",
-        "Struktur bölmələrin fəaliyyət nəticələrinin plan-fakt təhlilini aparmaq və müvafiq tövsiyələr hazırlamaq;",
-        "Rəhbərlik üçün strateji qərarların qəbulunda dəstək məqsədilə analitik təqdimatlar hazırlamaq;",
-        "Hesabat komandalarının işini koordinasiya etmək, tapşırıqları bölüşdürmək və nəticələrin keyfiyyətini yoxlamaq;",
-        "Digər struktur və biznes bölmələri ilə məlumat mübadiləsini təşkil etmək;",
-        "Mütəxəssislərə mentorluq etmək və peşəkar inkişafına dəstək olmaq."
-      ],
-      "benefits": [],
-      "skills": [
-        "SQL",
-        "Excel"
-      ],
-      "employmentType": "full-time",
-      "experienceLevel": "manager",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "26.10.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8046",
-      "applyUrl": "https://careers.bir.az/vacancies/8046#attachFile",
       "source": "Bir Careers"
     },
     {
@@ -1541,47 +1490,6 @@
       "postedAt": null,
       "url": "https://careers.bir.az/vacancies/8715",
       "applyUrl": "https://careers.bir.az/vacancies/8715#attachFile",
-      "source": "Bir Careers"
-    },
-    {
-      "externalId": "8708",
-      "title": "Birbaşa Satışlar Bölməsinin Kiçik Mütəxəssisi (Şirvan-Salyan Regionu üzrə)",
-      "company": "Kapital Bank / Bir",
-      "brand": "Birbank",
-      "location": "Şirvan",
-      "summary": "Birbankın Birbaşa satışlar bölməsində Şirvan-Salyan regionunda satış şəbəkəsinin genişlənməsində birbaşa iştirak edərək potensial müştərilərlə və tərəfdaşlarla aktiv ünsiyyət quracaqsan. Region üzrə sahə görüşlərinin keçirilməsi, bank məhsullarının birbaşa təqdimatı və satışı, yeni müştərilərin cəlb olunması və satış nöqtələrində xidmət keyfiyyətinin yüksəldilməsi sənin əsas fəaliyyət istiqamətlərin olacaq.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
-      "description": "Birbankın Birbaşa satışlar bölməsində Şirvan-Salyan regionunda satış şəbəkəsinin genişlənməsində birbaşa iştirak edərək potensial müştərilərlə və tərəfdaşlarla aktiv ünsiyyət quracaqsan. Region üzrə sahə görüşlərinin keçirilməsi, bank məhsullarının birbaşa təqdimatı və satışı, yeni müştərilərin cəlb olunması və satış nöqtələrində xidmət keyfiyyətinin yüksəldilməsi sənin əsas fəaliyyət istiqamətlərin olacaq.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
-      "requirements": [
-        "Ali təhsil;",
-        "Satış bacarığı;",
-        "Dəyişən mühitə çevik adaptasiya;",
-        "Effektiv kommunikasiya və komandaya sürətli uyğunlaşma;",
-        "Sahiblənmə və məsuliyyət hissi;",
-        "Davamlı öyrənmə və inkişaf həvəsi;",
-        "Müştəriyönümlü yanaşma."
-      ],
-      "responsibilities": [
-        "Bankla partnyor, qeyri-partnyor olan təşkilatlara vizitlərin edilməsi və potensial müştərilərlə görüşlərin təşkili;",
-        "Bankın kredit və qeyri-kredit məhsullarını təbliğ etmək üçün müxtəlif mərkəzlərdəki məntəqələrdə fəaliyyət göstərilməsi;",
-        "Bankın kredit və qeyri-kredit məhsullarının təbliğatı məqsədilə müştərilərlə görüşlər keçirilməsi;",
-        "Potensial müştərilərə bank məhsulları barədə təqdimatın keçirilməsi və müştəri tələbinin formalaşdırılması;",
-        "Bank məhsullarını əldə etmək istəyən potensial müştərilərin müəyyən edilməsi, ilkin təhlili, qiymətləndirilməsi;",
-        "Bankın filiallarına yönləndirilməsi;",
-        "Bank məhsullarını əldə etmiş müştərilərin məmnuniyyət dərəcəsinin ölçülməsi və həmin müştərilər vasitəsilə digər potensial müştərilərə çıxış imkanlarının dəyərləndirilməsi;",
-        "Satış prosesi ilə bağlı müvafiq hesabatların aparılması."
-      ],
-      "benefits": [],
-      "skills": [],
-      "employmentType": "full-time",
-      "experienceLevel": "junior",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "26.10.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8708",
-      "applyUrl": "https://careers.bir.az/vacancies/8708#attachFile",
       "source": "Bir Careers"
     },
     {
@@ -3783,9 +3691,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 74,
-    "detailPagesFetched": 74,
-    "acceptedJobs": 74,
+    "discoveredLinks": 72,
+    "detailPagesFetched": 72,
+    "acceptedJobs": 72,
     "rejectedJobs": 0,
     "errors": []
   }

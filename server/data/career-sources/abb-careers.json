@@ -1,9 +1,9 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-10-26T18:31:16.415Z",
+  "updatedAt": "2026-10-26T23:40:11.695Z",
   "success": true,
-  "count": 101,
+  "count": 100,
   "jobs": [
     {
       "externalId": "5317",
@@ -3588,49 +3588,6 @@
       "source": "ABB Careers"
     },
     {
-      "externalId": "5185",
-      "title": "Strategiya ofisi – Konsaltinq ekspert mərkəzinin konsultantı / baş konsultantı",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "Bankın strategiyası və əməliyyat planının müəyyən kateqoriyaları üzrə hazırlanması prosesini təşkil etmək və icrasını təmin etmək. Konsaltinq layihələri və digər strateji layihələrin zamanı daxili məsləhçi qismində dəstək göstərmək və koordinasiya aparmaq; Ali təhsilə (Menecment, Maliyyə, İqtisadiyyat və ya əlaqəli sahə üzrə);",
-      "description": "Bankın strategiyası və əməliyyat planının müəyyən kateqoriyaları üzrə hazırlanması prosesini təşkil etmək və icrasını təmin etmək. Konsaltinq layihələri və digər strateji layihələrin zamanı daxili məsləhçi qismində dəstək göstərmək və koordinasiya aparmaq; Ali təhsilə (Menecment, Maliyyə, İqtisadiyyat və ya əlaqəli sahə üzrə);",
-      "requirements": [
-        "Ali təhsilə (Menecment, Maliyyə, İqtisadiyyat və ya əlaqəli sahə üzrə);",
-        "Sahə üzrə minimum 3 il iş təcrübəsinə (beynəlxalq məsləhətçi şirkətlərdə təcrübə üstünlükdür);",
-        "Dərin analitik və strukturlu təhlil bacarığına;",
-        "İnnovativ və “out-of-box” düşüncə tərzinə",
-        "Problemləri köklü səbələrini təyin etmə və həll etmə bacarığına;",
-        "Üstün səviyyədə “PowerPoint” və “Excel” biliklərinə (peşəkar səviyyədə təqdimat hazırlama bacarığı arzuolunandır);",
-        "Beynəlxalq sertifikatlar (CFA, CIMA, PMP, ) üstünlükdür;",
-        "Yüksək səviyyədə İngilis dili və Rus dili (üstünlükdür) biliyinə;",
-        "Komandada iş bacarıqlarına (komanda idarəetmə təcrübəsi üstünlükdür) sahib olan şəxsdir."
-      ],
-      "responsibilities": [
-        "Bankın strategiyası və əməliyyat planının müəyyən kateqoriyaları üzrə hazırlanması prosesini təşkil etmək və icrasını təmin etmək.",
-        "Konsaltinq layihələri və digər strateji layihələrin zamanı daxili məsləhçi qismində dəstək göstərmək və koordinasiya aparmaq;",
-        "Əsas fəaliyyət göstəriciləri və strateji metriklərin hazırlanmasında ABB Bank və törəmə müəssisələrin müvafiq strukturları ilə birgə işləmək.",
-        "Daxili və xarici mühit üzrə təhlillər aparmaq, nəticələri müvafiq strukturlara təqdim etmək və qərar qəbuluna dəstək göstərmək.",
-        "Törəmə müəssisələrinin strategiyalarının hazırlanmasında yaxından iştirak etmək və müvafiq strukturlarla müzakirələri aparmaq.",
-        "Yeni biznes istiqamətlərinin və törəmə müəssisələrin yaradılması məqsədilə potensial sahələr üzrə araşdırmalar və təkliflər hazırlamaq, eləcə də müvafiq strukturlarla müzakirə etmək;",
-        "Kənar məsləhətçilərlə aparılan layihələrin koordinasiyasını, keyfiyyətinə nəzarəti və daxili strukturlarla müvafiq müzakirələri təmin etmək."
-      ],
-      "benefits": [],
-      "skills": [
-        "Excel"
-      ],
-      "employmentType": null,
-      "experienceLevel": "senior",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5185",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5185",
-      "source": "ABB Careers"
-    },
-    {
       "externalId": "5183",
       "title": "Xəzinə bölməsi üzrə kiçik mütəxəssis - Hacıqabul",
       "company": "ABB",
@@ -4232,9 +4189,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 101,
-    "detailPagesFetched": 101,
-    "acceptedJobs": 101,
+    "discoveredLinks": 100,
+    "detailPagesFetched": 100,
+    "acceptedJobs": 100,
     "rejectedJobs": 0,
     "listingFallbacks": 0,
     "errors": []
