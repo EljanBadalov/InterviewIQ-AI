@@ -1,3 +1,4 @@
+import { installRoadmapReadGuard } from '../services/roadmapWriteGuard';
 import {
   Schema,
   model,
@@ -372,3 +373,4 @@ export {
 };
 
 export default Job;
+installRoadmapReadGuard(Job);

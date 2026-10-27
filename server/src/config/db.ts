@@ -1,26 +1,13 @@
-import mongoose from "mongoose";
-import { env } from "./env";
-
+import './mongoSafety';
+import mongoose from 'mongoose';
+import { env } from './env';
 export const connectDB = async (): Promise<void> => {
   try {
-    const connection = await mongoose.connect(env.MONGO_URI);
-
-    console.log(
-      `✅ MongoDB connected successfully: ${connection.connection.host}`
-    );
+    await mongoose.connect(env.MONGO_URI, {autoIndex:false, autoCreate:false, serverSelectionTimeoutMS:15000});
+    await mongoose.connection.db!.command({ping:1});
+    console.log(JSON.stringify({mongo:'connected',ping:'ok',autoIndex:false,autoCreate:false}));
   } catch (error) {
-    console.dir(error, { depth: 10 });
-
-    if (error instanceof Error) {
-      console.error(
-        `❌ MongoDB connection failed: ${error.message}`
-      );
-    } else {
-      console.error(
-        "❌ MongoDB connection failed with an unknown error."
-      );
-    }
-
+    console.error(JSON.stringify({mongo:'connection_failed',errorType:error instanceof Error ? error.name : 'UnknownError'}));
     throw error;
   }
 };

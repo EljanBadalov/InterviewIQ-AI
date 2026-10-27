@@ -1,0 +1,1 @@
+const M=require('node:module'),p=require('node:path'),original=M._resolveFilename;const prefix=p.resolve(__dirname,'../dist')+p.sep;M._resolveFilename=function(name,...args){if(name.startsWith(prefix)) name=p.resolve(__dirname,'../node_modules/.cache/b5/baseline-dist',name.slice(prefix.length));return original.call(this,name,...args);};

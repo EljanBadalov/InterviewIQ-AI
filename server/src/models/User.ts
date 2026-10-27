@@ -1,3 +1,4 @@
+import type { GenerationJob } from '../services/roadmapGenerationService';
 import mongoose, { Model } from "mongoose";
 import bcrypt from "bcryptjs";
 
@@ -22,6 +23,10 @@ export interface IUser {
   passwordResetCode?: string;
   passwordResetExpires?: Date;
 
+  roadmapGeneration?: GenerationJob;
+  roadmapEvidenceRevision?: number;
+  roadmapAutomationRevision?: number;
+
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -34,6 +39,11 @@ type UserModel = Model<IUser, {}, IUserMethods>;
 
 const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>(
   {
+    // Internal coordination metadata is excluded from normal account queries.
+    roadmapGeneration: { type: mongoose.Schema.Types.Mixed, select: false },
+    roadmapEvidenceRevision: { type: Number, select: false },
+    roadmapAutomationRevision: { type: Number, select: false },
+
     fullName: {
       type: String,
       required: true,

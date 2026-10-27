@@ -1,0 +1,21 @@
+{
+  "model": "Qwen3-1.7B-Q4_K_M.gguf",
+  "bytes": 1282439264,
+  "sha256": "d2387ca2dbfee2ffabce7120d3770dadca0b293052bc2f0e138fdc940d9bc7b5",
+  "device": "Vulkan1",
+  "gpuLayers": 16,
+  "context": 4096,
+  "parallel": 1,
+  "threads": 2,
+  "threadsBatch": 2,
+  "batch": 128,
+  "ubatch": 64,
+  "cacheK": "f16",
+  "cacheV": "f16",
+  "startupGiB": 6.5,
+  "postLoadGiB": 3,
+  "emergencyGiB": 2.5,
+  "vramAbortMiB": 4915,
+  "temperatureLimit": "min(75, baseline + 15)",
+  "note": "Documentation only; safety constants in runtime_config.py are authoritative."
+}

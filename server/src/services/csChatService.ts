@@ -1,3 +1,6 @@
+import { careerChatPhase, careerChatOutcome, timeChatPersistence, withCareerChatMetrics } from './careerChatMetrics';
+import { resolveActiveCareer } from './activeCareerService';
+import { conversationCareerContext } from './careerIntelligenceService';
 import {
   predictCSIntent,
 } from "./csIntentService";
@@ -22,15 +25,22 @@ import {
 } from "./careerResponseCacheService";
 
 import {
-  addConversationMessage,
+  addConversationMessage as persistConversationMessage,
   buildConversationContext,
   getOrCreateConversation,
-  markIntentResolved,
-  setActiveInterview,
-  setActiveResume,
-  setAwaitingField,
-  updateConversationMemory,
+  markIntentResolved as persistIntentResolved,
+  setActiveInterview as persistActiveInterview,
+  setActiveResume as persistActiveResume,
+  setAwaitingField as persistAwaitingField,
+  updateConversationMemory as persistConversationMemory,
 } from "./csMemoryService";
+
+const addConversationMessage: typeof persistConversationMessage = (...args) => timeChatPersistence(() => persistConversationMessage(...args));
+const markIntentResolved: typeof persistIntentResolved = (...args) => timeChatPersistence(() => persistIntentResolved(...args));
+const setActiveInterview: typeof persistActiveInterview = (...args) => timeChatPersistence(() => persistActiveInterview(...args));
+const setActiveResume: typeof persistActiveResume = (...args) => timeChatPersistence(() => persistActiveResume(...args));
+const setAwaitingField: typeof persistAwaitingField = (...args) => timeChatPersistence(() => persistAwaitingField(...args));
+const updateConversationMemory: typeof persistConversationMemory = (...args) => timeChatPersistence(() => persistConversationMemory(...args));
 
 import {
   buildCSResponse,
@@ -84,7 +94,7 @@ import {
 } from "./careerNextStepsService";
 
 import {
-  buildCareerGoalContext,
+  buildCareerGoalChatContext,
   buildCareerGoalReply,
   buildCareerGoalSummary,
   ICareerGoalContext,
@@ -1703,7 +1713,7 @@ const buildCareerResponseData = (
    MAIN CHAT FLOW
 ========================================================= */
 
-export const processCustomerMessage =
+const runCustomerMessage =
   async (
     input: ICSChatInput
   ): Promise<ICSChatOutput> => {
@@ -1777,10 +1787,9 @@ export const processCustomerMessage =
        CURRENT CONTEXT
     ===================================================== */
 
-    const currentContext =
-      buildConversationContext(
-        conversation
-      );
+    const activeCareer=input.userId ? await resolveActiveCareer(String(input.userId)) : null;
+    const contextForConversation=(value:typeof conversation)=>conversationCareerContext(buildConversationContext(value),activeCareer);
+    const currentContext = contextForConversation(conversation);
 
     const wasAwaitingField =
       Boolean(
@@ -1805,7 +1814,6 @@ export const processCustomerMessage =
     console.log(
       "[Career Intent Debug]",
       {
-        message,
         predictedIntent:
           prediction.intent,
         previousIntent:
@@ -1816,8 +1824,7 @@ export const processCustomerMessage =
           currentContext.awaitingField,
         targetRole:
           currentContext.targetRole,
-        careerGoal:
-          currentContext.careerGoal,
+        hasCareerGoal: Boolean(currentContext.careerGoal),
       }
     );
 
@@ -1855,8 +1862,7 @@ export const processCustomerMessage =
           contextualIntent.inheritedIntent,
         reason:
           contextualIntent.reason,
-        metadata:
-          contextualIntent.metadata,
+        contextual: contextualIntent.contextual,
       }
     );
 
@@ -2063,9 +2069,7 @@ export const processCustomerMessage =
     ===================================================== */
 
     let updatedContext =
-      buildConversationContext(
-        conversation
-      );
+      contextForConversation(conversation);
 
     const fieldWasResolved =
       wasAwaitingField &&
@@ -2100,6 +2104,7 @@ export const processCustomerMessage =
        RESUME DATA
     ===================================================== */
 
+    careerChatPhase('context');
     let resume:
       ICareerResumeContext | undefined;
 
@@ -2136,9 +2141,7 @@ export const processCustomerMessage =
             );
 
           updatedContext =
-            buildConversationContext(
-              conversation
-            );
+            contextForConversation(conversation);
         }
       }
     }
@@ -2183,9 +2186,7 @@ export const processCustomerMessage =
             );
 
           updatedContext =
-            buildConversationContext(
-              conversation
-            );
+            contextForConversation(conversation);
         }
       }
     }
@@ -2493,9 +2494,7 @@ export const processCustomerMessage =
           );
 
         updatedContext =
-          buildConversationContext(
-            conversation
-          );
+          contextForConversation(conversation);
 
         response = {
           ...response,
@@ -2728,9 +2727,7 @@ export const processCustomerMessage =
           JSON.stringify(
             {
               intent: effectiveIntent,
-              targetRole: updatedContext.targetRole,
-              careerGoal: updatedContext.careerGoal,
-              nextSteps: nextSteps,
+              totalSteps: nextSteps.steps.length,
             },
             null,
             2
@@ -2769,9 +2766,7 @@ export const processCustomerMessage =
           );
 
         updatedContext =
-          buildConversationContext(
-            conversation
-          );
+          contextForConversation(conversation);
 
         if (
           effectiveIntent ===
@@ -2896,7 +2891,7 @@ export const processCustomerMessage =
       updatedContext.userId
     ) {
       const goalResult =
-        await buildCareerGoalContext({
+        await buildCareerGoalChatContext({
           userId:
             updatedContext.userId,
 
@@ -2907,7 +2902,7 @@ export const processCustomerMessage =
             updatedContext.activeInterviewId,
 
           targetRole:
-            updatedContext.targetRole,
+            knowledgeSubject || updatedContext.targetRole,
 
           careerGoal:
             updatedContext.careerGoal,
@@ -2987,9 +2982,7 @@ export const processCustomerMessage =
           );
 
         updatedContext =
-          buildConversationContext(
-            conversation
-          );
+          contextForConversation(conversation);
 
         response = {
           ...response,
@@ -3129,9 +3122,7 @@ export const processCustomerMessage =
             );
 
           updatedContext =
-            buildConversationContext(
-              conversation
-            );
+            contextForConversation(conversation);
         }
 
         response = {
@@ -3334,15 +3325,18 @@ export const processCustomerMessage =
                 .messages.length
               : 0,
 
-          recentConversationHistory,
+          recentHistoryCount: recentConversationHistory.length,
         },
         null,
         2
       )
     );
 
+    careerChatPhase('response');
     const dynamicResponse =
       await buildCareerDynamicOrQwenResponse({
+        activeCareer:activeCareer || undefined,
+        conversationSubject: knowledgeSubject,
         userId:
           updatedContext.userId,
 
@@ -3673,9 +3667,7 @@ export const processCustomerMessage =
       );
 
     const finalContext =
-      buildConversationContext(
-        conversation
-      );
+      contextForConversation(conversation);
 
     /* =====================================================
        STEP 26
@@ -3764,6 +3756,7 @@ export const processCustomerMessage =
        SAVE RESPONSE CACHE
     ===================================================== */
 
+    careerChatPhase('persistence');
     const shouldSaveToCache =
       false &&
       Boolean(
@@ -3948,6 +3941,15 @@ export const processCustomerMessage =
 /* =========================================================
    DEFAULT EXPORT
 ========================================================= */
+
+export const processCustomerMessage = (input: ICSChatInput): Promise<ICSChatOutput> =>
+  withCareerChatMetrics(async () => {
+    const result = await runCustomerMessage(input);
+    const generation = result.data?.responseGeneration as { strategy?: unknown } | undefined;
+    const cache = result.data?.cache as { hit?: unknown } | undefined;
+    careerChatOutcome(generation?.strategy, cache?.hit);
+    return result;
+  });
 
 export default {
   processCustomerMessage,

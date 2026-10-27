@@ -1,5 +1,5 @@
+import { useApiQuery } from "../../../query/apiQueries";
 import {
-  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -43,6 +43,8 @@ interface BookmarksResponse {
     totalBookmarks: number;
   };
 }
+
+const EMPTY_BOOKMARKS: BookmarkQuestion[] = [];
 
 const categoryNames: Record<
   string,
@@ -94,21 +96,11 @@ const formatInterviewType = (
   );
 };
 
-const bookmarksPage = () => {
-  const [
-    bookmarks,
-    setBookmarks,
-  ] = useState<
-    BookmarkQuestion[]
-  >([]);
+const BookmarksPage = () => {
+
 
   const [
-    loading,
-    setLoading,
-  ] = useState(true);
-
-  const [
-    error,
+    actionError,
     setError,
   ] = useState("");
 
@@ -138,43 +130,14 @@ const bookmarksPage = () => {
     setCategoryFilter,
   ] = useState("all");
 
-  const loadBookmarks =
-    async () => {
-      setLoading(true);
-      setError("");
-
-      try {
-        const response =
-          await apiClient.get<BookmarksResponse>(
-            "/bookmarks"
-          );
-
-        setBookmarks(
-          response.data.data
-            .bookmarks || []
-        );
-      } catch (err) {
-        if (
-          axios.isAxiosError(err)
-        ) {
-          setError(
-            err.response?.data
-              ?.message ||
-              "Bookmarks could not be loaded."
-          );
-        } else {
-          setError(
-            "Bookmarks could not be loaded."
-          );
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-  useEffect(() => {
-    void loadBookmarks();
-  }, []);
+  const bookmarksQuery = useApiQuery<BookmarksResponse>("/bookmarks");
+  const bookmarks = bookmarksQuery.data?.data.bookmarks ?? EMPTY_BOOKMARKS;
+  const loading = bookmarksQuery.isPending;
+  const error = actionError || (bookmarksQuery.isError ? "Bookmarks could not be loaded." : "");
+  const loadBookmarks = () => {
+    setError("");
+    return bookmarksQuery.refetch();
+  };
 
   const removeBookmark =
     async (
@@ -193,14 +156,8 @@ const bookmarksPage = () => {
           `/bookmarks/${questionId}`
         );
 
-        setBookmarks(
-          (previous) =>
-            previous.filter(
-              (question) =>
-                question._id !==
-                questionId
-            )
-        );
+        const remaining = bookmarks.filter(question => question._id !== questionId);
+        bookmarksQuery.setData({ success: true, data: { bookmarks: remaining, totalBookmarks: remaining.length } });
       } catch (err) {
         if (
           axios.isAxiosError(err)
@@ -714,4 +671,4 @@ const bookmarksPage = () => {
   );
 };
 
-export default bookmarksPage;
+export default BookmarksPage;

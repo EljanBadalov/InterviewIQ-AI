@@ -1,3 +1,6 @@
+import { getOrCreateConversation } from "../services/csMemoryService";
+import { CareerChatAccessError, withCareerChatLock } from "../services/careerChatAccess";
+import { withCareerChatMetrics } from '../services/careerChatMetrics';
 import {
   Request,
   Response,
@@ -24,7 +27,7 @@ export const predictCustomerIntent =
     try {
       const {
         message,
-      } = req.body as {
+      } = (req.body || {}) as {
         message?: unknown;
       };
 
@@ -80,7 +83,7 @@ export const predictCustomerIntent =
    CUSTOMER SERVICE CHAT
 ========================================================= */
 
-export const sendCustomerMessage =
+const runSendCustomerMessage =
   async (
     req: Request,
     res: Response
@@ -92,20 +95,18 @@ export const sendCustomerMessage =
         customerId,
         customerName,
         email,
-        userId,
-      } = req.body as {
+      } = (req.body || {}) as {
         sessionId?: unknown;
         message?: unknown;
         customerId?: unknown;
         customerName?: unknown;
         email?: unknown;
-        userId?: unknown;
       };
 
       if (
         typeof sessionId !==
           "string" ||
-        !sessionId.trim()
+        (!sessionId.trim() || sessionId.trim().length > 200)
       ) {
         res.status(
           400
@@ -134,8 +135,10 @@ export const sendCustomerMessage =
         return;
       }
 
+      await getOrCreateConversation(sessionId.trim(), { userId: String(req.user!._id) });
+
       const result =
-        await processCustomerMessage({
+        await withCareerChatLock(sessionId.trim(), () => processCustomerMessage({
           sessionId:
             sessionId.trim(),
 
@@ -163,23 +166,32 @@ export const sendCustomerMessage =
                 undefined
               : undefined,
 
-          userId:
-            typeof userId ===
-            "string"
-              ? userId.trim() ||
-                undefined
-              : undefined,
-        });
+          userId: String(req.user!._id),
+        }));
 
-      res.status(
-        200
-      ).json({
+      const conversation = await getOrCreateConversation(sessionId.trim(), { userId: String(req.user!._id) });
+      res.status(200).json({
         success: true,
-        data: result,
+        data: {
+          ...result,
+          conversation: {
+            conversationId: String(conversation._id), sessionId: conversation.sessionId,
+            userId: String(conversation.userId), title: conversation.title || "New conversation",
+            createdAt: conversation.createdAt, updatedAt: conversation.updatedAt
+          }
+        },
       });
     } catch (
       error
     ) {
+      if (error instanceof CareerChatAccessError) {
+        res.status(error.status).json({ success: false, message: error.message });
+        return;
+      }
+      if (error instanceof Error && ["VersionError", "DocumentNotFoundError"].includes(error.name)) {
+        res.status(409).json({ success: false, message: "Conversation changed. Please reload it." });
+        return;
+      }
       console.error(
         "[CS Controller] Chat processing failed:",
         error
@@ -201,6 +213,9 @@ export const sendCustomerMessage =
 /* =========================================================
    MODEL INFO / HEALTH CHECK
 ========================================================= */
+
+export const sendCustomerMessage = (req: Request, res: Response): Promise<void> =>
+  withCareerChatMetrics(() => runSendCustomerMessage(req, res), undefined, () => res.statusCode < 400);
 
 export const getCustomerServiceModelInfo =
   async (

@@ -9,9 +9,9 @@ import qwenService, {
 export interface ProgressRoleSkillInsightInput {
   roleTitle: string;
 
-  roleReadiness: number;
+  roleReadiness: number | null;
 
-  assessedAverage: number;
+  assessedAverage: number | null;
 
   coveragePercent: number;
 
@@ -631,3 +631,6 @@ export const generateProgressInsights =
 export default {
   generateProgressInsights,
 };
+
+/** Ordinary navigation is deterministic and cannot start inference or share personalized cache entries. */
+export const buildDeterministicProgressInsights = (input:ProgressInsightInput):ProgressAIInsights => buildFallbackInsights(input);

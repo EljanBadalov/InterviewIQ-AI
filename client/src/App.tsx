@@ -1,52 +1,58 @@
+import { lazy, Suspense, type ReactNode } from "react";
+import ProtectedRoute from "./components/protectedRoute";
+import RouteLoading from "./components/RouteLoading";
 import {
   Routes,
   Route,
 } from "react-router-dom";
 
-import LandingPage from "./pages/landingPage/LandingPage";
+const LandingPage = lazy(() => import("./pages/landingPage/LandingPage"));
 
-import LoginPage from "./pages/register/LoginPage";
-import RegisterPage from "./pages/register/RegisterPage";
-import VerifyEmailPage from "./pages/register/VerifyEmailPage";
+const LoginPage = lazy(() => import("./pages/register/LoginPage"));
+const RegisterPage = lazy(() => import("./pages/register/RegisterPage"));
+const VerifyEmailPage = lazy(() => import("./pages/register/VerifyEmailPage"));
 
-import DashboardLayout from "./layouts/DashboardLayout";
+const DashboardLayout = lazy(() => import("./layouts/DashboardLayout"));
 
-import DashboardHomePage from "./pages/dashboard/dashboardHome/dashboardHomePage";
-import MockInterviewPage from "./pages/dashboard/mockInterview/mockInterviewPage";
-import InterviewSessionPage from "./pages/dashboard/interviewSessionPage/InterviewSessionPage";
-import ResumeAnalysisPage from "./pages/dashboard/resumeAnalysisPage/resumeAnalysisPage";
-import JobsPage from "./pages/dashboard/jobsPage/jobsPage";
-import JobDetailsPage from "./pages/dashboard/jobDetailsPage/jobDetailsPage";
-import PerformanceProgressPage from "./pages/dashboard/performanceProgressPage/performanceProgressPage";
-import BookmarksPage from "./pages/dashboard/bookmarksPage/bookmarksPage";
-import SettingsPage from "./pages/dashboard/settingsPage/SettingsPage";
-import CVOptimizerPage from "./pages/dashboard/cvOptimizerPage/cvOptimizerPage";
-import CareerAssistantPage from "./pages/dashboard/careerAssistantPage/careerAssistantPage";
-import CareerAutomationPage from "./pages/dashboard/careerAutomationPage/careerAutomationPage";
+const DashboardHomePage = lazy(() => import("./pages/dashboard/dashboardHome/dashboardHomePage"));
+const MockInterviewPage = lazy(() => import("./pages/dashboard/mockInterview/mockInterviewPage"));
+const InterviewSessionPage = lazy(() => import("./pages/dashboard/interviewSessionPage/InterviewSessionPage"));
+const ResumeAnalysisPage = lazy(() => import("./pages/dashboard/resumeAnalysisPage/resumeAnalysisPage"));
+const JobsPage = lazy(() => import("./pages/dashboard/jobsPage/jobsPage"));
+const JobDetailsPage = lazy(() => import("./pages/dashboard/jobDetailsPage/jobDetailsPage"));
+const PerformanceProgressPage = lazy(() => import("./pages/dashboard/performanceProgressPage/performanceProgressPage"));
+const BookmarksPage = lazy(() => import("./pages/dashboard/bookmarksPage/bookmarksPage"));
+const SettingsPage = lazy(() => import("./pages/dashboard/settingsPage/SettingsPage"));
+const CVOptimizerPage = lazy(() => import("./pages/dashboard/cvOptimizerPage/cvOptimizerPage"));
+const CareerAssistantPage = lazy(() => import("./pages/dashboard/careerAssistantPage/careerAssistantPage"));
+const CareerAutomationPage = lazy(() => import("./pages/dashboard/careerAutomationPage/careerAutomationPage"));
 
-import ProtectedRoute from "./components/protectedRoute";
+
+function routePage(page: ReactNode, route: string) {
+  return <Suspense key={route} fallback={<RouteLoading />}>{page}</Suspense>;
+}
 
 function App() {
   return (
     <Routes>
       <Route
         path="/"
-        element={<LandingPage />}
+        element={routePage(<LandingPage />, "LandingPage")}
       />
 
       <Route
         path="/login"
-        element={<LoginPage />}
+        element={routePage(<LoginPage />, "LoginPage")}
       />
 
       <Route
         path="/register"
-        element={<RegisterPage />}
+        element={routePage(<RegisterPage />, "RegisterPage")}
       />
 
       <Route
         path="/verify-email"
-        element={<VerifyEmailPage />}
+        element={routePage(<VerifyEmailPage />, "VerifyEmailPage")}
       />
 
       <Route
@@ -54,66 +60,66 @@ function App() {
       >
         <Route
           path="/dashboard"
-          element={<DashboardLayout />}
+          element={routePage(<DashboardLayout />, "DashboardLayout")}
         >
           <Route
             index
-            element={<DashboardHomePage />}
+            element={routePage(<DashboardHomePage />, "DashboardHomePage")}
           />
 
           <Route
             path="mock-interview"
-            element={<MockInterviewPage />}
+            element={routePage(<MockInterviewPage />, "MockInterviewPage")}
           />
 
           <Route
             path="mock-interview/:interviewId"
-            element={<InterviewSessionPage />}
+            element={routePage(<InterviewSessionPage />, "InterviewSessionPage")}
           />
 
           <Route
             path="resume-analysis"
-            element={<ResumeAnalysisPage />}
+            element={routePage(<ResumeAnalysisPage />, "ResumeAnalysisPage")}
           />
 
           <Route
             path="jobs"
-            element={<JobsPage />}
+            element={routePage(<JobsPage />, "JobsPage")}
           />
 
           <Route
             path="jobs/:jobId"
-            element={<JobDetailsPage />}
+            element={routePage(<JobDetailsPage />, "JobDetailsPage")}
           />
 
           <Route
             path="jobs/:jobId/improve-cv"
-            element={<CVOptimizerPage />}
+            element={routePage(<CVOptimizerPage />, "CVOptimizerPage")}
           />
 
           <Route
             path="performance-progress"
-            element={<PerformanceProgressPage />}
+            element={routePage(<PerformanceProgressPage />, "PerformanceProgressPage")}
           />
 
           <Route
             path="bookmarks"
-            element={<BookmarksPage />}
+            element={routePage(<BookmarksPage />, "BookmarksPage")}
           />
 
           <Route
             path="career-assistant"
-            element={<CareerAssistantPage />}
+            element={routePage(<CareerAssistantPage />, "CareerAssistantPage")}
           />
 
           <Route
             path="career-automation"
-            element={<CareerAutomationPage />}
+            element={routePage(<CareerAutomationPage />, "CareerAutomationPage")}
           />
 
           <Route
             path="settings"
-            element={<SettingsPage />}
+            element={routePage(<SettingsPage />, "SettingsPage")}
           />
         </Route>
       </Route>

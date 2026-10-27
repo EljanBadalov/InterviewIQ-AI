@@ -1,3 +1,4 @@
+import { installRoadmapWriteGuard } from '../services/roadmapWriteGuard';
 import {
   Schema,
   model,
@@ -1716,3 +1717,4 @@ export {
 };
 
 export default CareerAutomation;
+installRoadmapWriteGuard(CareerAutomation, 'userId', 'roadmapAutomationRevision');

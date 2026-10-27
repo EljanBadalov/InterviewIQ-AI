@@ -1,3 +1,4 @@
+import { roadmapContextStatus } from './careerIntelligenceService';
 import {
   resolveResumeContext,
   type ICareerResumeContext,
@@ -363,7 +364,7 @@ const roadmapCategoryToNextStepCategory = (
 
 const resolveStoredRoadmap = async (
   userId:
-    string
+    string, requestedRole?:string
 ): Promise<
   ICareerRoadmapMilestone[]
 > => {
@@ -383,6 +384,8 @@ const resolveStoredRoadmap = async (
         .select({
           roadmap:
             1,
+          targetRole:1,
+          userId:1,
         })
         .lean();
 
@@ -395,9 +398,10 @@ const resolveStoredRoadmap = async (
       return [];
     }
 
+    if(roadmapContextStatus(automation.roadmap,requestedRole || automation.targetRole,userId).status!=='current')return [];
     return (
-      automation.roadmap as
-      ICareerRoadmapMilestone[]
+      (automation.roadmap as
+      ICareerRoadmapMilestone[]).filter(item=>!item.metadata?.retainedForCompletedTasks)
     );
   } catch (
   error
@@ -1597,7 +1601,8 @@ const sortSteps = (
 export const buildCareerNextStepsContext =
   async (
     input:
-      ICareerNextStepsInput
+      ICareerNextStepsInput,
+    preparedRoadmap?: { userId: string; roadmap: ICareerRoadmapMilestone[] }
   ): Promise<
     ICareerNextStepsResult
   > => {
@@ -1616,6 +1621,10 @@ export const buildCareerNextStepsContext =
         reason:
           "USER_ID_REQUIRED",
       };
+    }
+
+    if (preparedRoadmap && (normalizeString(preparedRoadmap.userId) || "").toLowerCase() !== userId.toLowerCase()) {
+      throw new Error("Roadmap evidence owner mismatch");
     }
 
     let resume:
@@ -1653,8 +1662,8 @@ export const buildCareerNextStepsContext =
       !input.knowledgeSubject
     ) {
       storedRoadmap =
-        await resolveStoredRoadmap(
-          userId
+        preparedRoadmap ? preparedRoadmap.roadmap.filter(item=>!item.metadata?.retainedForCompletedTasks) : await resolveStoredRoadmap(
+          userId,input.targetRole
         );
     }
 

@@ -8,3 +8,13 @@ npm-debug.log*
 README.md
 coverage
 .DS_Store
+ml/venv
+**/venv
+**/.venv
+**/__pycache__
+docs
+tests
+**/*.gguf
+**/*.log
+**/.env
+**/.env.*

@@ -1,3 +1,4 @@
+import { readRoadmapDocument, readRoadmapEvidence } from "./roadmapEvidenceScope";
 import {
   Types,
 } from "mongoose";
@@ -424,7 +425,7 @@ export const getCareerInterviewById =
     }
 
     const interview =
-      await Interview
+      await readRoadmapDocument(normalizedUserId, "interview", { id:normalizedInterviewId }, async () => await Interview
         .findOne({
           _id:
             new Types.ObjectId(
@@ -437,7 +438,7 @@ export const getCareerInterviewById =
             ),
         })
         .lean<IInterview>()
-        .exec();
+        .exec());
 
     if (
       !interview
@@ -493,7 +494,7 @@ export const getLatestCompletedCareerInterview =
     }
 
     const interview =
-      await Interview
+      await readRoadmapDocument(normalizedUserId, "interview", { latest:true }, async () => await Interview
         .findOne({
           user:
             new Types.ObjectId(
@@ -511,7 +512,7 @@ export const getLatestCompletedCareerInterview =
             -1,
         })
         .lean<IInterview>()
-        .exec();
+        .exec());
 
     if (
       !interview
@@ -546,7 +547,7 @@ export const getLatestCompletedCareerInterview =
    -> use latest completed interview.
 ========================================================= */
 
-export const resolveCareerInterviewContext =
+const runResolveCareerInterviewContext =
   async ({
     userId,
     activeInterviewId,
@@ -783,6 +784,9 @@ export const buildCareerInterviewSummary =
 /* =========================================================
    DEFAULT EXPORT
 ========================================================= */
+
+export const resolveCareerInterviewContext = (input: Parameters<typeof runResolveCareerInterviewContext>[0]) =>
+  readRoadmapEvidence(input.userId, JSON.stringify(['interview-context',input.activeInterviewId || null]), () => runResolveCareerInterviewContext(input));
 
 export default {
   getCareerInterviewById,

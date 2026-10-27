@@ -1,3 +1,4 @@
+import { readRoadmapEvidence, readRoadmapHistory } from "./roadmapEvidenceScope";
 import {
   Types,
 } from "mongoose";
@@ -984,7 +985,7 @@ const buildProgressInsights = (
    MAIN PROGRESS CONTEXT
 ========================================================= */
 
-export const buildCareerProgressContext =
+const runBuildCareerProgressContext =
   async (
     userId: string
   ): Promise<
@@ -1019,8 +1020,8 @@ export const buildCareerProgressContext =
        LOAD LAST TWO RESUME ANALYSES
     ===================================================== */
 
-    const resumeAnalyses =
-      await ResumeAnalysis
+    const [resumeAnalyses, interviews] = await Promise.all([
+      readRoadmapHistory(normalizedUserId, "resume", async () => await ResumeAnalysis
         .find({
           user:
             objectId,
@@ -1033,14 +1034,8 @@ export const buildCareerProgressContext =
           2
         )
         .lean<IResumeAnalysis[]>()
-        .exec();
-
-    /* =====================================================
-       LOAD LAST TWO COMPLETED INTERVIEWS
-    ===================================================== */
-
-    const interviews =
-      await Interview
+        .exec()),
+      readRoadmapHistory(normalizedUserId, "interview", async () => await Interview
         .find({
           user:
             objectId,
@@ -1059,7 +1054,8 @@ export const buildCareerProgressContext =
           2
         )
         .lean<IInterview[]>()
-        .exec();
+        .exec()),
+    ]);
 
     if (
       resumeAnalyses.length ===
@@ -1427,6 +1423,9 @@ export const buildCareerProgressSummary =
 /* =========================================================
    DEFAULT EXPORT
 ========================================================= */
+
+export const buildCareerProgressContext = (userId: string) =>
+  readRoadmapEvidence(userId, 'progress-context', () => runBuildCareerProgressContext(userId));
 
 export default {
   buildCareerProgressContext,

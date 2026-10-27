@@ -1,0 +1,32 @@
+{
+  "create": {
+    "maxTokens": 1800,
+    "timeoutMs": 300000,
+    "retries": 0,
+    "temperature": 0.35,
+    "topP": 0.9,
+    "promptBytes": 13293,
+    "promptHash": "150ecb13ce2bf69c1a0736a79a9f82237fd748e6c05b0357aafc433a0baf9d2f",
+    "sections": 6
+  },
+  "replan": {
+    "maxTokens": 1800,
+    "timeoutMs": 300000,
+    "retries": 0,
+    "temperature": 0.35,
+    "topP": 0.9,
+    "promptBytes": 13293,
+    "promptHash": "150ecb13ce2bf69c1a0736a79a9f82237fd748e6c05b0357aafc433a0baf9d2f",
+    "sections": 6
+  },
+  "progress-refresh": {
+    "maxTokens": 1800,
+    "timeoutMs": 300000,
+    "retries": 0,
+    "temperature": 0.35,
+    "topP": 0.9,
+    "promptBytes": 13293,
+    "promptHash": "150ecb13ce2bf69c1a0736a79a9f82237fd748e6c05b0357aafc433a0baf9d2f",
+    "sections": 6
+  }
+}

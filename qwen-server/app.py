@@ -5,7 +5,9 @@ import time
 from typing import Optional, Dict, Any
 
 import requests
-from fastapi import FastAPI, HTTPException
+import anyio
+from generation_boundary import GenerationBudget, GenerationExpired, normalize_finish_reason
+from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel, Field
 
 # ============================================================
@@ -131,10 +133,19 @@ class GenerateRequest(BaseModel):
     )
 
 
+    # Optional transport metadata; sampling and model settings are unchanged.
+    request_budget_ms: Optional[int] = Field(default=None, ge=1, le=300000)
+    deadline_unix_ms: Optional[int] = Field(default=None, ge=1)
+    correlation_id: Optional[str] = Field(default=None, pattern=r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+
+
 class GenerateResponse(BaseModel):
     response: str
     model: str
     usage: Optional[dict] = None
+    finish_reason: Optional[str] = None
+    timings_ms: Optional[Dict[str, float]] = None
+    diagnostics: Optional[Dict[str, Any]] = None
 
 
 # ============================================================
@@ -416,15 +427,9 @@ def start_llama_server() -> None:
 
 def ensure_llama_server() -> None:
     global llama_ready
-
-    if llama_ready and is_llama_ready():
-        return
-
-    with llama_lock:
-        if llama_ready and is_llama_ready():
-            return
-
-        start_llama_server()
+    if not is_llama_ready():
+        raise RuntimeError("An already-ready approved model is required; automatic startup is disabled")
+    llama_ready = True
 
 
 # ============================================================
@@ -528,174 +533,90 @@ def health():
     "/generate",
     response_model=GenerateResponse,
 )
-def generate(
-    request: GenerateRequest,
-):
+def generate(request: GenerateRequest, http_request: Request = None):
+    def disconnected():
+        # FastAPI executes this synchronous route in an AnyIO worker thread.
+        return anyio.from_thread.run(http_request.is_disconnected) if http_request is not None else False
+
+    budget = GenerationBudget(request.request_budget_ms, request.deadline_unix_ms, disconnected)
+    stage = "queue"
+    inference_dispatched = False
+
+    def failure(status, code, message):
+        # Fixed vocabulary only: no upstream exceptions, prompts, answers or response bodies.
+        detail = {"code": code, "stage": stage, "inferenceDispatched": inference_dispatched}
+        print("[QWEN] Generation failure", {"correlationId": request.correlation_id, **detail}, flush=True)
+        return HTTPException(status_code=status, detail={**detail, "message": message})
+
     try:
-        ensure_llama_server()
-
-        messages = []
-
-        if request.system:
-            messages.append(
-                {
-                    "role": "system",
-                    "content": request.system,
-                }
-            )
-
-        messages.append(
-            {
-                "role": "user",
-                "content": request.message,
-            }
-        )
-
-        payload = {
-            "messages": messages,
-            "max_tokens": request.max_tokens,
-            "temperature": request.temperature,
-            "top_p": request.top_p,
-            "stream": False,
-            "chat_template_kwargs": {"enable_thinking": False},
-        }
-
-        print(
-            "[QWEN] Generation request received.",
-            {
-                "messageLength": len(request.message),
-                "systemLength": len(request.system or ""),
-                "maxTokens": request.max_tokens,
+        with budget.slot(generation_lock):
+            stage = "readiness"
+            readiness_started = time.monotonic()
+            budget.check()
+            ensure_llama_server()
+            readiness_ms = (time.monotonic() - readiness_started) * 1000
+            budget.check()
+            messages = []
+            if request.system:
+                messages.append({"role": "system", "content": request.system})
+            messages.append({"role": "user", "content": request.message})
+            payload = {
+                "messages": messages,
+                "max_tokens": request.max_tokens,
                 "temperature": request.temperature,
-                "topP": request.top_p,
-            },
-        )
-
-        print("[QWEN] Waiting for generation slot...")
-
-        with generation_lock:
-            print("[QWEN] Generation slot acquired.")
-
-            started_at = time.time()
-
+                "top_p": request.top_p,
+                "stream": False,
+                "chat_template_kwargs": {"enable_thinking": False},
+            }
+            budget.check()
+            started_at = time.monotonic()
+            request_timeout = min(300, budget.remaining())
+            stage = "inference"
+            inference_dispatched = True
             response = requests.post(
-                get_llama_chat_url(),
-                json=payload,
-                headers={
-                    "Content-Type": "application/json",
-                },
-                timeout=300,
+                get_llama_chat_url(), json=payload,
+                headers={"Content-Type": "application/json"},
+                timeout=request_timeout,
             )
-
-            elapsed_seconds = time.time() - started_at
-
-            print(
-                "[QWEN] llama.cpp response received.",
-                {
-                    "status": response.status_code,
-                    "elapsedSeconds": round(
-                        elapsed_seconds,
-                        2,
-                    ),
-                    "bodyLength": len(response.text),
-                },
-            )
-
+            inference_ms = (time.monotonic() - started_at) * 1000
+            stage = "response"
+        # A completed network roundtrip does not prove remote cancellation on timeout.
+        timings = {"queue_wait": budget.queue_wait_ms, "readiness": readiness_ms, "inference_roundtrip": inference_ms}
+        print("[QWEN] Generation timings", {"correlationId": request.correlation_id, **timings})
         if response.status_code != 200:
-            print(
-                "[QWEN] llama.cpp generation failed.",
-                {
-                    "status": response.status_code,
-                    "response": response.text[:1000],
-                },
-            )
-
-            raise HTTPException(
-                status_code=500,
-                detail={
-                    "message": "Qwen generation failed.",
-                    "llamaStatusCode": response.status_code,
-                    "llamaResponse": response.text,
-                },
-            )
-
+            raise failure(502, "QWEN_PROXY_FAILED", "llama.cpp generation failed")
         try:
             data = response.json()
-
-        except ValueError as error:
-            print(
-                "[QWEN] Invalid JSON returned by llama.cpp:",
-                response.text[:1000],
-            )
-
-            raise HTTPException(
-                status_code=502,
-                detail={
-                    "message": "llama.cpp returned invalid JSON.",
-                    "error": str(error),
-                },
-            )
-
+        except ValueError:
+            raise failure(502, "QWEN_RESPONSE_INVALID_JSON", "llama.cpp returned invalid JSON")
+        if not isinstance(data, dict):
+            raise failure(502, "QWEN_RESPONSE_INVALID_JSON", "llama.cpp returned an invalid response object")
         generated_text = extract_generated_text(data)
-
         if not generated_text:
-            print(
-                "[QWEN] Empty generated response.",
-                {
-                    "llamaResponseKeys": list(data.keys()),
-                },
-            )
-
-            raise HTTPException(
-                status_code=500,
-                detail=("Qwen returned an empty response."),
-            )
-
-        print(
-            "[QWEN] Generation completed successfully.",
-            {
-                "responseLength": len(generated_text),
-            },
-        )
-
+            raise failure(502, "QWEN_RESPONSE_EMPTY", "Qwen returned an empty response")
+        choices = data.get("choices", [])
+        first = choices[0] if isinstance(choices, list) and choices and isinstance(choices[0], dict) else {}
         return GenerateResponse(
-            response=generated_text,
-            model=(f"{QWEN_MODEL_REPO}:" f"{QWEN_MODEL_QUANT}"),
-            usage=data.get("usage"),
+            response=generated_text, model=f"{QWEN_MODEL_REPO}:{QWEN_MODEL_QUANT}",
+            usage=data.get("usage"), finish_reason=normalize_finish_reason(first.get("finish_reason")), timings_ms=timings,
+            diagnostics={"stage": "completed", "inferenceDispatched": True},
         )
-
+    except GenerationExpired:
+        print("[QWEN] Expired or disconnected request discarded before dispatch")
+        error = failure(504, "GENERATION_EXPIRED", "Generation deadline expired")
+        error.detail["timings_ms"] = {"queue_wait": budget.queue_wait_ms or (time.monotonic() - budget.started) * 1000}
+        raise error
     except HTTPException:
         raise
-
     except requests.Timeout:
-        print("[QWEN] Generation request timed out.")
-
-        raise HTTPException(
-            status_code=504,
-            detail=("Qwen generation timed out."),
-        )
-
-    except requests.RequestException as error:
-        print(
-            "[QWEN] Could not communicate with llama.cpp:",
-            str(error),
-        )
-
-        raise HTTPException(
-            status_code=502,
-            detail=(f"Could not communicate with " f"llama.cpp: {error}"),
-        )
-
-    except Exception as error:
-        print(
-            "[QWEN] Unexpected generation error:",
-            repr(error),
-        )
-
-        raise HTTPException(
-            status_code=500,
-            detail=str(error),
-        )
+        raise failure(504, "QWEN_TIMEOUT", "Qwen generation timed out")
+    except requests.RequestException:
+        raise failure(502, "QWEN_TRANSPORT_FAILED", "Could not communicate with llama.cpp")
+    except Exception:
+        # Never log prompts, generated text, URLs, or arbitrary upstream exception messages.
+        if stage == "readiness" and not inference_dispatched:
+            raise failure(503, "QWEN_MODEL_UNAVAILABLE", "The approved model is not ready")
+        raise failure(500, "QWEN_PROXY_FAILED", "Qwen generation failed")
 
 
 # ============================================================
@@ -703,10 +624,5 @@ def generate(
 # ============================================================
 
 if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run(
-        app,
-        host=APP_HOST,
-        port=APP_PORT,
-    )
+    from run_proxy import main
+    main()

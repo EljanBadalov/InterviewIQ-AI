@@ -1,0 +1,11 @@
+// Actual loopback HTTP with synthetic JWT/User/models. Never connects to MongoDB.
+process.env.JWT_SECRET='isolated-b5-http-fixture';
+const http=require('node:http'),express=require('express'),jwt=require('jsonwebtoken'),{performance}=require('node:perf_hooks'),fs=require('node:fs'),path=require('node:path');
+const f=require('./phase3-fixture.cjs'),{User}=f.load('models/User'),{protect}=f.load('middleware/authMiddleware');
+let authReads=0;User.findById=()=>({select(){return this;},read(){return this;},readConcern(){return this;},async then(resolve,reject){try{authReads++;await new Promise(r=>setTimeout(r,2));return resolve(User.hydrate({_id:f.ownerA,role:'user',roadmapEvidenceRevision:0,roadmapAutomationRevision:0}));}catch(e){return reject(e);}}});
+const app=express();app.get('/progress',protect,f.progress.getProgressController);app.use((error,req,res,next)=>res.status(500).json({success:false,message:'Fixture failure'}));
+const server=http.createServer(app);const token=jwt.sign({id:String(f.ownerA)},process.env.JWT_SECRET);const log=console.log;console.log=console.warn=()=>{};
+(async()=>{await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',resolve);});try{
+ const samples=[];for(let i=0;i<120;i++){f.resetCounters();authReads=0;const start=performance.now();const response=await new Promise((resolve,reject)=>{const req=http.get({host:'127.0.0.1',port:server.address().port,path:'/progress',headers:{authorization:'Bearer '+token}},res=>{let text='';res.on('data',chunk=>text+=chunk);res.on('end',()=>resolve({code:res.statusCode,body:JSON.parse(text)}));});req.on('error',reject);});if(response.code!==200)throw Error('HTTP fixture failure');if(i>=20)samples.push({ms:performance.now()-start,reads:f.counters.queries.length+authReads});}
+ const times=samples.map(s=>s.ms).sort((a,b)=>a-b);const result={localHttp:true,fixtureDatabase:true,realMongo:false,syntheticJwt:true,samples:100,warmup:20,nominalQueryDelayMs:2,p50Ms:times[49],p95Ms:times[94],totalReadsIncludingAuth:samples.at(-1).reads,qwenCalls:0};fs.writeFileSync(path.join(__dirname,'../docs/b5/http-'+(process.env.B5_LABEL||'after')+'.json'),JSON.stringify(result,null,2));log(JSON.stringify(result));
+ }finally{await new Promise(resolve=>server.close(resolve));}})().catch(error=>{log(error.message);process.exitCode=1;server.close();});

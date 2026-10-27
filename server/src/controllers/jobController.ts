@@ -1,3 +1,5 @@
+import { careerReadContext, careerFromSource } from '../services/careerReadContextService';
+import { matchesCareerPreferences } from '../services/careerMatchPreferences';
 import {
   type Request,
   type Response,
@@ -20,8 +22,7 @@ import {
 } from "../models/resumeAnalysis";
 
 import {
-  calculateJobMatch,
-  rankJobsForProfile,
+  createCachedJobMatcher,
   type IJobMatchOptions,
 } from "../services/jobMatchingService";
 
@@ -162,8 +163,8 @@ const getMatchOptions = (
       : "";
 
   const targetRole =
-    preferenceTargetRole ||
     automationTargetRole ||
+    preferenceTargetRole ||
     undefined;
 
   const preferredExperienceLevels =
@@ -203,7 +204,7 @@ const getUserAutomation = async (
         "paused",
       ],
     },
-  }).lean();
+  }).select("userId status __v targetRole jobPreferences activeResumeId jobMatches lastJobSearchAt nextJobSearchAt").read('primary').readConcern('majority').maxTimeMS(5000).lean();
 };
 
 const synchronizeStoredMatchScores = async (
@@ -732,6 +733,11 @@ export const getJobs =
          USER DATA
       ===================================================== */
 
+      const needsMatchFiltering = typeof matchLevel === "string" && Boolean(matchLevel.trim()) && matchLevel !== "all";
+      // Preserve legacy fractional/infinite pagination behavior without passing
+      // invalid skip/limit values to the MongoDB driver.
+      const needsWholePool = needsMatchFiltering || !Number.isSafeInteger(parsedPage) ||
+        !Number.isSafeInteger(parsedLimit) || !Number.isSafeInteger((parsedPage - 1) * parsedLimit);
       const userObjectId =
         new mongoose.Types.ObjectId(
           userId
@@ -741,16 +747,18 @@ export const getJobs =
         jobs,
         automation,
         latestResume,
+        totalCount,
       ] =
         await Promise.all([
-          Job.find(
+          needsWholePool ? Job.find(
             filter
           )
             .sort({
               postedAt: -1,
               createdAt: -1,
             })
-            .lean(),
+            .lean() : Job.find(filter).sort({ postedAt: -1, createdAt: -1 })
+              .skip((parsedPage - 1) * parsedLimit).limit(parsedLimit).lean(),
 
           getUserAutomation(
             userObjectId
@@ -764,12 +772,16 @@ export const getJobs =
               createdAt: -1,
             })
             .lean(),
+          needsWholePool ? Promise.resolve(0) : Job.countDocuments(filter),
         ]);
 
       /* =====================================================
          CAREER PROFILE
       ===================================================== */
 
+      const context=careerReadContext(String(userId),req.careerReadVersions,careerFromSource(automation),automation);
+      const originalJson=res.json.bind(res);
+      res.json=((body:any)=>originalJson(body?.success===true?{...body,careerContext:context}:body)) as typeof res.json;
       const careerProfile =
         await buildCareerSkillProfile({
           userId:
@@ -778,96 +790,37 @@ export const getJobs =
           resumeAnalysisId:
             automation
               ?.activeResumeId,
+          preloadedLatestResume: latestResume,
         });
 
-      /* =====================================================
-         NO CAREER PROFILE
-      ===================================================== */
+      const matchJob = createCachedJobMatcher(careerProfile, getMatchOptions(automation));
 
-      if (
-        careerProfile.totalSkills ===
-        0
-      ) {
-        const total =
-          jobs.length;
-
-        const totalPages =
-          Math.max(
-            1,
-            Math.ceil(
-              total /
-                parsedLimit
-            )
-          );
-
-        const safePage =
-          Math.min(
-            parsedPage,
-            totalPages
-          );
-
-        const startIndex =
-          (
-            safePage -
-            1
-          ) *
-          parsedLimit;
-
-        const paginatedJobs =
-          jobs
-            .slice(
-              startIndex,
-              startIndex +
-                parsedLimit
-            )
-            .map(
-              (job) => ({
-                ...job,
-                match: null,
-              })
-            );
-
+      // Newest-first ordering does not depend on score. Only a matchLevel
+      // predicate requires scoring the complete candidate pool before pagination.
+      if (!needsMatchFiltering || careerProfile.totalSkills === 0) {
+        const total = needsWholePool ? jobs.length : totalCount;
+        const totalPages = Math.max(1, Math.ceil(total / parsedLimit));
+        const safePage = Math.min(parsedPage, totalPages);
+        const startIndex = (safePage - 1) * parsedLimit;
+        const pageJobs = needsWholePool
+          ? jobs.slice(startIndex, startIndex + parsedLimit)
+          : safePage === parsedPage ? jobs : await Job.find(filter).sort({ postedAt: -1, createdAt: -1 })
+            .skip(startIndex).limit(parsedLimit).lean();
+        const hasCareerProfile = careerProfile.totalSkills > 0;
+        const paginatedJobs = pageJobs.map(job => {
+          const match = hasCareerProfile ? matchJob(job) : null;
+          return { ...job, match: match ? {
+            matchScore: match.matchScore, matchLevel: match.matchLevel,
+            matchedSkills: match.matchedSkills, missingSkills: match.missingSkills,
+          } : null };
+        });
         res.status(200).json({
-          success: true,
-
-          hasResume:
-            Boolean(
-              latestResume
-            ),
-
-          hasCareerProfile:
-            false,
-
-          message:
-            "Add resume or skill evidence to see personalized job matches.",
-
-          resume:
-            latestResume,
-
-          data: {
-            jobs:
-              paginatedJobs,
-
-            total,
-
-            page:
-              safePage,
-
-            limit:
-              parsedLimit,
-
-            totalPages,
-
-            hasNextPage:
-              safePage <
-              totalPages,
-
-            hasPreviousPage:
-              safePage >
-              1,
-          },
+          success: true, hasResume: Boolean(latestResume), hasCareerProfile,
+          ...(!hasCareerProfile ? { message: "Add resume or skill evidence to see personalized job matches." } : {}),
+          resume: latestResume,
+          data: { jobs: paginatedJobs, total, page: safePage, limit: parsedLimit, totalPages,
+            hasNextPage: safePage < totalPages, hasPreviousPage: safePage > 1 },
         });
-
         return;
       }
 
@@ -886,11 +839,7 @@ export const getJobs =
         jobs.map(
           (job) => {
             const match =
-              calculateJobMatch(
-                careerProfile,
-                job,
-                {}
-              );
+              matchJob(job);
 
             return {
               ...job,
@@ -1189,6 +1138,9 @@ export const getJobById =
         return;
       }
 
+      const context=careerReadContext(String(userId),req.careerReadVersions,careerFromSource(automation),automation);
+      const originalJson=res.json.bind(res);
+      res.json=((body:any)=>originalJson(body?.success===true?{...body,careerContext:context}:body)) as typeof res.json;
       const careerProfile =
         await buildCareerSkillProfile({
           userId:
@@ -1197,6 +1149,7 @@ export const getJobById =
           resumeAnalysisId:
             automation
               ?.activeResumeId,
+          preloadedLatestResume: latestResume,
         });
 
       if (
@@ -1234,13 +1187,7 @@ export const getJobById =
       }
 
       const match =
-        calculateJobMatch(
-          careerProfile,
-          job,
-          getMatchOptions(
-            automation
-          )
-        );
+        createCachedJobMatcher(careerProfile, getMatchOptions(automation))(job);
 
       res.status(
         200
@@ -1391,6 +1338,9 @@ export const getJobMatch =
         return;
       }
 
+      const context=careerReadContext(String(userId),req.careerReadVersions,careerFromSource(automation),automation);
+      const originalJson=res.json.bind(res);
+      res.json=((body:any)=>originalJson(body?.success===true?{...body,careerContext:context}:body)) as typeof res.json;
       const careerProfile =
         await buildCareerSkillProfile({
           userId:
@@ -1419,13 +1369,7 @@ export const getJobMatch =
       }
 
       const match =
-        calculateJobMatch(
-          careerProfile,
-          job,
-          getMatchOptions(
-            automation
-          )
-        );
+        createCachedJobMatcher(careerProfile, getMatchOptions(automation))(job);
 
       res.status(
         200
@@ -1511,22 +1455,8 @@ export const refreshExternalJobs =
         return;
       }
 
-      /*
-       * FAST USER-FACING REFRESH
-       *
-       * Search Again must not wait for live ATS/provider crawling.
-       * The shared Job collection is populated separately by the
-       * ingestion/background flow. Here we only read MongoDB,
-       * apply Career Automation preferences, calculate CV match,
-       * rank the jobs, and save the current recommendations.
-       */
-      /*
-  * First synchronize the complete shared vacancy catalog.
-  *
-  * This refreshes Greenhouse / Lever / Ashby /
-  * SuccessFactors / Bir Careers / ABB Careers / Glorri
-  * data in MongoDB before calculating the user's matches.
-  */
+      // Preserve synchronous completion: refresh providers/catalog first, then
+      // rank the current user's jobs. Concurrent calls share in-flight work.
       const catalogSync =
         await refreshSharedJobCatalog();
 
@@ -1631,6 +1561,9 @@ export const getExternalJobMatches =
         return;
       }
 
+      const context=careerReadContext(String(userId),req.careerReadVersions,careerFromSource(automation),automation);
+      const originalJson=res.json.bind(res);
+      res.json=((body:any)=>originalJson(body?.success===true?{...body,careerContext:context}:body)) as typeof res.json;
       const careerProfile =
         await buildCareerSkillProfile({
           userId:
@@ -1759,6 +1692,7 @@ export const getExternalJobMatches =
           number
         >();
 
+      const matchSavedJob = createCachedJobMatcher(careerProfile, matchOptions);
       const recalculatedMatches =
         savedMatches
           .map(
@@ -1773,17 +1707,14 @@ export const getExternalJobMatches =
                   jobId
                 );
 
-              if (!job) {
+              if (!job || !matchesCareerPreferences(job,automation.jobPreferences)) {
                 return null;
               }
 
               const currentMatch =
-                calculateJobMatch(
-                  careerProfile,
-                  job,
-                  matchOptions
-                );
+                matchSavedJob(job);
 
+              if(currentMatch.breakdown.roleRelevance < 60 || currentMatch.matchScore < (automation.jobPreferences?.minimumMatchScore ?? 0))return null;
               recalculatedScores.set(
                 jobId,
                 currentMatch
@@ -1891,20 +1822,7 @@ export const getExternalJobMatches =
        * recalculation so future stored state does
        * not drift unnecessarily.
        */
-      try {
-        await synchronizeStoredMatchScores(
-          automation._id,
-          recalculatedScores
-        );
-      } catch (
-      synchronizationError
-      ) {
-        console.warn(
-          "[JOB CONTROLLER] Could not synchronize cached match scores:",
-          synchronizationError
-        );
-      }
-
+      // Navigation recalculates a read-only view; stored historical scores are never rewritten here.
       res.status(
         200
       ).json({
@@ -1912,6 +1830,7 @@ export const getExternalJobMatches =
           true,
 
         data: {
+          matchContext:{targetRole:automation.targetRole,revision:automation.__v ?? 0,candidateSource:'saved-history',status:'recalculated',catalogRefreshed:false},
           jobs:
             recalculatedMatches,
 

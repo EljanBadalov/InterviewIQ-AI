@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 
 import App from './App'
+import AccountQueryProvider from './query/AccountQueryProvider'
 import './index.scss'
 
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
@@ -19,9 +20,11 @@ ReactDOM.createRoot(
 ).render(
   <React.StrictMode>
     <GoogleOAuthProvider clientId={googleClientId}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <AccountQueryProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </AccountQueryProvider>
     </GoogleOAuthProvider>
   </React.StrictMode>,
 )

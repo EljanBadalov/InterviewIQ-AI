@@ -1,3 +1,8 @@
+import { timeGenerationStage, withGenerationResponseMetrics } from '../services/roadmapGenerationMetrics';
+import { careerReadContext, careerFromSource, roadmapReadFreshness } from '../services/careerReadContextService';
+import { roadmapContextStatus } from '../services/careerIntelligenceService';
+import { ActiveCareerError, prepareCareerSelection, readActiveCareerSource, resolveActiveCareer, isCareerWriteConflict } from '../services/activeCareerService';
+import { GenerationError, getRoadmapGenerationStatus } from '../services/roadmapGenerationService';
 import {
   Request,
   Response,
@@ -91,6 +96,7 @@ interface ICreateAutomationBody {
 }
 
 interface IUpdateJobPreferencesBody {
+  expectedRevision?: unknown;
   targetRole?: unknown;
 
   enabled?: unknown;
@@ -439,7 +445,7 @@ const getErrorMessage = (
    CREATE / INITIALIZE
 ========================================================= */
 
-export const createAutomation =
+const runCreateAutomationController =
   async (
     req:
       Request,
@@ -724,10 +730,7 @@ export const createAutomation =
           },
         });
 
-      const summary =
-        await getCareerAutomationSummary(
-          userId
-        );
+      const summary = await timeGenerationStage('summary',()=>getCareerAutomationSummary(userId,new Date(),automation));
 
       res.status(
         201
@@ -747,6 +750,10 @@ export const createAutomation =
     } catch (
       error
     ) {
+      if(error instanceof GenerationError){
+        res.status(error.httpStatus).json({success:false,message:error.message});
+        return;
+      }
       console.error(
         "[Career Automation Controller] Create failed:",
         error
@@ -797,73 +804,7 @@ export const updateJobPreferences =
           {}
         ) as IUpdateJobPreferencesBody;
 
-      const automation =
-        await CareerAutomation.findOne({
-          userId,
-
-          status: {
-            $in: [
-              "active",
-              "paused",
-            ],
-          },
-        });
-
-      if (
-        !automation
-      ) {
-        res.status(
-          404
-        ).json({
-          success:
-            false,
-
-          message:
-            "Career automation was not found.",
-        });
-
-        return;
-      }
-
-      const targetRole =
-        normalizeString(
-          body.targetRole
-        );
-
-      if (
-        body.targetRole !==
-          undefined &&
-        !targetRole
-      ) {
-        res.status(
-          400
-        ).json({
-          success:
-            false,
-
-          message:
-            "Target role cannot be empty.",
-        });
-
-        return;
-      }
-
-      if (
-        targetRole
-      ) {
-        automation.targetRole =
-          targetRole;
-
-        /*
-         * Keep jobPreferences target role aligned with the
-         * primary Career Automation target role.
-         */
-        automation
-          .jobPreferences
-          .targetRoles = [
-            targetRole,
-          ];
-      }
+      const { automation, selected } = await prepareCareerSelection(String(userId), body.targetRole, body.expectedRevision);
 
       const enabled =
         normalizeBoolean(
@@ -1024,10 +965,10 @@ export const updateJobPreferences =
 
       await automation.save();
 
-      const summary =
-        await getCareerAutomationSummary(
-          userId
-        );
+      const summary = await getCareerAutomationSummary(String(userId), new Date(), automation);
+      const activeCareer = selected
+        ? { targetRole: automation.targetRole, roleKey: selected.slug, revision: automation.__v ?? 0, source: 'career-automation', catalogResolved: true }
+        : undefined;
 
       res.status(
         200
@@ -1042,14 +983,22 @@ export const updateJobPreferences =
           automation,
 
           summary,
+          ...(activeCareer ? { activeCareer } : {}),
         },
       });
     } catch (
       error
     ) {
+      if (error instanceof ActiveCareerError || isCareerWriteConflict(error)) {
+        res.status(error instanceof ActiveCareerError ? error.httpStatus : 409).json({
+          success: false,
+          code: error instanceof ActiveCareerError ? error.code : 'CAREER_REVISION_CONFLICT',
+          message: error instanceof ActiveCareerError ? error.message : 'Your career data changed. Reload before saving again.',
+        });
+        return;
+      }
       console.error(
-        "[Career Automation Controller] Job preferences update failed:",
-        error
+        "[Career Automation Controller] Job preferences update failed."
       );
 
       res.status(
@@ -1059,10 +1008,7 @@ export const updateJobPreferences =
           false,
 
         message:
-          getErrorMessage(
-            error,
-            "Failed to update job search preferences."
-          ),
+          "Failed to update job search preferences.",
       });
     }
   };
@@ -1207,7 +1153,9 @@ export const getAutomation =
           true,
 
         data:
-          automation,
+          {...automation.toObject(),careerContext:{...roadmapContextStatus(automation.roadmap,automation.targetRole,String(userId)),...roadmapReadFreshness(automation.roadmap,String(userId),req.careerReadVersions?.evidenceRevision)}},
+        careerContext:careerReadContext(String(userId),req.careerReadVersions,careerFromSource(automation),automation),
+        ...(req.query.includeSummary==='true'?{summary:await getCareerAutomationSummary(userId,normalizeDate(req.query.date)||new Date(),automation)}:{}),
       });
     } catch (
       error
@@ -1262,11 +1210,8 @@ export const getAutomationSummary =
         ) ||
         new Date();
 
-      const summary =
-        await getCareerAutomationSummary(
-          userId,
-          date
-        );
+      const source=await getCareerAutomation(userId);
+      const summary=source?await getCareerAutomationSummary(userId,date,source):null;
 
       if (
         !summary
@@ -1290,6 +1235,7 @@ export const getAutomationSummary =
         success:
           true,
 
+        careerContext:careerReadContext(String(userId),req.careerReadVersions,careerFromSource(source),source),
         data:
           summary,
       });
@@ -1572,7 +1518,7 @@ export const updateTaskStatus =
    REPLAN
 ========================================================= */
 
-export const replanAutomation =
+const runReplanAutomationController =
   async (
     req:
       Request,
@@ -1614,10 +1560,7 @@ export const replanAutomation =
             true,
         });
 
-      const summary =
-        await getCareerAutomationSummary(
-          userId
-        );
+      const summary = await timeGenerationStage('summary',()=>getCareerAutomationSummary(userId,new Date(),automation));
 
       res.status(
         200
@@ -1637,6 +1580,10 @@ export const replanAutomation =
     } catch (
       error
     ) {
+      if(error instanceof GenerationError){
+        res.status(error.httpStatus).json({success:false,message:error.message});
+        return;
+      }
       console.error(
         "[Career Automation Controller] Replan failed:",
         error
@@ -1661,7 +1608,7 @@ export const replanAutomation =
    REFRESH PROGRESS
 ========================================================= */
 
-export const refreshAutomationProgress =
+const runRefreshAutomationProgressController =
   async (
     req:
       Request,
@@ -1686,10 +1633,7 @@ export const refreshAutomationProgress =
           userId
         );
 
-      const summary =
-        await getCareerAutomationSummary(
-          userId
-        );
+      const summary = await timeGenerationStage('summary',()=>getCareerAutomationSummary(userId,new Date(),automation));
 
       res.status(
         200
@@ -1709,6 +1653,10 @@ export const refreshAutomationProgress =
     } catch (
       error
     ) {
+      if(error instanceof GenerationError){
+        res.status(error.httpStatus).json({success:false,message:error.message});
+        return;
+      }
       console.error(
         "[Career Automation Controller] Progress refresh failed:",
         error
@@ -1834,6 +1782,18 @@ export const updateAutomationStatus =
     }
   };
 
+export async function createAutomation(req:Request,res:Response):Promise<void> {
+  return withGenerationResponseMetrics('create',res,()=>runCreateAutomationController(req,res));
+}
+
+export async function replanAutomation(req:Request,res:Response):Promise<void> {
+  return withGenerationResponseMetrics('replan',res,()=>runReplanAutomationController(req,res));
+}
+
+export async function refreshAutomationProgress(req:Request,res:Response):Promise<void> {
+  return withGenerationResponseMetrics('progress-refresh',res,()=>runRefreshAutomationProgressController(req,res));
+}
+
 export default {
   createAutomation,
   updateJobPreferences,
@@ -1845,4 +1805,20 @@ export default {
   replanAutomation,
   refreshAutomationProgress,
   updateAutomationStatus,
+};
+export const getGenerationStatus = async (req:Request,res:Response):Promise<void> => {
+  const userId=requireAuthenticatedUserId(req,res);if(!userId)return;
+  try{res.status(200).json({success:true,data:await getRoadmapGenerationStatus(userId)});}
+  catch(error){res.status(error instanceof GenerationError?error.httpStatus:503).json({success:false,message:error instanceof GenerationError?error.message:'Roadmap status is temporarily unavailable.'});}
+};
+
+/** Read-only selection endpoint; never starts roadmap generation or recovery. */
+export const getActiveCareer = async (req: Request, res: Response): Promise<void> => {
+    const owner = requireAuthenticatedUserId(req, res);
+    if (!owner) return;
+    try { const source=await readActiveCareerSource(String(owner)); const activeCareer=await resolveActiveCareer(String(owner),source); res.status(200).json({ success: true, data: { activeCareer },careerContext:careerReadContext(String(owner),req.careerReadVersions,activeCareer,source) }); }
+    catch (error) {
+        res.status(error instanceof ActiveCareerError ? error.httpStatus : 503).json({ success: false,
+            message: error instanceof ActiveCareerError ? error.message : 'Career selection is temporarily unavailable.' });
+    }
 };

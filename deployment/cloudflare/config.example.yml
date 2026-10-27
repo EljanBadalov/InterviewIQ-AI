@@ -1,0 +1,8 @@
+# Private copy: local-ai/config/cloudflared.yml. Configure Access before publishing.
+tunnel: REPLACE_TUNNEL_UUID
+credentials-file: local-ai/config/REPLACE_TUNNEL_UUID.json
+ingress:
+  - hostname: ai.example.com
+    path: ^/(generate|health)$
+    service: http://127.0.0.1:8000
+  - service: http_status:404

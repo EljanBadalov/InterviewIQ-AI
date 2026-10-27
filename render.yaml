@@ -1,0 +1,46 @@
+# Template only. Account configuration and deployment require separate approval.
+services:
+  - type: web
+    name: interviewiq-api
+    runtime: docker
+    rootDir: server
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    maxShutdownDelaySeconds: 300
+    autoDeployTrigger: "off"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ENABLE_STARTUP_RECOVERY
+        value: "false"
+      - key: QWEN_REQUIRE_SECURE_PROXY
+        value: "true"
+      - key: QWEN_DEBUG
+        value: "false"
+      - key: QWEN_MODEL
+        value: ggml-org/Qwen3-1.7B-GGUF:Q4_K_M
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: CLIENT_URL
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: EMAILJS_SERVICE_ID
+        sync: false
+      - key: EMAILJS_TEMPLATE_ID
+        sync: false
+      - key: EMAILJS_RESET_TEMPLATE_ID
+        sync: false
+      - key: EMAILJS_PUBLIC_KEY
+        sync: false
+      - key: QWEN_SERVICE_URL
+        sync: false
+      - key: CF_ACCESS_CLIENT_ID
+        sync: false
+      - key: CF_ACCESS_CLIENT_SECRET
+        sync: false
+      - key: QWEN_PROXY_API_KEY
+        sync: false

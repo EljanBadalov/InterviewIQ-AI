@@ -1,3 +1,4 @@
+import { installRoadmapWriteGuard } from '../services/roadmapWriteGuard';
 import {
   Schema,
   model,
@@ -259,3 +260,4 @@ export const UserSkillProfile =
     "UserSkillProfile",
     userSkillProfileSchema
   );
+installRoadmapWriteGuard(UserSkillProfile, 'user', 'roadmapEvidenceRevision');

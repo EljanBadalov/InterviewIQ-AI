@@ -1,3 +1,5 @@
+import { withInterviewMetrics, timeInterviewStage, interviewTransportUncertain, recordInterviewEvaluationFailure, interviewCorrelationId } from '../services/interviewEvaluationMetrics';
+import { withInterviewSubmission, commitInterviewSubmission, resolveEvaluationQuestion, InterviewSubmissionError } from '../services/interviewSubmissionService';
 import {
   type Request,
   type Response,
@@ -1041,6 +1043,7 @@ export const startInterviewController =
 
             questionText:
               question.text,
+            questionSnapshot: { text: question.text, interviewType: question.interviewType, difficulty: question.difficulty, category: question.category, tags: question.tags || [] },
 
             evaluationStatus:
               "pending",
@@ -1168,11 +1171,12 @@ export const startInterviewController =
    SUBMIT ANSWER
 ========================================= */
 
-export const submitInterviewAnswerController =
+const runSubmitInterviewAnswerController =
   async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
+    prepared?: Awaited<ReturnType<typeof Interview.findOne>>
   ): Promise<void> => {
     try {
       const userId =
@@ -1255,7 +1259,7 @@ export const submitInterviewAnswerController =
       ========================= */
 
       const interview =
-        await Interview.findOne({
+        prepared ?? await Interview.findOne({
           _id: interviewId,
           user: userId,
         });
@@ -1329,7 +1333,6 @@ export const submitInterviewAnswerController =
       ========================= */
 
       if (
-        answerDocument.answerText &&
         answerDocument
           .evaluationStatus ===
           "completed"
@@ -1348,6 +1351,7 @@ export const submitInterviewAnswerController =
          AI EVALUATION
       ===================================== */
 
+      const questionContext = await resolveEvaluationQuestion(answerDocument);
       let evaluation;
 
       try {
@@ -1358,32 +1362,37 @@ export const submitInterviewAnswerController =
                 interview.category,
 
               category:
-                interview.category,
+                questionContext.category,
 
               difficulty:
-                interview.difficulty,
+                questionContext.difficulty,
 
               interviewType:
-                interview.interviewType,
+                questionContext.interviewType,
 
               question:
-                answerDocument.questionText,
+                questionContext.text,
 
               answer:
                 answerText.trim(),
             }
           );
       } catch (evaluationError) {
+        const failure = recordInterviewEvaluationFailure(evaluationError);
         console.error(
           "Interview AI evaluation failed:",
-          evaluationError
+          JSON.stringify({correlationId: interviewCorrelationId(), ...failure})
         );
 
         res.status(503).json({
           success: false,
 
           message:
-            "AI evaluation could not be completed. Your answer was not skipped. Please submit it again.",
+            interviewTransportUncertain()
+              ? "Evaluation completion is uncertain. No result was committed; model completion must be verified before recovery."
+              : failure.failureCode === 'EVALUATION_MODEL_UNAVAILABLE'
+              ? "AI service is currently unavailable. Your answer remains pending. Please wait until the service is ready."
+              : "AI evaluation could not be completed. Your answer was not skipped. Please submit it again.",
         });
 
         return;
@@ -1426,49 +1435,16 @@ export const submitInterviewAnswerController =
       answerDocument.evaluationStatus =
         "completed";
 
-      /* =====================================
-         VERIFIED SKILL EVIDENCE
-      ===================================== */
-
-      try {
-        const question =
-          await Question.findById(
-            questionId
-          )
-            .select(
-              "tags category interviewType"
-            )
-            .lean();
-
-        if (question) {
-          await recordInterviewSkillEvidence({
-            userId,
-            interviewId:
-              new mongoose.Types.ObjectId(
-                interviewId
-              ),
-            questionId:
-              new mongoose.Types.ObjectId(
-                questionId
-              ),
-            questionTags:
-              question.tags ?? [],
-            score:
-              evaluation.score,
-            technicalAccuracy:
-              evaluation.technicalAccuracy,
-            interviewType:
-              question.interviewType,
-            category:
-              question.category,
-          });
-        }
-      } catch (skillEvidenceError) {
-        console.error(
-          "Skill evidence update failed:",
-          skillEvidenceError
-        );
-      }
+      const persistEvaluation = () => commitInterviewSubmission(async session => {
+        await interview.save({session});
+        await recordInterviewSkillEvidence({
+          userId, interviewId: new mongoose.Types.ObjectId(interviewId),
+          questionId: new mongoose.Types.ObjectId(questionId),
+          questionTags: questionContext.tags, score: evaluation.score,
+          technicalAccuracy: evaluation.technicalAccuracy,
+          interviewType: questionContext.interviewType, category: questionContext.category, session,
+        });
+      });
 
       /* =====================================
          FIND NEXT QUESTION
@@ -1600,7 +1576,7 @@ export const submitInterviewAnswerController =
           ],
         };
 
-        await interview.save();
+        await persistEvaluation();
 
         res.status(200).json({
           success: true,
@@ -1675,7 +1651,7 @@ export const submitInterviewAnswerController =
         );
       }
 
-      await interview.save();
+      await persistEvaluation();
 
       res.status(200).json({
         success: true,
@@ -1735,13 +1711,35 @@ export const submitInterviewAnswerController =
         },
       });
     } catch (error) {
-      next(error);
+      if(error instanceof InterviewSubmissionError){res.status(error.status).json({success:false,code:error.code,message:'Question metadata or submission lease is unavailable. Please retry later.'});return;}
+      res.status(503).json({success:false,message:'Evaluation could not be committed. Please retry later.'});
     }
   };
 
 /* =========================================
    GET ONE INTERVIEW
 ========================================= */
+
+export const submitInterviewAnswerController = (req: Request, res: Response, next: NextFunction): Promise<void> =>
+  withInterviewMetrics(async () => {
+    const owner=getUserId(req), id=getParamString(req.params.id), question=req.body?.questionId;
+    if(!owner || !isValidObjectId(id) || typeof question!=='string' || !isValidObjectId(question) || typeof req.body?.answerText!=='string' || req.body.answerText.trim().length<10)
+      return runSubmitInterviewAnswerController(req,res,next);
+    if(req.body.answerText.length>6000){res.status(400).json({success:false,message:'Answer exceeds the supported evaluation length.'});return;}
+    try {
+      const prepared=await timeInterviewStage('contextMs',()=>Interview.findOne({_id:id,user:owner}).select('+answers.questionSnapshot +evaluationLease').maxTimeMS(5000));
+      if(!prepared){res.status(404).json({success:false,message:'Interview not found'});return;}
+      if(prepared.status!=='in_progress')return runSubmitInterviewAnswerController(req,res,next,prepared);
+      const answer=prepared.answers.find(item=>String(item.question)===question);
+      if(!answer || answer.evaluationStatus==='completed')return runSubmitInterviewAnswerController(req,res,next,prepared);
+      if(prepared.evaluationLease && new Date(prepared.evaluationLease.until).getTime()<=Date.now() && prepared.evaluationLease.dispatched!==false){res.status(409).json({success:false,code:'INTERVIEW_RECOVERY_REQUIRED',message:'The previous evaluation outcome is unknown. Verify model completion before recovering this submission.'});return;}
+      await withInterviewSubmission(String(owner),id,question,()=>runSubmitInterviewAnswerController(req,res,next,prepared));
+    } catch(error) {
+      if(error instanceof InterviewSubmissionError){res.status(error.status).json({success:false,code:error.code,message:'Evaluation is busy or question data changed. Please retry after the recovery window.'});return;}
+      // Database failures are explicit; do not expose private driver/answer details.
+      res.status(503).json({success:false,message:'Evaluation could not be committed. Please retry later.'});
+    }
+  },()=>res.statusCode);
 
 export const getInterviewController =
   async (

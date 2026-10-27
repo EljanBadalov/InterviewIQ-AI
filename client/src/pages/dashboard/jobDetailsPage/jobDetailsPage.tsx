@@ -1,6 +1,5 @@
+import { useApiQuery } from "../../../query/apiQueries";
 import React, {
-  useEffect,
-  useState,
 } from "react";
 
 import {
@@ -22,7 +21,6 @@ import {
   FiExternalLink,
 } from "react-icons/fi";
 
-import apiClient from "../../../api/apiClient";
 
 import "./jobDetailsPage.scss";
 
@@ -411,97 +409,10 @@ const JobDetailsPage:
           string;
       }>();
 
-    const [
-      job,
-      setJob,
-    ] =
-      useState<
-        Job |
-        null
-      >(
-        null
-      );
-
-    const [
-      loading,
-      setLoading,
-    ] =
-      useState(
-        true
-      );
-
-    const [
-      error,
-      setError,
-    ] =
-      useState(
-        ""
-      );
-
-    useEffect(
-      () => {
-        const fetchJob =
-          async () => {
-            if (
-              !jobId
-            ) {
-              setError(
-                "Job ID is missing."
-              );
-
-              setLoading(
-                false
-              );
-
-              return;
-            }
-
-            try {
-              setLoading(
-                true
-              );
-
-              setError(
-                ""
-              );
-
-              const response =
-                await apiClient.get<
-                  JobDetailsResponse
-                >(
-                  `/jobs/${jobId}`
-                );
-
-              setJob(
-                response
-                  .data
-                  .data
-                  .job
-              );
-            } catch (
-              err:
-                any
-            ) {
-              setError(
-                err
-                  ?.response
-                  ?.data
-                  ?.message ||
-                "Could not load job details."
-              );
-            } finally {
-              setLoading(
-                false
-              );
-            }
-          };
-
-        void fetchJob();
-      },
-      [
-        jobId,
-      ]
-    );
+    const jobQuery = useApiQuery<JobDetailsResponse>(`/jobs/${encodeURIComponent(jobId || "")}`, Boolean(jobId));
+    const job = jobQuery.data?.data.job ?? null;
+    const loading = Boolean(jobId) && jobQuery.isPending;
+    const error = !jobId ? "Job ID is missing." : jobQuery.isError ? "Could not load job details." : "";
 
     if (
       loading
@@ -524,7 +435,6 @@ const JobDetailsPage:
     }
 
     if (
-      error ||
       !job
     ) {
       return (
@@ -584,6 +494,8 @@ const JobDetailsPage:
 
     return (
       <div className="job-details-page">
+        {jobQuery.isFetching && <p role="status">Updating job details...</p>}
+        {error && <p role="alert">{error} <button type="button" onClick={() => void jobQuery.refetch()}>Retry</button></p>}
         <button
           type="button"
           className="job-back-button"

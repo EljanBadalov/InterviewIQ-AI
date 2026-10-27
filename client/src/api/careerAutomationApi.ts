@@ -274,6 +274,8 @@ export interface ICareerAutomationProgress {
 }
 
 export interface ICareerAutomation {
+  careerContext?:{status:'current'|'stale'|'unverified'|'empty'; evidenceFreshness?:'current'|'stale'|'unverified'; knowledgeFreshness?:'unverified';activeTargetRole:string;generatedForRole:string|null};
+  __v?: number;
   _id: string;
 
   userId: string;
@@ -741,6 +743,7 @@ export const getCareerFields =
 ========================================================= */
 
 export interface IUpdateCareerJobPreferencesPayload {
+  expectedRevision?: number | null;
   targetRole?: string;
 
   enabled?: boolean;

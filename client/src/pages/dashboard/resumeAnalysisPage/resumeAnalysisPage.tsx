@@ -1,4 +1,9 @@
+import { useApiQuery } from "../../../query/apiQueries";
+import RouteLoading from "../../../components/RouteLoading";
 import {
+  lazy,
+  useMemo,
+  Suspense,
   useEffect,
   useRef,
   useState,
@@ -37,9 +42,9 @@ import axios from "axios";
 
 import apiClient from "../../../api/apiClient";
 
-import ImproveCVModal from "../../../components/resume/ImproveCVModal";
-
 import "./resumeAnalysisPage.scss";
+
+const ImproveCVModal = lazy(() => import("../../../components/resume/ImproveCVModal"));
 
 /* =========================================
    TYPES
@@ -464,11 +469,6 @@ const ResumeAnalysisPage =
     ] =
       useState(false);
 
-    const [
-      historyLoading,
-      setHistoryLoading,
-    ] =
-      useState(false);
 
     const [
       dragActive,
@@ -490,13 +490,6 @@ const ResumeAnalysisPage =
         null
       );
 
-    const [
-      history,
-      setHistory,
-    ] =
-      useState<
-        ResumeAnalysisResult[]
-      >([]);
 
     const [
       previewUrl,
@@ -505,6 +498,11 @@ const ResumeAnalysisPage =
       useState<
         string | null
       >(null);
+
+    const historyQuery = useApiQuery<ResumeHistoryApiResponse>(HISTORY_ENDPOINT);
+    const history = useMemo(() => (historyQuery.data?.data?.analyses ?? []).map(normalizeAnalysis), [historyQuery.data]);
+    const historyLoading = historyQuery.isPending;
+    const loadHistory = () => historyQuery.refetch();
 
     /* =====================================
        CLEAR PREVIEW
@@ -570,60 +568,9 @@ const ResumeAnalysisPage =
        HISTORY
     ===================================== */
 
-    const loadHistory =
-      async () => {
-        setHistoryLoading(
-          true
-        );
-
-        try {
-          const response =
-            await apiClient.get<ResumeHistoryApiResponse>(
-              HISTORY_ENDPOINT
-            );
-
-          const rows =
-            response.data
-              .data
-              ?.analyses ??
-            [];
-
-          setHistory(
-            rows.map(
-              normalizeAnalysis
-            )
-          );
-        } catch (
-          historyError
-        ) {
-          console.error(
-            "Resume history error:",
-            historyError
-          );
-        } finally {
-          setHistoryLoading(
-            false
-          );
-        }
-      };
-
-    useEffect(
-      () => {
-        void loadHistory();
-
-        return () => {
-          if (
-            previewUrl
-          ) {
-            URL.revokeObjectURL(
-              previewUrl
-            );
-          }
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      },
-      []
-    );
+    useEffect(() => () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    }, [previewUrl]);
 
     /* =====================================
        FILE
@@ -1296,6 +1243,9 @@ const ResumeAnalysisPage =
                 </span>
               </div>
 
+              {historyQuery.isError && (
+                <p role="alert">Resume history could not be loaded. <button type="button" onClick={() => void loadHistory()}>Retry</button></p>
+              )}
               {historyLoading ? (
                 <div className="history-empty">
                   Loading resume history...
@@ -1756,33 +1706,37 @@ const ResumeAnalysisPage =
           </section>
         )}
 
-        <ImproveCVModal
-          open={
-            improveModalOpen
-          }
-          sourceAnalysisId={
-            result
-              ?.analysisId ||
-            result
-              ?._id ||
-            null
-          }
-          sourceFileName={
-            result
-              ?.fileName ||
-            null
-          }
-          onClose={() =>
-            setImproveModalOpen(
-              false
-            )
-          }
-          onCompleted={() => {
-            setImproveModalOpen(
-              false
-            );
-          }}
-        />
+        {improveModalOpen && (
+          <Suspense fallback={<RouteLoading />}>
+            <ImproveCVModal
+              open={
+                improveModalOpen
+              }
+              sourceAnalysisId={
+                result
+                  ?.analysisId ||
+                result
+                  ?._id ||
+                null
+              }
+              sourceFileName={
+                result
+                  ?.fileName ||
+                null
+              }
+              onClose={() =>
+                setImproveModalOpen(
+                  false
+                )
+              }
+              onCompleted={() => {
+                setImproveModalOpen(
+                  false
+                );
+              }}
+            />
+          </Suspense>
+        )}
       </div>
     );
   };

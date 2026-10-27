@@ -1,5 +1,5 @@
+import { useCareerQuery } from '../../../query/useCareerQuery';
 import {
-  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -18,7 +18,6 @@ import {
   FiZap,
 } from "react-icons/fi";
 
-import apiClient from "../../../api/apiClient";
 
 import "./performanceProgressPage.scss";
 
@@ -106,8 +105,9 @@ interface RoleSkillProgressItem {
   status:
     RoleSkillStatus;
 
+  evidenceState?: "verified_proficiency"|"partial_evidence"|"unverified"|"verified_gap";
   confidence:
-    number;
+    number | null;
 
   evidenceCount:
     number;
@@ -136,9 +136,9 @@ interface RoleSkillProgress {
 
   roleTitle: string;
 
-  roleReadiness: number;
+  roleReadiness: number | null;
 
-  assessedAverage: number;
+  assessedAverage: number | null;
 
   coveragePercent: number;
 
@@ -489,34 +489,12 @@ const formatRoleSkillKind = (
    COMPONENT
 ========================================================= */
 
-const performanceProgressPage =
+const PerformanceProgressPage =
   () => {
-    const [
-      progress,
-      setProgress,
-    ] =
-      useState<
-        ProgressData |
-        null
-      >(
-        null
-      );
-
-    const [
-      loading,
-      setLoading,
-    ] =
-      useState<boolean>(
-        true
-      );
-
-    const [
-      error,
-      setError,
-    ] =
-      useState<string>(
-        ""
-      );
+    const progressQuery = useCareerQuery<ProgressResponse>("/progress");
+    const progress = progressQuery.data?.data ?? null;
+    const loading = progressQuery.isPending;
+    const error = progressQuery.isError ? "We could not load your performance data. Please try again." : "";
 
     const [
       showAllRoleSkills,
@@ -560,57 +538,10 @@ const performanceProgressPage =
           6
       );
 
-    const fetchProgress =
-      async () => {
-        try {
-          setLoading(
-            true
-          );
-
-          setError(
-            ""
-          );
-
-          const response =
-            await apiClient.get<ProgressResponse>(
-              "/progress"
-            );
-
-          if (
-            !response.data
-              .success
-          ) {
-            setError(
-              "Progress data could not be loaded."
-            );
-
-            return;
-          }
-
-          setProgress(
-            response.data.data
-          );
-
-          setShowAllRoleSkills(
-            false
-          );
-        } catch {
-          setError(
-            "We could not load your performance data. Please try again."
-          );
-        } finally {
-          setLoading(
-            false
-          );
-        }
-      };
-
-    useEffect(
-      () => {
-        void fetchProgress();
-      },
-      []
-    );
+    const fetchProgress = async () => {
+      await progressQuery.refetch();
+      setShowAllRoleSkills(false);
+    };
 
     /* =====================================================
        DERIVED DATA
@@ -937,7 +868,9 @@ const performanceProgressPage =
             ERROR
         ================================================= */}
 
-        {error ? (
+        {progressQuery.isFetching && progress && <p role="status">Updating performance history...</p>}
+        {error && progress && <p role="alert">{error}</p>}
+        {error && !progress ? (
           <section className="performance-error-card">
             <div className="performance-error-card__icon">
               <FiActivity />
@@ -1097,7 +1030,7 @@ const performanceProgressPage =
                     </h2>
 
                     <p>
-                      Your most recent interview scores and overall direction.
+                      Historical interviews across all careers. Active-career skills are shown separately.
                     </p>
                   </div>
 
@@ -1393,7 +1326,7 @@ const performanceProgressPage =
                       </span>
 
                       <strong>
-                        {progress.roleSkillProgress.roleReadiness}%
+                        {progress.roleSkillProgress.roleReadiness===null?'Not enough evidence':`${progress.roleSkillProgress.roleReadiness}%`}
                       </strong>
 
                       <small>
@@ -1422,7 +1355,7 @@ const performanceProgressPage =
                       </span>
 
                       <strong>
-                        {progress.roleSkillProgress.assessedAverage}%
+                        {progress.roleSkillProgress.assessedAverage===null?'Not enough evidence':`${progress.roleSkillProgress.assessedAverage}%`}
                       </strong>
 
                       <small>
@@ -1509,9 +1442,7 @@ const performanceProgressPage =
                               <span
                                 className={`performance-role-skill-status ${skill.status}`}
                               >
-                                {formatRoleSkillStatus(
-                                  skill.status
-                                )}
+                                {skill.evidenceState ? ({verified_proficiency:'Verified proficiency',partial_evidence:'Partial evidence',unverified:'Unverified',verified_gap:'Verified gap'}[skill.evidenceState]) : formatRoleSkillStatus(skill.status)}
                               </span>
 
                               <strong>
@@ -1618,7 +1549,7 @@ const performanceProgressPage =
                 </>
               ) : (
                 <div className="performance-card__empty performance-role-skill-empty">
-                  Complete technical interviews in a specific career field so InterviewIQ can compare your evidence against that role's required skills.
+                  Select your target career in Career Automation to see relevant skill evidence. Your historical interviews remain available.
                 </div>
               )}
             </section>
@@ -2646,4 +2577,4 @@ const PerformanceMomentumChart = ({
   );
 };
 
-export default performanceProgressPage;
+export default PerformanceProgressPage;

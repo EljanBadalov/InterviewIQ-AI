@@ -1,3 +1,4 @@
+import { CareerChatAccessError, requireCareerChatUser } from "./careerChatAccess";
 import {
   Types,
 } from "mongoose";
@@ -422,11 +423,30 @@ export const getOrCreateConversation =
       );
     }
 
+    const authenticatedUserId = requireCareerChatUser();
+    if (context.userId && context.userId !== authenticatedUserId) {
+      throw new CareerChatAccessError(404, "Conversation not found.");
+    }
+
     let conversation =
       await CustomerConversation.findOne({
         sessionId:
           normalizedSessionId,
+        userId: toObjectId(authenticatedUserId),
+        deletedAt: null,
       });
+
+    if (!conversation && await CustomerConversation.exists({ sessionId: normalizedSessionId })) {
+      throw new CareerChatAccessError(404, "Conversation not found.");
+    }
+
+    if (conversation && (String(conversation.userId || "") !== authenticatedUserId || conversation.deletedAt)) {
+      throw new CareerChatAccessError(404, "Conversation not found.");
+    }
+    if (conversation) {
+      // Include ownership and deletion state in every subsequent document save.
+      conversation.$where = { userId: toObjectId(authenticatedUserId), deletedAt: null };
+    }
 
     /* =====================================================
        CREATE NEW
@@ -437,13 +457,14 @@ export const getOrCreateConversation =
     ) {
       const userObjectId =
         toObjectId(
-          context.userId
+          authenticatedUserId
         );
 
       conversation =
         await CustomerConversation.create({
           sessionId:
             normalizedSessionId,
+          title: "New conversation",
 
           userId:
             userObjectId,
@@ -496,10 +517,6 @@ export const getOrCreateConversation =
     let changed =
       false;
 
-    const userObjectId =
-      toObjectId(
-        context.userId
-      );
 
     const normalizedCustomerId =
       normalizeOptionalString(
@@ -515,17 +532,6 @@ export const getOrCreateConversation =
       normalizeEmail(
         context.email
       );
-
-    if (
-      userObjectId &&
-      !conversation.userId
-    ) {
-      conversation.userId =
-        userObjectId;
-
-      changed =
-        true;
-    }
 
     if (
       normalizedCustomerId &&
@@ -607,6 +613,11 @@ export const addConversationMessage =
       await getOrCreateConversation(
         sessionId
       );
+
+    if (!conversation.titleManuallySet && (!conversation.title || conversation.title === "New conversation") && input.sender === "customer") {
+      const firstQuestion = conversation.messages.find(message => message.sender === "customer")?.text || text;
+      conversation.title = firstQuestion.replace(/\s+/g, " ").slice(0, 100);
+    }
 
     conversation.messages.push(
       {

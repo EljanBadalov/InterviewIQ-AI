@@ -11,6 +11,10 @@ import {
   type ICareerKnowledgeTopic,
 } from "../models/CareerKnowledge";
 
+const knowledgeNarrativeIdentities = new WeakMap<object, unknown>();
+export const getKnowledgeNarrativeIdentity = (context?: ICareerKnowledgeContext): unknown =>
+  context ? knowledgeNarrativeIdentities.get(context) : undefined;
+
 /* =========================================================
    TYPES
 ========================================================= */
@@ -1387,7 +1391,7 @@ export const buildCareerKnowledgeContext =
       }
     );
 
-    return {
+    const context: ICareerKnowledgeContext = {
       found: true,
 
       targetRole:
@@ -1448,6 +1452,9 @@ export const buildCareerKnowledgeContext =
         selectedLevels,
       },
     };
+    knowledgeNarrativeIdentities.set(context, { id:String(document._id), sourceVersion:document.sourceVersion, source:document.source });
+    return context;
+
   };
 
 /* =========================================================

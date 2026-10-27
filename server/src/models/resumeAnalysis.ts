@@ -1,3 +1,4 @@
+import { installRoadmapWriteGuard } from '../services/roadmapWriteGuard';
 import {
   Schema,
   model,
@@ -180,3 +181,4 @@ export const ResumeAnalysis =
     "ResumeAnalysis",
     resumeAnalysisSchema
   );
+installRoadmapWriteGuard(ResumeAnalysis, 'user', 'roadmapEvidenceRevision');

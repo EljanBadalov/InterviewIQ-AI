@@ -1,3 +1,4 @@
+import { readApi } from "../../query/apiQueries";
 import {
   useEffect,
   useRef,
@@ -578,7 +579,7 @@ const ResumeAnalysisPage =
 
         try {
           const response =
-            await apiClient.get<ResumeHistoryApiResponse>(
+            await readApi<ResumeHistoryApiResponse>(
               HISTORY_ENDPOINT
             );
 

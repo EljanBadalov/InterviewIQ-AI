@@ -25,6 +25,7 @@ import {
 } from "react-icons/fi";
 
 import axios from "axios";
+import { isAcceptedInterviewEvaluation } from "./evaluationContract";
 
 import apiClient from "../../../api/apiClient";
 import "./interviewSessionPage.scss";
@@ -589,46 +590,20 @@ const interviewSessionPage = () => {
               nestedEvaluation
                 ?.strengths ??
               data.answer?.strengths ??
-              data.strengths ??
-              [],
+              data.strengths,
 
             weaknesses:
               nestedEvaluation
                 ?.weaknesses ??
               data.answer?.weaknesses ??
-              data.weaknesses ??
-              [],
+              data.weaknesses,
           };
 
         /* =====================================
            MAKE SURE ANALYSIS EXISTS
         ===================================== */
 
-        const hasValidEvaluation =
-          typeof normalizedEvaluation.score ===
-            "number" &&
-          typeof normalizedEvaluation.technicalAccuracy ===
-            "number" &&
-          typeof normalizedEvaluation.completeness ===
-            "number" &&
-          typeof normalizedEvaluation.communication ===
-            "number" &&
-          Boolean(
-            normalizedEvaluation
-              .feedback
-          ) &&
-          Boolean(
-            normalizedEvaluation
-              .improvedAnswer
-          ) &&
-          Boolean(
-            normalizedEvaluation
-              .strengths?.length
-          ) &&
-          Boolean(
-            normalizedEvaluation
-              .weaknesses?.length
-          );
+        const hasValidEvaluation = isAcceptedInterviewEvaluation(normalizedEvaluation);
 
         if (
           !hasValidEvaluation

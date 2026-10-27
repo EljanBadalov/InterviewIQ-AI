@@ -35,7 +35,10 @@ export const protect = async (
             return;
         }
 
-        const user = await User.findById(decoded.id);
+        const careerRead = req.method === 'GET' && /\/(progress|jobs|career-automation)(\/|$)/.test(req.path) && !req.path.endsWith('/generation-status');
+        const query = User.findById(decoded.id);
+        if(careerRead) query.select('+roadmapEvidenceRevision +roadmapAutomationRevision').read('primary').readConcern('majority');
+        const user = await query;
 
         if (!user) {
             res.status(401).json({
@@ -45,6 +48,12 @@ export const protect = async (
             return;
         }
 
+        if(careerRead) {
+            req.careerReadVersions = {evidenceRevision:user.roadmapEvidenceRevision??0,automationRevision:user.roadmapAutomationRevision??0};
+            // Internal counters never become part of the public user document.
+            user.set('roadmapEvidenceRevision',undefined);
+            user.set('roadmapAutomationRevision',undefined);
+        }
         req.user = user;
         next();
     } catch (error) {

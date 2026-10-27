@@ -1,3 +1,4 @@
+import { readRoadmapDocument, readRoadmapEvidence } from "./roadmapEvidenceScope";
 import {
   Types,
 } from "mongoose";
@@ -206,7 +207,7 @@ export const getLatestResumeAnalysis =
     }
 
     const analysis =
-      await ResumeAnalysis
+      await readRoadmapDocument(normalizedUserId, "resume", { latest:true }, async () => await ResumeAnalysis
         .findOne({
           user:
             new Types.ObjectId(
@@ -217,7 +218,7 @@ export const getLatestResumeAnalysis =
           createdAt: -1,
         })
         .lean<IResumeAnalysis>()
-        .exec();
+        .exec());
 
     if (!analysis) {
       return {
@@ -287,7 +288,7 @@ export const getResumeAnalysisById =
     }
 
     const analysis =
-      await ResumeAnalysis
+      await readRoadmapDocument(normalizedUserId, "resume", { id:normalizedAnalysisId }, async () => await ResumeAnalysis
         .findOne({
           _id:
             new Types.ObjectId(
@@ -300,7 +301,7 @@ export const getResumeAnalysisById =
             ),
         })
         .lean<IResumeAnalysis>()
-        .exec();
+        .exec());
 
     if (!analysis) {
       return {
@@ -375,7 +376,7 @@ export const getResumeAnalysisByFileId =
     }
 
     const analysis =
-      await ResumeAnalysis
+      await readRoadmapDocument(normalizedUserId, "resume", { fileId:normalizedFileId }, async () => await ResumeAnalysis
         .findOne({
           user:
             new Types.ObjectId(
@@ -391,7 +392,7 @@ export const getResumeAnalysisByFileId =
           createdAt: -1,
         })
         .lean<IResumeAnalysis>()
-        .exec();
+        .exec());
 
     if (!analysis) {
       return {
@@ -431,7 +432,7 @@ export const getResumeAnalysisByFileId =
    user's resume analysis by guessing an ObjectId.
 ========================================================= */
 
-export const resolveResumeContext =
+const runResolveResumeContext =
   async ({
     userId,
     activeResumeId,
@@ -610,6 +611,9 @@ export const buildResumeCareerSummary =
 /* =========================================================
    DEFAULT EXPORT
 ========================================================= */
+
+export const resolveResumeContext = (input: Parameters<typeof runResolveResumeContext>[0]) =>
+  readRoadmapEvidence(input.userId, JSON.stringify(['resume-context',input.activeResumeId || null]), () => runResolveResumeContext(input));
 
 export default {
   getLatestResumeAnalysis,

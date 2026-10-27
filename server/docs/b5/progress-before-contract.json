@@ -1,0 +1,375 @@
+{
+  "success": true,
+  "data": {
+    "completedInterviewsCount": 2,
+    "averageTechnicalAccuracy": 70,
+    "averageCompleteness": 75,
+    "averageCommunication": 71,
+    "technicalPerformance": {
+      "averageScore": 72,
+      "recentAverage": 72,
+      "previousAverage": 72,
+      "change": 0,
+      "trend": [
+        {
+          "interviewId": "000000000000000000000001",
+          "date": "2026-01-02T00:00:00.000Z",
+          "category": "backend",
+          "score": 72
+        },
+        {
+          "interviewId": "000000000000000000000002",
+          "date": "2026-01-04T00:00:00.000Z",
+          "category": "backend",
+          "score": 72
+        }
+      ]
+    },
+    "behavioralPerformance": {
+      "averageScore": 0,
+      "recentAverage": 0,
+      "previousAverage": 0,
+      "change": 0,
+      "trend": []
+    },
+    "technicalBehavioralDifference": -72,
+    "lastFiveAverage": 76,
+    "previousFiveAverage": 76,
+    "recentChange": 0,
+    "consistencyScore": 91,
+    "bestStreak": 1,
+    "currentDifficulty": "intermediate",
+    "difficultyProgression": [
+      {
+        "interviewId": "000000000000000000000001",
+        "date": "2026-01-02T00:00:00.000Z",
+        "difficulty": "beginner",
+        "score": 71
+      },
+      {
+        "interviewId": "000000000000000000000002",
+        "date": "2026-01-04T00:00:00.000Z",
+        "difficulty": "intermediate",
+        "score": 80
+      }
+    ],
+    "recurringWeaknesses": [
+      {
+        "label": "Missing examples",
+        "count": 2
+      }
+    ],
+    "historyScope": "all-careers",
+    "roleSkillProgress": {
+      "targetRole": "Backend Developer",
+      "roleTitle": "Backend Developer",
+      "activeCareer": {
+        "targetRole": "Backend Developer",
+        "roleKey": "backend-developer",
+        "revision": 0,
+        "source": "career-automation",
+        "catalogResolved": true
+      },
+      "roleReadiness": null,
+      "assessedAverage": null,
+      "coveragePercent": 0,
+      "totalSkills": 7,
+      "assessedSkills": 0,
+      "strongSkills": 0,
+      "priorityGaps": 0,
+      "strongestSkills": [],
+      "focusSkills": [
+        {
+          "id": "learning:backend-developer:git",
+          "name": "Git",
+          "kind": "core",
+          "score": null,
+          "assessmentScore": null,
+          "evidenceState": "partial_evidence",
+          "status": "not_assessed",
+          "confidence": null,
+          "evidenceCount": 0,
+          "sources": [
+            "resume"
+          ],
+          "interviewVerified": false,
+          "presentInResume": true,
+          "level": "beginner",
+          "reason": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+          "prerequisiteStatus": "ready"
+        },
+        {
+          "id": "learning:backend-developer:http",
+          "name": "HTTP",
+          "kind": "core",
+          "score": null,
+          "assessmentScore": null,
+          "evidenceState": "unverified",
+          "status": "not_assessed",
+          "confidence": null,
+          "evidenceCount": 0,
+          "sources": [],
+          "interviewVerified": false,
+          "presentInResume": false,
+          "level": "beginner",
+          "reason": "HTTP: proficiency is unverified; assess it before assuming a knowledge gap.",
+          "prerequisiteStatus": "ready"
+        },
+        {
+          "id": "learning:backend-developer:programming",
+          "name": "Programming Fundamentals",
+          "kind": "core",
+          "score": null,
+          "assessmentScore": null,
+          "evidenceState": "unverified",
+          "status": "not_assessed",
+          "confidence": null,
+          "evidenceCount": 0,
+          "sources": [],
+          "interviewVerified": false,
+          "presentInResume": false,
+          "level": "beginner",
+          "reason": "Programming Fundamentals: proficiency is unverified; assess it before assuming a knowledge gap.",
+          "prerequisiteStatus": "ready"
+        },
+        {
+          "id": "learning:backend-developer:sql",
+          "name": "SQL",
+          "kind": "core",
+          "score": null,
+          "assessmentScore": null,
+          "evidenceState": "partial_evidence",
+          "status": "not_assessed",
+          "confidence": null,
+          "evidenceCount": 0,
+          "sources": [
+            "resume"
+          ],
+          "interviewVerified": false,
+          "presentInResume": true,
+          "level": "beginner",
+          "reason": "SQL: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+          "prerequisiteStatus": "ready"
+        },
+        {
+          "id": "learning:backend-developer:api",
+          "name": "API Design",
+          "kind": "role",
+          "score": null,
+          "assessmentScore": null,
+          "evidenceState": "unverified",
+          "status": "not_assessed",
+          "confidence": null,
+          "evidenceCount": 0,
+          "sources": [],
+          "interviewVerified": false,
+          "presentInResume": false,
+          "level": "intermediate",
+          "reason": "API Design: proficiency is unverified; assess it before assuming a knowledge gap.",
+          "prerequisiteStatus": "blocked"
+        },
+        {
+          "id": "learning:backend-developer:transactions",
+          "name": "Database Transactions",
+          "kind": "role",
+          "score": null,
+          "assessmentScore": null,
+          "evidenceState": "unverified",
+          "status": "not_assessed",
+          "confidence": null,
+          "evidenceCount": 0,
+          "sources": [],
+          "interviewVerified": false,
+          "presentInResume": false,
+          "level": "intermediate",
+          "reason": "Database Transactions: proficiency is unverified; assess it before assuming a knowledge gap.",
+          "prerequisiteStatus": "blocked"
+        },
+        {
+          "id": "learning:backend-developer:distributed",
+          "name": "Distributed Systems",
+          "kind": "role",
+          "score": null,
+          "assessmentScore": null,
+          "evidenceState": "unverified",
+          "status": "not_assessed",
+          "confidence": null,
+          "evidenceCount": 0,
+          "sources": [],
+          "interviewVerified": false,
+          "presentInResume": false,
+          "level": "advanced",
+          "reason": "Distributed Systems: proficiency is unverified; assess it before assuming a knowledge gap.",
+          "prerequisiteStatus": "blocked"
+        }
+      ],
+      "notAssessedCount": 7,
+      "skills": [
+        {
+          "id": "learning:backend-developer:git",
+          "name": "Git",
+          "kind": "core",
+          "score": null,
+          "assessmentScore": null,
+          "evidenceState": "partial_evidence",
+          "status": "not_assessed",
+          "confidence": null,
+          "evidenceCount": 0,
+          "sources": [
+            "resume"
+          ],
+          "interviewVerified": false,
+          "presentInResume": true,
+          "level": "beginner",
+          "reason": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+          "prerequisiteStatus": "ready"
+        },
+        {
+          "id": "learning:backend-developer:http",
+          "name": "HTTP",
+          "kind": "core",
+          "score": null,
+          "assessmentScore": null,
+          "evidenceState": "unverified",
+          "status": "not_assessed",
+          "confidence": null,
+          "evidenceCount": 0,
+          "sources": [],
+          "interviewVerified": false,
+          "presentInResume": false,
+          "level": "beginner",
+          "reason": "HTTP: proficiency is unverified; assess it before assuming a knowledge gap.",
+          "prerequisiteStatus": "ready"
+        },
+        {
+          "id": "learning:backend-developer:programming",
+          "name": "Programming Fundamentals",
+          "kind": "core",
+          "score": null,
+          "assessmentScore": null,
+          "evidenceState": "unverified",
+          "status": "not_assessed",
+          "confidence": null,
+          "evidenceCount": 0,
+          "sources": [],
+          "interviewVerified": false,
+          "presentInResume": false,
+          "level": "beginner",
+          "reason": "Programming Fundamentals: proficiency is unverified; assess it before assuming a knowledge gap.",
+          "prerequisiteStatus": "ready"
+        },
+        {
+          "id": "learning:backend-developer:sql",
+          "name": "SQL",
+          "kind": "core",
+          "score": null,
+          "assessmentScore": null,
+          "evidenceState": "partial_evidence",
+          "status": "not_assessed",
+          "confidence": null,
+          "evidenceCount": 0,
+          "sources": [
+            "resume"
+          ],
+          "interviewVerified": false,
+          "presentInResume": true,
+          "level": "beginner",
+          "reason": "SQL: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+          "prerequisiteStatus": "ready"
+        },
+        {
+          "id": "learning:backend-developer:api",
+          "name": "API Design",
+          "kind": "role",
+          "score": null,
+          "assessmentScore": null,
+          "evidenceState": "unverified",
+          "status": "not_assessed",
+          "confidence": null,
+          "evidenceCount": 0,
+          "sources": [],
+          "interviewVerified": false,
+          "presentInResume": false,
+          "level": "intermediate",
+          "reason": "API Design: proficiency is unverified; assess it before assuming a knowledge gap.",
+          "prerequisiteStatus": "blocked"
+        },
+        {
+          "id": "learning:backend-developer:transactions",
+          "name": "Database Transactions",
+          "kind": "role",
+          "score": null,
+          "assessmentScore": null,
+          "evidenceState": "unverified",
+          "status": "not_assessed",
+          "confidence": null,
+          "evidenceCount": 0,
+          "sources": [],
+          "interviewVerified": false,
+          "presentInResume": false,
+          "level": "intermediate",
+          "reason": "Database Transactions: proficiency is unverified; assess it before assuming a knowledge gap.",
+          "prerequisiteStatus": "blocked"
+        },
+        {
+          "id": "learning:backend-developer:distributed",
+          "name": "Distributed Systems",
+          "kind": "role",
+          "score": null,
+          "assessmentScore": null,
+          "evidenceState": "unverified",
+          "status": "not_assessed",
+          "confidence": null,
+          "evidenceCount": 0,
+          "sources": [],
+          "interviewVerified": false,
+          "presentInResume": false,
+          "level": "advanced",
+          "reason": "Distributed Systems: proficiency is unverified; assess it before assuming a knowledge gap.",
+          "prerequisiteStatus": "blocked"
+        }
+      ],
+      "coverage": [],
+      "assessmentPolicy": "skill-evidence-v1",
+      "evidenceVersion": "cb32771f174897838bf8c0e7f0e6f47de8829cbd3e6e318e324bf1f112dcf001"
+    },
+    "aiInsights": {
+      "typeComparisonSummary": "Your technical performance is 72 points stronger than your behavioral performance.",
+      "progressQualitySummary": "Your recent five-interview average is stable, with 91% consistency across completed sessions.",
+      "difficultySummary": "Your current adaptive interview level is intermediate. The system may keep the same level across several sessions until your results provide enough evidence to move up or down.",
+      "recurringPatternsSummary": "The most repeated improvement theme is: Missing examples",
+      "nextPriority": "Prioritize behavioral interview practice, especially structured examples and clear outcomes.",
+      "roleSkillSummary": "InterviewIQ mapped the required skills for Backend Developer, but there is not enough direct skill evidence yet to estimate mastery.",
+      "roleSkillNextFocus": "Collect direct evidence for Git next so InterviewIQ can determine your current level in that required skill."
+    },
+    "strongestCategory": {
+      "category": "backend",
+      "averageScore": 76
+    },
+    "weakestCategory": {
+      "category": "backend",
+      "averageScore": 76
+    },
+    "scoreProgression": [
+      {
+        "interviewId": "000000000000000000000001",
+        "date": "2026-01-02T00:00:00.000Z",
+        "category": "backend",
+        "score": 71
+      },
+      {
+        "interviewId": "000000000000000000000002",
+        "date": "2026-01-04T00:00:00.000Z",
+        "category": "backend",
+        "score": 80
+      }
+    ],
+    "categoryPerformance": [
+      {
+        "category": "backend",
+        "averageScore": 76,
+        "interviewCount": 2
+      }
+    ]
+  }
+}

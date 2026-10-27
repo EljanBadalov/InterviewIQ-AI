@@ -1,3 +1,4 @@
+import { readApi } from "../../query/apiQueries";
 import React, {
   useEffect,
   useMemo,
@@ -3094,7 +3095,7 @@ const ImproveCVWizard:
               );
 
               const response =
-                await apiClient.get<ResumeHistoryResponse>(
+                await readApi<ResumeHistoryResponse>(
                   "/resume/history"
                 );
 

@@ -1,5 +1,10 @@
+import { useCareerQuery } from '../../../query/useCareerQuery';
+import axios from "axios";
+import RouteLoading from "../../../components/RouteLoading";
 import React, {
   useCallback,
+  lazy,
+  Suspense,
   useEffect,
   useMemo,
   useState,
@@ -31,9 +36,7 @@ import apiClient from "../../../api/apiClient";
 
 import "./jobsPage.scss";
 
-import ImproveCVWizard, {
-  type ImproveCVWizardData,
-} from "../../../components/resume/ImproveCVWizard";
+import type { ImproveCVWizardData } from "../../../components/resume/ImproveCVWizard";
 
 type MatchLevel =
   | "strong"
@@ -184,141 +187,11 @@ type MatchFilter =
 
 const ITEMS_PER_PAGE = 18;
 
-/* =========================================================
-   JOB PAGE CACHE
+const ImproveCVWizard = lazy(() => import("../../../components/resume/ImproveCVWizard"));
 
-   Keep the loaded Job Matching result while the user moves
-   between:
-   - Job Matching
-   - Job Details
-   - Apply flow
-   - other dashboard pages
-
-   A normal page remount must NOT trigger another backend
-   request when fresh cached data already exists.
-========================================================= */
-
-const JOBS_CACHE_KEY =
-  "interviewiq.jobsPage.cache.v1";
-
-const JOBS_CACHE_TTL_MS =
-  15 *
-  60 *
-  1000;
-
-interface JobsPageCache {
-  cachedAt: number;
-
-  response: JobsApiResponse;
-}
-
-const readJobsCache =
-  (): JobsPageCache | null => {
-    try {
-      const raw =
-        sessionStorage.getItem(
-          JOBS_CACHE_KEY
-        );
-
-      if (!raw) {
-        return null;
-      }
-
-      const parsed =
-        JSON.parse(
-          raw
-        ) as JobsPageCache;
-
-      if (
-        !parsed ||
-        typeof parsed.cachedAt !==
-        "number" ||
-        !parsed.response
-      ) {
-        sessionStorage.removeItem(
-          JOBS_CACHE_KEY
-        );
-
-        return null;
-      }
-
-      if (
-        Date.now() -
-        parsed.cachedAt >
-        JOBS_CACHE_TTL_MS
-      ) {
-        sessionStorage.removeItem(
-          JOBS_CACHE_KEY
-        );
-
-        return null;
-      }
-
-      return parsed;
-    } catch {
-      sessionStorage.removeItem(
-        JOBS_CACHE_KEY
-      );
-
-      return null;
-    }
-  };
-
-const writeJobsCache =
-  (
-    response:
-      JobsApiResponse
-  ): void => {
-    try {
-      const value:
-        JobsPageCache = {
-        cachedAt:
-          Date.now(),
-
-        response,
-      };
-
-      sessionStorage.setItem(
-        JOBS_CACHE_KEY,
-        JSON.stringify(
-          value
-        )
-      );
-    } catch {
-      /*
-       * Cache failure should never block the page.
-       */
-    }
-  };
-
-const clearJobsCache =
-  (): void => {
-    try {
-      sessionStorage.removeItem(
-        JOBS_CACHE_KEY
-      );
-    } catch {
-      /*
-       * Ignore storage errors.
-       */
-    }
-  };
-
-const jobsPage: React.FC = () => {
+const JobsPage: React.FC = () => {
   const navigate =
     useNavigate();
-
-  const [
-    jobs,
-    setJobs,
-  ] =
-    useState<Job[]>([]);
-
-  const [
-    loading,
-    setLoading,
-  ] =
-    useState(true);
 
   const [
     refreshing,
@@ -327,7 +200,7 @@ const jobsPage: React.FC = () => {
     useState(false);
 
   const [
-    error,
+    actionError,
     setError,
   ] =
     useState("");
@@ -345,20 +218,6 @@ const jobsPage: React.FC = () => {
     useState<Job | null>(
       null
     );
-
-  const [
-    hasResume,
-    setHasResume,
-  ] =
-    useState(false);
-
-  const [
-    resume,
-    setResume,
-  ] =
-    useState<
-      JobsApiResponse["resume"]
-    >();
 
   const [
     search,
@@ -480,273 +339,139 @@ const jobsPage: React.FC = () => {
       "all"
     );
 
-  const [
-    currentPage,
-    setCurrentPage,
-  ] =
-    useState(1);
+  const filterKey = useMemo(() => {
+    const params =
+      new URLSearchParams();
 
-  const [
-    totalJobs,
-    setTotalJobs,
-  ] =
-    useState(0);
+    const normalizedSearch =
+      debouncedSearch.trim();
 
-  const [
-    totalPages,
-    setTotalPages,
-  ] =
-    useState(1);
+    const normalizedLocation =
+      debouncedLocation.trim();
 
-  const [
-    hasNextPage,
-    setHasNextPage,
-  ] =
-    useState(false);
+    const normalizedMinimumSalary =
+      debouncedMinimumSalary.trim();
 
-  const [
-    hasPreviousPage,
-    setHasPreviousPage,
-  ] =
-    useState(false);
+    if (
+      normalizedSearch
+    ) {
+      params.set(
+        "search",
+        normalizedSearch
+      );
+    }
 
-  const applyJobsResponse =
-    useCallback(
-      (
-        payload:
-          JobsApiResponse
-      ) => {
-        setJobs(
-          payload.data.jobs ||
-          []
-        );
+    if (
+      experienceFilter !==
+      "all"
+    ) {
+      params.set(
+        "experienceLevel",
+        experienceFilter
+      );
+    }
 
-        setHasResume(
-          payload.hasResume
-        );
+    if (
+      selectedEmploymentTypes.length >
+      0
+    ) {
+      params.set(
+        "employmentType",
+        [...selectedEmploymentTypes].sort().join(",")
+      );
+    }
 
-        setResume(
-          payload.resume
-        );
+    if (
+      selectedWorkModes.length >
+      0
+    ) {
+      params.set(
+        "remoteType",
+        [...selectedWorkModes].sort().join(",")
+      );
+    }
 
-        setTotalJobs(
-          payload.data.total || 0
-        );
+    if (
+      selectedSources.length >
+      0
+    ) {
+      params.set(
+        "source",
+        [...selectedSources].sort().join(",")
+      );
+    }
 
-        setCurrentPage(
-          payload.data.page || 1
-        );
+    if (
+      normalizedLocation
+    ) {
+      params.set(
+        "location",
+        normalizedLocation
+      );
+    }
 
-        setTotalPages(
-          Math.max(
-            1,
-            payload.data.totalPages || 1
-          )
-        );
+    if (
+      normalizedMinimumSalary
+    ) {
+      params.set(
+        "minimumSalary",
+        normalizedMinimumSalary
+      );
+    }
 
-        setHasNextPage(
-          Boolean(
-            payload.data.hasNextPage
-          )
-        );
+    if (
+      marketFilter !==
+      "all"
+    ) {
+      params.set(
+        "market",
+        marketFilter
+      );
+    }
 
-        setHasPreviousPage(
-          Boolean(
-            payload.data.hasPreviousPage
-          )
-        );
-      },
-      []
-    );
+    if (
+      matchFilter !==
+      "all"
+    ) {
+      params.set(
+        "matchLevel",
+        matchFilter
+      );
+    }
 
-  const fetchJobs =
-    useCallback(
-      async ({
-        showFullPageLoading = false,
-        updateCache = true,
-      }: {
-        showFullPageLoading?: boolean;
-        updateCache?: boolean;
-      } = {}) => {
-        try {
-          if (
-            showFullPageLoading
-          ) {
-            setLoading(
-              true
-            );
-          }
+    params.sort();
+    return params.toString();
+  }, [debouncedSearch, experienceFilter, selectedEmploymentTypes, selectedWorkModes,
+    selectedSources, debouncedLocation, debouncedMinimumSalary, marketFilter, matchFilter]);
 
-          setError("");
-
-          const params =
-            new URLSearchParams();
-
-          const normalizedSearch =
-            debouncedSearch.trim();
-
-          const normalizedLocation =
-            debouncedLocation.trim();
-
-          const normalizedMinimumSalary =
-            debouncedMinimumSalary.trim();
-
-          if (
-            normalizedSearch
-          ) {
-            params.set(
-              "search",
-              normalizedSearch
-            );
-          }
-
-          if (
-            experienceFilter !==
-            "all"
-          ) {
-            params.set(
-              "experienceLevel",
-              experienceFilter
-            );
-          }
-
-          if (
-            selectedEmploymentTypes.length >
-            0
-          ) {
-            params.set(
-              "employmentType",
-              selectedEmploymentTypes.join(",")
-            );
-          }
-
-          if (
-            selectedWorkModes.length >
-            0
-          ) {
-            params.set(
-              "remoteType",
-              selectedWorkModes.join(",")
-            );
-          }
-
-          if (
-            selectedSources.length >
-            0
-          ) {
-            params.set(
-              "source",
-              selectedSources.join(",")
-            );
-          }
-
-          if (
-            normalizedLocation
-          ) {
-            params.set(
-              "location",
-              normalizedLocation
-            );
-          }
-
-          if (
-            normalizedMinimumSalary
-          ) {
-            params.set(
-              "minimumSalary",
-              normalizedMinimumSalary
-            );
-          }
-
-          if (
-            marketFilter !==
-            "all"
-          ) {
-            params.set(
-              "market",
-              marketFilter
-            );
-          }
-
-          if (
-            matchFilter !==
-            "all"
-          ) {
-            params.set(
-              "matchLevel",
-              matchFilter
-            );
-          }
-
-          params.set(
-            "page",
-            String(currentPage)
-          );
-
-          params.set(
-            "limit",
-            String(ITEMS_PER_PAGE)
-          );
-
-          const queryString =
-            params.toString();
-
-          const endpoint =
-            queryString
-              ? `/jobs?${queryString}`
-              : "/jobs";
-
-          const response =
-            await apiClient.get<JobsApiResponse>(
-              endpoint
-            );
-
-          applyJobsResponse(
-            response.data
-          );
-
-          if (
-            updateCache
-          ) {
-            writeJobsCache(
-              response.data
-            );
-          }
-        } catch (
-        err: any
-        ) {
-          const message =
-            err?.response?.data
-              ?.message ||
-            "Could not load jobs. Please try again.";
-
-          setError(
-            message
-          );
-        } finally {
-          if (
-            showFullPageLoading
-          ) {
-            setLoading(
-              false
-            );
-          }
-        }
-      },
-      [
-        applyJobsResponse,
-        debouncedSearch,
-        experienceFilter,
-        selectedEmploymentTypes,
-        selectedWorkModes,
-        selectedSources,
-        debouncedLocation,
-        debouncedMinimumSalary,
-        marketFilter,
-        matchFilter,
-        currentPage,
-      ]
-    );
+  const [pageSelection, setPageSelection] = useState({ filters: "", page: 1 });
+  // Reset before committing a changed filter, so no old-page request can start.
+  if (pageSelection.filters !== filterKey) {
+    setPageSelection({ filters: filterKey, page: 1 });
+  }
+  const currentPage = pageSelection.filters === filterKey ? pageSelection.page : 1;
+  const setCurrentPage = (next: React.SetStateAction<number>) => {
+    setPageSelection(previous => {
+      const page = previous.filters === filterKey ? previous.page : 1;
+      return { filters: filterKey, page: typeof next === "function" ? next(page) : next };
+    });
+  };
+  const endpoint = `/jobs?${filterKey ? `${filterKey}&` : ""}page=${currentPage}&limit=${ITEMS_PER_PAGE}`;
+  const jobsQuery = useCareerQuery<JobsApiResponse>(endpoint, true, true);
+  const { refetch: refetchJobs } = jobsQuery;
+  const loading = jobsQuery.isPending;
+  const jobs = jobsQuery.isPlaceholderData ? [] : jobsQuery.data?.data.jobs ?? [];
+  const hasResume = jobsQuery.data?.hasResume ?? false;
+  const resume = jobsQuery.data?.resume;
+  const totalJobs = jobsQuery.isPlaceholderData ? 0 : jobsQuery.data?.data.total ?? 0;
+  const totalPages = Math.max(1, jobsQuery.data?.data.totalPages ?? 1);
+  if (jobsQuery.isSuccess && !jobsQuery.isPlaceholderData) {
+    const responsePage = Math.min(jobsQuery.data.data.page || currentPage, totalPages);
+    if (responsePage !== currentPage) setPageSelection({ filters: filterKey, page: responsePage });
+  }
+  const hasNextPage = !jobsQuery.isPlaceholderData && Boolean(jobsQuery.data?.data.hasNextPage);
+  const hasPreviousPage = !jobsQuery.isPlaceholderData && Boolean(jobsQuery.data?.data.hasPreviousPage);
+  const error = actionError || (jobsQuery.isError ? "Could not load jobs. Please try again." : "");
 
   const handleRefreshJobs =
     useCallback(
@@ -777,22 +502,11 @@ const jobsPage: React.FC = () => {
            * The refresh endpoint updates MongoDB.
            * Read the newly ranked result after ingestion finishes.
            */
-          clearJobsCache();
-
-          await fetchJobs({
-            showFullPageLoading:
-              false,
-
-            updateCache:
-              true,
-          });
-        } catch (
-        err: any
-        ) {
-          const message =
-            err?.response?.data
-              ?.message ||
-            "Could not refresh jobs. Please try again.";
+          await refetchJobs({ throwOnError: true });
+        } catch (err) {
+          const message = axios.isAxiosError(err)
+            ? err.response?.data?.message || "Could not refresh jobs. Please try again."
+            : "Could not refresh jobs. Please try again.";
 
           setError(
             message
@@ -804,19 +518,10 @@ const jobsPage: React.FC = () => {
         }
       },
       [
-        fetchJobs,
+        refetchJobs,
         refreshing,
       ]
     );
-
-  useEffect(() => {
-    void fetchJobs({
-      showFullPageLoading: true,
-      updateCache: true,
-    });
-  }, [
-    fetchJobs,
-  ]);
 
   const toggleArrayValue = <
     T extends string
@@ -1038,109 +743,6 @@ const jobsPage: React.FC = () => {
         )
       );
     };
-
-  const matchesExperienceFilter =
-    (
-      job: Job
-    ): boolean => {
-      if (
-        experienceFilter ===
-        "all"
-      ) {
-        return true;
-      }
-
-      switch (
-      experienceFilter
-      ) {
-        case "0-1":
-          return (
-            job.experienceMin ===
-            0 &&
-            job.experienceMax ===
-            1
-          );
-
-        case "1-2":
-          return (
-            job.experienceMin ===
-            1 &&
-            job.experienceMax ===
-            2
-          );
-
-        case "2-4":
-          return (
-            job.experienceMin ===
-            2 &&
-            job.experienceMax ===
-            4
-          );
-
-        case "4-6":
-          return (
-            job.experienceMin ===
-            4 &&
-            job.experienceMax ===
-            6
-          );
-
-        case "6+":
-          return (
-            job.experienceMin >=
-            6 &&
-            job.experienceMax ===
-            null
-          );
-
-        default:
-          return true;
-      }
-    };
-
-  useEffect(() => {
-    setCurrentPage(
-      1
-    );
-  }, [
-    search,
-    matchFilter,
-    selectedEmploymentTypes,
-    selectedWorkModes,
-    experienceFilter,
-    locationFilter,
-    minimumSalary,
-    selectedSources,
-    marketFilter,
-  ]);
-
-  useEffect(() => {
-    if (
-      currentPage >
-      totalPages
-    ) {
-      setCurrentPage(
-        totalPages
-      );
-    }
-  }, [
-    currentPage,
-    totalPages,
-  ]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [
-    debouncedSearch,
-    matchFilter,
-    selectedEmploymentTypes,
-    selectedWorkModes,
-    experienceFilter,
-    debouncedLocation,
-    debouncedMinimumSalary,
-    selectedSources,
-    marketFilter,
-  ]);
 
   const paginationItems =
     useMemo<
@@ -1489,10 +1091,11 @@ const jobsPage: React.FC = () => {
           </span>
 
           <h1>
-            Find jobs that match
-            your profile
+            Find jobs that match{" "}
+            {jobsQuery.activeCareer?.targetRole || "your profile"}
           </h1>
 
+          <p>Match scores describe profile compatibility, not verified skill proficiency. Missing CV evidence is not proof of a knowledge gap.</p>
           <p>
             Discover opportunities
             ranked by how well they
@@ -1667,6 +1270,9 @@ const jobsPage: React.FC = () => {
         </section>
       )}
 
+      {jobsQuery.isFetching && !loading && !jobsQuery.isPlaceholderData && (
+        <p role="status">Updating job matches...</p>
+      )}
       <section className="jobs-toolbar">
         <div className="jobs-search">
           <FiSearch />
@@ -1749,8 +1355,9 @@ const jobsPage: React.FC = () => {
         </span>
       </section>
 
-      {totalJobs ===
-        0 ? (
+      {jobsQuery.isPlaceholderData ? (
+        <div className="jobs-empty" role="status">Updating job matches...</div>
+      ) : totalJobs === 0 ? (
         <div className="jobs-empty">
           <FiSearch />
 
@@ -2634,36 +2241,38 @@ const jobsPage: React.FC = () => {
       </div>
 
       {improveWizardJob && (
-        <ImproveCVWizard
-          open
-          job={{
-            _id:
-              improveWizardJob._id,
+        <Suspense fallback={<RouteLoading />}>
+          <ImproveCVWizard
+            open
+            job={{
+              _id:
+                improveWizardJob._id,
 
-            title:
-              improveWizardJob.title,
+              title:
+                improveWizardJob.title,
 
-            company:
-              improveWizardJob.company,
+              company:
+                improveWizardJob.company,
 
-            location:
-              improveWizardJob.location,
+              location:
+                improveWizardJob.location,
 
-            skills:
-              improveWizardJob.skills,
-          }}
-          onClose={() =>
-            setImproveWizardJob(
-              null
-            )
-          }
-          onReady={
-            handleImproveWizardReady
-          }
-        />
+              skills:
+                improveWizardJob.skills,
+            }}
+            onClose={() =>
+              setImproveWizardJob(
+                null
+              )
+            }
+            onReady={
+              handleImproveWizardReady
+            }
+          />
+        </Suspense>
       )}
     </div>
   );
 };
 
-export default jobsPage;
+export default JobsPage;

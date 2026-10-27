@@ -1,5 +1,5 @@
+import { useApiQuery } from "../../../query/apiQueries";
 import {
-  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -26,7 +26,6 @@ import axios from "axios";
 import apiClient from "../../../api/apiClient";
 
 import {
-  getCareerFields,
   type ICareerFieldOption,
 } from "../../../api/careerAutomationApi";
 
@@ -131,16 +130,9 @@ const normalizeDomainLabel =
       .join(" ");
   };
 
-const mockInterviewPage = () => {
+const MockInterviewPage = () => {
   const navigate = useNavigate();
 
-  const [
-    careerRoles,
-    setCareerRoles,
-  ] =
-    useState<
-      ICareerFieldOption[]
-    >([]);
 
   const [
     selectedRoleSlug,
@@ -148,37 +140,10 @@ const mockInterviewPage = () => {
   ] =
     useState("");
 
-  const [
-    rolesLoading,
-    setRolesLoading,
-  ] =
-    useState(true);
 
-  const [
-    rolesError,
-    setRolesError,
-  ] =
-    useState("");
 
-  const [
-    interviewHistory,
-    setInterviewHistory,
-  ] =
-    useState<
-      InterviewHistoryItem[]
-    >([]);
 
-  const [
-    historyLoading,
-    setHistoryLoading,
-  ] =
-    useState(true);
 
-  const [
-    historyError,
-    setHistoryError,
-  ] =
-    useState("");
 
   const [loading, setLoading] =
     useState(false);
@@ -206,6 +171,18 @@ const mockInterviewPage = () => {
     setRestartError,
   ] =
     useState("");
+
+  const fieldsQuery = useApiQuery<{ success: boolean; data: { fields: ICareerFieldOption[] } }>("/career-automation/fields");
+  const historyQuery = useApiQuery<InterviewHistoryResponse>(INTERVIEW_HISTORY_ENDPOINT);
+  const careerRoles = useMemo(() => (fieldsQuery.data?.data.fields ?? [])
+    .filter(role => Boolean(role?.slug && role?.name))
+    .sort((a, b) => (a.category || "").localeCompare(b.category || "") || a.name.localeCompare(b.name)), [fieldsQuery.data]);
+  const rolesLoading = fieldsQuery.isPending;
+  const rolesError = fieldsQuery.isError ? "Unable to load career fields from the server."
+    : !rolesLoading && !careerRoles.length ? "No active career fields are available yet." : "";
+  const interviewHistory = historyQuery.data?.data ?? [];
+  const historyLoading = historyQuery.isPending;
+  const historyError = historyQuery.isError ? "Unable to load interview history." : "";
 
   const selectedRole =
     useMemo(
@@ -297,260 +274,6 @@ const mockInterviewPage = () => {
         careerRoles,
       ]
     );
-
-  useEffect(
-    () => {
-      let cancelled =
-        false;
-
-      const loadCareerRoles =
-        async () => {
-          try {
-            setRolesLoading(
-              true
-            );
-
-            setRolesError(
-              ""
-            );
-
-            /*
-             * Reuse the exact same DB-backed Career Fields source
-             * already used by Career Automation:
-             *
-             * GET /api/v1/career-automation/fields
-             *
-             * getCareerFields() returns:
-             * {
-             *   fields: [{ slug, name, category, description }],
-             *   total
-             * }
-             */
-            const result =
-              await getCareerFields();
-
-            const cleanRoles =
-              (
-                result.fields ||
-                []
-              )
-                .filter(
-                  (
-                    item
-                  ) =>
-                    Boolean(
-                      item?.slug &&
-                      item?.name
-                    )
-                )
-                .sort(
-                  (
-                    a,
-                    b
-                  ) => {
-                    const categoryCompare =
-                      (
-                        a.category ||
-                        ""
-                      ).localeCompare(
-                        b.category ||
-                        ""
-                      );
-
-                    if (
-                      categoryCompare !==
-                      0
-                    ) {
-                      return categoryCompare;
-                    }
-
-                    return a.name.localeCompare(
-                      b.name
-                    );
-                  }
-                );
-
-            if (
-              cancelled
-            ) {
-              return;
-            }
-
-            setCareerRoles(
-              cleanRoles
-            );
-
-            setSelectedRoleSlug(
-              (
-                current
-              ) => {
-                if (
-                  current &&
-                  cleanRoles.some(
-                    (
-                      role
-                    ) =>
-                      role.slug ===
-                      current
-                  )
-                ) {
-                  return current;
-                }
-
-                return (
-                  cleanRoles[0]
-                    ?.slug ||
-                  ""
-                );
-              }
-            );
-
-            if (
-              cleanRoles.length ===
-              0
-            ) {
-              setRolesError(
-                "No active career fields are available yet."
-              );
-            }
-          } catch (
-            err
-          ) {
-            if (
-              cancelled
-            ) {
-              return;
-            }
-
-            if (
-              axios.isAxiosError(
-                err
-              )
-            ) {
-              setRolesError(
-                err.response?.data
-                  ?.message ||
-                  "Unable to load career fields from the server."
-              );
-            } else {
-              setRolesError(
-                "Unable to load career fields from the server."
-              );
-            }
-
-            setCareerRoles(
-              []
-            );
-
-            setSelectedRoleSlug(
-              ""
-            );
-          } finally {
-            if (
-              !cancelled
-            ) {
-              setRolesLoading(
-                false
-              );
-            }
-          }
-        };
-
-      void loadCareerRoles();
-
-      return () => {
-        cancelled =
-          true;
-      };
-    },
-    []
-  );
-
-  useEffect(
-    () => {
-      let cancelled =
-        false;
-
-      const loadInterviewHistory =
-        async () => {
-          try {
-            setHistoryLoading(
-              true
-            );
-
-            setHistoryError(
-              ""
-            );
-
-            const response =
-              await apiClient.get<InterviewHistoryResponse>(
-                INTERVIEW_HISTORY_ENDPOINT
-              );
-
-            if (
-              cancelled
-            ) {
-              return;
-            }
-
-            const items =
-              Array.isArray(
-                response.data.data
-              )
-                ? response.data.data
-                : [];
-
-            setInterviewHistory(
-              items
-            );
-          } catch (
-            err
-          ) {
-            if (
-              cancelled
-            ) {
-              return;
-            }
-
-            if (
-              axios.isAxiosError(
-                err
-              )
-            ) {
-              setHistoryError(
-                err.response?.data
-                  ?.message ||
-                  "Unable to load interview history."
-              );
-            } else {
-              setHistoryError(
-                "Unable to load interview history."
-              );
-            }
-
-            setInterviewHistory(
-              []
-            );
-          } finally {
-            if (
-              !cancelled
-            ) {
-              setHistoryLoading(
-                false
-              );
-            }
-          }
-        };
-
-      void loadInterviewHistory();
-
-      return () => {
-        cancelled =
-          true;
-      };
-    },
-    []
-  );
 
   const closeResumeModal =
     (): void => {
@@ -914,9 +637,7 @@ const mockInterviewPage = () => {
                 <FiBriefcase />
 
                 <select
-                  value={
-                    selectedRoleSlug
-                  }
+                  value={selectedRole?.slug || ""}
                   onChange={
                     (
                       event
@@ -1574,4 +1295,4 @@ const mockInterviewPage = () => {
   );
 };
 
-export default mockInterviewPage;
+export default MockInterviewPage;

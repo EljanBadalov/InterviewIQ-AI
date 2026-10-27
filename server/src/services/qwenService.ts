@@ -1,3 +1,7 @@
+import { careerChatCorrelationId, startChatQwenAttempt } from './careerChatMetrics';
+import { aiProxyRequestOptions } from '../config/aiProxyTransport';
+import { interviewAttempt, interviewUsage, interviewCorrelationId, timeInterviewValidation, guardInterviewInference, recordInterviewProxyDiagnostics } from './interviewEvaluationMetrics';
+import { countGenerationMetric, generationCorrelationId, recordGenerationDuration, timeGenerationStage } from './roadmapGenerationMetrics';
 /* =========================================================
    QWEN SERVICE
 
@@ -37,6 +41,8 @@ export interface IQwenGenerationOptions {
   timeoutMs?: number;
   retries?: number;
   enableThinking?: boolean;
+  signal?: AbortSignal;
+  deadlineAtMs?: number;
 }
 
 export interface IQwenTextGenerationInput
@@ -61,6 +67,9 @@ export interface IQwenJSONGenerationInput
   messages: IQwenMessage[];
 }
 
+export function normalizeQwenFinishReason(value:unknown):string {
+  return typeof value==='string' && ['stop','length','content_filter','error'].includes(value)?value:'unknown';
+}
 export interface IQwenUsage {
   promptTokens?: number;
   completionTokens?: number;
@@ -78,12 +87,20 @@ export interface IQwenTextResult {
 
 export interface IQwenJSONResult<T> {
   success: boolean;
+  failureKind?: 'missing_json' | 'invalid_json' | 'transport' | 'unavailable' | 'timeout';
   data?: T;
   rawText?: string;
   model?: string;
   usage?: IQwenUsage;
   finishReason?: string;
   error?: string;
+}
+
+// Preserve protocol failure type across the transport boundary without private error text.
+class QwenResponseError extends Error {
+  constructor(readonly failureKind: 'missing_json' | 'invalid_json' | 'transport' | 'unavailable' | 'timeout') {
+    super('Qwen transport request failed');
+  }
 }
 
 /* =========================================================
@@ -100,6 +117,8 @@ interface IFastAPIGenerateResponse {
     completion_tokens?: number;
     total_tokens?: number;
   };
+  timings_ms?: {queue_wait?:number;inference_roundtrip?:number;readiness?:number};
+  diagnostics?: {stage?:unknown;inferenceDispatched?:unknown};
   detail?: string | Record<string, unknown>;
 }
 
@@ -325,6 +344,7 @@ const callFastAPIQwen = async (
 
   const endpoint =
     `${baseUrl}/generate`;
+  const transportOptions = aiProxyRequestOptions(baseUrl);
 
   const timeoutMs =
     options.timeoutMs ??
@@ -369,8 +389,17 @@ const callFastAPIQwen = async (
     attempt <= retries;
     attempt += 1
   ) {
-    const controller =
-      new AbortController();
+    if(options.signal?.aborted)throw new Error('Qwen request cancelled before dispatch');
+    const remaining=options.deadlineAtMs===undefined?timeoutMs:Math.min(timeoutMs,options.deadlineAtMs-Date.now());
+    if(!Number.isFinite(remaining)||remaining<=0)throw new Error('Qwen request deadline expired before dispatch');
+    const budget=Math.min(300_000,Math.max(1,Math.floor(remaining)));
+    const outbound={...payload,request_budget_ms:budget,deadline_unix_ms:Date.now()+budget,correlation_id:generationCorrelationId() || careerChatCorrelationId() || interviewCorrelationId()};
+    const wireBody=JSON.stringify(outbound);
+    const promptBytes=Buffer.byteLength(JSON.stringify({message:payload.message,system:payload.system}));
+    countGenerationMetric('finalPayloadBytes',Buffer.byteLength(wireBody));
+    countGenerationMetric('finalPromptBytes',promptBytes);
+    countGenerationMetric('finalPromptTokensEstimate',Math.ceil(promptBytes/4));
+    const controller = new AbortController();
 
     const requestStartedAt =
       Date.now();
@@ -380,12 +409,12 @@ const callFastAPIQwen = async (
         () => {
           controller.abort();
         },
-        timeoutMs
+        budget
       );
 
     try {
       console.log(
-        `[Qwen Service] POST /generate attempt ${attempt + 1}/${retries + 1} | timeout=${timeoutMs}ms | maxTokens=${payload.max_tokens}`
+        `[Qwen Service] POST /generate attempt ${attempt + 1}/${retries + 1} | timeout=${budget}ms | maxTokens=${payload.max_tokens}`
       );
 
       if (
@@ -398,30 +427,30 @@ const callFastAPIQwen = async (
         console.trace();
       }
 
-      const response =
+      await guardInterviewInference();
+      const finishChatAttempt = startChatQwenAttempt();
+      const finishInterviewAttempt = interviewAttempt();
+      let response: Response;
+      let rawText: string;
+      try { response =
         await fetch(
           endpoint,
           {
             method:
               "POST",
 
-            headers: {
-              "Content-Type":
-                "application/json",
-            },
+            ...transportOptions,
 
             body:
-              JSON.stringify(
-                payload
-              ),
+              wireBody,
 
             signal:
-              controller.signal,
+              options.signal ? AbortSignal.any([controller.signal,options.signal]) : controller.signal,
           }
         );
-
-      const rawText =
-        await response.text();
+        rawText = await response.text();
+      } catch(error) { finishInterviewAttempt(true); throw error; }
+      finally { finishChatAttempt(); finishInterviewAttempt(); }
 
       let parsed:
         IFastAPIGenerateResponse =
@@ -436,30 +465,14 @@ const callFastAPIQwen = async (
               rawText
             ) as IFastAPIGenerateResponse;
         } catch {
-          const rawPreview =
-            rawText
-              .replace(
-                /\s+/g,
-                " "
-              )
-              .trim()
-              .slice(
-                0,
-                500
-              );
-
-          console.warn(
-            `[Qwen Service] Non-JSON HTTP response | status=${response.status} | body=${rawPreview || "<empty>"}`
-          );
-
+          if (response.status >= 500) finishInterviewAttempt(true);
+          console.warn(`[Qwen Service] Non-JSON HTTP response | status=${response.status} | bytes=${rawText.length}`);
           if (
             !response.ok
           ) {
             lastError =
               new Error(
-                `Qwen Service returned HTTP ${response.status}: ${rawPreview ||
-                "Empty response body"
-                }`
+                `Qwen Service returned HTTP ${response.status}: ${rawText.length} response bytes`
               );
 
             if (
@@ -487,14 +500,37 @@ const callFastAPIQwen = async (
             throw lastError;
           }
 
-          throw new Error(
-            `Qwen Service returned invalid JSON with HTTP ${response.status}: ${rawPreview ||
-            "Empty response body"
-            }`
-          );
+          throw new QwenResponseError('invalid_json');
         }
       }
 
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        if (response.status >= 500) finishInterviewAttempt(true);
+        throw new QwenResponseError('invalid_json');
+      }
+      const proxyDetail = typeof parsed.detail === 'object' && parsed.detail !== null ? parsed.detail : undefined;
+      const dispatched = recordInterviewProxyDiagnostics(response.ok ? parsed.diagnostics : proxyDetail);
+      if (response.status === 504 && dispatched !== false) finishInterviewAttempt(true);
+      if (!response.ok && response.status >= 500 && dispatched === undefined) finishInterviewAttempt(true);
+      const proxyCode = proxyDetail?.code;
+      // Only recognize the proxy's bounded diagnostic vocabulary, never its arbitrary error text.
+      if (!response.ok && dispatched !== undefined) {
+        if (proxyCode === 'QWEN_MODEL_UNAVAILABLE' && dispatched === false)
+          throw new QwenResponseError('unavailable');
+        if (proxyCode === 'QWEN_TIMEOUT' || proxyCode === 'GENERATION_EXPIRED')
+          throw new QwenResponseError('timeout');
+        if (proxyCode === 'QWEN_RESPONSE_INVALID_JSON') throw new QwenResponseError('invalid_json');
+        if (proxyCode === 'QWEN_RESPONSE_EMPTY') throw new QwenResponseError('missing_json');
+        if (proxyCode === 'QWEN_TRANSPORT_FAILED' && dispatched) finishInterviewAttempt(true);
+        if (proxyCode === 'QWEN_PROXY_FAILED' && dispatched && proxyDetail?.stage === 'inference') finishInterviewAttempt(true);
+      }
+      parsed.finish_reason=normalizeQwenFinishReason(parsed.finish_reason);
+      interviewUsage(parsed.usage);
+      const timings=parsed.timings_ms || (typeof parsed.detail==='object'?parsed.detail?.timings_ms as IFastAPIGenerateResponse['timings_ms']:undefined);
+      recordGenerationDuration('proxy.queue',timings?.queue_wait);
+      recordGenerationDuration('proxy.inference',timings?.inference_roundtrip);
+      recordGenerationDuration('proxy.readiness',timings?.readiness);
+      countGenerationMetric(parsed.finish_reason==='length'?'qwenTruncated':parsed.finish_reason==='stop'?'qwenStopped':'qwenFinishUnknown');
       const elapsedMs =
         Date.now() -
         requestStartedAt;
@@ -506,40 +542,19 @@ const callFastAPIQwen = async (
         } | finishReason=${parsed.finish_reason ?? "unknown"}`
       );
 
-      const preview =
-        buildResponsePreview(
-          parsed.response
-        );
-
-      if (preview) {
-        console.log(
-          `[Qwen Service][DEBUG] Response preview: ${preview}`
-        );
-      }
-
       if (response.ok) {
         if (
           typeof parsed.response !==
           "string" ||
           !parsed.response.trim()
         ) {
-          throw new Error(
-            `Qwen Service returned HTTP ${response.status} but the response field was empty or invalid`
-          );
+          throw new QwenResponseError('missing_json');
         }
 
         return parsed;
       }
 
-      const errorMessage =
-        typeof parsed.detail ===
-          "string"
-          ? parsed.detail
-          : parsed.detail
-            ? JSON.stringify(
-              parsed.detail
-            )
-            : `Qwen Service request failed with status ${response.status}`;
+      const errorMessage = `Qwen Service request failed with status ${response.status}`;
 
       lastError =
         new Error(
@@ -563,22 +578,19 @@ const callFastAPIQwen = async (
 
       throw lastError;
     } catch (error) {
-      if (
+      if(options.signal?.aborted)throw new Error('Qwen request cancelled');
+      if(options.deadlineAtMs!==undefined && Date.now()>=options.deadlineAtMs)throw new Error('Qwen request deadline expired');
+      if (error instanceof QwenResponseError) {
+        lastError = error;
+      } else if (
         error instanceof Error &&
         error.name ===
         "AbortError"
       ) {
         lastError =
-          new Error(
-            `Qwen Service timed out after ${timeoutMs}ms`
-          );
+          new QwenResponseError('timeout');
       } else {
-        lastError =
-          error instanceof Error
-            ? error
-            : new Error(
-              "Unknown Qwen Service request error"
-            );
+        lastError = new Error("Qwen transport request failed");
       }
 
       console.warn(
@@ -784,10 +796,11 @@ export const generateQwenJSON = async <T>(
         usage: buildUsage(response),
         finishReason: response.finish_reason,
         error: "Qwen returned an empty JSON response",
+        failureKind: 'missing_json',
       };
     }
 
-    const parsed = parseJSONSafely<T>(rawText);
+    const parsed = timeInterviewValidation(() => timeGenerationStage('jsonParse', () => parseJSONSafely<T>(rawText)));
 
     if (!parsed) {
       return {
@@ -797,6 +810,7 @@ export const generateQwenJSON = async <T>(
         usage: buildUsage(response),
         finishReason: response.finish_reason,
         error: "Qwen returned invalid JSON format",
+        failureKind: 'invalid_json',
       };
     }
 
@@ -815,6 +829,7 @@ export const generateQwenJSON = async <T>(
         error instanceof Error
           ? error.message
           : "Unknown Qwen JSON generation error",
+      failureKind: error instanceof QwenResponseError ? error.failureKind : 'transport',
     };
   }
 };
@@ -832,6 +847,8 @@ export const generateQwenFromPrompt = async (options: {
   timeoutMs?: number;
   retries?: number;
   enableThinking?: boolean;
+  signal?: AbortSignal;
+  deadlineAtMs?: number;
 }): Promise<IQwenTextResult> => {
   const messages: IQwenMessage[] = [];
 
@@ -873,7 +890,7 @@ export const testQwenConnection = async (): Promise<{
   try {
     const healthCheck = await fetch(`${baseUrl}/health`, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      ...aiProxyRequestOptions(baseUrl),
     });
 
     if (!healthCheck.ok) {

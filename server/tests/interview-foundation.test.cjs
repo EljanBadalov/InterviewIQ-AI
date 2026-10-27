@@ -1,0 +1,310 @@
+const test=require('node:test'),assert=require('node:assert/strict');
+const f=require('./phase4-base-fixture.cjs'),mongoose=require('mongoose');
+mongoose.connect=mongoose.createConnection=()=>{throw Error('Live database forbidden');};
+for(const key of ['find','findOne','insertOne','updateOne','deleteOne','bulkWrite','createIndex'])mongoose.Collection.prototype[key]=()=>{throw Error('Unmocked database access forbidden');};
+const controller=f.load('controllers/interviewController');
+const submission=f.load('services/interviewSubmissionService');
+const evaluation=f.load('services/interviewEvaluationService');
+const metric=f.load('services/interviewEvaluationMetrics');
+const contract=f.load('services/interviewEvaluationContract');
+const input=()=>({question:questionText,answer,roleSlug:'frontend-developer',difficulty:'advanced',interviewType:'technical'});
+const evidence=f.load('services/skillEvidenceService'),realRecordEvidence=evidence.recordInterviewSkillEvidence;
+const {Interview}=f.load('models/Interview'),{Question}=f.load('models/Question');
+const owner=String(f.ownerA),other=String(f.ownerB),interview=String(f.id(501)),question=String(f.id(601));
+const answer='A closure retains access to the variables of its lexical scope after the outer function returns.';
+const questionText='Explain JavaScript closures and give an example.';
+const clone=value=>JSON.parse(JSON.stringify(value));
+let records,questions,skills,posts,queries,telemetry,payloads,failPersistence,failTransport,inTransaction;
+const originalInfo=console.info, originalError=console.error, originalLog=console.log;
+function output(overrides={}){return {score:78,technicalAccuracy:80,completeness:74,communication:82,strengths:['The explanation correctly describes retained lexical scope.'],weaknesses:['Provide a concrete function example to demonstrate the behavior.'],feedback:'The phrase "A closure retains access" correctly identifies retained scope, but add a concrete example.',improvedAnswer:'A closure is a function together with access to its lexical environment; a counter function demonstrates retained private state.',answerEvidence:['A closure retains access'],...overrides};}
+
+const invalidCases=[
+ ['missing JSON','EVALUATION_JSON_MISSING',()=> ''],
+ ['malformed JSON','EVALUATION_JSON_INVALID',()=> '{not json'],
+ ['non-object JSON','EVALUATION_JSON_INVALID',()=> '[]'],
+ ['missing required field','EVALUATION_REQUIRED_FIELDS_MISSING',()=>JSON.stringify(output({feedback:undefined}))],
+ ['invalid score','EVALUATION_SCORE_INVALID',()=>JSON.stringify(output({score:'78'}))],
+ ['invalid strengths','EVALUATION_OBSERVATIONS_INVALID',()=>JSON.stringify(output({strengths:['short']}))],
+ ['invalid weaknesses','EVALUATION_OBSERVATIONS_INVALID',()=>JSON.stringify(output({weaknesses:'not an array'}))],
+ ['missing evidence','EVALUATION_EVIDENCE_INVALID',()=>JSON.stringify(output({answerEvidence:undefined}))],
+ ['invented evidence','EVALUATION_EVIDENCE_INVALID',()=>JSON.stringify(output({answerEvidence:['PRIVATE fabricated evidence']}))],
+ ['ungrounded feedback','EVALUATION_FEEDBACK_UNGROUNDED',()=>JSON.stringify(output({feedback:'This feedback has enough characters but references none of the submitted evidence.'}))],
+ ['empty feedback','EVALUATION_FEEDBACK_INVALID',()=>JSON.stringify(output({feedback:''}))],
+ ['short improvedAnswer','EVALUATION_IMPROVED_ANSWER_INVALID',()=>JSON.stringify(output({improvedAnswer:'A stronger realistic example answer.'}))],
+ ['invalid followup','EVALUATION_FOLLOW_UP_INVALID',()=>JSON.stringify(output({followUpQuestion:123}))],
+ ['invented certification','EVALUATION_UNSUPPORTED_CLAIM',()=>JSON.stringify(output({strengths:['You are certified in JavaScript development.']}))],
+];
+for(const [name,code,raw] of invalidCases)test('classified rejection: '+name,async()=>{
+ global.fetch=async()=>{posts++;return new Response(JSON.stringify({response:raw(),finish_reason:'stop'}));};
+ const response=await invoke();
+ assert.equal(response.statusCode,503);assert.deepEqual(Object.keys(response.body).sort(),['message','success']);
+ assert.equal(response.body.message,'AI evaluation could not be completed. Your answer was not skipped. Please submit it again.');
+ assert.equal(posts,1);assert.equal(telemetry[0].attempts,1);assert.equal(telemetry[0].retries,0);
+ assert.equal(telemetry[0].failureCode,code);assert.equal(telemetry[0].failureStage,code.includes('JSON')?'json':'validation');
+ assert.equal(telemetry[0].persistenceMs,0);assert.equal(records.get(interview).answers[0].answerText,undefined);
+ assert.equal(records.get(interview).evaluationLease,undefined);assert.deepEqual(skills,[]);
+ const diagnostic=JSON.stringify(telemetry)+JSON.stringify(response.body);
+ for(const secret of [answer,questionText,owner,'PRIVATE fabricated evidence'])assert.ok(!diagnostic.includes(secret));
+});
+
+test('transport failure keeps uncertainty quarantine and structured diagnostics',async()=>{
+ failTransport=true;const response=await invoke();assert.equal(response.statusCode,503);
+ assert.equal(telemetry[0].failureCode,'EVALUATION_TIMEOUT');assert.equal(telemetry[0].failureStage,'transport');
+ assert.equal(telemetry[0].transportUncertain,true);assert.equal(posts,1);assert.equal(telemetry[0].retries,0);
+ assert.ok(records.get(interview).evaluationLease);assert.equal(telemetry[0].persistenceMs,0);
+});
+
+for(const body of ['{broken envelope','null','[]'])test('invalid proxy envelope is classified without private content: '+body,async()=>{
+ global.fetch=async()=>{posts++;return new Response(body);};await invoke();
+ assert.equal(posts,1);assert.equal(telemetry[0].failureCode,'EVALUATION_JSON_INVALID');
+});
+
+test('unknown failures never expose arbitrary private error messages or forged codes',async()=>{
+ let observed;
+ await metric.withInterviewMetrics(async()=>{
+  metric.recordInterviewEvaluationFailure(new Error('PRIVATE answer, JWT and profile'));
+ },()=>503,value=>{observed=value;});
+ assert.equal(observed.failureCode,'EVALUATION_VALIDATION_FAILED');assert.equal(observed.failureStage,'validation');
+ assert.ok(!JSON.stringify(observed).includes('PRIVATE'));assert.ok(!JSON.stringify(observed).includes('JWT'));
+ assert.equal(contract.classifyInterviewEvaluationFailure({code:'PRIVATE CODE'}).failureCode,'EVALUATION_VALIDATION_FAILED');
+ const forged=new contract.InterviewEvaluationError('PRIVATE CODE');
+ assert.equal(contract.classifyInterviewEvaluationFailure(forged).failureCode,'EVALUATION_VALIDATION_FAILED');
+});
+
+for(const sample of [answer,'1234567890','An answer with "quotes", backslash \\ and unicode əşç.','  Evidence\nwith\tspaces and enough text  ', 'a'.repeat(6000)])
+test('prompt JSON example satisfies the unchanged contract: '+sample.length,()=>{
+ const context={...input(),answer:sample};const prompt=evaluation.createInterviewEvaluationPrompt(context);
+ const example=JSON.parse(prompt.slice(prompt.lastIndexOf('\n{')+1));
+ const result=evaluation.validateInterviewEvaluation(example,context);
+ assert.equal(result.improvedAnswer,example.improvedAnswer);assert.equal('answerEvidence' in result,false);
+ assert.ok(prompt.includes('40-2400'));assert.ok(prompt.includes('8-240'));assert.equal(posts,0);
+});
+
+test('impossible evidence input fails before dispatch with a safe input code',async()=>{
+ await assert.rejects(evaluation.evaluateInterviewAnswer({...input(),answer:'a       b'}),error=>error.code==='EVALUATION_INPUT_INVALID');
+ assert.equal(posts,0);
+});
+
+test('evaluation preserves inference budget and public shape without fallback fields',async()=>{
+ records.set(interview,row(interview,owner,'technical'));
+ const response=await invoke();assert.equal(response.statusCode,200);assert.equal(posts,1);
+ assert.equal(payloads[0].request_budget_ms,60000);assert.equal(payloads[0].max_tokens,1024);
+ assert.deepEqual(Object.keys(clone(response.body).data.evaluation).sort(),['score','technicalAccuracy','completeness','communication','strengths','weaknesses','feedback','improvedAnswer'].sort());
+ assert.equal(telemetry[0].failureCode,undefined);assert.equal(telemetry[0].retries,0);
+ assert.equal(skills.length,1);assert.ok(telemetry[0].persistenceMs>0);
+});
+
+for(const raw of [JSON.stringify(output()),'{truncated'])test('truncation rejects before persistence even when parseable: '+raw.length,async()=>{
+ global.fetch=async()=>{posts++;return new Response(JSON.stringify({response:raw,finish_reason:'length',diagnostics:{stage:'completed',inferenceDispatched:true}}));};
+ const result=await invoke();assert.equal(result.statusCode,503);assert.equal(posts,1);
+ assert.equal(telemetry[0].failureCode,'EVALUATION_OUTPUT_TRUNCATED');assert.equal(telemetry[0].failureStage,'validation');
+ assert.equal(telemetry[0].inferenceDispatched,true);assert.equal(telemetry[0].persistenceMs,0);assert.equal(telemetry[0].retries,0);
+ assert.equal(records.get(interview).answers[0].evaluationStatus,'pending');assert.equal(records.get(interview).answers[0].answerText,undefined);
+ assert.equal(records.get(interview).evaluationLease,undefined);assert.deepEqual(skills,[]);
+});
+
+for(const [code,stage,dispatched,status,expected,uncertain] of [
+ ['QWEN_MODEL_UNAVAILABLE','readiness',false,503,'EVALUATION_MODEL_UNAVAILABLE',false],
+ ['GENERATION_EXPIRED','queue',false,504,'EVALUATION_TIMEOUT',false],
+ ['QWEN_TIMEOUT','inference',true,504,'EVALUATION_TIMEOUT',true],
+ ['QWEN_TRANSPORT_FAILED','inference',true,502,'EVALUATION_TRANSPORT_FAILED',true],
+ ['QWEN_PROXY_FAILED','inference',true,500,'EVALUATION_TRANSPORT_FAILED',true],
+ ['QWEN_RESPONSE_INVALID_JSON','response',true,502,'EVALUATION_JSON_INVALID',false],
+ ['QWEN_RESPONSE_EMPTY','response',true,502,'EVALUATION_JSON_MISSING',false],
+])test('safe proxy classification and lease state: '+code,async()=>{
+ global.fetch=async()=>{posts++;return new Response(JSON.stringify({detail:{code,stage,inferenceDispatched:dispatched,message:'PRIVATE upstream answer and JWT'}}),{status});};
+ const response=await invoke();assert.equal(response.statusCode,503);assert.equal(posts,1);
+ assert.equal(telemetry[0].failureCode,expected);assert.equal(telemetry[0].proxyFailureCode,code);
+ assert.equal(telemetry[0].proxyFailureStage,stage);assert.equal(telemetry[0].inferenceDispatched,dispatched);
+ assert.equal(telemetry[0].transportUncertain,uncertain);assert.equal(!!records.get(interview).evaluationLease,uncertain);
+ assert.equal(telemetry[0].persistenceMs,0);assert.equal(telemetry[0].retries,0);assert.deepEqual(skills,[]);
+ assert.ok(!JSON.stringify(telemetry).includes('PRIVATE'));assert.ok(!JSON.stringify(response.body).includes('PRIVATE'));
+ if(!dispatched)assert.ok(!response.body.message.includes('completion is uncertain'));
+});
+
+test('unreachable proxy retains uncertain dispatch instead of falsely reporting zero model calls',async()=>{
+ global.fetch=async()=>{posts++;throw Error('PRIVATE connection failure');};await invoke();
+ assert.equal(telemetry[0].failureCode,'EVALUATION_TRANSPORT_FAILED');assert.equal(telemetry[0].inferenceDispatched,'unknown');
+ assert.equal(telemetry[0].transportUncertain,true);assert.ok(records.get(interview).evaluationLease);assert.equal(posts,1);
+});
+
+test('unstructured gateway timeout remains quarantined even when JSON parsing fails',async()=>{
+ global.fetch=async()=>{posts++;return new Response('PRIVATE gateway failure',{status:504});};await invoke();
+ assert.equal(telemetry[0].transportUncertain,true);assert.ok(records.get(interview).evaluationLease);assert.equal(posts,1);
+});
+
+test('legacy 5xx without dispatch diagnostics remains uncertain and is not automatically retried',async()=>{
+ global.fetch=async()=>{posts++;return new Response(JSON.stringify({detail:'Unavailable'}),{status:503});};await invoke();
+ assert.equal(telemetry[0].inferenceDispatched,'unknown');assert.equal(telemetry[0].transportUncertain,true);
+ assert.ok(records.get(interview).evaluationLease);assert.equal(posts,1);
+});
+
+test('proxy diagnostic fields are bounded and never echo arbitrary private fields',async()=>{
+ let result;await metric.withInterviewMetrics(async()=>{
+  metric.recordInterviewProxyDiagnostics({code:'PRIVATE',stage:'PRIVATE',inferenceDispatched:false,answer:'PRIVATE'});
+ },()=>503,value=>{result=value;});
+ assert.equal(result.proxyFailureCode,undefined);assert.equal(result.proxyFailureStage,undefined);
+ assert.ok(!JSON.stringify(result).includes('PRIVATE'));
+});
+function row(id=interview,user=owner,type='behavioral',difficulty='advanced'){
+  questions.set(question,{_id:question,text:questionText,interviewType:type,difficulty,category:'frontend-developer',tags:['JavaScript']});
+  return {_id:id,user,category:'frontend-developer',difficulty:'beginner',interviewType:'technical',status:'in_progress',answers:[{question,questionText,evaluationStatus:'pending'}]};
+}
+function query(value){const promise=Promise.resolve(value);promise.select=promise.lean=promise.maxTimeMS=promise.sort=promise.limit=()=>promise;return promise;}
+function document(stored){
+  const value=clone(stored);
+  Object.defineProperty(value,'save',{value:async options=>{
+    assert.equal(options.session,inTransaction);assert.ok(inTransaction,'Interview save must share the evidence transaction');
+    const current=records.get(String(value._id)),lease=current.evaluationLease;
+    records.set(String(value._id),{...clone(value),...(lease?{evaluationLease:lease}:{})});return value;
+  }});return value;
+}
+Interview.findOne=filter=>{queries++;const value=records.get(String(filter._id));return query(value&&String(value.user)===String(filter.user)?document(value):null);};
+Question.findById=id=>{queries++;return query(questions.get(String(id))||null);};
+Interview.collection.updateOne=async(filter,update)=>{
+  const stored=records.get(String(filter._id));if(!stored||String(stored.user)!==String(filter.user))return {modifiedCount:0};
+  if(update.$set?.evaluationLease){
+    assert.equal(stored.status,filter.status);
+    if(stored.answers.find(a=>String(a.question)===String(filter.answers.$elemMatch.question))?.evaluationStatus==='completed')return {modifiedCount:0};
+    if(stored.evaluationLease&&(new Date(stored.evaluationLease.until)>new Date()||stored.evaluationLease.dispatched!==false))return {modifiedCount:0};
+    stored.evaluationLease=clone(update.$set.evaluationLease);return {modifiedCount:1};
+  }
+  if(update.$set?.['evaluationLease.dispatched']){
+    if(stored.evaluationLease?.token!==filter['evaluationLease.token']||stored.evaluationLease.dispatched!==false||new Date(stored.evaluationLease.until)<=new Date())return {modifiedCount:0};
+    stored.evaluationLease.dispatched=true;return {modifiedCount:1};
+  }
+  if(stored.evaluationLease?.token!==filter['evaluationLease.token'])return {modifiedCount:0};
+  delete stored.evaluationLease;return {modifiedCount:1};
+};
+Interview.collection.findOne=async filter=>{
+  const stored=records.get(String(filter._id));
+  return stored&&stored.status===filter.status&&String(stored.user)===String(filter.user)&&stored.evaluationLease?.token===filter['evaluationLease.token']&&new Date(stored.evaluationLease.until)>new Date()?{_id:stored._id}:null;
+};
+mongoose.connection.transaction=async work=>{
+  const previous=clone([...records]),previousSkills=clone(skills),session={inTransaction:()=>true};inTransaction=session;
+  try{return await work(session);}catch(error){records=new Map(previous);skills=previousSkills;throw error;}finally{inTransaction=undefined;}
+};
+evidence.recordInterviewSkillEvidence=async input=>{
+  assert.equal(input.session,inTransaction);assert.ok(inTransaction,'Evidence must share the interview transaction');
+  if(input.interviewType==='technical')skills.push({interview:String(input.interviewId),question:String(input.questionId),score:input.score});
+  if(failPersistence)throw Error('Isolated skill persistence failure');return [];
+};
+async function invoke(id=interview,user=owner,text=answer){
+  const res={statusCode:200,status(n){this.statusCode=n;return this;},json(body){this.body=body;return this;}};
+  await controller.submitInterviewAnswerController({user:{_id:new mongoose.Types.ObjectId(user)},params:{id},body:{questionId:question,answerText:text}},res,error=>{throw error;});return res;
+}
+test.beforeEach(()=>{
+  records=new Map();questions=new Map();skills=[];posts=queries=0;telemetry=[];payloads=[];failPersistence=failTransport=false;inTransaction=undefined;
+  records.set(interview,row());
+  console.info=(label,value)=>{if(label==='[Interview Evaluation Performance]')telemetry.push(JSON.parse(value));};console.log=console.error=()=>{};
+  global.fetch=async(url,request)=>{assert.equal(new URL(url).pathname,'/generate');posts++;payloads.push(JSON.parse(request.body));await new Promise(resolve=>setTimeout(resolve,8));if(failTransport)throw Object.assign(Error('Synthetic transport failure'),{name:'AbortError'});return new Response(JSON.stringify({response:JSON.stringify(output()),usage:{prompt_tokens:120,completion_tokens:80,total_tokens:200},finish_reason:'stop'}));};
+});
+test.afterEach(()=>{console.info=originalInfo;console.error=originalError;console.log=originalLog;});
+
+for(const type of ['technical','behavioral'])for(const difficulty of ['beginner','intermediate','advanced','senior'])test(`legacy metadata resolves actual ${type}/${difficulty}, not session defaults`,async()=>{
+  records.set(interview,row(interview,owner,type,difficulty));
+  const response=await invoke();assert.equal(response.statusCode,200);assert.equal(posts,1);
+  assert.ok(payloads[0].message.includes('Interview Type: '+type));assert.ok(payloads[0].message.includes('Difficulty: '+difficulty));
+  assert.equal(skills.length,type==='technical'?1:0);assert.equal(records.get(interview).status,'completed');
+  assert.equal(response.body.data.evaluation.score,78);assert.equal(response.body.data.overallScore,78);
+  assert.equal(telemetry[0].attempts,1);assert.equal(telemetry[0].retries,0);assert.equal(telemetry[0].promptTokens,120);assert.equal(telemetry[0].completionTokens,80);
+  assert.equal(payloads[0].correlation_id,telemetry[0].correlationId);assert.ok(telemetry[0].success);
+});
+test('new immutable question snapshot works even after source question removal',async()=>{
+  const stored=records.get(interview);stored.answers[0].questionSnapshot={text:questionText,interviewType:'behavioral',difficulty:'senior',category:'frontend-developer',tags:[]};questions.clear();
+  assert.equal((await invoke()).statusCode,200);assert.equal(queries,1);assert.ok(payloads[0].message.includes('Difficulty: senior'));
+});
+test('unreliable legacy metadata fails explicitly before inference',async()=>{
+  questions.get(question).text='A different edited question';
+  const response=await invoke();assert.equal(response.statusCode,409);assert.equal(posts,0);assert.equal(skills.length,0);assert.equal(records.get(interview).answers[0].evaluationStatus,'pending');
+});
+test('concurrent duplicates share durable admission and only one inference is dispatched',async()=>{
+  const responses=await Promise.all([invoke(),invoke()]);assert.deepEqual(responses.map(r=>r.statusCode).sort(),[200,409]);assert.equal(posts,1);assert.equal(records.get(interview).answers[0].evaluationStatus,'completed');
+  assert.equal((await invoke()).statusCode,400);assert.equal(posts,1,'Completed interview cannot be reevaluated');
+});
+test('foreign owners cannot claim or evaluate a session',async()=>{
+  assert.equal((await invoke(interview,other)).statusCode,404);assert.equal(posts,0);assert.equal(records.get(interview).evaluationLease,undefined);
+});
+test('different sessions and users can infer independently without a global submission mutex',async()=>{
+  const second=String(f.id(502));records.set(second,row(second,other));
+  // Exercise admission alone: fake transactional storage deliberately serializes commits.
+  let entered=0;
+  await Promise.all([[owner,interview],[other,second]].map(([user,id])=>submission.withInterviewSubmission(user,id,question,async()=>{entered++;await new Promise(resolve=>setTimeout(resolve,5));})));
+  assert.equal(entered,2);
+});
+test('transport uncertainty is quarantined beyond expiry; only verified operator recovery allows another attempt',async()=>{
+  failTransport=true;assert.equal((await invoke()).statusCode,503);assert.equal(posts,1);assert.ok(records.get(interview).evaluationLease);
+  assert.equal((await invoke()).statusCode,409);assert.equal(posts,1);
+  records.get(interview).evaluationLease.until=new Date(Date.now()-1);failTransport=false;
+  const blocked=await invoke();assert.equal(blocked.statusCode,409);assert.equal(blocked.body.code,'INTERVIEW_RECOVERY_REQUIRED');assert.equal(posts,1);
+  // Isolated operator confirmation: no live lease is cleared by this test or application code.
+  delete records.get(interview).evaluationLease;
+  assert.equal((await invoke()).statusCode,200);assert.equal(posts,2);assert.equal(records.get(interview).evaluationLease,undefined);
+});
+test('restart simulation recovers an expired durable lease and fences a live lease',async()=>{
+  records.get(interview).evaluationLease={token:'old-process',question,until:new Date(Date.now()+10000),dispatched:false};
+  assert.equal((await invoke()).statusCode,409);assert.equal(posts,0);
+  records.get(interview).evaluationLease.until=new Date(Date.now()-1);
+  assert.equal((await invoke()).statusCode,200);assert.equal(posts,1);
+});
+test('evidence failure rolls back both interview and evidence, allowing an explicit retry',async()=>{
+  records.set(interview,row(interview,owner,'technical'));failPersistence=true;
+  assert.equal((await invoke()).statusCode,503);assert.equal(records.get(interview).status,'in_progress');assert.equal(records.get(interview).answers[0].answerText,undefined);assert.deepEqual(skills,[]);
+  failPersistence=false;assert.equal((await invoke()).statusCode,200);assert.equal(skills.length,1);
+});
+test('conditional lease conflict rejects a stale worker without evidence persistence',async()=>{
+  await assert.rejects(submission.withInterviewSubmission(owner,interview,question,async()=>{
+    records.get(interview).evaluationLease.token='replacement-process';
+    return submission.commitInterviewSubmission(async()=>{throw Error('Must not commit stale result');});
+  }),error=>error.code==='INTERVIEW_LEASE_EXPIRED');assert.deepEqual(skills,[]);
+});
+for(const [name,invalid] of [
+  ['missing score',output({score:undefined})],['non-numeric score',output({score:'80'})],['out of range',output({technicalAccuracy:101})],
+  ['empty feedback',output({feedback:''})],['empty improved answer',output({improvedAnswer:''})],['invalid observations',output({strengths:[12]})],
+  ['invented quote',output({answerEvidence:['I am certified in AWS']})],['missing quote',output({answerEvidence:[]})],
+  ['unrelated feedback',output({feedback:'This generic feedback is unrelated and offers no evidence from the answer.'})],
+  ['unsupported mastery',output({strengths:['You are an expert in JavaScript development.']})],
+])test('invalid AI contract rejects '+name,()=>{
+  assert.throws(()=>evaluation.validateInterviewEvaluation(invalid,{question:questionText,answer,roleSlug:'frontend-developer',difficulty:'advanced',interviewType:'technical'}));
+});
+test('empty strengths remain empty instead of fabricated positive claims',()=>{
+  const result=evaluation.validateInterviewEvaluation(output({strengths:[]}),{question:questionText,answer,roleSlug:'frontend-developer',difficulty:'advanced',interviewType:'technical'});assert.deepEqual(result.strengths,[]);assert.equal('answerEvidence' in result,false,'Private validation contract does not alter public response');
+});
+test('malformed AI output fails without saving an answer or evidence',async()=>{
+  global.fetch=async()=>{posts++;return new Response(JSON.stringify({response:'{invalid JSON',finish_reason:'stop'}));};
+  assert.equal((await invoke()).statusCode,503);assert.equal(posts,1);assert.equal(records.get(interview).answers[0].answerText,undefined);assert.deepEqual(skills,[]);assert.equal(records.get(interview).evaluationLease,undefined);
+  assert.equal(telemetry[0].failureCode,'EVALUATION_JSON_INVALID');
+});
+test('telemetry is private, scoped and counts validation/persistence without prompts',async()=>{
+  await invoke();const text=JSON.stringify(telemetry);assert.ok(!text.includes(answer));assert.ok(!text.includes(owner));assert.ok(!text.includes(questionText));assert.ok(!text.includes('JWT'));
+  assert.ok(telemetry[0].contextMs>0);assert.ok(telemetry[0].validationMs>0);assert.ok(telemetry[0].persistenceMs>0);assert.ok(telemetry[0].qwenRoundtripMs>0);assert.equal(telemetry[0].status,200);
+  assert.ok(telemetry[0].totalMs>=telemetry[0].qwenRoundtripMs);
+});
+
+test('in-progress success preserves response shape and returns next stored question without extra inference',async()=>{
+  const next=String(f.id(602));records.get(interview).answers.push({question:next,questionText:'Explain event delegation.',evaluationStatus:'pending'});
+  const response=await invoke();assert.equal(response.statusCode,200);assert.equal(response.body.data.completed,false);assert.equal(String(response.body.data.nextQuestion.questionId),next);
+  assert.equal(posts,1);assert.equal(records.get(interview).status,'in_progress');assert.equal(records.get(interview).answers[1].answerText,undefined);assert.equal('answerEvidence' in response.body.data.evaluation,false);
+});
+test('actual skill-evidence adapter joins the supplied transaction instead of creating a separate commit',async()=>{
+  const {UserSkillProfile}=f.load('models/UserSkillProfile');
+  const previousFind=UserSkillProfile.findOne,previousSave=UserSkillProfile.prototype.save;
+  const profile=new UserSkillProfile({user:f.ownerA,skills:[],totalEvidenceCount:0}),session={inTransaction:()=>true};let saved=0;
+  UserSkillProfile.findOne=()=>{const value=query(profile);value.session=s=>{assert.equal(s,session);return value;};return value;};
+  UserSkillProfile.prototype.save=async function(options){assert.equal(options.session,session);saved++;return this;};
+  try{await realRecordEvidence({userId:f.ownerA,interviewId:f.id(501),questionId:f.id(601),questionTags:['JavaScript'],score:78,technicalAccuracy:80,interviewType:'technical',category:'frontend-developer',session});assert.equal(saved,1);assert.equal(profile.skills.length,1);assert.equal(profile.skills[0].evidence.length,1);}
+  finally{UserSkillProfile.findOne=previousFind;UserSkillProfile.prototype.save=previousSave;}
+});
+test('new interview creation records each selected question metadata, including behavioral/stretch variants',async()=>{
+  const previousFind=Interview.find,previousCreate=Interview.create,previousAggregate=Question.aggregate;
+  const profile=f.load('services/careerSkillProfileService'),previousProfile=profile.buildCareerSkillProfile;
+  let captured,counter=700;
+  Interview.find=()=>query([]);profile.buildCareerSkillProfile=async()=>({verifiedSkills:[],strongestSkills:[]});
+  Question.aggregate=async stages=>Array.from({length:stages[1].$sample.size},()=>({_id:f.id(counter++),text:'Describe the chosen competency.',category:'frontend-developer',difficulty:stages[0].$match.difficulty,interviewType:stages[0].$match.interviewType,tags:['JavaScript']}));
+  Interview.create=async value=>{captured=value;return {_id:f.id(800),...value};};
+  const res={statusCode:200,status(n){this.statusCode=n;return this;},json(body){this.body=body;return this;}};
+  try{await controller.startInterviewController({user:{_id:f.ownerA},body:{roleSlug:'frontend-developer'}},res,error=>{throw error;});assert.equal(res.statusCode,201);assert.equal(captured.answers.length,6);
+    assert.equal(captured.answers.filter(a=>a.questionSnapshot.interviewType==='behavioral').length,3);
+    assert.ok(captured.answers.every(a=>a.questionSnapshot.text===a.questionText&&a.questionSnapshot.category==='frontend-developer'&&a.questionSnapshot.difficulty));assert.equal(posts,0);
+  }finally{Interview.find=previousFind;Interview.create=previousCreate;Question.aggregate=previousAggregate;profile.buildCareerSkillProfile=previousProfile;}
+});

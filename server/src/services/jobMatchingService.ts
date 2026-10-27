@@ -1,3 +1,5 @@
+import { createVersionedJobMatcher } from "./jobMatchCache";
+export { clearJobMatchCache, getJobMatchCacheStats } from "./jobMatchCache";
 import {
   type IJob,
   type JobExperienceLevel,
@@ -1559,6 +1561,9 @@ export const calculateJobMatch = (
    RANKING
 ========================================================= */
 
+export const createCachedJobMatcher = (profile: ICareerSkillProfile, options: IJobMatchOptions = {}) =>
+  createVersionedJobMatcher(profile, options, calculateJobMatch);
+
 export const rankJobsForProfile = (
   profile:
     ICareerSkillProfile,
@@ -1571,6 +1576,7 @@ export const rankJobsForProfile = (
 
   match: IJobMatchResult;
 }> => {
+  const matchJob = createCachedJobMatcher(profile, options);
   return jobs
     .map(
       (
@@ -1579,11 +1585,7 @@ export const rankJobsForProfile = (
         job,
 
         match:
-          calculateJobMatch(
-            profile,
-            job,
-            options
-          ),
+          matchJob(job),
       })
     )
     .sort(
@@ -1606,7 +1608,8 @@ export const rankJobsForResume = (
   resume:
     IResumeAnalysis,
   jobs:
-    IJob[]
+    IJob[],
+  options: IJobMatchOptions = {}
 ): Array<{
   job: IJob;
 
@@ -1616,7 +1619,8 @@ export const rankJobsForResume = (
     buildProfileFromResume(
       resume
     ),
-    jobs
+    jobs,
+    options
   );
 };
 

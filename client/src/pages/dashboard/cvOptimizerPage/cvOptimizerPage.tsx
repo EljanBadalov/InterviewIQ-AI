@@ -1,4 +1,7 @@
+import RouteLoading from "../../../components/RouteLoading";
 import React, {
+  lazy,
+  Suspense,
   useEffect,
   useState,
 } from "react";
@@ -24,9 +27,9 @@ import {
 
 import apiClient from "../../../api/apiClient";
 
-import ResumeProfileCompletenessModal from "../../../components/resume/ResumeProfileCompletenessModal";
-
 import "./cvOptimizerPage.scss";
+
+const ResumeProfileCompletenessModal = lazy(() => import("../../../components/resume/ResumeProfileCompletenessModal"));
 
 /* =========================================================
    OPTIMIZATION TYPES
@@ -321,7 +324,7 @@ const TypedResumeProfileCompletenessModal =
    PAGE
 ========================================================= */
 
-const cvOptimizerPage: React.FC =
+const CVOptimizerPage: React.FC =
   () => {
     const navigate =
       useNavigate();
@@ -1941,24 +1944,28 @@ const cvOptimizerPage: React.FC =
           </p>
         </div>
 
-        <TypedResumeProfileCompletenessModal
-          open={
-            profileModalOpen
-          }
-          initialData={
-            profileCompletenessData
-          }
-          onClose={() => {
-            setProfileModalOpen(
-              false
-            );
-          }}
-          onReady={
-            handleProfileReady
-          }
-        />
+        {profileModalOpen && (
+          <Suspense fallback={<RouteLoading />}>
+            <TypedResumeProfileCompletenessModal
+              open={
+                profileModalOpen
+              }
+              initialData={
+                profileCompletenessData
+              }
+              onClose={() => {
+                setProfileModalOpen(
+                  false
+                );
+              }}
+              onReady={
+                handleProfileReady
+              }
+            />
+          </Suspense>
+        )}
       </div>
     );
   };
 
-export default cvOptimizerPage;
+export default CVOptimizerPage;

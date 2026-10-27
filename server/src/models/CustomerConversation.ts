@@ -119,6 +119,10 @@ export interface ICustomerConversation
 
   email?: string;
 
+  title?: string;
+  titleManuallySet?: boolean;
+  deletedAt?: Date;
+
   sessionId: string;
 
   status: CustomerConversationStatus;
@@ -460,6 +464,10 @@ const customerConversationSchema =
         index: true,
       },
 
+      title: { type: String, trim: true, maxlength: 100 },
+      titleManuallySet: { type: Boolean },
+      deletedAt: { type: Date },
+
       sessionId: {
         type: String,
 
@@ -552,6 +560,7 @@ const customerConversationSchema =
       },
     },
     {
+      optimisticConcurrency: true,
       timestamps:
         true,
 

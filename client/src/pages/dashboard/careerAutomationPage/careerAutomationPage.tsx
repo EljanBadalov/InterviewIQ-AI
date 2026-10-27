@@ -1,8 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCareerQuery } from '../../../query/useCareerQuery';
+import { useApiQuery } from "../../../query/apiQueries";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 
-import { City, Country, State } from "country-state-city";
+type LocationData = typeof import("country-state-city");
 
 import {
   FiAlertCircle,
@@ -19,13 +21,9 @@ import {
 } from "react-icons/fi";
 
 import {
-  getCareerAutomation,
-  getCareerAutomationSummary,
-  getCareerFields,
   isCareerAutomationNotFoundError,
   replanCareerAutomation,
   refreshExternalCareerJobs,
-  getExternalCareerJobMatches,
   updateCareerJobPreferences,
   type ICareerAutomation,
   type ICareerAutomationSummary,
@@ -208,7 +206,7 @@ const buildSkillNodesFromRoadmap = (
 
   for (
     const milestone
-    of automation.roadmap
+    of automation.roadmap.filter(section=>!section.metadata?.retainedForCompletedTasks)
   ) {
     const recommendations =
       milestone.recommendations ||
@@ -239,15 +237,18 @@ const buildSkillNodesFromRoadmap = (
           continue;
         }
 
+        const notes=milestone.metadata?.roadmapNarrative as {nodes?:Array<{learning?:{score:number|null;state:string}}> }|undefined;
+        const learning=notes?.nodes?.[recommendationIndex]?.learning;
+        const measuredScore=(automation.careerContext?.status!=='current' || (automation.careerContext.evidenceFreshness!==undefined && automation.careerContext.evidenceFreshness!=='current')) ? undefined : learning ? (learning.state==='verified_proficiency'||learning.state==='verified_gap'?learning.score:undefined) : (milestone.category==='CORE_SKILLS'||milestone.category==='ROLE_SKILLS'?undefined:milestone.readinessScore);
         const score =
-          typeof milestone.readinessScore ===
+          typeof measuredScore ===
             "number"
             ? Math.max(
                 0,
                 Math.min(
                   100,
                   Math.round(
-                    milestone.readinessScore
+                    measuredScore
                   )
                 )
               )
@@ -263,7 +264,7 @@ const buildSkillNodesFromRoadmap = (
 
             completed:
               milestone.status ===
-              "completed",
+              "completed" && milestone.metadata?.completionContext!=='unverified-history',
           });
 
         nodes.push({
@@ -349,7 +350,7 @@ const buildSkillNodesFromRoadmap = (
         .trim();
 
     const score =
-      typeof milestone.readinessScore ===
+      automation.careerContext?.status==='current' && (automation.careerContext.evidenceFreshness===undefined || automation.careerContext.evidenceFreshness==='current') && typeof milestone.readinessScore ===
         "number"
         ? Math.max(
             0,
@@ -375,7 +376,7 @@ const buildSkillNodesFromRoadmap = (
 
           completed:
             milestone.status ===
-            "completed",
+            "completed" && milestone.metadata?.completionContext!=='unverified-history',
         }),
 
       score,
@@ -508,45 +509,66 @@ const CareerAutomationPage: React.FC = () => {
        MAIN DATA
     ===================================================== */
 
-  const [automation, setAutomation] = useState<ICareerAutomation | null>(null);
-
-  const [summary, setSummary] = useState<ICareerAutomationSummary | null>(null);
-
-  const [loading, setLoading] = useState(true);
+  const automationQuery = useCareerQuery<{ success: boolean; data: ICareerAutomation; summary?: ICareerAutomationSummary | null }>("/career-automation?includeSummary=true");
+  const summaryQuery = useCareerQuery<{ success: boolean; data: ICareerAutomationSummary | null }>("/career-automation/summary", Boolean(automationQuery.data && !('summary' in automationQuery.data)));
+  const automation = automationQuery.data?.data ?? null;
+  const summary = summaryQuery.data?.data ?? automationQuery.data?.summary ?? null;
+  const loading = automationQuery.isPending;
+  const setAutomation = (data: ICareerAutomation) => automationQuery.setData({ success: true, data });
+  const setSummary = (data: ICareerAutomationSummary | null) => summaryQuery.setData({ success: true, data });
 
   const [actionKey, setActionKey] = useState<string | null>(null);
 
   const [selectedSkillId, setSelectedSkillId] = useState<string | null>(null);
 
-  const [error, setError] = useState<string | null>(null);
+  const [actionError, setError] = useState<string | null>(null);
+  const error = actionError || (automationQuery.isError && !isCareerAutomationNotFoundError(automationQuery.error)
+    ? "Career roadmap could not be loaded." : null);
 
   /* =====================================================
        EXTERNAL JOBS
     ===================================================== */
 
-  const [externalJobs, setExternalJobs] = useState<IExternalCareerJobMatch[]>(
-    [],
-  );
-
-  const [jobsLoading, setJobsLoading] = useState(false);
-
-  const [jobsError, setJobsError] = useState<string | null>(null);
+  const matchesQuery = useCareerQuery<{ success: boolean; data: { jobs: IExternalCareerJobMatch[] } }>("/jobs/external/matches", Boolean(automation));
+  const externalJobs = matchesQuery.data?.data.jobs ?? [];
+  const setExternalJobs = (jobs: IExternalCareerJobMatch[]) => matchesQuery.setData({ success: true, data: { jobs } });
+  const [jobsRefreshing, setJobsLoading] = useState(false);
+  const jobsLoading = jobsRefreshing || (Boolean(automation) && matchesQuery.isPending);
+  const [actionJobsError, setJobsError] = useState<string | null>(null);
+  const jobsError = actionJobsError || (matchesQuery.isError ? "Real job opportunities could not be loaded." : null);
 
   /* =====================================================
        JOB PREFERENCES
     ===================================================== */
 
   const [jobPreferencesOpen, setJobPreferencesOpen] = useState(false);
+  const [locationData, setLocationData] = useState<LocationData | null>(null);
+  const [locationLoadError, setLocationLoadError] = useState(false);
+  const [locationLoadAttempt, setLocationLoadAttempt] = useState(0);
+
+  useEffect(() => {
+    if (!jobPreferencesOpen || locationData) return;
+    let active = true;
+    import("country-state-city")
+      .then((data) => {
+        if (active) setLocationData(data);
+      })
+      .catch(() => {
+        if (active) setLocationLoadError(true);
+      });
+    return () => {
+      active = false;
+    };
+  }, [jobPreferencesOpen, locationData, locationLoadAttempt]);
 
   const [targetRoleInput, setTargetRoleInput] = useState("");
 
   const [locationInput, setLocationInput] = useState("");
 
-  const [careerFields, setCareerFields] = useState<ICareerFieldOption[]>([]);
-
-  const [careerFieldsLoading, setCareerFieldsLoading] = useState(false);
-
-  const [careerFieldsError, setCareerFieldsError] = useState<string | null>(null);
+  const fieldsQuery = useApiQuery<{ success: boolean; data: { fields: ICareerFieldOption[] } }>("/career-automation/fields", jobPreferencesOpen || (!loading && isCareerAutomationNotFoundError(automationQuery.error)));
+  const careerFields = fieldsQuery.data?.data.fields ?? [];
+  const careerFieldsLoading = fieldsQuery.isPending && (jobPreferencesOpen || !automation);
+  const careerFieldsError = fieldsQuery.isError ? "Career fields could not be loaded." : null;
 
   const [countryCodeInput, setCountryCodeInput] = useState("");
 
@@ -567,145 +589,22 @@ const CareerAutomationPage: React.FC = () => {
   const [preferencesMessageType, setPreferencesMessageType] =
     useState<PreferencesMessageType>(null);
 
-  /* =====================================================
-       LOAD AUTOMATION
-    ===================================================== */
-
-  const loadAutomation = useCallback(async () => {
+  const loadExternalJobs = async (forceRefresh: boolean = false) => {
     try {
-      setLoading(true);
-
-      setError(null);
-
-      const [automationData, summaryData] = await Promise.all([
-        getCareerAutomation(),
-        getCareerAutomationSummary(),
-      ]);
-
-      setAutomation(automationData);
-
-      setSummary(summaryData);
-    } catch (requestError) {
-      if (isCareerAutomationNotFoundError(requestError)) {
-        setAutomation(null);
-
-        setSummary(null);
-
-        return;
+      setJobsLoading(true);
+      setJobsError(null);
+      if (forceRefresh) {
+        const refreshed = await refreshExternalCareerJobs();
+        setExternalJobs(normalizeFreshJobMatches(refreshed.jobs || []));
+      } else {
+        await matchesQuery.refetch();
       }
-
-      console.error("[Career Automation Page] Load failed:", requestError);
-
-      setError("Career roadmap could not be loaded.");
+    } catch {
+      setJobsError("Real job opportunities could not be loaded.");
     } finally {
-      setLoading(false);
+      setJobsLoading(false);
     }
-  }, []);
-
-  /* =====================================================
-       LOAD EXTERNAL JOBS
-    ===================================================== */
-
-  const loadExternalJobs = useCallback(
-    async (forceRefresh: boolean = false) => {
-      try {
-        setJobsLoading(true);
-
-        setJobsError(null);
-
-        /*
-         * When the user explicitly searches again, use the fresh
-         * jobs returned by the refresh endpoint directly.
-         *
-         * Do NOT refresh and then immediately reload saved matches,
-         * because that can reintroduce stale CareerAutomation
-         * jobMatches from the previous recommendation cycle.
-         */
-        if (forceRefresh) {
-          const refreshed = await refreshExternalCareerJobs();
-
-          setExternalJobs(normalizeFreshJobMatches(refreshed.jobs || []));
-
-          return;
-        }
-
-        /*
-         * Initial page load can use the already saved matches so
-         * opening Career Automation does not trigger a new ATS search.
-         */
-        const result = await getExternalCareerJobMatches();
-
-        setExternalJobs(result.jobs || []);
-      } catch (requestError) {
-        console.error(
-          "[Career Automation] External jobs failed:",
-          requestError,
-        );
-
-        setJobsError("Real job opportunities could not be loaded.");
-      } finally {
-        setJobsLoading(false);
-      }
-    },
-    [],
-  );
-
-  /* =====================================================
-       INITIAL LOAD
-    ===================================================== */
-
-  useEffect(() => {
-    void loadAutomation();
-  }, [loadAutomation]);
-
-  useEffect(() => {
-    if (!automation) {
-      return;
-    }
-
-    void loadExternalJobs(false);
-  }, [automation?._id, loadExternalJobs]);
-
-  /* =====================================================
-       LOAD CAREER FIELDS
-    ===================================================== */
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const loadCareerFields = async () => {
-      try {
-        setCareerFieldsLoading(true);
-
-        setCareerFieldsError(null);
-
-        const result = await getCareerFields();
-
-        if (!cancelled) {
-          setCareerFields(result.fields || []);
-        }
-      } catch (requestError) {
-        console.error(
-          "[Career Automation] Career fields failed:",
-          requestError,
-        );
-
-        if (!cancelled) {
-          setCareerFieldsError("Career fields could not be loaded.");
-        }
-      } finally {
-        if (!cancelled) {
-          setCareerFieldsLoading(false);
-        }
-      }
-    };
-
-    void loadCareerFields();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  };
 
   /* =====================================================
        LOCATION OPTIONS
@@ -721,25 +620,25 @@ const CareerAutomationPage: React.FC = () => {
     ===================================================== */
 
   const countryOptions = useMemo(() => {
-    return [...Country.getAllCountries()].sort((a, b) =>
+    return [...(locationData?.Country.getAllCountries() ?? [])].sort((a, b) =>
       a.name.localeCompare(b.name),
     );
-  }, []);
+  }, [locationData]);
 
   const subdivisionOptions = useMemo(() => {
-    if (!countryCodeInput) {
+    if (!countryCodeInput || !locationData) {
       return [];
     }
 
-    return [...State.getStatesOfCountry(countryCodeInput)].sort((a, b) =>
+    return [...locationData.State.getStatesOfCountry(countryCodeInput)].sort((a, b) =>
       a.name.localeCompare(b.name),
     );
-  }, [countryCodeInput]);
+  }, [countryCodeInput, locationData]);
 
   const hasSubdivisions = subdivisionOptions.length > 0;
 
   const cityOptions = useMemo(() => {
-    if (!countryCodeInput) {
+    if (!countryCodeInput || !locationData) {
       return [];
     }
 
@@ -750,15 +649,16 @@ const CareerAutomationPage: React.FC = () => {
      */
     const cities = hasSubdivisions
       ? subdivisionCodeInput
-        ? City.getCitiesOfState(countryCodeInput, subdivisionCodeInput)
+        ? locationData.City.getCitiesOfState(countryCodeInput, subdivisionCodeInput)
         : []
-      : City.getCitiesOfCountry(countryCodeInput);
+      : locationData.City.getCitiesOfCountry(countryCodeInput);
 
     return [...(cities || [])].sort((a, b) =>
       a.name.localeCompare(b.name),
     );
   }, [
     countryCodeInput,
+    locationData,
     hasSubdivisions,
     subdivisionCodeInput,
   ]);
@@ -813,15 +713,15 @@ const CareerAutomationPage: React.FC = () => {
      *   "Boston, MA" (US)
      *   "Baku, Azerbaijan" (other countries)
      */
-    if (!countryCodeInput) {
+    if (!countryCodeInput || !locationData) {
       return "";
     }
 
-    const country = Country.getCountryByCode(countryCodeInput);
+    const country = locationData.Country.getCountryByCode(countryCodeInput);
 
     const subdivision =
       hasSubdivisions && subdivisionCodeInput
-        ? State.getStateByCodeAndCountry(
+        ? locationData.State.getStateByCodeAndCountry(
             subdivisionCodeInput,
             countryCodeInput,
           )
@@ -851,53 +751,11 @@ const CareerAutomationPage: React.FC = () => {
       .join(", ");
   }, [
     countryCodeInput,
+    locationData,
     hasSubdivisions,
     selectedCity,
     subdivisionCodeInput,
   ]);
-
-  /* =====================================================
-       SYNC JOB PREFERENCES
-    ===================================================== */
-
-  useEffect(() => {
-    if (!automation) {
-      return;
-    }
-
-    setTargetRoleInput(
-      automation.jobPreferences.targetRoles?.[0] ||
-        automation.targetRole ||
-        "",
-    );
-
-    setLocationInput(automation.jobPreferences.locations?.[0] || "");
-
-    setCountryCodeInput("");
-
-    setSubdivisionCodeInput("");
-
-    setCityInput("");
-
-    setLocationSelectionTouched(false);
-
-    const savedWorkModes = automation.jobPreferences.workModes || [];
-
-    if (savedWorkModes.length === 1) {
-      setWorkModeInput(savedWorkModes[0]);
-    } else {
-      setWorkModeInput("any");
-    }
-  }, [
-    automation?._id,
-    automation?.targetRole,
-    automation?.jobPreferences?.locations,
-    automation?.jobPreferences?.workModes,
-  ]);
-
-  /* =====================================================
-       SKILLS
-    ===================================================== */
 
   const skillNodes: ISkillNode[] =
     useMemo(() => {
@@ -961,6 +819,7 @@ const CareerAutomationPage: React.FC = () => {
       setAutomation(result.automation);
 
       setSummary(result.summary);
+      void matchesQuery.refetch();
     } catch (requestError) {
       console.error(requestError);
 
@@ -1042,7 +901,12 @@ const CareerAutomationPage: React.FC = () => {
        SAVE JOB PREFERENCES
     ===================================================== */
 
+  const preferenceFlight = useRef(false);
+  const preferenceVersion = useRef(0);
+  useEffect(() => () => { preferenceVersion.current++; }, []);
+
   const handleSaveJobPreferences = async () => {
+    if (preferenceFlight.current) return;
     const targetRole = targetRoleInput.replace(/\s+/g, " ").trim();
 
     const selectedStructuredLocation = buildSelectedLocation();
@@ -1073,6 +937,8 @@ const CareerAutomationPage: React.FC = () => {
       return;
     }
 
+    preferenceFlight.current = true;
+    const version = ++preferenceVersion.current;
     try {
       setPreferencesSaving(true);
 
@@ -1088,6 +954,7 @@ const CareerAutomationPage: React.FC = () => {
           =============================================== */
 
       const result = await updateCareerJobPreferences({
+        expectedRevision: automation ? automation.__v ?? 0 : null,
         targetRole,
 
         enabled: true,
@@ -1100,81 +967,29 @@ const CareerAutomationPage: React.FC = () => {
         workModes: workModeInput === "any" ? [] : [workModeInput],
       });
 
-      setAutomation({
-        ...result.automation,
-        targetRole,
-        jobPreferences: {
-          ...result.automation.jobPreferences,
-          targetRoles: [targetRole],
-          locations: location ? [location] : [],
-          workModes: workModeInput === "any" ? [] : [workModeInput],
-        },
-      });
-
-      if (result.summary) {
-        setSummary(result.summary);
-      }
-
-      setPreferencesMessage("Job search preferences saved successfully.");
-
+      if (version !== preferenceVersion.current) return;
+      // Use the server's canonical title and revision; do not restore submitted text.
+      setAutomation(result.automation);
+      if (result.summary) setSummary(result.summary);
+      setExternalJobs([]);
+      setPreferencesMessage("Career preferences saved. Use Refresh Jobs separately when needed.");
       setPreferencesMessageType("success");
-
-      /* ===============================================
-             STEP 2
-             SEARCH NEW JOBS
-
-             Important:
-             This has its own try/catch.
-          =============================================== */
-
-      try {
-        setJobsLoading(true);
-
-        /*
-         * The refresh endpoint already returns the newly ranked
-         * recommendation set. Use it directly instead of loading
-         * older saved matches immediately afterwards.
-         */
-        const refreshed = await refreshExternalCareerJobs();
-
-        setExternalJobs(normalizeFreshJobMatches(refreshed.jobs || []));
-
-        setPreferencesMessage(
-          "Preferences saved and new job opportunities loaded.",
-        );
-
-        setPreferencesMessageType("success");
-
-        setJobPreferencesOpen(false);
-      } catch (searchError) {
-        console.error(
-          "[Career Automation] Job search failed after preferences were saved:",
-          searchError,
-        );
-
-        setPreferencesMessage(
-          "Preferences were saved, but new jobs could not be loaded. You can try searching again.",
-        );
-
-        setPreferencesMessageType("warning");
-
-        setJobsError(
-          "Your job preferences were saved, but InterviewIQ could not load new opportunities.",
-        );
-      } finally {
-        setJobsLoading(false);
-      }
+      setJobPreferencesOpen(false);
     } catch (requestError) {
+      if (version !== preferenceVersion.current) return;
       console.error(
-        "[Career Automation] Preferences update failed:",
-        requestError,
+        "[Career Automation] Preferences update failed.",
       );
 
-      setPreferencesMessage("Could not save job search preferences.");
+      const conflict = (requestError as { response?: { status?: number } })?.response?.status === 409;
+      setPreferencesMessage(conflict ? "Your career data changed. Reload before saving again." : "Could not save job search preferences.");
 
       setPreferencesMessageType("error");
     } finally {
-      setPreferencesSaving(false);
+      if (version === preferenceVersion.current) {
+        preferenceFlight.current = false;
+        setPreferencesSaving(false);
+      }
     }
   };
 
@@ -1336,10 +1151,24 @@ const CareerAutomationPage: React.FC = () => {
 
           <h1>Career Automation</h1>
 
-          <p>
-            Create your Career Automation profile first so InterviewIQ can build
-            a personalized skill roadmap.
+          <p role={error ? "alert" : undefined}>
+            {error || "Choose your target career. This saves your selection without generating a roadmap."}
           </p>
+          {!error && <div className="career-job-preferences-grid">
+            <label className="career-job-preference-field">
+              Target career
+              <select value={targetRoleInput} onChange={event => setTargetRoleInput(event.target.value)} disabled={preferencesSaving || careerFieldsLoading}>
+                <option value="">{careerFieldsLoading ? "Loading career fields..." : "Select a career field"}</option>
+                {careerFields.map(field => <option key={field.slug} value={field.name}>{field.name}</option>)}
+              </select>
+            </label>
+            {careerFieldsError && <p role="alert">{careerFieldsError}</p>}
+            <button type="button" className="career-replan-button" disabled={!targetRoleInput || preferencesSaving || careerFieldsLoading} onClick={() => void handleSaveJobPreferences()}>
+              {preferencesSaving ? "Saving..." : "Save target career"}
+            </button>
+            {preferencesMessage && <p role="status">{preferencesMessage}</p>}
+          </div>}
+          {error && <button type="button" className="career-replan-button" onClick={() => void automationQuery.refetch()}>Retry</button>}
         </div>
       </section>
     );
@@ -1349,6 +1178,8 @@ const CareerAutomationPage: React.FC = () => {
        DERIVED VALUES
     ===================================================== */
 
+  const roadmapCurrent=automation.careerContext?.status==='current';
+  const hasReadiness = roadmapCurrent && automation.careerContext?.evidenceFreshness==='current' && typeof (summary?.currentReadinessScore ?? automation.currentReadinessScore) === "number";
   const readiness = Math.round(
     summary?.currentReadinessScore ?? automation.currentReadinessScore ?? 0,
   );
@@ -1360,7 +1191,6 @@ const CareerAutomationPage: React.FC = () => {
   const visibleJobs = externalJobs.slice(0, DAILY_JOB_TARGET);
 
   const selectedTargetRole =
-    automation.jobPreferences.targetRoles?.[0] ||
     automation.targetRole;
 
   const selectedLocation =
@@ -1393,11 +1223,19 @@ const CareerAutomationPage: React.FC = () => {
         <div>
           <span className="career-graph-eyebrow">AI CAREER ROADMAP</span>
 
-          <h1>{selectedTargetRole}</h1>
+          <h1>{roadmapCurrent || !automation.roadmap.length ? selectedTargetRole : automation.careerContext?.generatedForRole || 'Saved roadmap'}</h1>
+          {!automation.roadmap.length && <p role="status">No roadmap has been generated for this career. Generation requires your explicit action.</p>}
+          {!roadmapCurrent && automation.roadmap.length>0 && <p role="status">{automation.careerContext?.generatedForRole ? `Saved roadmap for ${automation.careerContext.generatedForRole}. Active career: ${automation.targetRole}.` : 'Saved roadmap provenance is unverified; this is not a current-career assessment.'} History and completed tasks are preserved. Rebuild only when you choose.</p>}
+          {automation.roadmap.length>0 && <p role="status">Saved roadmap evidence: {automation.careerContext?.evidenceFreshness || 'unverified'}. Knowledge freshness is unverified. Opening this page does not regenerate it.</p>}
+          <p>Saved job candidates are rescored for your current preferences. Opening this page does not refresh the job catalog.</p>
+          {automationQuery.isFetching && <p role="status">Updating roadmap...</p>}
+          {error && <p role="alert">{error}</p>}
+          {summaryQuery.isError && (
+            <p role="alert">Roadmap summary could not be refreshed. <button type="button" onClick={() => void summaryQuery.refetch()}>Retry</button></p>
+          )}
 
           <p>
-            A role-first path built from your current evidence, target-role
-            knowledge, skill gaps, and practical next steps.
+            {roadmapCurrent ? 'Saved plan for your active career. Its evidence freshness is shown separately.' : 'Historical saved plan. Percentages are hidden until its career context can be verified.'}
           </p>
         </div>
 
@@ -1407,7 +1245,7 @@ const CareerAutomationPage: React.FC = () => {
 
             <span>Readiness</span>
 
-            <strong>{readiness}%</strong>
+            <strong>{hasReadiness ? `${readiness}%` : "Not assessed"}</strong>
           </div>
 
           <button
@@ -2028,6 +1866,17 @@ const CareerAutomationPage: React.FC = () => {
               </button>
             </div>
 
+            {!locationData && (
+              <p className="career-job-preferences-message" role="status">
+                {locationLoadError ? "Locations could not be loaded. " : "Loading locations..."}
+                {locationLoadError && (
+                  <button type="button" onClick={() => {
+                    setLocationLoadError(false);
+                    setLocationLoadAttempt((attempt) => attempt + 1);
+                  }}>Retry</button>
+                )}
+              </p>
+            )}
             <div className="career-job-preferences-grid">
               {/* TARGET ROLE */}
 
@@ -2089,9 +1938,9 @@ const CareerAutomationPage: React.FC = () => {
 
                       setPreferencesMessageType(null);
                     }}
-                    disabled={preferencesSaving}
+                    disabled={preferencesSaving || !locationData}
                   >
-                    <option value="">Select country</option>
+                    <option value="">{locationData ? "Select country" : "Loading locations..."}</option>
 
                     {countryOptions.map((country) => (
                       <option key={country.isoCode} value={country.isoCode}>
@@ -2247,12 +2096,12 @@ const CareerAutomationPage: React.FC = () => {
                 {preferencesSaving || jobsLoading ? (
                   <>
                     <FiRefreshCw className="spin" />
-                    Saving & Searching...
+                    Saving...
                   </>
                 ) : (
                   <>
                     <FiBriefcase />
-                    Save & Search Jobs
+                    Save Preferences
                   </>
                 )}
               </button>

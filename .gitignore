@@ -42,3 +42,29 @@ pnpm-debug.log*
 .idea/
 .DS_Store
 Thumbs.db
+# Local AI models, credentials and session state
+*.gguf
+local-ai/models/**
+!local-ai/models/.gitkeep
+local-ai/logs/**
+!local-ai/logs/.gitkeep
+local-ai/.runtime/
+local-ai/config/cloudflared.yml
+local-ai/config/*.json
+!local-ai/config/*.example.json
+*.pem
+*.key
+**/credentials*.json
+**/.cache/
+**/.tmp/
+
+# Generated test/type-check caches and temporary output
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+coverage/
+*.tsbuildinfo
+*.tmp
+*.temp

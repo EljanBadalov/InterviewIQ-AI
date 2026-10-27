@@ -1,0 +1,1466 @@
+{
+  "success": true,
+  "message": "Career automation created successfully.",
+  "data": {
+    "automation": {
+      "userId": "00000000000000000000006f",
+      "status": "active",
+      "targetRole": "Backend Developer",
+      "careerGoal": "Prepare for a backend role",
+      "roadmapDurationDays": 90,
+      "activeResumeId": "000000000000000000000384",
+      "currentReadinessScore": 76,
+      "jobPreferences": {
+        "enabled": true,
+        "targetRoles": [
+          "Backend Developer"
+        ],
+        "locations": [],
+        "workModes": [],
+        "employmentTypes": [],
+        "experienceLevels": [],
+        "minimumMatchScore": 65,
+        "dailyApplicationTarget": 3,
+        "notifyOnNewMatches": true,
+        "notificationMatchThreshold": 75
+      },
+      "settings": {
+        "automationEnabled": true,
+        "dailyTasksEnabled": true,
+        "jobSearchEnabled": true,
+        "interviewPrepEnabled": true,
+        "learningTasksEnabled": true,
+        "cvTasksEnabled": true,
+        "portfolioTasksEnabled": true,
+        "automaticReplanningEnabled": true,
+        "maxDailyTasks": 5,
+        "preferredDailyMinutes": 90,
+        "timezone": "UTC"
+      },
+      "roadmap": [
+        {
+          "id": "milestone-1-core-skills-validate-and-strengthen-foundational-s",
+          "order": 1,
+          "category": "CORE_SKILLS",
+          "title": "Validate and strengthen foundational skills",
+          "description": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+          "reason": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+          "status": "in_progress",
+          "targetDate": "2026-11-08T08:00:00.000Z",
+          "relatedSkills": [
+            "Git",
+            "HTTP",
+            "Programming Fundamentals",
+            "SQL"
+          ],
+          "recommendations": [
+            {
+              "title": "Git",
+              "whyItMatters": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+              "whatToLearn": [
+                "Commits and branches",
+                "Merge conflicts and rollback"
+              ],
+              "action": "Create a feature branch, resolve a deliberate conflict and revert one commit",
+              "proofOfCompletion": "Show a clean merge and a revert that preserves the unrelated feature",
+              "priority": "high",
+              "source": "career_profile",
+              "evidence": [
+                "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+                "Prerequisites: foundation topic; no prerequisites."
+              ]
+            },
+            {
+              "title": "HTTP",
+              "whyItMatters": "HTTP: proficiency is unverified; assess it before assuming a knowledge gap.",
+              "whatToLearn": [
+                "Requests, status codes and headers",
+                "Timeouts and idempotency"
+              ],
+              "action": "Inspect a form submission and reproduce success, validation and timeout responses",
+              "proofOfCompletion": "Explain a captured request and demonstrate 200, 400 and retry-safe behavior",
+              "priority": "high",
+              "source": "career_profile",
+              "evidence": [
+                "HTTP: proficiency is unverified; assess it before assuming a knowledge gap.",
+                "Prerequisites: foundation topic; no prerequisites."
+              ]
+            },
+            {
+              "title": "Programming Fundamentals",
+              "whyItMatters": "Programming Fundamentals: proficiency is unverified; assess it before assuming a knowledge gap.",
+              "whatToLearn": [
+                "Variables, control flow, functions",
+                "Collections and error handling"
+              ],
+              "action": "Build a command-line expense tracker with input validation",
+              "proofOfCompletion": "Pass 6 checks covering empty input, invalid amounts, totals and persistence",
+              "priority": "high",
+              "source": "career_profile",
+              "evidence": [
+                "Programming Fundamentals: proficiency is unverified; assess it before assuming a knowledge gap.",
+                "Prerequisites: foundation topic; no prerequisites."
+              ]
+            }
+          ],
+          "generatedBy": "fallback",
+          "generatedAt": "2026-10-24T08:00:00.000Z",
+          "metadata": {
+            "originalOrder": 1,
+            "personalized": false,
+            "recommendationCount": 3,
+            "roadmapNarrative": {
+              "sourceStamp": {
+                "owner": "00000000000000000000006f",
+                "evidenceRevision": 0,
+                "sourceVersion": "54477816f670e0b7b5e9445d1343ac6a07388d730585c8ed5753b59a657f3554",
+                "policy": "career-read-provenance-v1"
+              },
+              "policy": "roadmap-text-v1",
+              "owner": "a365a58b33882f03f094dac8da9757e163f10f8a101aab9fa4d0b63ba0214248",
+              "career": {
+                "targetRole": "Backend Developer",
+                "policy": "career-roadmap-context-v1"
+              },
+              "nodes": [
+                {
+                  "id": "n_b2d23f36888f08e6768d",
+                  "version": "0eec6a0f7954ba8f4696a7bdb2c06562d969b0f6ee6024a0667072ce997c86f5",
+                  "text": {
+                    "whyItMatters": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+                    "action": "Create a feature branch, resolve a deliberate conflict and revert one commit",
+                    "proofOfCompletion": "Show a clean merge and a revert that preserves the unrelated feature"
+                  },
+                  "textHash": "9939e1b11113e9c7d6d8923a0a36c1b3c6316ff6a26facc1573b2b9270cd439f",
+                  "ai": false,
+                  "learning": {
+                    "version": "foundation-planner-v1:career-learning-v1:085d9cf46fe78a14a9618008984a7e8f9f33d969ca51e354c472b1d3273b617f",
+                    "id": "learning:backend-developer:git",
+                    "state": "partial_evidence",
+                    "score": null,
+                    "guidanceSource": "reference-pack",
+                    "knowledge": {
+                      "id": "0000000000000000000002bc",
+                      "sourceVersion": "fixture-v1",
+                      "source": "internal"
+                    },
+                    "prerequisites": [],
+                    "exercise": "Create a feature branch, resolve a deliberate conflict and revert one commit",
+                    "proof": "Show a clean merge and a revert that preserves the unrelated feature"
+                  }
+                },
+                {
+                  "id": "n_f5c05bf6949889a8333f",
+                  "version": "87cffc30be77f203904238488cf5cc35f299cca0ba2a7b1ee83b00d7e75898ce",
+                  "text": {
+                    "whyItMatters": "HTTP: proficiency is unverified; assess it before assuming a knowledge gap.",
+                    "action": "Inspect a form submission and reproduce success, validation and timeout responses",
+                    "proofOfCompletion": "Explain a captured request and demonstrate 200, 400 and retry-safe behavior"
+                  },
+                  "textHash": "efd4e00be5684b596efb581c1b2c94b4f2591b371baf8f796c48f907eb210e07",
+                  "ai": false,
+                  "learning": {
+                    "version": "foundation-planner-v1:career-learning-v1:085d9cf46fe78a14a9618008984a7e8f9f33d969ca51e354c472b1d3273b617f",
+                    "id": "learning:backend-developer:http",
+                    "state": "unverified",
+                    "score": null,
+                    "guidanceSource": "reference-pack",
+                    "knowledge": {
+                      "id": "0000000000000000000002bc",
+                      "sourceVersion": "fixture-v1",
+                      "source": "internal"
+                    },
+                    "prerequisites": [],
+                    "exercise": "Inspect a form submission and reproduce success, validation and timeout responses",
+                    "proof": "Explain a captured request and demonstrate 200, 400 and retry-safe behavior"
+                  }
+                },
+                {
+                  "id": "n_9a8edfe12a9dc7462ed9",
+                  "version": "b278e3c785b0e0b429fd11070005278b2db30719b9748812b6d4e01cfd7bc6ee",
+                  "text": {
+                    "whyItMatters": "Programming Fundamentals: proficiency is unverified; assess it before assuming a knowledge gap.",
+                    "action": "Build a command-line expense tracker with input validation",
+                    "proofOfCompletion": "Pass 6 checks covering empty input, invalid amounts, totals and persistence"
+                  },
+                  "textHash": "33b44330f0033abd1d46a8474e3dcccbca790b73539a7173f9dd8d9d0f1f6c22",
+                  "ai": false,
+                  "learning": {
+                    "version": "foundation-planner-v1:career-learning-v1:085d9cf46fe78a14a9618008984a7e8f9f33d969ca51e354c472b1d3273b617f",
+                    "id": "learning:backend-developer:programming",
+                    "state": "unverified",
+                    "score": null,
+                    "guidanceSource": "reference-pack",
+                    "knowledge": {
+                      "id": "0000000000000000000002bc",
+                      "sourceVersion": "fixture-v1",
+                      "source": "internal"
+                    },
+                    "prerequisites": [],
+                    "exercise": "Build a command-line expense tracker with input validation",
+                    "proof": "Pass 6 checks covering empty input, invalid amounts, totals and persistence"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "milestone-2-role-skills-role-skills-await-prerequisite-evidenc",
+          "order": 2,
+          "category": "ROLE_SKILLS",
+          "title": "Role skills await prerequisite evidence",
+          "description": "Role skills are deferred until prerequisite evidence supports the next learning stage.",
+          "reason": "Role skills are deferred until prerequisite evidence supports the next learning stage.",
+          "status": "not_started",
+          "targetDate": "2026-11-23T08:00:00.000Z",
+          "relatedSkills": [],
+          "recommendations": [],
+          "generatedBy": "fallback",
+          "generatedAt": "2026-10-24T08:00:00.000Z",
+          "metadata": {
+            "originalOrder": 2,
+            "personalized": false,
+            "recommendationCount": 0,
+            "roadmapNarrative": {
+              "sourceStamp": {
+                "owner": "00000000000000000000006f",
+                "evidenceRevision": 0,
+                "sourceVersion": "54477816f670e0b7b5e9445d1343ac6a07388d730585c8ed5753b59a657f3554",
+                "policy": "career-read-provenance-v1"
+              },
+              "policy": "roadmap-text-v1",
+              "owner": "a365a58b33882f03f094dac8da9757e163f10f8a101aab9fa4d0b63ba0214248",
+              "career": {
+                "targetRole": "Backend Developer",
+                "policy": "career-roadmap-context-v1"
+              },
+              "nodes": []
+            }
+          }
+        },
+        {
+          "id": "milestone-3-projects-build-stronger-backend-developer-project-",
+          "order": 3,
+          "category": "PROJECTS",
+          "title": "Build stronger Backend Developer project evidence",
+          "description": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+          "reason": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+          "status": "not_started",
+          "targetDate": "2026-12-08T08:00:00.000Z",
+          "relatedSkills": [
+            "Git",
+            "HTTP",
+            "Programming Fundamentals",
+            "SQL"
+          ],
+          "recommendations": [
+            {
+              "title": "Practice: Git",
+              "whyItMatters": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+              "whatToLearn": [
+                "Commits and branches",
+                "Merge conflicts and rollback"
+              ],
+              "action": "Create a feature branch, resolve a deliberate conflict and revert one commit",
+              "proofOfCompletion": "Show a clean merge and a revert that preserves the unrelated feature",
+              "priority": "high",
+              "source": "combined",
+              "evidence": [
+                "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+                "Prerequisites: foundation topic; no prerequisites."
+              ]
+            },
+            {
+              "title": "Practice: HTTP",
+              "whyItMatters": "HTTP: proficiency is unverified; assess it before assuming a knowledge gap.",
+              "whatToLearn": [
+                "Requests, status codes and headers",
+                "Timeouts and idempotency"
+              ],
+              "action": "Inspect a form submission and reproduce success, validation and timeout responses",
+              "proofOfCompletion": "Explain a captured request and demonstrate 200, 400 and retry-safe behavior",
+              "priority": "high",
+              "source": "combined",
+              "evidence": [
+                "HTTP: proficiency is unverified; assess it before assuming a knowledge gap.",
+                "Prerequisites: foundation topic; no prerequisites."
+              ]
+            },
+            {
+              "title": "Practice: Programming Fundamentals",
+              "whyItMatters": "Programming Fundamentals: proficiency is unverified; assess it before assuming a knowledge gap.",
+              "whatToLearn": [
+                "Variables, control flow, functions",
+                "Collections and error handling"
+              ],
+              "action": "Build a command-line expense tracker with input validation",
+              "proofOfCompletion": "Pass 6 checks covering empty input, invalid amounts, totals and persistence",
+              "priority": "high",
+              "source": "combined",
+              "evidence": [
+                "Programming Fundamentals: proficiency is unverified; assess it before assuming a knowledge gap.",
+                "Prerequisites: foundation topic; no prerequisites."
+              ]
+            }
+          ],
+          "generatedBy": "fallback",
+          "generatedAt": "2026-10-24T08:00:00.000Z",
+          "metadata": {
+            "originalOrder": 3,
+            "personalized": false,
+            "recommendationCount": 3,
+            "roadmapNarrative": {
+              "sourceStamp": {
+                "owner": "00000000000000000000006f",
+                "evidenceRevision": 0,
+                "sourceVersion": "54477816f670e0b7b5e9445d1343ac6a07388d730585c8ed5753b59a657f3554",
+                "policy": "career-read-provenance-v1"
+              },
+              "policy": "roadmap-text-v1",
+              "owner": "a365a58b33882f03f094dac8da9757e163f10f8a101aab9fa4d0b63ba0214248",
+              "career": {
+                "targetRole": "Backend Developer",
+                "policy": "career-roadmap-context-v1"
+              },
+              "nodes": [
+                {
+                  "id": "n_2f74dad04f00ae342352",
+                  "version": "26f506f95b082f8fcaa325cc71e909027606e5128821735f08488a74b4559341",
+                  "text": {
+                    "whyItMatters": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+                    "action": "Create a feature branch, resolve a deliberate conflict and revert one commit",
+                    "proofOfCompletion": "Show a clean merge and a revert that preserves the unrelated feature"
+                  },
+                  "textHash": "9939e1b11113e9c7d6d8923a0a36c1b3c6316ff6a26facc1573b2b9270cd439f",
+                  "ai": false,
+                  "learning": {
+                    "version": "foundation-planner-v1:career-learning-v1:085d9cf46fe78a14a9618008984a7e8f9f33d969ca51e354c472b1d3273b617f",
+                    "id": "learning:backend-developer:git",
+                    "state": "partial_evidence",
+                    "score": null,
+                    "guidanceSource": "reference-pack",
+                    "knowledge": {
+                      "id": "0000000000000000000002bc",
+                      "sourceVersion": "fixture-v1",
+                      "source": "internal"
+                    },
+                    "prerequisites": [],
+                    "exercise": "Create a feature branch, resolve a deliberate conflict and revert one commit",
+                    "proof": "Show a clean merge and a revert that preserves the unrelated feature"
+                  }
+                },
+                {
+                  "id": "n_2d5e3ac52a8cc42919e9",
+                  "version": "05ac1791544722579fa64f9821d063a76cb79236d0f8fe1cad05f2b590eedd51",
+                  "text": {
+                    "whyItMatters": "HTTP: proficiency is unverified; assess it before assuming a knowledge gap.",
+                    "action": "Inspect a form submission and reproduce success, validation and timeout responses",
+                    "proofOfCompletion": "Explain a captured request and demonstrate 200, 400 and retry-safe behavior"
+                  },
+                  "textHash": "efd4e00be5684b596efb581c1b2c94b4f2591b371baf8f796c48f907eb210e07",
+                  "ai": false,
+                  "learning": {
+                    "version": "foundation-planner-v1:career-learning-v1:085d9cf46fe78a14a9618008984a7e8f9f33d969ca51e354c472b1d3273b617f",
+                    "id": "learning:backend-developer:http",
+                    "state": "unverified",
+                    "score": null,
+                    "guidanceSource": "reference-pack",
+                    "knowledge": {
+                      "id": "0000000000000000000002bc",
+                      "sourceVersion": "fixture-v1",
+                      "source": "internal"
+                    },
+                    "prerequisites": [],
+                    "exercise": "Inspect a form submission and reproduce success, validation and timeout responses",
+                    "proof": "Explain a captured request and demonstrate 200, 400 and retry-safe behavior"
+                  }
+                },
+                {
+                  "id": "n_e517d8b6d6f007d3c772",
+                  "version": "484e3551275a21ca7f0a3d5b3cf367fe3ab0f50bbccf6256a43692c72b7ae7e4",
+                  "text": {
+                    "whyItMatters": "Programming Fundamentals: proficiency is unverified; assess it before assuming a knowledge gap.",
+                    "action": "Build a command-line expense tracker with input validation",
+                    "proofOfCompletion": "Pass 6 checks covering empty input, invalid amounts, totals and persistence"
+                  },
+                  "textHash": "33b44330f0033abd1d46a8474e3dcccbca790b73539a7173f9dd8d9d0f1f6c22",
+                  "ai": false,
+                  "learning": {
+                    "version": "foundation-planner-v1:career-learning-v1:085d9cf46fe78a14a9618008984a7e8f9f33d969ca51e354c472b1d3273b617f",
+                    "id": "learning:backend-developer:programming",
+                    "state": "unverified",
+                    "score": null,
+                    "guidanceSource": "reference-pack",
+                    "knowledge": {
+                      "id": "0000000000000000000002bc",
+                      "sourceVersion": "fixture-v1",
+                      "source": "internal"
+                    },
+                    "prerequisites": [],
+                    "exercise": "Build a command-line expense tracker with input validation",
+                    "proof": "Pass 6 checks covering empty input, invalid amounts, totals and persistence"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "milestone-4-cv-strengthen-the-evidence-shown-on-your-cv",
+          "order": 4,
+          "category": "CV",
+          "title": "Strengthen the evidence shown on your CV",
+          "description": "The CV must show evidence relevant to Backend Developer; CV weakness is not treated as proof of weak technical ability. Current readiness for this area is 70/100.",
+          "reason": "The CV must show evidence relevant to Backend Developer; CV weakness is not treated as proof of weak technical ability.",
+          "readinessScore": 70,
+          "status": "not_started",
+          "targetDate": "2026-12-23T08:00:00.000Z",
+          "relatedSkills": [
+            "API Testing",
+            "SQL",
+            "Node.js",
+            "Docker"
+          ],
+          "recommendations": [
+            {
+              "title": "Document project outcomes",
+              "whyItMatters": "Current: Document project outcomes directly supports the selected role and current evidence.",
+              "whatToLearn": [
+                "Document project outcomes"
+              ],
+              "action": "Current: Implement and review a focused example for Document project outcomes.",
+              "proofOfCompletion": "Keep the working example, tests and a short review of the result.",
+              "priority": "medium",
+              "source": "combined",
+              "evidence": [
+                "The CV must show evidence relevant to Backend Developer; CV weakness is not treated as proof of weak technical ability.",
+                "ATS score: 70/100.",
+                "Content score: 68/100.",
+                "Structure score: 75/100.",
+                "Experience evidence score: 65/100."
+              ]
+            },
+            {
+              "title": "Add measurable results",
+              "whyItMatters": "Current: Add measurable results directly supports the selected role and current evidence.",
+              "whatToLearn": [
+                "Add measurable results"
+              ],
+              "action": "Current: Implement and review a focused example for Add measurable results.",
+              "proofOfCompletion": "Keep the working example, tests and a short review of the result.",
+              "priority": "medium",
+              "source": "combined",
+              "evidence": [
+                "The CV must show evidence relevant to Backend Developer; CV weakness is not treated as proof of weak technical ability.",
+                "ATS score: 70/100.",
+                "Content score: 68/100.",
+                "Structure score: 75/100.",
+                "Experience evidence score: 65/100."
+              ]
+            }
+          ],
+          "generatedBy": "qwen",
+          "generatedAt": "2026-10-24T08:00:00.000Z",
+          "metadata": {
+            "originalOrder": 4,
+            "personalized": true,
+            "recommendationCount": 2,
+            "roadmapNarrative": {
+              "sourceStamp": {
+                "owner": "00000000000000000000006f",
+                "evidenceRevision": 0,
+                "sourceVersion": "54477816f670e0b7b5e9445d1343ac6a07388d730585c8ed5753b59a657f3554",
+                "policy": "career-read-provenance-v1"
+              },
+              "policy": "roadmap-text-v1",
+              "owner": "a365a58b33882f03f094dac8da9757e163f10f8a101aab9fa4d0b63ba0214248",
+              "career": {
+                "targetRole": "Backend Developer",
+                "policy": "career-roadmap-context-v1"
+              },
+              "nodes": [
+                {
+                  "id": "n_52c8513002d5a689e2e3",
+                  "version": "31f06bfe75ca8cbace3027a41b8eb0dbbd6a92c657327509088f33dd0dbaac3d",
+                  "text": {
+                    "whyItMatters": "Current: Document project outcomes directly supports the selected role and current evidence.",
+                    "action": "Current: Implement and review a focused example for Document project outcomes.",
+                    "proofOfCompletion": "Keep the working example, tests and a short review of the result."
+                  },
+                  "textHash": "a81d7a8ef32ef809c1875317a4be51c6da37d6605f6145a4589cf3bcc42356bf",
+                  "ai": true
+                },
+                {
+                  "id": "n_751720e335d086839146",
+                  "version": "a7adf1af14f55e1d8bd7a5fa98d00572f826b6dfcdd07f5d520e71b960e21cfe",
+                  "text": {
+                    "whyItMatters": "Current: Add measurable results directly supports the selected role and current evidence.",
+                    "action": "Current: Implement and review a focused example for Add measurable results.",
+                    "proofOfCompletion": "Keep the working example, tests and a short review of the result."
+                  },
+                  "textHash": "3b17d93ef532322b111d4273e40b776897b8c819c6aec2d7959c82376ead1e32",
+                  "ai": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "milestone-5-interview-prepare-for-backend-developer-interviews",
+          "order": 5,
+          "category": "INTERVIEW",
+          "title": "Prepare for Backend Developer interviews using your real gaps",
+          "description": "Latest interview overall score: 80/100. Current readiness for this area is 74/100.",
+          "reason": "Latest interview overall score: 80/100.",
+          "readinessScore": 74,
+          "status": "not_started",
+          "targetDate": "2027-01-07T08:00:00.000Z",
+          "relatedSkills": [
+            "API Testing",
+            "SQL",
+            "Node.js",
+            "Docker"
+          ],
+          "recommendations": [
+            {
+              "title": "Provide concrete examples",
+              "whyItMatters": "Current: Provide concrete examples directly supports the selected role and current evidence.",
+              "whatToLearn": [
+                "Provide concrete examples"
+              ],
+              "action": "Current: Implement and review a focused example for Provide concrete examples.",
+              "proofOfCompletion": "Keep the working example, tests and a short review of the result.",
+              "priority": "medium",
+              "source": "combined",
+              "evidence": [
+                "Latest interview overall score: 80/100.",
+                "Technical accuracy: 70/100.",
+                "Communication: 71/100."
+              ]
+            },
+            {
+              "title": "Validate and document: Provide concrete examples",
+              "whyItMatters": "Current: Validate and document: Provide concrete examples directly supports the selected role and current evidence.",
+              "whatToLearn": [
+                "Provide concrete examples"
+              ],
+              "action": "Current: Implement and review a focused example for Validate and document: Provide concrete examples.",
+              "proofOfCompletion": "Keep the working example, tests and a short review of the result.",
+              "priority": "medium",
+              "source": "combined",
+              "evidence": [
+                "Latest interview overall score: 80/100.",
+                "Technical accuracy: 70/100.",
+                "Communication: 71/100."
+              ]
+            }
+          ],
+          "generatedBy": "qwen",
+          "generatedAt": "2026-10-24T08:00:00.000Z",
+          "metadata": {
+            "originalOrder": 5,
+            "personalized": true,
+            "recommendationCount": 2,
+            "roadmapNarrative": {
+              "sourceStamp": {
+                "owner": "00000000000000000000006f",
+                "evidenceRevision": 0,
+                "sourceVersion": "54477816f670e0b7b5e9445d1343ac6a07388d730585c8ed5753b59a657f3554",
+                "policy": "career-read-provenance-v1"
+              },
+              "policy": "roadmap-text-v1",
+              "owner": "a365a58b33882f03f094dac8da9757e163f10f8a101aab9fa4d0b63ba0214248",
+              "career": {
+                "targetRole": "Backend Developer",
+                "policy": "career-roadmap-context-v1"
+              },
+              "nodes": [
+                {
+                  "id": "n_af4d493d3bb61587ccdc",
+                  "version": "82f2e7ca02a5f778fb6892c7fee113beb05a5cd2180bf608c58beaa0c0c76951",
+                  "text": {
+                    "whyItMatters": "Current: Provide concrete examples directly supports the selected role and current evidence.",
+                    "action": "Current: Implement and review a focused example for Provide concrete examples.",
+                    "proofOfCompletion": "Keep the working example, tests and a short review of the result."
+                  },
+                  "textHash": "91e6895758e1067c00d100d29a88ce22884b1c960bcdf80776dc92e6d1a284b1",
+                  "ai": true
+                },
+                {
+                  "id": "n_b8d278f5d241ec6bb488",
+                  "version": "93bdb6086895884a2c49661141d9865e08d0b6dbec3983c3e56a55fbe59d2537",
+                  "text": {
+                    "whyItMatters": "Current: Validate and document: Provide concrete examples directly supports the selected role and current evidence.",
+                    "action": "Current: Implement and review a focused example for Validate and document: Provide concrete examples.",
+                    "proofOfCompletion": "Keep the working example, tests and a short review of the result."
+                  },
+                  "textHash": "69f83d29a8f1e16898737adf9e311522f3834fbdd26b64d059f2523e97c2fa57",
+                  "ai": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "milestone-6-job-search-target-stronger-backend-developer-oppor",
+          "order": 6,
+          "category": "JOB_SEARCH",
+          "title": "Target stronger Backend Developer opportunities",
+          "description": "Current strongest opportunity: Backend Developer at Fixture Company. Current readiness for this area is 82/100.",
+          "reason": "Current strongest opportunity: Backend Developer at Fixture Company.",
+          "readinessScore": 82,
+          "status": "not_started",
+          "targetDate": "2027-01-22T08:00:00.000Z",
+          "relatedSkills": [
+            "API Testing",
+            "SQL",
+            "Node.js",
+            "Docker",
+            "MongoDB",
+            "Git",
+            "REST API"
+          ],
+          "recommendations": [
+            {
+              "title": "Prepare a targeted application",
+              "whyItMatters": "Current: Prepare a targeted application directly supports the selected role and current evidence.",
+              "whatToLearn": [
+                "API Testing",
+                "SQL",
+                "Node.js"
+              ],
+              "action": "Current: Implement and review a focused example for Prepare a targeted application.",
+              "proofOfCompletion": "Keep the working example, tests and a short review of the result.",
+              "priority": "low",
+              "source": "job_market",
+              "evidence": [
+                "Current strongest opportunity: Backend Developer at Fixture Company.",
+                "Current match score: 82%.",
+                "User career goal: Prepare for a backend role."
+              ]
+            },
+            {
+              "title": "Validate and document: Prepare a targeted application",
+              "whyItMatters": "Current: Validate and document: Prepare a targeted application directly supports the selected role and current evidence.",
+              "whatToLearn": [
+                "API Testing",
+                "SQL",
+                "Node.js"
+              ],
+              "action": "Current: Implement and review a focused example for Validate and document: Prepare a targeted application.",
+              "proofOfCompletion": "Keep the working example, tests and a short review of the result.",
+              "priority": "low",
+              "source": "job_market",
+              "evidence": [
+                "Current strongest opportunity: Backend Developer at Fixture Company.",
+                "Current match score: 82%.",
+                "User career goal: Prepare for a backend role."
+              ]
+            }
+          ],
+          "generatedBy": "qwen",
+          "generatedAt": "2026-10-24T08:00:00.000Z",
+          "metadata": {
+            "originalOrder": 6,
+            "personalized": true,
+            "recommendationCount": 2,
+            "roadmapNarrative": {
+              "sourceStamp": {
+                "owner": "00000000000000000000006f",
+                "evidenceRevision": 0,
+                "sourceVersion": "54477816f670e0b7b5e9445d1343ac6a07388d730585c8ed5753b59a657f3554",
+                "policy": "career-read-provenance-v1"
+              },
+              "policy": "roadmap-text-v1",
+              "owner": "a365a58b33882f03f094dac8da9757e163f10f8a101aab9fa4d0b63ba0214248",
+              "career": {
+                "targetRole": "Backend Developer",
+                "policy": "career-roadmap-context-v1"
+              },
+              "nodes": [
+                {
+                  "id": "n_3d9505d214d5474ba38f",
+                  "version": "5c30cb7fd52e547893f73eb46d4e258fd8fb76f56f3b4874c34e44ca25dcf5f5",
+                  "text": {
+                    "whyItMatters": "Current: Prepare a targeted application directly supports the selected role and current evidence.",
+                    "action": "Current: Implement and review a focused example for Prepare a targeted application.",
+                    "proofOfCompletion": "Keep the working example, tests and a short review of the result."
+                  },
+                  "textHash": "97f8159971fb001c92a4ecbe03b0edd72dec154885bfdddc67d3dd2227a7d1e0",
+                  "ai": true
+                },
+                {
+                  "id": "n_50e8a505209aed26fba7",
+                  "version": "bfaac65936b9d31f07108be24c07d9de3ef0cda3f257f69bf71505f10cbd17c5",
+                  "text": {
+                    "whyItMatters": "Current: Validate and document: Prepare a targeted application directly supports the selected role and current evidence.",
+                    "action": "Current: Implement and review a focused example for Validate and document: Prepare a targeted application.",
+                    "proofOfCompletion": "Keep the working example, tests and a short review of the result."
+                  },
+                  "textHash": "cc5511c47695b7b1fa1636f946c859c437910b7d45ea946a9291638e5eb98150",
+                  "ai": true
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "tasks": [
+        {
+          "id": "task-1-skill-milestone-1-core-skills-validate-and-strengt",
+          "category": "LEARNING",
+          "title": "Git",
+          "description": "Create a feature branch, resolve a deliberate conflict and revert one commit",
+          "reason": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+          "priority": "high",
+          "status": "pending",
+          "source": "roadmap",
+          "scheduledFor": "2026-10-24T00:00:00.000Z",
+          "dueAt": "2026-10-24T23:59:59.999Z",
+          "estimatedMinutes": 45,
+          "roadmapMilestoneId": "milestone-1-core-skills-validate-and-strengthen-foundational-s",
+          "createdAt": "2026-10-24T08:00:00.000Z",
+          "metadata": {
+            "nextStepId": "skill-milestone-1-core-skills-validate-and-strengthen-foundational-s-0-git",
+            "nextStepCategory": "SKILL",
+            "personalized": true,
+            "roadmapMilestoneId": "milestone-1-core-skills-validate-and-strengthen-foundational-s",
+            "roadmapCategory": "CORE_SKILLS",
+            "roadmapTitle": "Validate and strengthen foundational skills",
+            "milestoneDescription": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+            "milestoneReason": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+            "relatedSkills": [
+              "Git",
+              "HTTP",
+              "Programming Fundamentals",
+              "SQL"
+            ],
+            "whatToLearn": [
+              "Commits and branches",
+              "Merge conflicts and rollback"
+            ],
+            "action": "Create a feature branch, resolve a deliberate conflict and revert one commit",
+            "proofOfCompletion": "Show a clean merge and a revert that preserves the unrelated feature",
+            "recommendationSource": "career_profile",
+            "evidence": [
+              "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+              "Prerequisites: foundation topic; no prerequisites."
+            ],
+            "generatedBy": "fallback",
+            "generatedAt": "2026-10-24T08:00:00.000Z",
+            "recommendationIndex": 0
+          }
+        },
+        {
+          "id": "task-2-skill-milestone-1-core-skills-validate-and-strengt",
+          "category": "LEARNING",
+          "title": "HTTP",
+          "description": "Inspect a form submission and reproduce success, validation and timeout responses",
+          "reason": "HTTP: proficiency is unverified; assess it before assuming a knowledge gap.",
+          "priority": "high",
+          "status": "pending",
+          "source": "roadmap",
+          "scheduledFor": "2026-10-24T00:00:00.000Z",
+          "dueAt": "2026-10-24T23:59:59.999Z",
+          "estimatedMinutes": 45,
+          "roadmapMilestoneId": "milestone-1-core-skills-validate-and-strengthen-foundational-s",
+          "createdAt": "2026-10-24T08:00:00.000Z",
+          "metadata": {
+            "nextStepId": "skill-milestone-1-core-skills-validate-and-strengthen-foundational-s-1-http",
+            "nextStepCategory": "SKILL",
+            "personalized": true,
+            "roadmapMilestoneId": "milestone-1-core-skills-validate-and-strengthen-foundational-s",
+            "roadmapCategory": "CORE_SKILLS",
+            "roadmapTitle": "Validate and strengthen foundational skills",
+            "milestoneDescription": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+            "milestoneReason": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+            "relatedSkills": [
+              "Git",
+              "HTTP",
+              "Programming Fundamentals",
+              "SQL"
+            ],
+            "whatToLearn": [
+              "Requests, status codes and headers",
+              "Timeouts and idempotency"
+            ],
+            "action": "Inspect a form submission and reproduce success, validation and timeout responses",
+            "proofOfCompletion": "Explain a captured request and demonstrate 200, 400 and retry-safe behavior",
+            "recommendationSource": "career_profile",
+            "evidence": [
+              "HTTP: proficiency is unverified; assess it before assuming a knowledge gap.",
+              "Prerequisites: foundation topic; no prerequisites."
+            ],
+            "generatedBy": "fallback",
+            "generatedAt": "2026-10-24T08:00:00.000Z",
+            "recommendationIndex": 1
+          }
+        },
+        {
+          "id": "task-3-skill-milestone-1-core-skills-validate-and-strengt",
+          "category": "PORTFOLIO",
+          "title": "Programming Fundamentals",
+          "description": "Build a command-line expense tracker with input validation",
+          "reason": "Programming Fundamentals: proficiency is unverified; assess it before assuming a knowledge gap.",
+          "priority": "high",
+          "status": "pending",
+          "source": "roadmap",
+          "scheduledFor": "2026-10-25T00:00:00.000Z",
+          "dueAt": "2026-10-25T23:59:59.999Z",
+          "estimatedMinutes": 60,
+          "roadmapMilestoneId": "milestone-1-core-skills-validate-and-strengthen-foundational-s",
+          "createdAt": "2026-10-24T08:00:00.000Z",
+          "metadata": {
+            "nextStepId": "skill-milestone-1-core-skills-validate-and-strengthen-foundational-s-2-programming-fundamentals",
+            "nextStepCategory": "SKILL",
+            "personalized": true,
+            "roadmapMilestoneId": "milestone-1-core-skills-validate-and-strengthen-foundational-s",
+            "roadmapCategory": "CORE_SKILLS",
+            "roadmapTitle": "Validate and strengthen foundational skills",
+            "milestoneDescription": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+            "milestoneReason": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+            "relatedSkills": [
+              "Git",
+              "HTTP",
+              "Programming Fundamentals",
+              "SQL"
+            ],
+            "whatToLearn": [
+              "Variables, control flow, functions",
+              "Collections and error handling"
+            ],
+            "action": "Build a command-line expense tracker with input validation",
+            "proofOfCompletion": "Pass 6 checks covering empty input, invalid amounts, totals and persistence",
+            "recommendationSource": "career_profile",
+            "evidence": [
+              "Programming Fundamentals: proficiency is unverified; assess it before assuming a knowledge gap.",
+              "Prerequisites: foundation topic; no prerequisites."
+            ],
+            "generatedBy": "fallback",
+            "generatedAt": "2026-10-24T08:00:00.000Z",
+            "recommendationIndex": 2
+          }
+        },
+        {
+          "id": "task-4-career-milestone-3-projects-build-stronger-backend",
+          "category": "CAREER",
+          "title": "Practice: Git",
+          "description": "Create a feature branch, resolve a deliberate conflict and revert one commit",
+          "reason": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+          "priority": "high",
+          "status": "pending",
+          "source": "system",
+          "scheduledFor": "2026-10-25T00:00:00.000Z",
+          "dueAt": "2026-10-25T23:59:59.999Z",
+          "estimatedMinutes": 20,
+          "roadmapMilestoneId": "milestone-2-role-skills-role-skills-await-prerequisite-evidenc",
+          "createdAt": "2026-10-24T08:00:00.000Z",
+          "metadata": {
+            "nextStepId": "career-milestone-3-projects-build-stronger-backend-developer-project-0-practice-git",
+            "nextStepCategory": "CAREER",
+            "personalized": true,
+            "roadmapMilestoneId": "milestone-3-projects-build-stronger-backend-developer-project-",
+            "roadmapCategory": "PROJECTS",
+            "roadmapTitle": "Build stronger Backend Developer project evidence",
+            "milestoneDescription": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+            "milestoneReason": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+            "relatedSkills": [
+              "Git",
+              "HTTP",
+              "Programming Fundamentals",
+              "SQL"
+            ],
+            "whatToLearn": [
+              "Commits and branches",
+              "Merge conflicts and rollback"
+            ],
+            "action": "Create a feature branch, resolve a deliberate conflict and revert one commit",
+            "proofOfCompletion": "Show a clean merge and a revert that preserves the unrelated feature",
+            "recommendationSource": "combined",
+            "evidence": [
+              "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+              "Prerequisites: foundation topic; no prerequisites."
+            ],
+            "generatedBy": "fallback",
+            "generatedAt": "2026-10-24T08:00:00.000Z",
+            "recommendationIndex": 0
+          }
+        },
+        {
+          "id": "task-5-career-milestone-3-projects-build-stronger-backend",
+          "category": "CAREER",
+          "title": "Practice: HTTP",
+          "description": "Inspect a form submission and reproduce success, validation and timeout responses",
+          "reason": "HTTP: proficiency is unverified; assess it before assuming a knowledge gap.",
+          "priority": "high",
+          "status": "pending",
+          "source": "system",
+          "scheduledFor": "2026-10-26T00:00:00.000Z",
+          "dueAt": "2026-10-26T23:59:59.999Z",
+          "estimatedMinutes": 20,
+          "roadmapMilestoneId": "milestone-2-role-skills-role-skills-await-prerequisite-evidenc",
+          "createdAt": "2026-10-24T08:00:00.000Z",
+          "metadata": {
+            "nextStepId": "career-milestone-3-projects-build-stronger-backend-developer-project-1-practice-http",
+            "nextStepCategory": "CAREER",
+            "personalized": true,
+            "roadmapMilestoneId": "milestone-3-projects-build-stronger-backend-developer-project-",
+            "roadmapCategory": "PROJECTS",
+            "roadmapTitle": "Build stronger Backend Developer project evidence",
+            "milestoneDescription": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+            "milestoneReason": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+            "relatedSkills": [
+              "Git",
+              "HTTP",
+              "Programming Fundamentals",
+              "SQL"
+            ],
+            "whatToLearn": [
+              "Requests, status codes and headers",
+              "Timeouts and idempotency"
+            ],
+            "action": "Inspect a form submission and reproduce success, validation and timeout responses",
+            "proofOfCompletion": "Explain a captured request and demonstrate 200, 400 and retry-safe behavior",
+            "recommendationSource": "combined",
+            "evidence": [
+              "HTTP: proficiency is unverified; assess it before assuming a knowledge gap.",
+              "Prerequisites: foundation topic; no prerequisites."
+            ],
+            "generatedBy": "fallback",
+            "generatedAt": "2026-10-24T08:00:00.000Z",
+            "recommendationIndex": 1
+          }
+        },
+        {
+          "id": "task-6-career-milestone-3-projects-build-stronger-backend",
+          "category": "CAREER",
+          "title": "Practice: Programming Fundamentals",
+          "description": "Build a command-line expense tracker with input validation",
+          "reason": "Programming Fundamentals: proficiency is unverified; assess it before assuming a knowledge gap.",
+          "priority": "high",
+          "status": "pending",
+          "source": "system",
+          "scheduledFor": "2026-10-26T00:00:00.000Z",
+          "dueAt": "2026-10-26T23:59:59.999Z",
+          "estimatedMinutes": 20,
+          "roadmapMilestoneId": "milestone-2-role-skills-role-skills-await-prerequisite-evidenc",
+          "createdAt": "2026-10-24T08:00:00.000Z",
+          "metadata": {
+            "nextStepId": "career-milestone-3-projects-build-stronger-backend-developer-project-2-practice-programming-fundamentals",
+            "nextStepCategory": "CAREER",
+            "personalized": true,
+            "roadmapMilestoneId": "milestone-3-projects-build-stronger-backend-developer-project-",
+            "roadmapCategory": "PROJECTS",
+            "roadmapTitle": "Build stronger Backend Developer project evidence",
+            "milestoneDescription": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+            "milestoneReason": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+            "relatedSkills": [
+              "Git",
+              "HTTP",
+              "Programming Fundamentals",
+              "SQL"
+            ],
+            "whatToLearn": [
+              "Variables, control flow, functions",
+              "Collections and error handling"
+            ],
+            "action": "Build a command-line expense tracker with input validation",
+            "proofOfCompletion": "Pass 6 checks covering empty input, invalid amounts, totals and persistence",
+            "recommendationSource": "combined",
+            "evidence": [
+              "Programming Fundamentals: proficiency is unverified; assess it before assuming a knowledge gap.",
+              "Prerequisites: foundation topic; no prerequisites."
+            ],
+            "generatedBy": "fallback",
+            "generatedAt": "2026-10-24T08:00:00.000Z",
+            "recommendationIndex": 2
+          }
+        },
+        {
+          "id": "task-7-cv-milestone-4-cv-strengthen-the-evidence-shown-on",
+          "category": "CV",
+          "title": "Document project outcomes",
+          "description": "Current: Implement and review a focused example for Document project outcomes.",
+          "reason": "Current: Document project outcomes directly supports the selected role and current evidence.",
+          "priority": "medium",
+          "status": "pending",
+          "source": "resume",
+          "scheduledFor": "2026-10-26T00:00:00.000Z",
+          "dueAt": "2026-10-26T23:59:59.999Z",
+          "estimatedMinutes": 30,
+          "roadmapMilestoneId": "milestone-3-projects-build-stronger-backend-developer-project-",
+          "createdAt": "2026-10-24T08:00:00.000Z",
+          "metadata": {
+            "nextStepId": "cv-milestone-4-cv-strengthen-the-evidence-shown-on-your-cv-0-document-project-outcomes",
+            "nextStepCategory": "CV",
+            "personalized": true,
+            "roadmapMilestoneId": "milestone-4-cv-strengthen-the-evidence-shown-on-your-cv",
+            "roadmapCategory": "CV",
+            "roadmapTitle": "Strengthen the evidence shown on your CV",
+            "milestoneDescription": "The CV must show evidence relevant to Backend Developer; CV weakness is not treated as proof of weak technical ability. Current readiness for this area is 70/100.",
+            "milestoneReason": "The CV must show evidence relevant to Backend Developer; CV weakness is not treated as proof of weak technical ability.",
+            "readinessScore": 70,
+            "relatedSkills": [
+              "API Testing",
+              "SQL",
+              "Node.js",
+              "Docker"
+            ],
+            "whatToLearn": [
+              "Document project outcomes"
+            ],
+            "action": "Current: Implement and review a focused example for Document project outcomes.",
+            "proofOfCompletion": "Keep the working example, tests and a short review of the result.",
+            "recommendationSource": "combined",
+            "evidence": [
+              "The CV must show evidence relevant to Backend Developer; CV weakness is not treated as proof of weak technical ability.",
+              "ATS score: 70/100.",
+              "Content score: 68/100.",
+              "Structure score: 75/100.",
+              "Experience evidence score: 65/100."
+            ],
+            "generatedBy": "qwen",
+            "generatedAt": "2026-10-24T08:00:00.000Z",
+            "recommendationIndex": 0
+          }
+        },
+        {
+          "id": "task-8-cv-milestone-4-cv-strengthen-the-evidence-shown-on",
+          "category": "CV",
+          "title": "Add measurable results",
+          "description": "Current: Implement and review a focused example for Add measurable results.",
+          "reason": "Current: Add measurable results directly supports the selected role and current evidence.",
+          "priority": "medium",
+          "status": "pending",
+          "source": "resume",
+          "scheduledFor": "2026-10-27T00:00:00.000Z",
+          "dueAt": "2026-10-27T23:59:59.999Z",
+          "estimatedMinutes": 30,
+          "roadmapMilestoneId": "milestone-3-projects-build-stronger-backend-developer-project-",
+          "createdAt": "2026-10-24T08:00:00.000Z",
+          "metadata": {
+            "nextStepId": "cv-milestone-4-cv-strengthen-the-evidence-shown-on-your-cv-1-add-measurable-results",
+            "nextStepCategory": "CV",
+            "personalized": true,
+            "roadmapMilestoneId": "milestone-4-cv-strengthen-the-evidence-shown-on-your-cv",
+            "roadmapCategory": "CV",
+            "roadmapTitle": "Strengthen the evidence shown on your CV",
+            "milestoneDescription": "The CV must show evidence relevant to Backend Developer; CV weakness is not treated as proof of weak technical ability. Current readiness for this area is 70/100.",
+            "milestoneReason": "The CV must show evidence relevant to Backend Developer; CV weakness is not treated as proof of weak technical ability.",
+            "readinessScore": 70,
+            "relatedSkills": [
+              "API Testing",
+              "SQL",
+              "Node.js",
+              "Docker"
+            ],
+            "whatToLearn": [
+              "Add measurable results"
+            ],
+            "action": "Current: Implement and review a focused example for Add measurable results.",
+            "proofOfCompletion": "Keep the working example, tests and a short review of the result.",
+            "recommendationSource": "combined",
+            "evidence": [
+              "The CV must show evidence relevant to Backend Developer; CV weakness is not treated as proof of weak technical ability.",
+              "ATS score: 70/100.",
+              "Content score: 68/100.",
+              "Structure score: 75/100.",
+              "Experience evidence score: 65/100."
+            ],
+            "generatedBy": "qwen",
+            "generatedAt": "2026-10-24T08:00:00.000Z",
+            "recommendationIndex": 1
+          }
+        },
+        {
+          "id": "task-9-interview-technical-accuracy",
+          "category": "INTERVIEW",
+          "title": "Improve technical interview accuracy",
+          "description": "Your average technical accuracy is 70/100. Practice role-specific technical questions and explain your reasoning step by step.",
+          "reason": "Technical accuracy is below your target interview level.",
+          "priority": "medium",
+          "status": "pending",
+          "source": "interview",
+          "scheduledFor": "2026-10-27T00:00:00.000Z",
+          "dueAt": "2026-10-27T23:59:59.999Z",
+          "estimatedMinutes": 30,
+          "relatedJobId": "000000000000000000000002",
+          "roadmapMilestoneId": "milestone-4-cv-strengthen-the-evidence-shown-on-your-cv",
+          "createdAt": "2026-10-24T08:00:00.000Z",
+          "metadata": {
+            "nextStepId": "interview-technical-accuracy",
+            "nextStepCategory": "INTERVIEW"
+          }
+        },
+        {
+          "id": "task-10-interview-communication",
+          "category": "INTERVIEW",
+          "title": "Practice clearer interview communication",
+          "description": "Your average communication score is 71/100. Focus on concise explanations and structured examples.",
+          "reason": "Communication can materially affect otherwise strong interview answers.",
+          "priority": "medium",
+          "status": "pending",
+          "source": "interview",
+          "scheduledFor": "2026-10-27T00:00:00.000Z",
+          "dueAt": "2026-10-27T23:59:59.999Z",
+          "estimatedMinutes": 30,
+          "relatedJobId": "000000000000000000000002",
+          "roadmapMilestoneId": "milestone-4-cv-strengthen-the-evidence-shown-on-your-cv",
+          "createdAt": "2026-10-24T08:00:00.000Z",
+          "metadata": {
+            "nextStepId": "interview-communication",
+            "nextStepCategory": "INTERVIEW"
+          }
+        },
+        {
+          "id": "task-11-skill-strengthen-skill-profile",
+          "category": "LEARNING",
+          "title": "Strengthen your skill profile",
+          "description": "Your CV skills score is 72/100. Focus on relevant technical skills that are missing or underrepresented.",
+          "reason": "A stronger skill profile can improve both CV quality and job matching.",
+          "priority": "medium",
+          "status": "pending",
+          "source": "roadmap",
+          "scheduledFor": "2026-10-28T00:00:00.000Z",
+          "dueAt": "2026-10-28T23:59:59.999Z",
+          "estimatedMinutes": 45,
+          "relatedJobId": "000000000000000000000384",
+          "roadmapMilestoneId": "milestone-4-cv-strengthen-the-evidence-shown-on-your-cv",
+          "createdAt": "2026-10-24T08:00:00.000Z",
+          "metadata": {
+            "nextStepId": "skill-strengthen-skill-profile",
+            "nextStepCategory": "SKILL",
+            "missingSkills": [
+              "Testing"
+            ]
+          }
+        },
+        {
+          "id": "task-12-interview-milestone-5-interview-prepare-for-backen",
+          "category": "INTERVIEW",
+          "title": "Provide concrete examples",
+          "description": "Current: Implement and review a focused example for Provide concrete examples.",
+          "reason": "Current: Provide concrete examples directly supports the selected role and current evidence.",
+          "priority": "medium",
+          "status": "pending",
+          "source": "interview",
+          "scheduledFor": "2026-10-28T00:00:00.000Z",
+          "dueAt": "2026-10-28T23:59:59.999Z",
+          "estimatedMinutes": 30,
+          "roadmapMilestoneId": "milestone-5-interview-prepare-for-backend-developer-interviews",
+          "createdAt": "2026-10-24T08:00:00.000Z",
+          "metadata": {
+            "nextStepId": "interview-milestone-5-interview-prepare-for-backend-developer-interviews-0-provide-concrete-examples",
+            "nextStepCategory": "INTERVIEW",
+            "personalized": true,
+            "roadmapMilestoneId": "milestone-5-interview-prepare-for-backend-developer-interviews",
+            "roadmapCategory": "INTERVIEW",
+            "roadmapTitle": "Prepare for Backend Developer interviews using your real gaps",
+            "milestoneDescription": "Latest interview overall score: 80/100. Current readiness for this area is 74/100.",
+            "milestoneReason": "Latest interview overall score: 80/100.",
+            "readinessScore": 74,
+            "relatedSkills": [
+              "API Testing",
+              "SQL",
+              "Node.js",
+              "Docker"
+            ],
+            "whatToLearn": [
+              "Provide concrete examples"
+            ],
+            "action": "Current: Implement and review a focused example for Provide concrete examples.",
+            "proofOfCompletion": "Keep the working example, tests and a short review of the result.",
+            "recommendationSource": "combined",
+            "evidence": [
+              "Latest interview overall score: 80/100.",
+              "Technical accuracy: 70/100.",
+              "Communication: 71/100."
+            ],
+            "generatedBy": "qwen",
+            "generatedAt": "2026-10-24T08:00:00.000Z",
+            "recommendationIndex": 0
+          }
+        },
+        {
+          "id": "task-13-interview-milestone-5-interview-prepare-for-backen",
+          "category": "INTERVIEW",
+          "title": "Validate and document: Provide concrete examples",
+          "description": "Current: Implement and review a focused example for Validate and document: Provide concrete examples.",
+          "reason": "Current: Validate and document: Provide concrete examples directly supports the selected role and current evidence.",
+          "priority": "medium",
+          "status": "pending",
+          "source": "interview",
+          "scheduledFor": "2026-10-29T00:00:00.000Z",
+          "dueAt": "2026-10-29T23:59:59.999Z",
+          "estimatedMinutes": 30,
+          "roadmapMilestoneId": "milestone-5-interview-prepare-for-backend-developer-interviews",
+          "createdAt": "2026-10-24T08:00:00.000Z",
+          "metadata": {
+            "nextStepId": "interview-milestone-5-interview-prepare-for-backend-developer-interviews-1-validate-and-document-provide-concrete-examples",
+            "nextStepCategory": "INTERVIEW",
+            "personalized": true,
+            "roadmapMilestoneId": "milestone-5-interview-prepare-for-backend-developer-interviews",
+            "roadmapCategory": "INTERVIEW",
+            "roadmapTitle": "Prepare for Backend Developer interviews using your real gaps",
+            "milestoneDescription": "Latest interview overall score: 80/100. Current readiness for this area is 74/100.",
+            "milestoneReason": "Latest interview overall score: 80/100.",
+            "readinessScore": 74,
+            "relatedSkills": [
+              "API Testing",
+              "SQL",
+              "Node.js",
+              "Docker"
+            ],
+            "whatToLearn": [
+              "Provide concrete examples"
+            ],
+            "action": "Current: Implement and review a focused example for Validate and document: Provide concrete examples.",
+            "proofOfCompletion": "Keep the working example, tests and a short review of the result.",
+            "recommendationSource": "combined",
+            "evidence": [
+              "Latest interview overall score: 80/100.",
+              "Technical accuracy: 70/100.",
+              "Communication: 71/100."
+            ],
+            "generatedBy": "qwen",
+            "generatedAt": "2026-10-24T08:00:00.000Z",
+            "recommendationIndex": 1
+          }
+        },
+        {
+          "id": "task-14-cv-document-project-outcomes",
+          "category": "CV",
+          "title": "Apply a CV recommendation",
+          "description": "Document project outcomes",
+          "reason": "This recommendation comes from your latest saved CV analysis.",
+          "priority": "medium",
+          "status": "pending",
+          "source": "resume",
+          "scheduledFor": "2026-10-29T00:00:00.000Z",
+          "dueAt": "2026-10-29T23:59:59.999Z",
+          "estimatedMinutes": 30,
+          "relatedJobId": "000000000000000000000384",
+          "roadmapMilestoneId": "milestone-5-interview-prepare-for-backend-developer-interviews",
+          "createdAt": "2026-10-24T08:00:00.000Z",
+          "metadata": {
+            "nextStepId": "cv-document-project-outcomes",
+            "nextStepCategory": "CV"
+          }
+        },
+        {
+          "id": "task-15-interview-answer-completeness",
+          "category": "INTERVIEW",
+          "title": "Give more complete interview answers",
+          "description": "Your average answer completeness is 75/100. Practice covering the full question before ending your response.",
+          "reason": "Some answers may be correct but still incomplete.",
+          "priority": "medium",
+          "status": "pending",
+          "source": "interview",
+          "scheduledFor": "2026-10-29T00:00:00.000Z",
+          "dueAt": "2026-10-29T23:59:59.999Z",
+          "estimatedMinutes": 30,
+          "relatedJobId": "000000000000000000000002",
+          "roadmapMilestoneId": "milestone-6-job-search-target-stronger-backend-developer-oppor",
+          "createdAt": "2026-10-24T08:00:00.000Z",
+          "metadata": {
+            "nextStepId": "interview-answer-completeness",
+            "nextStepCategory": "INTERVIEW"
+          }
+        },
+        {
+          "id": "task-16-job-apply-000000000000000000000bb7",
+          "category": "JOB_APPLICATION",
+          "title": "Review Backend Developer at Fixture Company",
+          "description": "This role has a 82% match with your current CV. Review the job details and prepare a tailored application.",
+          "reason": "This is currently one of your strongest job matches.",
+          "priority": "medium",
+          "status": "pending",
+          "source": "job_match",
+          "scheduledFor": "2026-10-30T00:00:00.000Z",
+          "dueAt": "2026-10-30T23:59:59.999Z",
+          "estimatedMinutes": 25,
+          "relatedJobId": "000000000000000000000bb7",
+          "roadmapMilestoneId": "milestone-6-job-search-target-stronger-backend-developer-oppor",
+          "createdAt": "2026-10-24T08:00:00.000Z",
+          "metadata": {
+            "nextStepId": "job-apply-000000000000000000000bb7",
+            "nextStepCategory": "JOB",
+            "company": "Fixture Company",
+            "matchedSkills": [
+              "SQL",
+              "MongoDB",
+              "Docker",
+              "Git",
+              "REST API"
+            ],
+            "missingSkills": []
+          }
+        }
+      ],
+      "jobMatches": [],
+      "progress": {
+        "totalTasks": 16,
+        "completedTasks": 0,
+        "skippedTasks": 0,
+        "pendingTasks": 16,
+        "completedLearningTasks": 0,
+        "completedApplications": 0,
+        "completedInterviews": 0,
+        "completedCVTasks": 0,
+        "completedPortfolioTasks": 0,
+        "currentStreak": 0,
+        "longestStreak": 0,
+        "overallProgress": 0
+      },
+      "lastDailyPlanGeneratedAt": "2026-10-24T08:00:00.000Z",
+      "nextDailyPlanAt": "2026-10-25T00:00:00.000Z",
+      "nextJobSearchAt": "2026-10-25T00:00:00.000Z",
+      "lastReplannedAt": "2026-10-24T08:00:00.000Z",
+      "lastProgressCalculatedAt": "2026-10-24T08:00:00.000Z",
+      "_id": "6adc65801a13ff427fd67db2",
+      "createdAt": "2026-10-24T08:00:00.000Z",
+      "updatedAt": "2026-10-24T08:00:00.000Z",
+      "__v": 0
+    },
+    "summary": {
+      "careerContext": {
+        "status": "current",
+        "activeTargetRole": "Backend Developer",
+        "generatedForRole": "Backend Developer"
+      },
+      "id": "6adc65801a13ff427fd67db2",
+      "status": "active",
+      "targetRole": "Backend Developer",
+      "careerGoal": "Prepare for a backend role",
+      "roadmapDurationDays": 90,
+      "currentReadinessScore": 76,
+      "roadmap": {
+        "total": 6,
+        "completed": 0,
+        "inProgress": 1,
+        "notStarted": 5
+      },
+      "tasks": {
+        "total": 16,
+        "completed": 0,
+        "pending": 16,
+        "inProgress": 0,
+        "skipped": 0
+      },
+      "today": {
+        "date": "2026-10-24",
+        "tasks": [
+          {
+            "id": "task-1-skill-milestone-1-core-skills-validate-and-strengt",
+            "category": "LEARNING",
+            "title": "Git",
+            "description": "Create a feature branch, resolve a deliberate conflict and revert one commit",
+            "reason": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+            "priority": "high",
+            "status": "pending",
+            "source": "roadmap",
+            "scheduledFor": "2026-10-24T00:00:00.000Z",
+            "dueAt": "2026-10-24T23:59:59.999Z",
+            "estimatedMinutes": 45,
+            "roadmapMilestoneId": "milestone-1-core-skills-validate-and-strengthen-foundational-s",
+            "createdAt": "2026-10-24T08:00:00.000Z",
+            "metadata": {
+              "nextStepId": "skill-milestone-1-core-skills-validate-and-strengthen-foundational-s-0-git",
+              "nextStepCategory": "SKILL",
+              "personalized": true,
+              "roadmapMilestoneId": "milestone-1-core-skills-validate-and-strengthen-foundational-s",
+              "roadmapCategory": "CORE_SKILLS",
+              "roadmapTitle": "Validate and strengthen foundational skills",
+              "milestoneDescription": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+              "milestoneReason": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+              "relatedSkills": [
+                "Git",
+                "HTTP",
+                "Programming Fundamentals",
+                "SQL"
+              ],
+              "whatToLearn": [
+                "Commits and branches",
+                "Merge conflicts and rollback"
+              ],
+              "action": "Create a feature branch, resolve a deliberate conflict and revert one commit",
+              "proofOfCompletion": "Show a clean merge and a revert that preserves the unrelated feature",
+              "recommendationSource": "career_profile",
+              "evidence": [
+                "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+                "Prerequisites: foundation topic; no prerequisites."
+              ],
+              "generatedBy": "fallback",
+              "generatedAt": "2026-10-24T08:00:00.000Z",
+              "recommendationIndex": 0
+            }
+          },
+          {
+            "id": "task-2-skill-milestone-1-core-skills-validate-and-strengt",
+            "category": "LEARNING",
+            "title": "HTTP",
+            "description": "Inspect a form submission and reproduce success, validation and timeout responses",
+            "reason": "HTTP: proficiency is unverified; assess it before assuming a knowledge gap.",
+            "priority": "high",
+            "status": "pending",
+            "source": "roadmap",
+            "scheduledFor": "2026-10-24T00:00:00.000Z",
+            "dueAt": "2026-10-24T23:59:59.999Z",
+            "estimatedMinutes": 45,
+            "roadmapMilestoneId": "milestone-1-core-skills-validate-and-strengthen-foundational-s",
+            "createdAt": "2026-10-24T08:00:00.000Z",
+            "metadata": {
+              "nextStepId": "skill-milestone-1-core-skills-validate-and-strengthen-foundational-s-1-http",
+              "nextStepCategory": "SKILL",
+              "personalized": true,
+              "roadmapMilestoneId": "milestone-1-core-skills-validate-and-strengthen-foundational-s",
+              "roadmapCategory": "CORE_SKILLS",
+              "roadmapTitle": "Validate and strengthen foundational skills",
+              "milestoneDescription": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+              "milestoneReason": "Git: evidence is partial and claim-only; validate the uncertain areas before advancing. A mention does not verify mastery.",
+              "relatedSkills": [
+                "Git",
+                "HTTP",
+                "Programming Fundamentals",
+                "SQL"
+              ],
+              "whatToLearn": [
+                "Requests, status codes and headers",
+                "Timeouts and idempotency"
+              ],
+              "action": "Inspect a form submission and reproduce success, validation and timeout responses",
+              "proofOfCompletion": "Explain a captured request and demonstrate 200, 400 and retry-safe behavior",
+              "recommendationSource": "career_profile",
+              "evidence": [
+                "HTTP: proficiency is unverified; assess it before assuming a knowledge gap.",
+                "Prerequisites: foundation topic; no prerequisites."
+              ],
+              "generatedBy": "fallback",
+              "generatedAt": "2026-10-24T08:00:00.000Z",
+              "recommendationIndex": 1
+            }
+          }
+        ],
+        "total": 2,
+        "completed": 0
+      },
+      "progress": {
+        "totalTasks": 16,
+        "completedTasks": 0,
+        "skippedTasks": 0,
+        "pendingTasks": 16,
+        "completedLearningTasks": 0,
+        "completedApplications": 0,
+        "completedInterviews": 0,
+        "completedCVTasks": 0,
+        "completedPortfolioTasks": 0,
+        "currentStreak": 0,
+        "longestStreak": 0,
+        "overallProgress": 0
+      },
+      "nextDailyPlanAt": "2026-10-25T00:00:00.000Z",
+      "nextJobSearchAt": "2026-10-25T00:00:00.000Z"
+    }
+  }
+}

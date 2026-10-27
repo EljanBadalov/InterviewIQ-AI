@@ -1,7 +1,7 @@
+import { getStoredUser } from "../../../utils/authStorage";
+import { useApiQuery } from "../../../query/apiQueries";
 import {
-  useEffect,
   useMemo,
-  useState,
 } from "react";
 
 import { useNavigate } from "react-router-dom";
@@ -18,9 +18,7 @@ import {
   FiTrendingUp,
 } from "react-icons/fi";
 
-import axios from "axios";
 
-import apiClient from "../../../api/apiClient";
 
 import "./dashboardHomePage.scss";
 
@@ -108,181 +106,33 @@ interface MomentumChartProps {
 const DashboardHomePage = () => {
   const navigate = useNavigate();
 
-  const [stats, setStats] =
-    useState<DashboardStats>({
-      totalInterviews: 0,
-      completedInterviews: 0,
-      averageScore: 0,
-      bestScore: 0,
-    });
+  const statsQuery = useApiQuery<DashboardResponse>("/dashboard/stats");
+  const progressQuery = useApiQuery<ProgressResponse>("/progress");
+  const stats: DashboardStats = statsQuery.data?.data.stats ?? {
+    totalInterviews: 0, completedInterviews: 0, averageScore: 0, bestScore: 0,
+  };
+  const loading = statsQuery.isPending;
+  const error = statsQuery.isError ? "Dashboard statistics could not be loaded."
+    : progressQuery.isError ? "Performance history could not be loaded." : "";
+  const scoreHistory = useMemo(() => {
+    const now = new Date();
+    return (progressQuery.data?.data.scoreProgression ?? [])
+      .filter(interview => {
+        const date = new Date(interview.date);
+        return typeof interview.score === "number" && date.getMonth() === now.getMonth()
+          && date.getFullYear() === now.getFullYear();
+      })
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  }, [progressQuery.data]);
+  const loadDashboardStats = () => Promise.all([statsQuery.refetch(), progressQuery.refetch()]);
 
-  const [
-    scoreHistory,
-    setScoreHistory,
-  ] = useState<
-    ScoreProgressionItem[]
-  >([]);
-
-  const [loading, setLoading] =
-    useState(true);
-
-  const [error, setError] =
-    useState("");
-
-  const user =
-    useMemo<StoredUser>(() => {
-      const storedUser =
-        localStorage.getItem(
-          "interviewiq_user"
-        );
-
-      if (!storedUser) {
-        return {};
-      }
-
-      try {
-        return JSON.parse(
-          storedUser
-        ) as StoredUser;
-      } catch {
-        return {};
-      }
-    }, []);
+  const user: StoredUser = getStoredUser() ?? {};
 
   const firstName =
     user.fullName
       ?.trim()
       .split(/\s+/)[0] ||
     "there";
-
-  const loadDashboardStats =
-    async () => {
-      setLoading(true);
-      setError("");
-
-      try {
-        const [
-          dashboardResponse,
-          progressResponse,
-        ] = await Promise.all([
-          apiClient.get<DashboardResponse>(
-            "/dashboard/stats"
-          ),
-
-          apiClient.get<ProgressResponse>(
-            "/progress"
-          ),
-        ]);
-
-        const {
-          stats: apiStats,
-        } =
-          dashboardResponse.data.data;
-
-        setStats({
-          totalInterviews:
-            apiStats.totalInterviews,
-
-          completedInterviews:
-            apiStats.completedInterviews,
-
-          averageScore:
-            apiStats.averageScore,
-
-          bestScore:
-            apiStats.bestScore,
-        });
-
-        const progression =
-          progressResponse.data.data
-            .scoreProgression || [];
-
-        const now =
-          new Date();
-
-        const currentMonth =
-          now.getMonth();
-
-        const currentYear =
-          now.getFullYear();
-
-        const currentMonthInterviews =
-          progression
-            .filter(
-              (interview) => {
-                if (
-                  !interview.date ||
-                  typeof interview.score !==
-                    "number"
-                ) {
-                  return false;
-                }
-
-                const interviewDate =
-                  new Date(
-                    interview.date
-                  );
-
-                if (
-                  Number.isNaN(
-                    interviewDate.getTime()
-                  )
-                ) {
-                  return false;
-                }
-
-                return (
-                  interviewDate.getMonth() ===
-                    currentMonth &&
-                  interviewDate.getFullYear() ===
-                    currentYear
-                );
-              }
-            )
-            .sort(
-              (a, b) =>
-                new Date(
-                  a.date
-                ).getTime() -
-                new Date(
-                  b.date
-                ).getTime()
-            );
-
-        setScoreHistory(
-          currentMonthInterviews
-        );
-      } catch (err) {
-        if (
-          axios.isAxiosError(err)
-        ) {
-          setError(
-            err.response?.data
-              ?.message ||
-              "Dashboard statistics could not be loaded."
-          );
-        } else {
-          setError(
-            "Dashboard statistics could not be loaded."
-          );
-        }
-
-        setStats({
-          totalInterviews: 0,
-          completedInterviews: 0,
-          averageScore: 0,
-          bestScore: 0,
-        });
-
-        setScoreHistory([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-  useEffect(() => {
-    void loadDashboardStats();
-  }, []);
 
   const averageScore =
     Math.max(
@@ -373,6 +223,9 @@ const DashboardHomePage = () => {
         </div>
       )}
 
+      {(statsQuery.isFetching && !loading) || (progressQuery.isFetching && progressQuery.data) ? (
+        <p role="status">Updating dashboard...</p>
+      ) : null}
       <section className="stats-grid">
         <article className="stat-card">
           <div className="stat-card-top">
@@ -512,7 +365,7 @@ const DashboardHomePage = () => {
             </button>
           </div>
 
-          {loading ? (
+          {progressQuery.isPending ? (
             <div className="momentum-loading-skeleton">
               <div className="momentum-loading-y-axis">
                 <span>100</span>

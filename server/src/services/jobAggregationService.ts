@@ -1,4 +1,6 @@
-﻿import {
+import { createSingleFlight } from "./singleFlight";
+import { createCachedJobMatcher } from "./jobMatchingService";
+import {
   Types,
 } from "mongoose";
 
@@ -1857,8 +1859,8 @@ export const refreshExternalJobsForUser =
      */
     const targetRole =
       normalizeString(
-        preferenceTargetRole ||
-        automation.targetRole
+        automation.targetRole ||
+        preferenceTargetRole
       );
 
     if (
@@ -3495,16 +3497,17 @@ const isBlockedJobSource = (
   );
 };
 
-export const refreshSharedJobCatalog =
+const runSharedJobCatalogSync =
   async (): Promise<ISharedJobCatalogSyncResult> => {
+    const startedAt = performance.now();
     logDivider(
       "START SHARED JOB CATALOG SYNC"
     );
 
     /*
      * limit: 0 = complete deduplicated provider pool.
-     * This is intentionally allowed here because this function runs in
-     * the background, never inside the user's Search Again request.
+     * Existing HTTP and scheduled callers both await this catalog sync.
+     * Concurrent callers share the same process-local in-flight operation.
      */
     const fetchedJobs =
       await fetchGeneralExternalJobs({
@@ -3512,6 +3515,7 @@ export const refreshSharedJobCatalog =
           0,
       });
 
+    const fetchedAt = performance.now();
     const acceptedJobs =
       fetchedJobs.filter(
         (
@@ -3535,6 +3539,8 @@ export const refreshSharedJobCatalog =
       await upsertExternalJobsWithConcurrency(
         acceptedJobs
       );
+
+    const storedAt = performance.now();
 
     /*
      * Only deactivate stale vacancies for sources that were actually
@@ -3651,6 +3657,7 @@ export const refreshSharedJobCatalog =
     console.log(
       "[JOB CATALOG SYNC] Completed:",
       {
+        timingsMs: { providerFetchAndNormalization: fetchedAt - startedAt, bulkUpsertAndReload: storedAt - fetchedAt, deactivation: performance.now() - storedAt, total: performance.now() - startedAt },
         fetched:
           fetchedJobs.length,
 
@@ -3691,11 +3698,12 @@ export const refreshSharedJobCatalog =
    loads MongoDB, calculates CV match and returns ranked vacancies.
 ========================================================= */
 
-export const refreshGeneralExternalJobsForUser =
+const runGeneralExternalJobsForUser =
   async (
     userId:
       string
   ): Promise<IGeneralJobRefreshResult> => {
+    const startedAt = performance.now();
     logDivider(
       "START FAST GENERAL CV-BASED JOB MATCHING"
     );
@@ -3762,6 +3770,7 @@ export const refreshGeneralExternalJobsForUser =
      * MongoDB ONLY. No Greenhouse/Lever/Ashby/SuccessFactors request is
      * made from this code path.
      */
+    const profileReadyAt = performance.now();
     const storedJobs =
       await Job.find({
         isActive:
@@ -3786,6 +3795,9 @@ export const refreshGeneralExternalJobsForUser =
         )
         .lean<IJob[]>();
 
+    const jobsReadyAt = performance.now();
+    const matchJob = createCachedJobMatcher(skillProfile, {});
+
     const ranked:
       IGeneralScoredJob[] =
       storedJobs
@@ -3796,11 +3808,7 @@ export const refreshGeneralExternalJobsForUser =
             job,
 
             match:
-              calculateJobMatch(
-                skillProfile,
-                job,
-                {}
-              ),
+              matchJob(job),
           })
         )
         .sort(
@@ -3833,6 +3841,7 @@ export const refreshGeneralExternalJobsForUser =
     console.log(
       "[FAST GENERAL JOB MATCHING] MongoDB ranking completed:",
       {
+        timingsMs: { profileReadAndBuild: profileReadyAt - startedAt, jobsRead: jobsReadyAt - profileReadyAt, matchingAndRanking: performance.now() - jobsReadyAt, total: performance.now() - startedAt },
         mongoCandidates:
           storedJobs.length,
 
@@ -3886,6 +3895,14 @@ export const refreshGeneralExternalJobsForUser =
         ),
     };
   };
+
+// No persistent result cache: every later refresh reads current source data.
+const shareCatalogSync = createSingleFlight<ISharedJobCatalogSyncResult>();
+const shareUserRefresh = createSingleFlight<IGeneralJobRefreshResult>();
+export const refreshSharedJobCatalog = (): Promise<ISharedJobCatalogSyncResult> =>
+  shareCatalogSync("catalog", runSharedJobCatalogSync);
+export const refreshGeneralExternalJobsForUser = (userId: string): Promise<IGeneralJobRefreshResult> =>
+  shareUserRefresh(userId, () => runGeneralExternalJobsForUser(userId));
 
 /* =========================================================
    DEFAULT EXPORT

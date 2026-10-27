@@ -1,3 +1,5 @@
+import { careerReadContext } from '../services/careerReadContextService';
+import { buildActiveRoleProgress, prepareActiveRoleProgress } from '../services/careerIntelligenceService';
 import {
   type NextFunction,
   type Request,
@@ -16,7 +18,7 @@ import {
 } from "../models/Question";
 
 import {
-  generateProgressInsights,
+  buildDeterministicProgressInsights,
 } from "../services/progressInsightService";
 
 import {
@@ -1640,8 +1642,10 @@ export const getProgressController =
         return;
       }
 
-      const interviews =
-        await Interview.find({
+      const roleFramePromise=prepareActiveRoleProgress(String(userId));
+      // Observe failure immediately while the independent history read is in flight.
+      void roleFramePromise.catch(()=>undefined);
+      const interviews = await Interview.find({
           user:
             userId,
 
@@ -1655,19 +1659,23 @@ export const getProgressController =
             createdAt:
               1,
           })
+          .select("_id user status category difficulty interviewType overallScore completedAt createdAt answers.question answers.score answers.technicalAccuracy answers.completeness answers.communication answers.weaknesses answers.evaluationStatus")
           .lean();
 
       if (
         interviews.length ===
         0
       ) {
+        const roleFrame=await roleFramePromise;
         res.status(
           200
         ).json({
           success:
             true,
 
+          careerContext: careerReadContext(String(userId),req.careerReadVersions,roleFrame.career,roleFrame.source),
           data: {
+            historyScope:'all-careers',
             completedInterviewsCount:
               0,
 
@@ -1742,7 +1750,7 @@ export const getProgressController =
               [],
 
             roleSkillProgress:
-              null,
+              await buildActiveRoleProgress(String(userId),{interviews:[],questions:[]},roleFrame.career,roleFrame),
 
             aiInsights: {
               typeComparisonSummary:
@@ -1835,7 +1843,7 @@ export const getProgressController =
               },
             })
               .select(
-                "_id interviewType"
+                "_id interviewType tags difficulty updatedAt"
               )
               .lean()
           : [];
@@ -2259,15 +2267,8 @@ export const getProgressController =
           categoryPerformance
         );
 
-      const roleSkillProgress =
-        mostPracticedCategory
-          ? await buildRoleSkillProgress({
-              userId,
-
-              targetRole:
-                mostPracticedCategory,
-            })
-          : null;
+      const roleFrame=await roleFramePromise;
+      const roleSkillProgress = await buildActiveRoleProgress(String(userId),{interviews:interviews as any,questions:questions as any},roleFrame.career,roleFrame);
 
       const latestInterview =
         interviewAnalytics[
@@ -2312,7 +2313,7 @@ export const getProgressController =
         );
 
       const aiInsights =
-        await generateProgressInsights({
+        await buildDeterministicProgressInsights({
           completedInterviewsCount:
             interviewAnalytics.length,
 
@@ -2474,6 +2475,7 @@ export const getProgressController =
         success:
           true,
 
+        careerContext: careerReadContext(String(userId),req.careerReadVersions,roleFrame.career,roleFrame.source),
         data: {
           completedInterviewsCount:
             interviewAnalytics.length,
@@ -2552,6 +2554,7 @@ export const getProgressController =
 
           recurringWeaknesses,
 
+          historyScope:'all-careers',
           roleSkillProgress,
 
           aiInsights,

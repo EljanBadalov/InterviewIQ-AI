@@ -114,6 +114,7 @@ export interface CareerAssistantData {
 ========================================================= */
 
 export interface CareerAssistantChatResponse {
+  conversation?: CareerConversation;
   sessionId: string;
 
   reply: string;
@@ -284,7 +285,8 @@ const buildChatRequestBody = (
 
 export const sendCareerAssistantMessage =
   async (
-    input: CareerAssistantChatRequest
+    input: CareerAssistantChatRequest,
+    signal?: AbortSignal
   ): Promise<CareerAssistantChatResponse> => {
     const body =
       buildChatRequestBody(
@@ -294,7 +296,8 @@ export const sendCareerAssistantMessage =
     const response =
       await apiClient.post<CareerAssistantApiResponse>(
         "/cs/chat",
-        body
+        body,
+        { signal }
       );
 
     if (
@@ -340,4 +343,49 @@ export const createCareerAssistantSessionId =
 export default {
   sendCareerAssistantMessage,
   createCareerAssistantSessionId,
+};
+export interface CareerConversation {
+  conversationId: string;
+  sessionId: string;
+  userId: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+}
+export interface CareerHistoryMessage {
+  _id: string;
+  sender: "customer" | "assistant" | "system";
+  text: string;
+  intent?: string;
+  confidence?: number;
+  metadata?: Record<string, unknown>;
+  createdAt: string;
+}
+export const listCareerConversations = async (cursor?: string, signal?: AbortSignal) => {
+  const result = await apiClient.get<{ data: { conversations: CareerConversation[]; nextCursor: string | null } }>(
+    "/cs/conversations", { params: { cursor, limit: 20 }, signal });
+  return result.data.data;
+};
+export const createCareerConversation = async (signal?: AbortSignal) => {
+  const result = await apiClient.post<{ data: CareerConversation }>("/cs/conversations", {}, { signal });
+  return result.data.data;
+};
+export const getCareerMessages = async (id: string, before?: string, signal?: AbortSignal) => {
+  const result = await apiClient.get<{ data: { messages: CareerHistoryMessage[]; nextBefore: string | null } }>(
+    `/cs/conversations/${encodeURIComponent(id)}/messages`, { params: { before, limit: 30 }, signal });
+  return result.data.data;
+};
+export const deleteCareerConversation = async (id: string, signal?: AbortSignal) => {
+  await apiClient.delete(`/cs/conversations/${encodeURIComponent(id)}`, { signal });
+};
+
+export const getCareerConversation = async (id: string, signal?: AbortSignal) => {
+  const result = await apiClient.get<{ data: CareerConversation }>(`/cs/conversations/${encodeURIComponent(id)}`, { signal });
+  return result.data.data;
+};
+
+export const renameCareerConversation = async (id: string, title: string, signal?: AbortSignal) => {
+  const result = await apiClient.patch<{ data: { conversationId: string; title: string } }>(
+    `/cs/conversations/${encodeURIComponent(id)}`, { title }, { signal });
+  return result.data.data;
 };

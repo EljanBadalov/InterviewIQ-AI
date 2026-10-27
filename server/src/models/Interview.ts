@@ -1,3 +1,4 @@
+import { installRoadmapWriteGuard } from '../services/roadmapWriteGuard';
 import { Schema, model, Types } from "mongoose";
 import type { QuestionDifficulty, InterviewType } from "./Question";
 
@@ -8,6 +9,7 @@ export interface IInterviewAnswer {
   _id?: Types.ObjectId;
   question: Types.ObjectId;
   questionText: string;
+  questionSnapshot?: {text:string;interviewType:InterviewType;difficulty:QuestionDifficulty;category:string;tags:string[]};
   answerText?: string;
   score?: number;
   technicalAccuracy?: number;
@@ -42,6 +44,7 @@ export interface IInterview {
   completedAt?: Date;
   createdAt?: Date;
   updatedAt?: Date;
+  evaluationLease?: {token:string;question:string;until:Date;dispatched?:boolean};
 }
 
 const interviewAnswerSchema = new Schema<IInterviewAnswer>(
@@ -60,6 +63,7 @@ const interviewAnswerSchema = new Schema<IInterviewAnswer>(
       type: String,
       trim: true,
     },
+    questionSnapshot: { type: Schema.Types.Mixed, select: false },
     score: {
       type: Number,
       min: 0,
@@ -141,6 +145,8 @@ const interviewSchema = new Schema<IInterview>(
       type: [interviewAnswerSchema],
       default: [],
     },
+    // Optional private coordination state; legacy records require no migration/index.
+    evaluationLease: { type: Schema.Types.Mixed, select: false },
     overallScore: {
       type: Number,
       min: 0,
@@ -170,3 +176,4 @@ interviewSchema.index({ user: 1, createdAt: -1 });
 interviewSchema.index({ user: 1, status: 1 });
 
 export const Interview = model<IInterview>("Interview", interviewSchema);
+installRoadmapWriteGuard(Interview, 'user', 'roadmapEvidenceRevision');

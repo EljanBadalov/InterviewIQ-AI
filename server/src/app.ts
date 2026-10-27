@@ -1,3 +1,5 @@
+import './config/mongoSafety';
+import mongoose from 'mongoose';
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
@@ -45,14 +47,20 @@ app.use(
   helmet()
 );
 
+// Render terminates TLS at its reverse proxy; local behavior is unchanged.
+if (process.env.RENDER === 'true') app.set('trust proxy', 1);
+app.get('/health', (_req, res) => {
+  const ready = mongoose.connection.readyState === 1;
+  res.status(ready ? 200 : 503).json({status: ready ? 'healthy' : 'starting'});
+});
+
 /* =========================================================
    CORS
 ========================================================= */
 
 const allowedOrigins = [
   env.CLIENT_URL,
-  "http://localhost:5173",
-  "http://localhost:3000",
+  ...(process.env.RENDER === 'true' ? [] : ["http://localhost:5173", "http://localhost:3000"]),
 ];
 
 app.use(

@@ -1,5 +1,13 @@
+import { useApiQuery } from '../../../query/apiQueries';
+import { useSyncExternalStore } from 'react';
+import { activeCareer, careerContext, careerSnapshot, subscribeCareer } from '../../../query/careerContextStore';
+import { FiEdit2, FiMessageSquare, FiSend } from "react-icons/fi";
+import type { CareerConversation } from "../../../api/careerAssistantApi";
+import { CareerHistoryPanel } from "./CareerHistoryPanel";
+import { CareerConversationDialog } from "./CareerConversationDialog";
+import { useCareerChatScroll } from "./useCareerChatScroll";
 import {
-  useMemo,
+  useEffect,
   useState,
 } from "react";
 
@@ -13,35 +21,14 @@ import {
 
 import ReactMarkdown from "react-markdown";
 
-import {
-  createCareerAssistantSessionId,
-  sendCareerAssistantMessage,
-  type CareerAssistantChatResponse,
-} from "../../../api/careerAssistantApi";
-
-import {
-  getStoredUser,
-} from "../../../utils/authStorage";
+import type { CareerAssistantChatResponse } from "../../../api/careerAssistantApi";
+import { useCareerChatHistory, type ChatMessage } from "./useCareerChatHistory";
 
 import "./careerAssistantPage.scss";
 
 /* =========================================================
    TYPES
 ========================================================= */
-
-type ChatRole =
-  | "user"
-  | "assistant";
-
-interface ChatMessage {
-  id: string;
-
-  role: ChatRole;
-
-  content: string;
-
-  response?: CareerAssistantChatResponse;
-}
 
 interface JobMatchCard {
   id: string;
@@ -68,51 +55,6 @@ interface JobMatchCard {
 /* =========================================================
    STORAGE
 ========================================================= */
-
-const SESSION_STORAGE_KEY =
-  "interviewiq-career-assistant-session";
-
-/* =========================================================
-   HELPERS
-========================================================= */
-
-const getSessionId = (): string => {
-  const existing =
-    sessionStorage.getItem(
-      SESSION_STORAGE_KEY
-    );
-
-  if (existing) {
-    return existing;
-  }
-
-  const created =
-    createCareerAssistantSessionId();
-
-  sessionStorage.setItem(
-    SESSION_STORAGE_KEY,
-    created
-  );
-
-  return created;
-};
-
-const createMessageId = (): string => {
-  if (
-    typeof crypto !== "undefined" &&
-    typeof crypto.randomUUID ===
-    "function"
-  ) {
-    return crypto.randomUUID();
-  }
-
-  return [
-    Date.now(),
-    Math.random()
-      .toString(36)
-      .slice(2),
-  ].join("-");
-};
 
 const formatJobMeta = (
   value?: string
@@ -201,68 +143,22 @@ const isJobMatchingResponse = (
 ========================================================= */
 
 const CareerAssistantPage = () => {
-  const [
-    messages,
-    setMessages,
-  ] =
-    useState<ChatMessage[]>([
-      {
-        id:
-          "welcome",
-
-        role:
-          "assistant",
-
-        content:
-          "Hi! I'm your InterviewIQ Career Assistant. I can help analyze your CV, compare job matches, review interview performance, track your career progress, and plan your next steps.",
-      },
-    ]);
-
-  const [
-    input,
-    setInput,
-  ] =
-    useState("");
-
-  const [
-    isLoading,
-    setIsLoading,
-  ] =
-    useState(false);
-
-  const [
-    error,
-    setError,
-  ] =
-    useState<
-      string | null
-    >(null);
-
-  /* =======================================================
-     SESSION
-  ======================================================= */
-
-  const sessionId =
-    useMemo(
-      () =>
-        getSessionId(),
-      []
-    );
-
-  /* =======================================================
-     USER
-  ======================================================= */
-
-  const storedUser =
-    useMemo(
-      () =>
-        getStoredUser(),
-      []
-    );
-
-  const userId =
-    storedUser?.id ||
-    storedUser?._id;
+  useSyncExternalStore(subscribeCareer,careerSnapshot);
+  const contextQuery=useApiQuery('/career-automation/active-career',!careerContext());
+  const defaultCareer=activeCareer();
+  const chat = useCareerChatHistory();
+  const { messages, isLoading, error } = chat;
+  const [input, setInput] = useState("");
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [renameTarget, setRenameTarget] = useState<CareerConversation | null>(null);
+  useEffect(() => {
+    const clearLocalState = () => { setInput(""); setRenameTarget(null); setHistoryOpen(false); };
+    const changed = (event: StorageEvent) => { if (event.key === null || event.key === "interviewiq_token" || event.key === "interviewiq_user") clearLocalState(); };
+    window.addEventListener("interviewiq-auth-change", clearLocalState);
+    window.addEventListener("storage", changed);
+    return () => { window.removeEventListener("interviewiq-auth-change", clearLocalState); window.removeEventListener("storage", changed); };
+  }, []);
+  const { viewport: messagesViewport, onScroll: handleMessagesScroll, capture: captureScroll, followNext } = useCareerChatScroll(chat.sessionKey, messages, chat.isSending);
 
   const normalizeAssistantMarkdown = (text: string): string => {
     return text
@@ -286,114 +182,14 @@ const CareerAssistantPage = () => {
      SEND MESSAGE
   ======================================================= */
 
-  const handleSubmit =
-    async (
-      event:
-        FormEvent<HTMLFormElement>
-    ) => {
-      event.preventDefault();
-
-      const message =
-        input.trim();
-
-      if (
-        !message ||
-        isLoading
-      ) {
-        return;
-      }
-
-      setError(
-        null
-      );
-
-      const userMessage:
-        ChatMessage = {
-        id:
-          createMessageId(),
-
-        role:
-          "user",
-
-        content:
-          message,
-      };
-
-      setMessages(
-        (
-          current
-        ) => [
-            ...current,
-            userMessage,
-          ]
-      );
-
-      setInput(
-        ""
-      );
-
-      setIsLoading(
-        true
-      );
-
-      try {
-        const response =
-          await sendCareerAssistantMessage({
-            sessionId,
-
-            message,
-
-            userId,
-
-            customerName:
-              storedUser?.fullName,
-
-            email:
-              storedUser?.email,
-          });
-
-        const assistantMessage:
-          ChatMessage = {
-          id:
-            createMessageId(),
-
-          role:
-            "assistant",
-
-          content:
-            response.reply,
-
-          response,
-        };
-
-        setMessages(
-          (
-            current
-          ) => [
-              ...current,
-              assistantMessage,
-            ]
-        );
-      } catch (
-      requestError
-      ) {
-        console.error(
-          "[Career Assistant] Request failed:",
-          requestError
-        );
-
-        setError(
-          requestError instanceof
-            Error
-            ? requestError.message
-            : "Something went wrong while contacting the Career Assistant."
-        );
-      } finally {
-        setIsLoading(
-          false
-        );
-      }
-    };
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const message = input.trim();
+    if (!message || isLoading) return;
+    setInput("");
+    followNext();
+    await chat.send(message);
+  };
 
   /* =======================================================
      QUICK PROMPTS
@@ -422,41 +218,26 @@ const CareerAssistantPage = () => {
     <div className="career-assistant-page">
       <div className="career-assistant-container">
 
-        {/* ===============================================
-            HEADER
-        =============================================== */}
-
-        <header className="career-assistant-header">
-          <div>
-            <span className="career-assistant-eyebrow">
-              InterviewIQ
-            </span>
-
-            <h1>
-              Career Assistant
-            </h1>
-
-            <p>
-              Get personalized career guidance
-              using your CV, job matches and
-              interview performance.
-            </p>
-          </div>
-
-          <div className="career-assistant-status">
-            <span className="career-assistant-status-dot" />
-
-            Career AI
-          </div>
-        </header>
-
-        {/* ===============================================
-            CHAT
-        =============================================== */}
-
+        {historyOpen && <button type="button" className="career-history-backdrop" aria-label="Close chat history" onClick={() => setHistoryOpen(false)} />}
+        <CareerHistoryPanel conversations={chat.conversations} activeId={chat.active?.conversationId} busy={isLoading}
+          hasMore={Boolean(chat.nextCursor)} open={historyOpen} onClose={() => setHistoryOpen(false)}
+          onNew={() => { setInput(""); setRenameTarget(null); followNext(); chat.newChat(); setHistoryOpen(false); }}
+          onSelect={conversation => { setInput(""); setRenameTarget(null); void chat.select(conversation); setHistoryOpen(false); }}
+          onRename={setRenameTarget} onDelete={chat.setDeleteTarget} onLoadMore={() => void chat.loadMore()} />
+        {renameTarget && <CareerConversationDialog key={`rename-${renameTarget.conversationId}`} mode="rename" conversation={renameTarget}
+          busy={isLoading} onClose={() => setRenameTarget(null)} onConfirm={title => chat.rename(renameTarget, title)} />}
+        {chat.deleteTarget && <CareerConversationDialog key={`delete-${chat.deleteTarget.conversationId}`} mode="delete" conversation={chat.deleteTarget}
+          busy={isLoading} onClose={() => chat.setDeleteTarget(null)} onConfirm={async () => Boolean(await chat.confirmDelete())} />}
         <main className="career-assistant-chat">
+          <header className="career-chat-header">
+            <button type="button" className="career-history-toggle career-icon-button" aria-label="Open chat history" aria-expanded={historyOpen} aria-controls="career-history-panel" onClick={() => setHistoryOpen(true)}><FiMessageSquare /></button>
+            <div className="career-chat-title"><span className="career-panel-eyebrow">CAREER ASSISTANT</span><h1>{chat.active?.title || "New conversation"}</h1>{defaultCareer && <small>Account career: {defaultCareer.targetRole}. Conversation topics take priority.</small>}{contextQuery.isError && <small role="status">Account career could not be refreshed.</small>}</div>
+            {chat.active && <button type="button" className="career-icon-button" aria-label="Rename active conversation" disabled={isLoading} onClick={() => setRenameTarget(chat.active)}><FiEdit2 /></button>}
+            <span className="career-assistant-status"><span className="career-assistant-status-dot" />Career AI</span>
+          </header>
+          <div className="career-assistant-messages" ref={messagesViewport} onScroll={handleMessagesScroll} role="region" aria-label="Conversation messages" tabIndex={0}>
+            {chat.nextBefore && <button className="career-load-earlier" type="button" disabled={isLoading} onClick={() => { captureScroll(); void chat.loadMore(true); }}>Load earlier messages</button>}
 
-          <div className="career-assistant-messages">
 
             {messages.map(
               (
@@ -798,7 +579,7 @@ const CareerAssistantPage = () => {
                 LOADING
             =========================================== */}
 
-            {isLoading && (
+            {chat.isSending && (
               <div className="career-message career-message-assistant">
 
                 <div className="career-message-avatar">
@@ -828,7 +609,7 @@ const CareerAssistantPage = () => {
           ============================================= */}
 
           {error && (
-            <div className="career-assistant-error">
+            <div className="career-assistant-error" role="alert">
               {error}
             </div>
           )}
@@ -905,14 +686,11 @@ const CareerAssistantPage = () => {
                 value={
                   input
                 }
-                onChange={(
-                  event
-                ) =>
-                  setInput(
-                    event.target
-                      .value
-                  )
-                }
+                onChange={event => {
+                  setInput(event.target.value);
+                  event.target.style.height = "auto";
+                  event.target.style.height = `${Math.min(event.target.scrollHeight, 140)}px`;
+                }}
                 onKeyDown={(
                   event
                 ) => {
@@ -944,9 +722,7 @@ const CareerAssistantPage = () => {
                 className="career-assistant-send"
                 aria-label="Send message"
               >
-                {isLoading
-                  ? "..."
-                  : "↑"}
+                {chat.isSending ? "…" : <FiSend aria-hidden="true" />}
               </button>
 
             </div>

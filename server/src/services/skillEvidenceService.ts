@@ -14,6 +14,7 @@ import {
 ========================================= */
 
 interface RecordInterviewSkillEvidenceParams {
+  session?: mongoose.ClientSession;
   userId: Types.ObjectId;
   interviewId: Types.ObjectId;
   questionId: Types.ObjectId;
@@ -807,6 +808,7 @@ const recalculateSkill = (
 
 export const recordInterviewSkillEvidence =
   async ({
+    session,
     userId,
     interviewId,
     questionId,
@@ -882,26 +884,9 @@ export const recordInterviewSkillEvidence =
        Load / create skill profile
     ------------------------------------- */
 
-    let profile =
-      await UserSkillProfile.findOne(
-        {
-          user: userId,
-        }
-      );
+    let profile = await UserSkillProfile.findOne({user:userId}).session(session || null);
 
-    if (!profile) {
-      profile =
-        await UserSkillProfile.create(
-          {
-            user: userId,
-
-            skills: [],
-
-            totalEvidenceCount:
-              0,
-          }
-        );
-    }
+    if (!profile) profile = new UserSkillProfile({user:userId,skills:[],totalEvidenceCount:0});
 
     /* -------------------------------------
        Add evidence
@@ -967,6 +952,8 @@ export const recordInterviewSkillEvidence =
         profile.skills.push(
           skill
         );
+        // Mongoose casts/copies inserted subdocuments; mutate the persisted instance.
+        skill = profile.skills[profile.skills.length - 1]!;
       }
 
       /* -----------------------------------
@@ -1152,7 +1139,7 @@ export const recordInterviewSkillEvidence =
       "skills"
     );
 
-    await profile.save();
+    await profile.save(session ? {session} : undefined);
 
     /* -------------------------------------
        Return verified interview skills only

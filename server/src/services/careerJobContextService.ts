@@ -1,3 +1,4 @@
+import { readRoadmapDocument, readRoadmapEvidence } from "./roadmapEvidenceScope";
 import {
   Types,
 } from "mongoose";
@@ -295,7 +296,7 @@ const resolveResumeAnalysis =
        */
 
       const byAnalysisId =
-        await ResumeAnalysis
+        await readRoadmapDocument(normalizedUserId, "resume", { id:String(resumeObjectId) }, async () => await ResumeAnalysis
           .findOne({
             _id:
               resumeObjectId,
@@ -304,7 +305,7 @@ const resolveResumeAnalysis =
               userObjectId,
           })
           .lean<IResumeAnalysis>()
-          .exec();
+          .exec());
 
       if (
         byAnalysisId
@@ -317,7 +318,7 @@ const resolveResumeAnalysis =
        */
 
       const byFileId =
-        await ResumeAnalysis
+        await readRoadmapDocument(normalizedUserId, "resume", { fileId:String(resumeObjectId) }, async () => await ResumeAnalysis
           .findOne({
             user:
               userObjectId,
@@ -330,7 +331,7 @@ const resolveResumeAnalysis =
               -1,
           })
           .lean<IResumeAnalysis>()
-          .exec();
+          .exec());
 
       return (
         byFileId ??
@@ -343,7 +344,7 @@ const resolveResumeAnalysis =
     ===================================================== */
 
     const latest =
-      await ResumeAnalysis
+      await readRoadmapDocument(normalizedUserId, "resume", { latest:true }, async () => await ResumeAnalysis
         .findOne({
           user:
             userObjectId,
@@ -353,7 +354,7 @@ const resolveResumeAnalysis =
             -1,
         })
         .lean<IResumeAnalysis>()
-        .exec();
+        .exec());
 
     return (
       latest ??
@@ -508,7 +509,7 @@ export const getActiveCareerJobs =
    top results
 ========================================================= */
 
-export const getCareerJobMatches =
+const runGetCareerJobMatches =
   async ({
     userId,
     activeResumeId,
@@ -665,7 +666,8 @@ export const getCareerJobMatches =
     const ranked =
       rankJobsForResume(
         resume,
-        candidateJobs
+        candidateJobs,
+        {targetRole}
       );
 
     /* =====================================================
@@ -1100,6 +1102,9 @@ export const buildCareerJobMatchReply =
 /* =========================================================
    DEFAULT EXPORT
 ========================================================= */
+
+export const getCareerJobMatches = (input: Parameters<typeof runGetCareerJobMatches>[0]) =>
+  readRoadmapEvidence(input.userId, JSON.stringify(['job-matches',input.activeResumeId || null,input.targetRole || null,input.limit ?? null]), () => runGetCareerJobMatches(input));
 
 export default {
   getActiveCareerJobs,

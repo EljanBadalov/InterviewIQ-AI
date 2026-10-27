@@ -51,6 +51,9 @@ export interface ICareerDynamicResponseInput {
   focus: CareerResponseFocus;
 
   targetRole?: string;
+  /** Per-turn subject; independent of the account's active career. */
+  conversationSubject?: string;
+  activeCareer?: {targetRole:string;roleKey:string|null;revision:number};
 
   resume?: ICareerResumeContext;
 
@@ -2630,7 +2633,7 @@ const getPreviouslyRecommendedTopicsForSubject = (
 };
 
 
-const buildQwenCareerDataset = (
+export const buildQwenCareerDataset = (
   input: ICareerSmartResponseInput
 ): Record<string, unknown> => {
   const dataset: Record<string, unknown> = {
@@ -2643,6 +2646,7 @@ const buildQwenCareerDataset = (
     },
   };
 
+  if(input.activeCareer)dataset.accountCareer={...input.activeCareer};
   if (input.customerName) {
     dataset.user = {
       name: input.customerName,
@@ -2685,16 +2689,13 @@ const buildQwenCareerDataset = (
   }
 
   const knowledgeSubject =
-    input.nextSteps?.knowledgeSubject;
+    input.conversationSubject || input.nextSteps?.knowledgeSubject;
 
   const questionKnowledge =
     input.nextSteps?.careerKnowledge;
 
-  if (
-    knowledgeSubject &&
-    questionKnowledge?.found
-  ) {
-    const allKnowledgeTopics = extractCareerKnowledgeTopics(questionKnowledge);
+  if (knowledgeSubject) {
+    const allKnowledgeTopics = questionKnowledge?.found ? extractCareerKnowledgeTopics(questionKnowledge) : [];
     const previouslyRecommended =
       getPreviouslyRecommendedTopicsForSubject(
         input.careerRecommendationHistory ?? history,
@@ -2710,16 +2711,15 @@ const buildQwenCareerDataset = (
       subject:
         knowledgeSubject,
 
-      careerKnowledge:
-        toSafeDatasetValue(
+      careerKnowledge: questionKnowledge?.found ? toSafeDatasetValue(
           questionKnowledge,
           3200
-        ),
+        ) : undefined,
     };
 
     const batchSize = 4;
     const freshTopicCandidates = availableTopics.slice(0, batchSize);
-    const isExhausted = additionalInformationRequested && availableTopics.length === 0;
+    const isExhausted = Boolean(questionKnowledge?.found) && additionalInformationRequested && availableTopics.length === 0;
 
     questionDataset.freshTopicCandidates = freshTopicCandidates;
     questionDataset.freshTopicsExhausted = isExhausted;
@@ -2915,7 +2915,7 @@ Never invent experience, projects, skills, employers, education,
 scores, achievements, technologies, dates, or metrics.
 
 3. The subject of the current question has priority over any saved
-career target or previous career context.
+career target or previous career context. accountCareer is background context only and must never replace the current conversation subject.
 
 4. If question.careerKnowledge exists, it represents knowledge for
 the subject currently being asked about. Use it as the primary
@@ -2945,7 +2945,11 @@ If the user asks for "other", "more", "another", "else",
 7. RESPONSE DEPTH
 
 Adapt the response depth to the user's request (Default / Short / Detailed).
-Use Markdown headings, bullets, or numbered steps.
+Explicit user format and scope constraints override presentation defaults.
+If exactly two sentences and one exercise are requested, return exactly two plain
+sentences about that single exercise: no bullets, headings, extra projects or advice.
+Respect exclusions such as no roadmap and no job-hunting advice, including negation.
+Use Markdown headings, bullets, or numbered steps only when compatible with the request.
 Do not mention datasets, prompts, databases, Qwen, or models.
 
 CONTEXT:

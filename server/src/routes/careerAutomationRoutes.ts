@@ -3,6 +3,8 @@ import {
 } from "express";
 
 import {
+  getGenerationStatus,
+  getActiveCareer,
   createAutomation,
   generateDailyPlan,
   getAutomation,
@@ -104,6 +106,9 @@ router.use(
  *   }
  * }
  */
+
+router.get("/career-automation/generation-status", getGenerationStatus);
+router.get("/career-automation/active-career", getActiveCareer);
 
 router.post(
   "/career-automation/",

@@ -1,3 +1,4 @@
+import { installRoadmapReadGuard } from '../services/roadmapWriteGuard';
 import {
   Schema,
   model,
@@ -1093,3 +1094,4 @@ export {
 };
 
 export default CareerKnowledge;
+installRoadmapReadGuard(CareerKnowledge);

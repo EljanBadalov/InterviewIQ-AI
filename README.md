@@ -1,3 +1,5 @@
+> Hybrid deployment and local AI safety: see [docs/deployment/HYBRID.md](docs/deployment/HYBRID.md). Model weights and credentials stay local. Nothing is deployed automatically.
+
 ## Key Features
 
 - 🤖 AI-powered technical interviewer
