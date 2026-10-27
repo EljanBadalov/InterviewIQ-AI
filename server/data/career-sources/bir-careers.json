@@ -1,9 +1,9 @@
 {
   "id": "bir-careers",
   "name": "Bir Careers",
-  "updatedAt": "2026-10-27T17:45:52.534Z",
+  "updatedAt": "2026-10-27T23:33:40.628Z",
   "success": true,
-  "count": 78,
+  "count": 76,
   "jobs": [
     {
       "externalId": "7666",
@@ -1987,99 +1987,6 @@
       "source": "Bir Careers"
     },
     {
-      "externalId": "8642",
-      "title": "Komplayens departamentinin Komplayens hesabatlığı şöbəsinin aparıcı mütəxəssisi",
-      "company": "Kapital Bank / Bir",
-      "brand": "Birbank",
-      "location": "Bakı",
-      "summary": "Birbank-ın strateji fəaliyyətində mühüm rol oynayan Komplayens hesabatlığı şöbəsinə komanda yoldaşı axtarırıq. Bu rol Bankın komplayens hesabatlarının hazırlanması, müvafiq daxili strukturları və dövlət qurumlarına dəqiq və vaxtında təqdim olunmasını əhatə edir. Bu vəzifədə Siz həm gündəlik hesabatların hazırlanmasında, həm də yeni regulyativ tələblərə uyğun proseslərin qurulmasında iştirak edəcəksiniz. Sizin işiniz yalnız hesabatların hazırlanması ilə məhdudlaşmayacaq, həm də Bankın sabit fəaliyyətinə və risklərin effektiv idarə olunmasına mühüm töhfə verəcək.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
-      "description": "Birbank-ın strateji fəaliyyətində mühüm rol oynayan Komplayens hesabatlığı şöbəsinə komanda yoldaşı axtarırıq. Bu rol Bankın komplayens hesabatlarının hazırlanması, müvafiq daxili strukturları və dövlət qurumlarına dəqiq və vaxtında təqdim olunmasını əhatə edir. Bu vəzifədə Siz həm gündəlik hesabatların hazırlanmasında, həm də yeni regulyativ tələblərə uyğun proseslərin qurulmasında iştirak edəcəksiniz. Sizin işiniz yalnız hesabatların hazırlanması ilə məhdudlaşmayacaq, həm də Bankın sabit fəaliyyətinə və risklərin effektiv idarə olunmasına mühüm töhfə verəcək.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
-      "requirements": [
-        "İT, İqtisadiyyat, Maliyyə və ya əlaqəli sahələr üzrə ali təhsilin olması;",
-        "Bank sektorunda, xüsusilə hesabatlıq və ya data analitika sahəsində ən azı 2 il iş təcrübəsinin olması;",
-        "Verilənlər bazaları ilə işləmə təcrübəsinin olması;",
-        "SQL, PL/SQL və MS Excel üzrə qabaqcıl səviyyədə biliklərin olması;",
-        "HTML, CSS, XML və JSON formatları ilə işləmə bacarığının olması;",
-        "Python proqramlaşdırma dilini bilməyin üstünlük hesab edilməsi;",
-        "Hesabat sənədləşməsi və texniki tapşırıqlarla işləmək üçün texniki səviyyədə ingilis dili biliklərinin olması."
-      ],
-      "responsibilities": [
-        "Bankın məlumat bazalarından zəruri məlumatların sorğulanması, analizi və tənzimləyici/daxili hesabatların hazırlanması;",
-        "Mövcud hesabatlıq skriptlərinin optimallaşdırılması və yeni biznes tələblərinin (reportinq meyarlarının) skriptlərə tətbiq edilməsi;",
-        "AML və ya risklərin idarə edilməsi çərçivəsində yeni şübhəlilik indikatorları üzrə (monitoring/screening) skriptlərin işlənib hazırlanması;",
-        "Nəzarətedici qurumlar tərəfindən tələb olunan hesabat məlumatlarının müvafiq proqram təminatında toplanmasına və onların dəqiqliyinə nəzarət edilməsi."
-      ],
-      "benefits": [],
-      "skills": [
-        "Python",
-        "SQL",
-        "Excel",
-        "Monitoring",
-        "HTML",
-        "CSS"
-      ],
-      "employmentType": "full-time",
-      "experienceLevel": "senior",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "27.10.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8642",
-      "applyUrl": "https://careers.bir.az/vacancies/8642#attachFile",
-      "source": "Bir Careers"
-    },
-    {
-      "externalId": "8699",
-      "title": "Maliyyə Hesabatlığı və Mühasibatlıq Departamentinin Maliyyə Nəzarəti və Uçotu Şöbəsinin Mütəxəssisi",
-      "company": "Kapital Bank / Bir",
-      "brand": "Birbank",
-      "location": "Bakı",
-      "summary": "Birbankda Maliyyə nəzarəti və uçotu şöbəsinin mütəxəssisi vəifəsi üzrə analitik düşüncəyə malik, rəqəmlərlə işləməkdən zövq alan, detallara diqqət göstərən və bankın uçot sistemlərinin təkmilləşdirilməsində fəal rol oynaya biləcək namizədlər axtarışındayıq.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
-      "description": "Birbankda Maliyyə nəzarəti və uçotu şöbəsinin mütəxəssisi vəifəsi üzrə analitik düşüncəyə malik, rəqəmlərlə işləməkdən zövq alan, detallara diqqət göstərən və bankın uçot sistemlərinin təkmilləşdirilməsində fəal rol oynaya biləcək namizədlər axtarışındayıq.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
-      "requirements": [
-        "İqtisadiyyat, maliyyə və ya əlaqəli sahələr üzrə ali təhsil",
-        "Sahə üzrə ən az 1 il iş təcrübəsi",
-        "Riyazi hesablama qabiliyyəti",
-        "Dəqiqlik, detallara qarşı diqqətlilik",
-        "Kritik düşüncə qabiliyyəti",
-        "Güclü analitik və problem həll etmə qabiliyyətləri",
-        "Təşəbbüskarlıq",
-        "ACCA F3 olması arzuolunandır",
-        "SQL biliklərinin olması arzuolunandır"
-      ],
-      "responsibilities": [
-        "Maliyyə uçotunun bankın siyasətinə və mühasibatlıq prinsiplərinə uyğunluğunu təmin etmək;",
-        "Hesabların Azərbaycan Respublikasının bank sistemi üçün Hesablar Planına uyğun açılmasını təmin etmək;",
-        "Əməliyyatların Bank Əməliyyat Sistemində düzgün əks etdirilməsinə nəzarət etmək;",
-        "Uçot səhvlərini və ya uyğunsuzluqları müəyyənləşdirmək və lazimi düzəliş tədbirlərini təklif etmək;",
-        "Bank Əməliyyat Sistemində(BƏS) əməliyyatların düzgün şəkildə əks olunmasını təmin etmək;",
-        "Proseslərin uçot standartlara uyğun icra olunmasını yoxlamaq və uyğunsuzluqların aradan qaldırılmasını təmin etmək;",
-        "BƏS-də məlumatların düzgün və tam şəkildə qeydə alınmasını nəzarətdə saxlamaq;",
-        "Bankın bağladığı müqavilələr əsasında vendorlarla hesablaşmaları və üzləşmələri həyata keçirmək;",
-        "Vendorlarla bağlanmış müqavilələrə uyğun olaraq ödənişlərin icrasını tələb etmək;",
-        "Vendorlarla üzləşmələrin düzgün aparılmasını təmin etmək və uyğunsuzluqların həllinə nəzarət etmək;",
-        "Uçot üzrə nəzarət mexanizmlərinin qurulmasını və mövcud nəzarət alətlərinin optimallaşdırılmasını (mövcud nəzarət mexanizmlərinin təkmilləşdirilməsi və effektivliyinin artırılması) təmin etmək;",
-        "Nəzarət mexanizmlərinin-hesabatların avtomatlaşdırılması və rəqəmsallaşdırılması istiqamətində təkliflər vermək və tətbiq etmək."
-      ],
-      "benefits": [],
-      "skills": [
-        "SQL"
-      ],
-      "employmentType": "full-time",
-      "experienceLevel": "mid",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "27.10.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8699",
-      "applyUrl": "https://careers.bir.az/vacancies/8699#attachFile",
-      "source": "Bir Careers"
-    },
-    {
       "externalId": "8691",
       "title": "Rəqəmsal istedadların cəlbi üzrə mütəxəssis",
       "company": "Kapital Bank / Bir",
@@ -3934,9 +3841,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 78,
-    "detailPagesFetched": 78,
-    "acceptedJobs": 78,
+    "discoveredLinks": 76,
+    "detailPagesFetched": 76,
+    "acceptedJobs": 76,
     "rejectedJobs": 0,
     "errors": []
   }
