@@ -1,10 +1,50 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-10-27T03:58:04.400Z",
+  "updatedAt": "2026-10-27T09:42:47.155Z",
   "success": true,
-  "count": 100,
+  "count": 101,
   "jobs": [
+    {
+      "externalId": "5438",
+      "title": "Korporativ kommunikasiya şöbəsinə mütəxəssis",
+      "company": "ABB",
+      "location": "Azerbaijan",
+      "summary": "Korporativ tədbirlərin konsepsiyasının hazırlanması və təşkili prosesində iştirak etmək; Tədbirlərin planlaşdırılması, koordinasiyası və icrasını təmin etmək; Ali təhsilli;",
+      "description": "Korporativ tədbirlərin konsepsiyasının hazırlanması və təşkili prosesində iştirak etmək; Tədbirlərin planlaşdırılması, koordinasiyası və icrasını təmin etmək; Ali təhsilli;",
+      "requirements": [
+        "Ali təhsilli;",
+        "Tədbirlərin təşkili və ya korporativ kommunikasiya sahəsində minimum 1 il iş təcrübəsi;",
+        "Böyükmiqyaslı korporativ tədbirlərin hazırlanması və idarə olunması üzrə praktiki təcrübə;",
+        "Layihələrin koordinasiyası və vaxtın effektiv idarə edilməsi bacarığı;",
+        "Güclü kommunikasiya və danışıqlar aparmaq bacarığı;",
+        "Azərbaycan dilində sərbəst ünsiyyət bacarığı;",
+        "Dinamik iş mühitində operativ qərarvermə bacarığı olan şəxsdir."
+      ],
+      "responsibilities": [
+        "Korporativ tədbirlərin konsepsiyasının hazırlanması və təşkili prosesində iştirak etmək;",
+        "Tədbirlərin planlaşdırılması, koordinasiyası və icrasını təmin etmək;",
+        "Podratçılar, agentliklər və tərəfdaşlarla kommunikasiya aparmaq;",
+        "Tədbir büdcəsinin formalaşdırılması və nəzarətində iştirak etmək;",
+        "Tədbir sonrası hesabatların və nəticə analizlərinin hazırlanmasına dəstək olmaq;",
+        "Şirkətin brend standartlarına uyğun tədbir təcrübəsinin yaradılmasına töhfə vermək;",
+        "Korporativ hədiyyələrin seçimi, alışı və paylanması prosesində iştirak etmək;",
+        "Şöbə üzrə digər yarana biləcək zəruri işlərə dəstək olmaq."
+      ],
+      "benefits": [],
+      "skills": [],
+      "employmentType": null,
+      "experienceLevel": "junior",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": null,
+      "postedAt": null,
+      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5438",
+      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5438",
+      "source": "ABB Careers"
+    },
     {
       "externalId": "5317",
       "title": "Süni intellekt üzrə qiymətləndirmə mühəndisi (Rəqəmsal kanallar sahəsi)",
@@ -4189,9 +4229,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 100,
-    "detailPagesFetched": 100,
-    "acceptedJobs": 100,
+    "discoveredLinks": 101,
+    "detailPagesFetched": 101,
+    "acceptedJobs": 101,
     "rejectedJobs": 0,
     "listingFallbacks": 0,
     "errors": []

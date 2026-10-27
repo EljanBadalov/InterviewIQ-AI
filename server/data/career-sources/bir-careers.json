@@ -1,10 +1,92 @@
 {
   "id": "bir-careers",
   "name": "Bir Careers",
-  "updatedAt": "2026-10-27T03:56:42.955Z",
+  "updatedAt": "2026-10-27T09:41:21.644Z",
   "success": true,
-  "count": 72,
+  "count": 74,
   "jobs": [
+    {
+      "externalId": "8778",
+      "title": "Biznes Analitik - Təşkilati inkişaf və HR texnologiyaları",
+      "company": "Kapital Bank / Bir",
+      "brand": "Bir",
+      "location": "Bakı",
+      "summary": "Bu rolun əsas məqsədi təşkilati inkişaf və insan resursları (HR) proseslərinin təhlili, biznes tələblərinin müəyyənləşdirilməsi və HR texnologiyalarının effektiv tətbiqinin dəstəklənməsi vasitəsilə qərar qəbuletmə prosesini təkmilləşdirmək, proseslərin optimallaşdırılmasına və təşkilati effektivliyin artırılmasına töhfə verməkdir.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
+      "description": "Bu rolun əsas məqsədi təşkilati inkişaf və insan resursları (HR) proseslərinin təhlili, biznes tələblərinin müəyyənləşdirilməsi və HR texnologiyalarının effektiv tətbiqinin dəstəklənməsi vasitəsilə qərar qəbuletmə prosesini təkmilləşdirmək, proseslərin optimallaşdırılmasına və təşkilati effektivliyin artırılmasına töhfə verməkdir.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
+      "requirements": [
+        "Analitik təfəkkür və yüksək təhliletmə qabiliyyəti.",
+        "Fundamental statistika bilikləri.",
+        "Microsoft Excel proqramı üzrə yüksək səviyyədə biliklər.",
+        "İri həcmli məlumat bazaları ilə işləmək və SQL sorğu dilindən istifadə etmək bacarığı.",
+        "Tableau, Power BI və digər məlumatların vizuallaşdırılması alətləri ilə işləmək bacarığı.",
+        "İnsan Resursları prosesləri və əməliyyatları üzrə biliklərin olması üstünlükdür."
+      ],
+      "responsibilities": [
+        "Toplanmış məlumatların ümumi təhlilini aparır, təhlillərin nəticələrinə əsasən hesabat və təkliflərin hazırlanmasını təşkil edir.",
+        "Dövri statistik icmalların hazırlanmasında, statistik məlumatların toplanmasında və ümumiləşdirilməsində iştirak edir.",
+        "Hesabatların düzgünlüyünə nəzarət edir, uyğunsuzluqlar aşkar edildikdə müvafiq işçiləri operativ şəkildə məlumatlandırır və uyğunsuzluqların aradan qaldırılmasını təmin edir.",
+        "Deskriptiv və diaqnostik hesabatların, eləcə də təhlillərin hazırlanmasını təşkil edir; qərar qəbuletmə prosesinə təsir göstərən hesabat və rəylərin formalaşdırılmasını və təqdim olunmasını təmin edir."
+      ],
+      "benefits": [],
+      "skills": [
+        "SQL",
+        "Excel",
+        "Power BI",
+        "Tableau"
+      ],
+      "employmentType": "full-time",
+      "experienceLevel": "senior",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": "30.11.2026",
+      "postedAt": null,
+      "url": "https://careers.bir.az/vacancies/8778",
+      "applyUrl": "https://careers.bir.az/vacancies/8778#attachFile",
+      "source": "Bir Careers"
+    },
+    {
+      "externalId": "8776",
+      "title": "Salyan filialının Mikrokreditlər Bölməsinin Mütəxəssisi/Aparıcı mütəxəssisi",
+      "company": "Kapital Bank / Bir",
+      "brand": "Birbank",
+      "location": "Salyan",
+      "summary": "Birbankın Salyan filialında Mikrokreditlər bölməsinin mütəxəssisi/aparıcı mütəxəssisi vəzifəsi üzrə detallara qarşı diqqətli, ünsiyyət bacarıqları yüksək olan namizəd axtarırıq. Müştərilərimizə yüksək səviyyədə xidmət göstərmək əsas məqsədimizdir.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
+      "description": "Birbankın Salyan filialında Mikrokreditlər bölməsinin mütəxəssisi/aparıcı mütəxəssisi vəzifəsi üzrə detallara qarşı diqqətli, ünsiyyət bacarıqları yüksək olan namizəd axtarırıq. Müştərilərimizə yüksək səviyyədə xidmət göstərmək əsas məqsədimizdir.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
+      "requirements": [
+        "Ali təhsil;",
+        "Sahə üzrə ən az 1 il iş təcrübəsi ;",
+        "Yüksək səviyyədə Azərbaycan dili biliyi;",
+        "Analitik düşüncə və məlumatlara əsaslanan qərarvermə;",
+        "Satış bacarığı;",
+        "Yüksək səviyyədə ünsiyyət bacarıqları;",
+        "Sahiblənmə və məsuliyyət hissi."
+      ],
+      "responsibilities": [
+        "Mövcud müştəri bazasına uyğun məhsulların satışını həyata keçirir",
+        "Potensial müştərilərin fəaliyyət sahələrinə vizit edib, onlara bank məhsulları barədə məlumat verir",
+        "Fəaliyyətinə uyğun Bank məhsulları əldə etmək istəyən potensial müştərilərin təhlilini aparır",
+        "Müştərilərin ehtiyaclarını müəyyən edərək onlarla uzunmüddətli iş prespektivində maliyyə məsləhətləri verir;",
+        "Əldə edilmiş maliyyə hesabatlarının nəticələrinə uyğun olaraq müraciətin müvafiq şəxslər tərəfindən təsdiqlənməsi üçün təqdimatlar hazırlayır",
+        "Bank tərəfindən müəyyən edilmiş aylıq hədəfləri icra edir",
+        "İdarə etdiyi və təhkim edilmiş portfelin tələb edilən parametrlərə uyğunluğunu təmin edir",
+        "Görülmüş işlər üzrə hesabatlar verir."
+      ],
+      "benefits": [],
+      "skills": [],
+      "employmentType": "full-time",
+      "experienceLevel": "mid",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": "09.11.2026",
+      "postedAt": null,
+      "url": "https://careers.bir.az/vacancies/8776",
+      "applyUrl": "https://careers.bir.az/vacancies/8776#attachFile",
+      "source": "Bir Careers"
+    },
     {
       "externalId": "8000",
       "title": "Maliyyə Menecmenti Departamentinin Strategiya, Büdcə və Analitika Şöbəsinin Aparıcı Mütəxəssisi",
@@ -151,6 +233,7 @@
       "requirements": [
         "Ali təhsil;",
         "Azərbaycan və rus dilində səlis danışıq və yazılı ünsiyyət bacarıqları;",
+        "İngilis dili biliyi üstünlükdür;",
         "Bankçılıq sahəsi haqqında ilkin anlayış;",
         "Problem həlletmə bacarığı və nəticəyönümlülük;",
         "Effektiv kommunikasiya və komandaya sürətli uyğunlaşma;",
@@ -191,6 +274,7 @@
       "requirements": [
         "Ali təhsil;",
         "Azərbaycan və rus dilində səlis danışıq və yazılı ünsiyyət bacarıqları;",
+        "İngilis dili biliyi üstünlükdür;",
         "Bankçılıq sahəsi haqqında ilkin anlayış;",
         "Problem həlletmə bacarığı və nəticəyönümlülük;",
         "Effektiv kommunikasiya və komandaya sürətli uyğunlaşma;",
@@ -336,7 +420,6 @@
         "SQL sorğuları və verilənlər bazaları ilə işləmə təcrübəsi;",
         "API inteqrasiyaları (REST, SOAP) üzrə biliklər;",
         "Agile/Scrum mühitində işləmə təcrübəsi.",
-        "Üstünlük veriləcək namizədlər:",
         "UiPath platforması üzrə təcrübə (Orchestrator, REFramework);",
         "UiPath Advanced Developer sertifikatı;",
         "Bank və maliyyə sektorunda avtomatlaşdırma layihələrində iştirak təcrübəsi;",
@@ -3691,9 +3774,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 72,
-    "detailPagesFetched": 72,
-    "acceptedJobs": 72,
+    "discoveredLinks": 74,
+    "detailPagesFetched": 74,
+    "acceptedJobs": 74,
     "rejectedJobs": 0,
     "errors": []
   }
