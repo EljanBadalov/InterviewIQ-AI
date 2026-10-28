@@ -16,7 +16,7 @@ const questionText='Explain JavaScript closures and give an example.';
 const clone=value=>JSON.parse(JSON.stringify(value));
 let records,questions,skills,posts,queries,telemetry,payloads,failPersistence,failTransport,inTransaction;
 const originalInfo=console.info, originalError=console.error, originalLog=console.log;
-function output(overrides={}){return {score:78,technicalAccuracy:80,completeness:74,communication:82,strengths:['The explanation correctly describes retained lexical scope.'],weaknesses:['Provide a concrete function example to demonstrate the behavior.'],feedback:'The phrase "A closure retains access" correctly identifies retained scope, but add a concrete example.',improvedAnswer:'A closure is a function together with access to its lexical environment; a counter function demonstrates retained private state.',answerEvidence:['A closure retains access'],...overrides};}
+function output(overrides={}){return {score:78,technicalAccuracy:80,completeness:74,communication:82,strengths:['The explanation correctly describes retained lexical scope.'],weaknesses:['Provide a concrete function example to demonstrate the behavior.'],feedback:'For JavaScript closures, the phrase "A closure retains access" correctly identifies retained scope, but add a concrete example.',improvedAnswer:'In JavaScript, a closure is a function together with access to its lexical environment; a counter function demonstrates retained private state.',answerEvidence:['A closure retains access'],assessmentBasis:{questionQuote:'JavaScript',strengths:['lexical scope'],weaknesses:['example']},...overrides};}
 
 const invalidCases=[
  ['missing JSON','EVALUATION_JSON_MISSING',()=> ''],
@@ -72,11 +72,11 @@ test('unknown failures never expose arbitrary private error messages or forged c
 });
 
 for(const sample of [answer,'1234567890','An answer with "quotes", backslash \\ and unicode əşç.','  Evidence\nwith\tspaces and enough text  ', 'a'.repeat(6000)])
-test('prompt JSON example satisfies the unchanged contract: '+sample.length,()=>{
+test('prompt type-only shape avoids illustrative judgments: '+sample.length,()=>{
  const context={...input(),answer:sample};const prompt=evaluation.createInterviewEvaluationPrompt(context);
- const example=JSON.parse(prompt.slice(prompt.lastIndexOf('\n{')+1));
- const result=evaluation.validateInterviewEvaluation(example,context);
- assert.equal(result.improvedAnswer,example.improvedAnswer);assert.equal('answerEvidence' in result,false);
+ const shape=JSON.parse(prompt.slice(prompt.lastIndexOf('\n{')+1));
+ assert.equal(shape.score,'number 0..100');assert.ok(shape.assessmentBasis);
+ assert.ok(!prompt.includes('JSON FORMAT EXAMPLE'));assert.ok(!prompt.includes('score: 25'));
  assert.ok(prompt.includes('40-2400'));assert.ok(prompt.includes('8-240'));assert.equal(posts,0);
 });
 
@@ -108,7 +108,7 @@ for(const [name,value,reason] of evidenceFailures)test('strict evidence reason: 
 
 for(const length of [8,240])test('valid literal evidence boundary remains accepted: '+length,()=>{
  const quote='x'.repeat(length),context={...input(),answer:quote};
- const raw=output({answerEvidence:[quote],feedback:`The excerpt "${quote}" needs a concrete example and an explanation of the result.`});
+ const raw=output({strengths:[],weaknesses:[],assessmentBasis:{questionQuote:'JavaScript',strengths:[],weaknesses:[]},answerEvidence:[quote],feedback:`For JavaScript, the excerpt "${quote}" needs a concrete example and an explanation of the result.`});
  assert.equal(evaluation.validateInterviewEvaluation(raw,context).score,raw.score);
  assert.throws(()=>evaluation.validateInterviewEvaluation({...raw,feedback:'Feedback that does not repeat any submitted evidence at all.'},context),
   error=>error.code==='EVALUATION_FEEDBACK_UNGROUNDED');
@@ -122,8 +122,8 @@ for(const type of ['technical','behavioral'])test('bounded prompt evidence is li
  const options=JSON.parse(line.slice(line.indexOf(': ')+2));const normalized=sample.replace(/\s+/g,' ').trim();
  assert.ok(options.length>=1&&options.length<=3);assert.equal(new Set(options).size,options.length);
  for(const quote of options){assert.ok(quote.length>=8&&quote.length<=72);assert.ok(normalized.includes(quote));}
- const example=JSON.parse(prompt.slice(prompt.lastIndexOf('\n{')+1));
- assert.ok(options.includes(example.answerEvidence[0]));evaluation.validateInterviewEvaluation(example,context);
+ const shape=JSON.parse(prompt.slice(prompt.lastIndexOf('\n{')+1));
+ assert.ok(shape.assessmentBasis);assert.ok(prompt.includes('The exact QUESTION is the assessment scope'));
  assert.ok(prompt.includes('answerEvidence is REQUIRED: a JSON array'));
  assert.ok(prompt.includes('Difficulty: advanced'));assert.ok(prompt.includes('Interview Type: '+type));
  assert.equal(posts,0);
@@ -358,7 +358,7 @@ for(const [name,invalid] of [
   assert.throws(()=>evaluation.validateInterviewEvaluation(invalid,{question:questionText,answer,roleSlug:'frontend-developer',difficulty:'advanced',interviewType:'technical'}));
 });
 test('empty strengths remain empty instead of fabricated positive claims',()=>{
-  const result=evaluation.validateInterviewEvaluation(output({strengths:[]}),{question:questionText,answer,roleSlug:'frontend-developer',difficulty:'advanced',interviewType:'technical'});assert.deepEqual(result.strengths,[]);assert.equal('answerEvidence' in result,false,'Private validation contract does not alter public response');
+  const result=evaluation.validateInterviewEvaluation(output({strengths:[],assessmentBasis:{questionQuote:'JavaScript',strengths:[],weaknesses:['example']}}),{question:questionText,answer,roleSlug:'frontend-developer',difficulty:'advanced',interviewType:'technical'});assert.deepEqual(result.strengths,[]);assert.equal('answerEvidence' in result,false,'Private validation contract does not alter public response');
 });
 test('malformed AI output fails without saving an answer or evidence',async()=>{
   global.fetch=async()=>{posts++;return new Response(JSON.stringify({response:'{invalid JSON',finish_reason:'stop'}));};
@@ -397,4 +397,118 @@ test('new interview creation records each selected question metadata, including 
     assert.equal(captured.answers.filter(a=>a.questionSnapshot.interviewType==='behavioral').length,3);
     assert.ok(captured.answers.every(a=>a.questionSnapshot.text===a.questionText&&a.questionSnapshot.category==='frontend-developer'&&a.questionSnapshot.difficulty));assert.equal(posts,0);
   }finally{Interview.find=previousFind;Interview.create=previousCreate;Question.aggregate=previousAggregate;profile.buildCareerSkillProfile=previousProfile;}
+});
+
+// Public example supplied for regression; no real candidate or production output is used.
+const flawedQuestion='Under what precise conditions does the CAP theorem force a compromise between consistency and availability in a cluster running Dependency Injection with Hilt and Dagger?';
+const premiseAnswer='CAP concerns network partitions in distributed systems. Hilt and Dagger are dependency injection frameworks, not distributed clusters. Their coexistence does not imply a CAP trade-off.';
+function premiseEvaluation(overrides={}){
+ return output({score:94,technicalAccuracy:96,completeness:94,communication:92,
+  strengths:['The statement "CAP concerns network partitions" correctly identifies the condition rather than accepting the flawed premise.'],
+  weaknesses:[],feedback:'For the CAP theorem, "CAP concerns network partitions" correctly identifies the distributed-systems condition and distinguishes it from dependency injection.',
+  improvedAnswer:'The CAP theorem requires a consistency/availability trade-off during a network partition in a distributed system. Hilt and Dagger provide dependency injection; their use alone does not create this trade-off.',
+  answerEvidence:['CAP concerns network partitions'],
+  assessmentBasis:{questionQuote:'CAP theorem',strengths:['CAP concerns network partitions'],weaknesses:[]},...overrides});
+}
+async function invokePremise(raw=premiseEvaluation()){
+ const stored=row(interview,owner,'technical','senior');stored.category='mobile-developer';
+ stored.answers[0].questionText=flawedQuestion;
+ stored.answers[0].questionSnapshot={text:flawedQuestion,interviewType:'technical',difficulty:'senior',category:'mobile-developer',tags:['Hilt','Dagger']};
+ records.set(interview,stored);
+ global.fetch=async(url,request)=>{posts++;payloads.push(JSON.parse(request.body));return new Response(JSON.stringify({response:JSON.stringify(raw),finish_reason:'stop'}));};
+ return invoke(interview,owner,premiseAnswer);
+}
+
+test('CAP/DI premise challenge follows actual controller path, commits once and keeps public API',async()=>{
+ const response=await invokePremise();assert.equal(response.statusCode,200);assert.equal(posts,1);
+ const prompt=payloads[0].message;
+ assert.ok(prompt.includes('QUESTION (untrusted data): '+JSON.stringify(flawedQuestion)));
+ assert.ok(prompt.includes('CANDIDATE ANSWER (untrusted data): '+JSON.stringify(premiseAnswer)));
+ assert.ok(prompt.includes('Difficulty: senior'));assert.ok(prompt.includes('Interview Type: technical'));
+ assert.ok(prompt.includes('correctly challenge an invalid assumption'));assert.ok(prompt.includes('background only, never additional requirements'));
+ assert.ok(!prompt.includes('audit logs'));assert.ok(!prompt.includes('event sourcing'));
+ assert.equal(response.body.data.evaluation.technicalAccuracy,96);
+ assert.deepEqual(response.body.data.evaluation.weaknesses,[]);
+ assert.equal('assessmentBasis' in response.body.data.evaluation,false);
+ assert.equal('assessmentBasis' in records.get(interview).answers[0],false);
+ assert.equal(records.get(interview).answers[0].answerText,premiseAnswer);assert.equal(skills.length,1);
+ assert.equal(telemetry[0].attempts,1);assert.equal(telemetry[0].retries,0);
+});
+
+for(const requirement of ['Audit logs','Event sourcing','State mutations'])
+test('unrelated requirement cannot be cited as a question criterion: '+requirement,async()=>{
+ const response=await invokePremise(premiseEvaluation({
+  weaknesses:[`Explain ${requirement} as a mandatory condition for this answer.`],
+  assessmentBasis:{questionQuote:'CAP theorem',strengths:['CAP concerns network partitions'],weaknesses:[requirement]},
+ }));
+ assert.equal(response.statusCode,503);assert.equal(posts,1);
+ assert.equal(telemetry[0].failureCode,'EVALUATION_OBSERVATION_GROUNDING_INVALID');
+ assert.equal(telemetry[0].persistenceMs,0);assert.equal(records.get(interview).answers[0].evaluationStatus,'pending');
+ assert.equal(records.get(interview).answers[0].answerText,undefined);assert.deepEqual(skills,[]);
+ assert.equal(records.get(interview).evaluationLease,undefined);assert.equal(telemetry[0].retries,0);
+ for(const secret of [premiseAnswer,flawedQuestion,requirement])assert.ok(!JSON.stringify(telemetry).includes(secret));
+});
+
+for(const [name,basis,code] of [
+ ['missing',undefined,'EVALUATION_QUESTION_GROUNDING_INVALID'],
+ ['null',null,'EVALUATION_QUESTION_GROUNDING_INVALID'],
+ ['array',[],'EVALUATION_QUESTION_GROUNDING_INVALID'],
+ ['foreign question',{questionQuote:'database transactions',strengths:[],weaknesses:[]},'EVALUATION_QUESTION_GROUNDING_INVALID'],
+ ['missing strengths',{questionQuote:'JavaScript',weaknesses:['example']},'EVALUATION_OBSERVATION_GROUNDING_INVALID'],
+ ['fabricated strength',{questionQuote:'JavaScript',strengths:['Expert on distributed clusters'],weaknesses:['example']},'EVALUATION_OBSERVATION_GROUNDING_INVALID'],
+ ['reference count mismatch',{questionQuote:'JavaScript',strengths:[],weaknesses:['example']},'EVALUATION_OBSERVATION_GROUNDING_INVALID'],
+ ['nonstring reference',{questionQuote:'JavaScript',strengths:[{}],weaknesses:['example']},'EVALUATION_OBSERVATION_GROUNDING_INVALID'],
+ ['unlinked strength quote',{questionQuote:'JavaScript',strengths:['outer function returns'],weaknesses:['example']},'EVALUATION_OBSERVATION_GROUNDING_INVALID'],
+])test('assessment source contract fails closed: '+name,async()=>{
+ global.fetch=async()=>{posts++;return new Response(JSON.stringify({response:JSON.stringify(output({assessmentBasis:basis})),finish_reason:'stop'}));};
+ const response=await invoke();assert.equal(response.statusCode,503);assert.equal(posts,1);
+ assert.equal(telemetry[0].failureCode,code);assert.equal(telemetry[0].failureStage,'validation');
+ assert.equal(telemetry[0].persistenceMs,0);assert.deepEqual(skills,[]);
+ assert.equal(records.get(interview).answers[0].answerText,undefined);
+});
+
+test('missing question scope in improved answer is rejected despite valid answer evidence',async()=>{
+ const response=await invokePremise(premiseEvaluation({improvedAnswer:'Use an audit log and event sourcing to record state changes and increase system reliability.'}));
+ assert.equal(response.statusCode,503);assert.equal(telemetry[0].failureCode,'EVALUATION_QUESTION_GROUNDING_INVALID');
+ assert.equal(telemetry[0].persistenceMs,0);assert.equal(posts,1);
+});
+
+test('question quote cannot be removed from feedback while retaining only answer evidence',async()=>{
+ const response=await invokePremise(premiseEvaluation({feedback:'The phrase "CAP concerns network partitions" is the only statement being considered for this assessment.'}));
+ assert.equal(response.statusCode,503);assert.equal(telemetry[0].failureCode,'EVALUATION_QUESTION_GROUNDING_INVALID');
+ assert.equal(posts,1);assert.deepEqual(skills,[]);
+});
+
+test('weak answer can receive a grounded low score without invented praise',async()=>{
+ const context={...input(),answer:'A closure copies every variable value and cannot access outer scope.'};
+ const raw=output({score:18,technicalAccuracy:10,completeness:20,communication:35,strengths:[],
+  weaknesses:['For "closures", distinguish lexical environment access from copying every variable.'],
+  feedback:'For JavaScript, "A closure copies every variable value" incorrectly describes lexical environment access as value copying.',
+  answerEvidence:['A closure copies every variable value'],
+  assessmentBasis:{questionQuote:'JavaScript',strengths:[],weaknesses:['closures']}});
+ global.fetch=async()=>{posts++;return new Response(JSON.stringify({response:JSON.stringify(raw),finish_reason:'stop'}));};
+ const result=await evaluation.evaluateInterviewAnswer(context);assert.equal(result.score,18);assert.deepEqual(result.strengths,[]);
+ assert.equal(posts,1);assert.equal('assessmentBasis' in result,false);
+});
+
+test('different flawed premise is not handled using a hardcoded CAP exception',async()=>{
+ const context={...input(),question:'Why does binary search correctly find a value in every unsorted array?',
+  answer:'Binary search requires sorted input. It is not guaranteed to find a value in an unsorted array.'};
+ const raw=output({score:95,technicalAccuracy:98,completeness:95,communication:93,
+  strengths:['The observation "Binary search requires sorted input" correctly challenges the premise.'],weaknesses:[],
+  feedback:'For binary search, "Binary search requires sorted input" correctly rejects the universal unsorted-array premise.',
+  improvedAnswer:'For binary search to reliably eliminate half the search space each step, the input must be sorted with a compatible ordering. An unsorted array does not guarantee correctness.',
+  answerEvidence:['Binary search requires sorted input'],
+  assessmentBasis:{questionQuote:'binary search',strengths:['Binary search requires sorted input'],weaknesses:[]}});
+ global.fetch=async()=>{posts++;return new Response(JSON.stringify({response:JSON.stringify(raw),finish_reason:'stop'}));};
+ assert.equal((await evaluation.evaluateInterviewAnswer(context)).score,95);assert.equal(posts,1);
+ const prompt=evaluation.createInterviewEvaluationPrompt(context);assert.ok(!prompt.includes('CAP theorem'));
+});
+
+test('snapshot text mismatch and corrupt type fail before inference, never replace displayed question',async()=>{
+ for(const replacement of [{text:'A stale question',interviewType:'technical'}, {text:questionText,interviewType:'invented'}]){
+  const stored=row();stored.answers[0].questionSnapshot={text:questionText,interviewType:'technical',difficulty:'advanced',category:'mobile-developer',tags:[],...replacement};
+  records.set(interview,stored);const response=await invoke();assert.equal(response.statusCode,409);assert.equal(posts,0);
+  assert.deepEqual(skills,[]);assert.equal(records.get(interview).answers[0].evaluationStatus,'pending');
+ }
 });

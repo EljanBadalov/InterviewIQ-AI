@@ -49,7 +49,7 @@ test('new interview evaluations reject missing/defaulted scores before persisten
    qwen.generateQwenJSON=qwen.default.generateQwenJSON=async()=>({success:true,data:{...valid,[key]:value}});
    await assert.rejects(evaluate(input),error=>error.code===(value===undefined?'EVALUATION_REQUIRED_FIELDS_MISSING':'EVALUATION_SCORE_INVALID'));
   }
-  qwen.generateQwenJSON=qwen.default.generateQwenJSON=async()=>({success:true,data:{...valid,strengths:[],weaknesses:['Include a concrete explanation of the tested concept.'],feedback:'The excerpt "Fixture answer" needs a concrete explanation to support this evaluation.',improvedAnswer:'Explain the tested concept clearly and include a small relevant example with its expected behavior.',answerEvidence:['Fixture answer']}});const result=await evaluate(input);
+  qwen.generateQwenJSON=qwen.default.generateQwenJSON=async()=>({success:true,data:{...valid,strengths:[],weaknesses:['For the question, include a concrete explanation of the tested concept.'],feedback:'For Fixture question, the excerpt "Fixture answer" needs a concrete explanation to support this evaluation.',improvedAnswer:'For Fixture question, explain the tested concept clearly and include a small relevant example with its expected behavior.',answerEvidence:['Fixture answer'],assessmentBasis:{questionQuote:'Fixture question',strengths:[],weaknesses:['question']}}});const result=await evaluate(input);
   for(const key of Object.keys(valid))assert.equal(result[key],valid[key]);
  }finally{qwen.generateQwenJSON=original;qwen.default.generateQwenJSON=originalDefault;}
 });
