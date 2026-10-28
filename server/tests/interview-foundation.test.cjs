@@ -80,6 +80,96 @@ test('prompt JSON example satisfies the unchanged contract: '+sample.length,()=>
  assert.ok(prompt.includes('40-2400'));assert.ok(prompt.includes('8-240'));assert.equal(posts,0);
 });
 
+// These cover the confirmed failure class; the original production quote was not logged.
+const evidenceFailures=[
+ ['missing',undefined,'EVIDENCE_MISSING'],
+ ['null',null,'EVIDENCE_NOT_ARRAY'],
+ ['string','A closure retains access','EVIDENCE_NOT_ARRAY'],
+ ['object',{quote:'A closure retains access'},'EVIDENCE_NOT_ARRAY'],
+ ['empty',[],'EVIDENCE_COUNT_INVALID'],
+ ['too many',Array(4).fill('A closure retains access'),'EVIDENCE_COUNT_INVALID'],
+ ['non-string',[{quote:'A closure retains access'}],'EVIDENCE_ITEM_NOT_STRING'],
+ ['short',['closure'],'EVIDENCE_TOO_SHORT'],
+ ['long',['A'.repeat(241)],'EVIDENCE_TOO_LONG'],
+ ['paraphrase',['A closure remembers its outer variables'],'EVIDENCE_NOT_VERBATIM'],
+ ['case changed',['a closure retains access'],'EVIDENCE_NOT_VERBATIM'],
+ ['invented',['PRIVATE fabricated evidence'],'EVIDENCE_NOT_VERBATIM'],
+];
+for(const [name,value,reason] of evidenceFailures)test('strict evidence reason: '+name,()=>{
+ let failure;
+ try{evaluation.validateInterviewEvaluation(output({answerEvidence:value}),input());}
+ catch(error){failure=error;}
+ assert.ok(failure);assert.equal(failure.code,'EVALUATION_EVIDENCE_INVALID');
+ assert.deepEqual(contract.classifyInterviewEvaluationFailure(failure),{
+  failureCode:'EVALUATION_EVIDENCE_INVALID',failureStage:'validation',failureReason:reason,
+ });
+ assert.ok(!JSON.stringify(failure).includes(answer));
+});
+
+for(const length of [8,240])test('valid literal evidence boundary remains accepted: '+length,()=>{
+ const quote='x'.repeat(length),context={...input(),answer:quote};
+ const raw=output({answerEvidence:[quote],feedback:`The excerpt "${quote}" needs a concrete example and an explanation of the result.`});
+ assert.equal(evaluation.validateInterviewEvaluation(raw,context).score,raw.score);
+ assert.throws(()=>evaluation.validateInterviewEvaluation({...raw,feedback:'Feedback that does not repeat any submitted evidence at all.'},context),
+  error=>error.code==='EVALUATION_FEEDBACK_UNGROUNDED');
+});
+
+for(const sample of [answer,'12345678','first evidence sentence. '+ 'middle reasoning and examples. '.repeat(20)+' final answer conclusion.',
+ '  A literal quote with \"quotation\" and unicode əşç.\nAnother exact sentence.  ','x'.repeat(6000)])
+for(const type of ['technical','behavioral'])test('bounded prompt evidence is literal and schema-valid: '+type+'/'+sample.length,()=>{
+ const context={...input(),answer:sample,interviewType:type};const prompt=evaluation.createInterviewEvaluationPrompt(context);
+ const line=prompt.split('\n').find(line=>line.startsWith('EVIDENCE OPTIONS (untrusted reference excerpts): '));
+ const options=JSON.parse(line.slice(line.indexOf(': ')+2));const normalized=sample.replace(/\s+/g,' ').trim();
+ assert.ok(options.length>=1&&options.length<=3);assert.equal(new Set(options).size,options.length);
+ for(const quote of options){assert.ok(quote.length>=8&&quote.length<=72);assert.ok(normalized.includes(quote));}
+ const example=JSON.parse(prompt.slice(prompt.lastIndexOf('\n{')+1));
+ assert.ok(options.includes(example.answerEvidence[0]));evaluation.validateInterviewEvaluation(example,context);
+ assert.ok(prompt.includes('answerEvidence is REQUIRED: a JSON array'));
+ assert.ok(prompt.includes('Difficulty: advanced'));assert.ok(prompt.includes('Interview Type: '+type));
+ assert.equal(posts,0);
+});
+
+test('evidence subreason telemetry rejects forged or private values',async()=>{
+ for(const error of [new contract.InterviewEvaluationError('EVALUATION_EVIDENCE_INVALID',answer),
+  new contract.InterviewEvaluationError('EVALUATION_JSON_INVALID','EVIDENCE_MISSING'),
+  {code:'EVALUATION_EVIDENCE_INVALID',reason:answer}]){
+  let observed;await metric.withInterviewMetrics(async()=>metric.recordInterviewEvaluationFailure(error),()=>503,value=>observed=value);
+  assert.equal(observed.failureReason,undefined);assert.ok(!JSON.stringify(observed).includes(answer));
+ }
+});
+
+test('a later failure cannot retain an unrelated evidence reason in telemetry',async()=>{
+ let observed;await metric.withInterviewMetrics(async()=>{
+  metric.recordInterviewEvaluationFailure(new contract.InterviewEvaluationError('EVALUATION_EVIDENCE_INVALID','EVIDENCE_MISSING'));
+  metric.recordInterviewEvaluationFailure(new contract.InterviewEvaluationError('EVALUATION_JSON_INVALID'));
+ },()=>503,value=>observed=value);
+ assert.equal(observed.failureCode,'EVALUATION_JSON_INVALID');assert.equal(observed.failureReason,undefined);
+});
+
+test('completed stop inference with invalid evidence preserves pending state and permits explicit retry',async()=>{
+ records.set(interview,row(interview,owner,'technical'));
+ const initial=clone(records.get(interview));
+ global.fetch=async()=>{posts++;return new Response(JSON.stringify({
+  response:JSON.stringify(output({answerEvidence:['PRIVATE fabricated evidence']})),finish_reason:'stop',
+  usage:{prompt_tokens:808,completion_tokens:325},diagnostics:{stage:'completed',inferenceDispatched:true},
+ }));};
+ const response=await invoke();assert.equal(response.statusCode,503);
+ assert.equal(posts,1);assert.equal(telemetry[0].failureCode,'EVALUATION_EVIDENCE_INVALID');
+ assert.equal(telemetry[0].failureReason,'EVIDENCE_NOT_VERBATIM');assert.equal(telemetry[0].failureStage,'validation');
+ assert.equal(telemetry[0].proxyFailureStage,'completed');assert.equal(telemetry[0].inferenceDispatched,true);
+ assert.equal(telemetry[0].promptTokens,808);assert.equal(telemetry[0].completionTokens,325);
+ assert.equal(telemetry[0].retries,0);assert.equal(telemetry[0].persistenceMs,0);
+ assert.deepEqual(records.get(interview).answers,initial.answers);assert.deepEqual(skills,[]);
+ assert.equal(records.get(interview).evaluationLease,undefined);
+ assert.deepEqual(Object.keys(response.body).sort(),['message','success']);
+ const safe=JSON.stringify(telemetry)+JSON.stringify(response.body);
+ for(const value of [answer,questionText,'PRIVATE fabricated evidence'])assert.ok(!safe.includes(value));
+ global.fetch=async()=>{posts++;return new Response(JSON.stringify({response:JSON.stringify(output()),finish_reason:'stop'}));};
+ // A second explicit caller action, never an automatic inference retry.
+ const retried=await invoke();assert.equal(retried.statusCode,200);assert.equal(posts,2);
+ assert.equal(records.get(interview).answers[0].answerText,answer);assert.equal(skills.length,1);
+});
+
 test('impossible evidence input fails before dispatch with a safe input code',async()=>{
  await assert.rejects(evaluation.evaluateInterviewAnswer({...input(),answer:'a       b'}),error=>error.code==='EVALUATION_INPUT_INVALID');
  assert.equal(posts,0);

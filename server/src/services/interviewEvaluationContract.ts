@@ -19,8 +19,15 @@ export const INTERVIEW_EVALUATION_FAILURES = {
   EVALUATION_INPUT_INVALID: 'input',
 } as const;
 export type InterviewEvaluationFailureCode = keyof typeof INTERVIEW_EVALUATION_FAILURES;
+/** Bounded diagnostic reasons only; never include the rejected quote or answer. */
+export const INTERVIEW_EVIDENCE_FAILURE_REASONS = [
+  'EVIDENCE_MISSING', 'EVIDENCE_NOT_ARRAY', 'EVIDENCE_COUNT_INVALID',
+  'EVIDENCE_ITEM_NOT_STRING', 'EVIDENCE_TOO_SHORT', 'EVIDENCE_TOO_LONG',
+  'EVIDENCE_NOT_VERBATIM',
+] as const;
+export type InterviewEvidenceFailureReason = typeof INTERVIEW_EVIDENCE_FAILURE_REASONS[number];
 export class InterviewEvaluationError extends Error {
-  constructor(public readonly code: InterviewEvaluationFailureCode) {
+  constructor(public readonly code: InterviewEvaluationFailureCode, public readonly reason?: InterviewEvidenceFailureReason) {
     super(code);
     this.name = 'InterviewEvaluationError';
   }
@@ -30,7 +37,15 @@ export function classifyInterviewEvaluationFailure(error: unknown) {
   const code = error instanceof InterviewEvaluationError &&
     Object.hasOwn(INTERVIEW_EVALUATION_FAILURES, error.code)
     ? error.code : 'EVALUATION_VALIDATION_FAILED';
-  return { failureCode: code, failureStage: INTERVIEW_EVALUATION_FAILURES[code] };
+  const failure: {
+    failureCode: InterviewEvaluationFailureCode;
+    failureStage: typeof INTERVIEW_EVALUATION_FAILURES[InterviewEvaluationFailureCode];
+    failureReason?: InterviewEvidenceFailureReason;
+  } = { failureCode: code, failureStage: INTERVIEW_EVALUATION_FAILURES[code] };
+  if (code === 'EVALUATION_EVIDENCE_INVALID' && error instanceof InterviewEvaluationError &&
+    INTERVIEW_EVIDENCE_FAILURE_REASONS.includes(error.reason as InterviewEvidenceFailureReason))
+    failure.failureReason = error.reason;
+  return failure;
 }
 export const INTERVIEW_EVALUATION_LIMITS = {
   observations: { maxItems: 6, minChars: 12, maxChars: 500 },

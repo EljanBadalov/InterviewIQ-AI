@@ -8,6 +8,7 @@ export interface InterviewMetrics {
   promptTokens?: number; completionTokens?: number; transportUncertain: boolean;
   failureCode?: ReturnType<typeof classifyInterviewEvaluationFailure>['failureCode'];
   failureStage?: ReturnType<typeof classifyInterviewEvaluationFailure>['failureStage'];
+  failureReason?: ReturnType<typeof classifyInterviewEvaluationFailure>['failureReason'];
   inferenceDispatched?: boolean | 'unknown';
   proxyFailureCode?: string;
   proxyFailureStage?: string;
@@ -31,7 +32,7 @@ export function recordInterviewProxyDiagnostics(value: unknown): boolean | undef
 export function recordInterviewEvaluationFailure(error: unknown) {
   const failure = classifyInterviewEvaluationFailure(error);
   const scope = scopes.getStore();
-  if (scope) Object.assign(scope, failure);
+  if (scope) { Object.assign(scope, failure); scope.failureReason = failure.failureReason; }
   return failure;
 }
 const inferenceGuards = new WeakMap<InterviewMetrics, ()=>Promise<void>>();
