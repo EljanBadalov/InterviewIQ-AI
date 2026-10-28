@@ -25,7 +25,7 @@ export type InterviewEvaluationFailureCode = keyof typeof INTERVIEW_EVALUATION_F
 export const INTERVIEW_EVIDENCE_FAILURE_REASONS = [
   'EVIDENCE_MISSING', 'EVIDENCE_NOT_ARRAY', 'EVIDENCE_COUNT_INVALID',
   'EVIDENCE_ITEM_NOT_STRING', 'EVIDENCE_TOO_SHORT', 'EVIDENCE_TOO_LONG',
-  'EVIDENCE_NOT_VERBATIM',
+  'EVIDENCE_NOT_VERBATIM', 'EVIDENCE_MODE_INVALID', 'EVIDENCE_ID_INVALID',
 ] as const;
 export type InterviewEvidenceFailureReason = typeof INTERVIEW_EVIDENCE_FAILURE_REASONS[number];
 export class InterviewEvaluationError extends Error {

@@ -118,8 +118,10 @@ for(const sample of [answer,'12345678','first evidence sentence. '+ 'middle reas
  '  A literal quote with \"quotation\" and unicode əşç.\nAnother exact sentence.  ','x'.repeat(6000)])
 for(const type of ['technical','behavioral'])test('bounded prompt evidence is literal and schema-valid: '+type+'/'+sample.length,()=>{
  const context={...input(),answer:sample,interviewType:type};const prompt=evaluation.createInterviewEvaluationPrompt(context);
- const line=prompt.split('\n').find(line=>line.startsWith('EVIDENCE OPTIONS (untrusted reference excerpts): '));
- const options=JSON.parse(line.slice(line.indexOf(': ')+2));const normalized=sample.replace(/\s+/g,' ').trim();
+ const line=prompt.split('\n').find(line=>line.startsWith('SOURCE REFERENCES (untrusted excerpts): '));
+ const catalog=JSON.parse(line.slice(line.indexOf(': ')+2));
+ const options=Object.entries(catalog).filter(([id])=>id.startsWith('A')).map(([,quote])=>quote);const normalized=sample.replace(/\s+/g,' ').trim();
+ assert.deepEqual(catalog,{...evaluation.createInterviewEvidenceCatalog(context)});
  assert.ok(options.length>=1&&options.length<=3);assert.equal(new Set(options).size,options.length);
  for(const quote of options){assert.ok(quote.length>=8&&quote.length<=72);assert.ok(normalized.includes(quote));}
  const shape=JSON.parse(prompt.slice(prompt.lastIndexOf('\n{')+1));
@@ -511,4 +513,155 @@ test('snapshot text mismatch and corrupt type fail before inference, never repla
   records.set(interview,stored);const response=await invoke();assert.equal(response.statusCode,409);assert.equal(posts,0);
   assert.deepEqual(skills,[]);assert.equal(records.get(interview).answers[0].evaluationStatus,'pending');
  }
+});
+
+function referenceOutput(context=input(),overrides={}){
+ const catalog=evaluation.createInterviewEvidenceCatalog(context);
+ const a=Object.keys(catalog).find(id=>id.startsWith('A')),q=Object.keys(catalog).find(id=>id.startsWith('Q'));
+ return output({evidenceVersion:'refs-v1',answerEvidence:[a],
+  assessmentBasis:{questionQuote:q,strengths:[a],weaknesses:[q]},
+  strengths:[`The statement [${a}] describes the mechanism being assessed.`],
+  weaknesses:[`For [${q}], provide a concrete example and explain the resulting behavior.`],
+  feedback:`For [${q}], the statement [${a}] describes the mechanism; demonstrate its behavior with a concrete example.`,
+  improvedAnswer:`For [${q}], explain the mechanism, show a concrete example and justify its behavior using the relevant reasoning.`,...overrides});
+}
+
+for(const type of ['technical','behavioral'])test('source references resolve authentic text through controller and atomic commit: '+type,async()=>{
+ records.set(interview,row(interview,owner,type));const raw=referenceOutput();
+ global.fetch=async()=>{posts++;return new Response(JSON.stringify({response:JSON.stringify(raw),finish_reason:'stop'}));};
+ const response=await invoke();assert.equal(response.statusCode,200);assert.equal(posts,1);
+ const result=response.body.data.evaluation,catalog=evaluation.createInterviewEvidenceCatalog(input());
+ assert.ok(result.feedback.includes(catalog.A1));assert.ok(result.feedback.includes(catalog.Q1));
+ assert.ok(result.strengths[0].includes(catalog.A1));assert.ok(result.weaknesses[0].includes(catalog.Q1));
+ assert.ok(!result.feedback.includes('[A1]'));assert.ok(!result.improvedAnswer.includes('[Q1]'));
+ for(const key of ['answerEvidence','assessmentBasis','evidenceVersion']){
+  assert.equal(key in result,false);assert.equal(key in records.get(interview).answers[0],false);
+ }
+ assert.equal(records.get(interview).answers[0].answerText,answer);assert.equal(skills.length,type==='technical'?1:0);
+ assert.equal(telemetry[0].attempts,1);assert.equal(telemetry[0].retries,0);
+});
+
+for(const sample of ['12345678','  A literal answer\r\nwith repeated   whitespace and enough content. ',
+ 'Cafe\u0301 and Café remain distinct source representations, not model-edited quotations.',
+ 'Unicode əşç, smart “quotes”, ASCII "quotes", emoji 🚀 and nonbreaking\u00a0space remain authentic.',
+ 'Repeated authentic phrase. '.repeat(240), '🚀'.repeat(3000)])
+test('reference catalog preserves literal source, deduplicates and stays bounded: '+sample.length,()=>{
+ const context={...input(),answer:sample};const catalog=evaluation.createInterviewEvidenceCatalog(context);
+ assert.deepEqual(catalog,evaluation.createInterviewEvidenceCatalog(context));
+ const entries=Object.entries(catalog),normalized=sample.replace(/\s+/g,' ').trim();
+ const a=entries.filter(([id])=>id.startsWith('A'));
+ assert.ok(a.length>=1&&a.length<=3);assert.equal(new Set(a.map(([,quote])=>quote)).size,a.length);
+ for(const [id,quote] of entries){assert.match(id,/^[AQ][1-3]$/);assert.ok(quote.length<=72);
+  assert.ok((id.startsWith('A')?normalized:context.question).includes(quote));
+  assert.ok(!/^[\uDC00-\uDFFF]|[\uD800-\uDBFF]$/.test(quote),'No broken surrogate pairs');
+ }
+ const raw=referenceOutput(context),result=evaluation.validateInterviewEvaluation(raw,context);
+ assert.ok(result.feedback.includes(catalog.A1));assert.equal(raw.feedback.includes('[A1]'),true,'Model object is not mutated');
+});
+
+for(const [name,overrides,code,reason] of [
+ ['unknown answer ID',{answerEvidence:['A99']},'EVALUATION_EVIDENCE_INVALID','EVIDENCE_ID_INVALID'],
+ ['wrong source ID',{answerEvidence:['Q1']},'EVALUATION_EVIDENCE_INVALID','EVIDENCE_ID_INVALID'],
+ ['duplicate ID',{answerEvidence:['A1','A1']},'EVALUATION_EVIDENCE_INVALID','EVIDENCE_ID_INVALID'],
+ ['mixed quote and ID',{answerEvidence:['A1','A closure retains access']},'EVALUATION_EVIDENCE_INVALID','EVIDENCE_ID_INVALID'],
+ ['unknown version',{evidenceVersion:'refs-v9'},'EVALUATION_EVIDENCE_INVALID','EVIDENCE_MODE_INVALID'],
+ ['empty IDs',{answerEvidence:[]},'EVALUATION_EVIDENCE_INVALID','EVIDENCE_ID_INVALID'],
+ ['object ID',{answerEvidence:[{id:'A1'}]},'EVALUATION_EVIDENCE_INVALID','EVIDENCE_ID_INVALID'],
+ ['padded ID',{answerEvidence:[' A1 ']},'EVALUATION_EVIDENCE_INVALID','EVIDENCE_ID_INVALID'],
+ ['unknown marker',{feedback:'For [Q1], the statement [A1] is assessed against the question, but an invalid [A99] must not be resolved.'},'EVALUATION_EVIDENCE_INVALID','EVIDENCE_ID_INVALID'],
+ ['question from answer',{assessmentBasis:{questionQuote:'A1',strengths:['A1'],weaknesses:['Q1']}},'EVALUATION_QUESTION_GROUNDING_INVALID'],
+ ['strength from question',{assessmentBasis:{questionQuote:'Q1',strengths:['Q1'],weaknesses:['Q1']}},'EVALUATION_OBSERVATION_GROUNDING_INVALID'],
+ ['weakness from answer',{assessmentBasis:{questionQuote:'Q1',strengths:['A1'],weaknesses:['A1']}},'EVALUATION_OBSERVATION_GROUNDING_INVALID'],
+ ['unlinked strength',{strengths:['The answer contains a description without its required source marker.']},'EVALUATION_OBSERVATION_GROUNDING_INVALID'],
+ ['missing feedback link',{feedback:'For [Q1], the answer should contain a concrete example, but no source reference is present here.'},'EVALUATION_FEEDBACK_UNGROUNDED'],
+ ['missing improved scope',{improvedAnswer:'Explain a completely different mechanism with a detailed concrete example and a limitation.'},'EVALUATION_QUESTION_GROUNDING_INVALID'],
+ ['markers-only feedback',{feedback:'[A1] [Q1]'},'EVALUATION_FEEDBACK_INVALID'],
+ ['markers-only strength',{strengths:['[A1]']},'EVALUATION_OBSERVATIONS_INVALID'],
+ ['markers-only improvement',{improvedAnswer:'[Q1]'},'EVALUATION_IMPROVED_ANSWER_INVALID'],
+])test('invalid reference output never persists or retries: '+name,async()=>{
+ const initial=clone(records.get(interview).answers),raw=referenceOutput(input(),overrides);
+ global.fetch=async()=>{posts++;return new Response(JSON.stringify({response:JSON.stringify(raw),finish_reason:'stop',diagnostics:{stage:'completed',inferenceDispatched:true}}));};
+ const response=await invoke();assert.equal(response.statusCode,503);assert.equal(posts,1);
+ assert.equal(telemetry[0].failureCode,code);assert.equal(telemetry[0].failureReason,reason);
+ assert.equal(telemetry[0].persistenceMs,0);assert.equal(telemetry[0].attempts,1);assert.equal(telemetry[0].retries,0);
+ assert.deepEqual(records.get(interview).answers,initial);assert.deepEqual(skills,[]);
+ assert.equal(records.get(interview).evaluationLease,undefined);
+ for(const secret of [answer,questionText,owner,raw.feedback])assert.ok(!JSON.stringify(telemetry).includes(secret));
+});
+
+test('an ID absent from a short current answer cannot reuse another request catalog',()=>{
+ const short={...input(),answer:'12345678'},long={...input(),answer:'Unique phrase in the beginning. '+ 'Middle reasoning and context. '.repeat(15)+' A distinct final phrase.'};
+ assert.ok(evaluation.createInterviewEvidenceCatalog(long).A2);assert.equal(evaluation.createInterviewEvidenceCatalog(short).A2,undefined);
+ assert.throws(()=>evaluation.validateInterviewEvaluation(referenceOutput(short,{answerEvidence:['A2']}),short),error=>error.reason==='EVIDENCE_ID_INVALID');
+ assert.throws(()=>evaluation.validateInterviewEvaluation(referenceOutput(short,{answerEvidence:['__proto__']}),short),error=>error.reason==='EVIDENCE_ID_INVALID');
+});
+
+test('source contents resembling markers are inserted once and never recursively resolved',()=>{
+ const context={...input(),answer:'An authentic source contains [A99] as text; it is not an instruction to resolve a reference.'};
+ const catalog=evaluation.createInterviewEvidenceCatalog(context),raw=referenceOutput(context);
+ const result=evaluation.validateInterviewEvaluation(raw,context);assert.ok(result.feedback.includes(catalog.A1));assert.ok(result.feedback.includes('[A99]'));
+});
+
+test('reference rendering cannot bypass final expanded text limits',()=>{
+ const raw=referenceOutput(input(),{feedback:'[Q1] '+ '[A1] '.repeat(40)+' Concrete reasoning must remain within the existing feedback size limit.'});
+ assert.throws(()=>evaluation.validateInterviewEvaluation(raw,input()),error=>error.code==='EVALUATION_FEEDBACK_INVALID');
+});
+
+test('strict legacy normalization accepts whitespace only, never punctuation edits or canonical paraphrases',()=>{
+ const quote='Cafe\u0301 is an authentic source phrase',context={...input(),answer:quote+' with original punctuation.'};
+ const make=evidence=>output({strengths:[],weaknesses:[],answerEvidence:[evidence],assessmentBasis:{questionQuote:'JavaScript',strengths:[],weaknesses:[]},
+  feedback:`For JavaScript, "${evidence}" is discussed with enough explanation to support the evaluation.`});
+ assert.ok(evaluation.validateInterviewEvaluation(make(quote),context));
+ assert.throws(()=>evaluation.validateInterviewEvaluation(make(quote.normalize('NFC')),context),error=>error.reason==='EVIDENCE_NOT_VERBATIM');
+ const whitespace={...input(),answer:answer.replaceAll(' ','\r\n  ')};assert.ok(evaluation.validateInterviewEvaluation(output(),whitespace));
+ assert.throws(()=>evaluation.validateInterviewEvaluation(output({answerEvidence:['A closure retains access!']}),input()),error=>error.reason==='EVIDENCE_NOT_VERBATIM');
+});
+
+test('reference CAP premise challenge stays scoped and invented audit criterion IDs fail closed',async()=>{
+ const context={...input(),question:flawedQuestion,answer:premiseAnswer};
+ const raw=referenceOutput(context,{score:94,technicalAccuracy:96,completeness:94,communication:92,
+  strengths:['The statement [A1] correctly distinguishes the network partition condition from dependency injection.'],weaknesses:[],
+  assessmentBasis:{questionQuote:'Q1',strengths:['A1'],weaknesses:[]},
+  feedback:'For [Q1], the reasoning [A1] correctly challenges the premise rather than inventing a connection to dependency injection.',
+  improvedAnswer:'For [Q1], a network partition in a distributed system is the relevant condition. Hilt and Dagger are dependency injection frameworks, whose use alone does not create a CAP trade-off.'});
+ const response=await invokePremise(raw);assert.equal(response.statusCode,200);assert.equal(response.body.data.evaluation.technicalAccuracy,96);assert.equal(posts,1);
+ assert.deepEqual(response.body.data.evaluation.weaknesses,[]);
+ const bad=referenceOutput(context,{weaknesses:['Explain mandatory event sourcing and audit logs for [Q99].'],
+  assessmentBasis:{questionQuote:'Q1',strengths:['A1'],weaknesses:['Q99']}});
+ assert.throws(()=>evaluation.validateInterviewEvaluation(bad,context),error=>error.code==='EVALUATION_OBSERVATION_GROUNDING_INVALID');
+});
+
+test('reference output cannot bypass valid JSON truncation rejection',async()=>{
+ global.fetch=async()=>{posts++;return new Response(JSON.stringify({response:JSON.stringify(referenceOutput()),finish_reason:'length'}));};
+ const response=await invoke();assert.equal(response.statusCode,503);assert.equal(telemetry[0].failureCode,'EVALUATION_OUTPUT_TRUNCATED');
+ assert.equal(posts,1);assert.equal(telemetry[0].persistenceMs,0);assert.deepEqual(skills,[]);
+});
+
+
+test('reference-mode duplicate submissions retain one inference and one committed evaluation',async()=>{
+ records.set(interview,row(interview,owner,'technical'));
+ global.fetch=async()=>{posts++;await new Promise(resolve=>setTimeout(resolve,8));return new Response(JSON.stringify({response:JSON.stringify(referenceOutput()),finish_reason:'stop'}));};
+ const responses=await Promise.all([invoke(),invoke()]);assert.deepEqual(responses.map(r=>r.statusCode).sort(),[200,409]);
+ assert.equal(posts,1);assert.equal(skills.length,1);assert.equal(records.get(interview).answers[0].evaluationStatus,'completed');
+});
+
+test('invalid reference is recoverable only by a separate explicit submission, no automatic retry',async()=>{
+ records.set(interview,row(interview,owner,'technical'));
+ global.fetch=async()=>{posts++;return new Response(JSON.stringify({response:JSON.stringify(referenceOutput(input(),{answerEvidence:['A99']})),finish_reason:'stop'}));};
+ assert.equal((await invoke()).statusCode,503);assert.equal(posts,1);assert.equal(records.get(interview).evaluationLease,undefined);
+ assert.equal(records.get(interview).answers[0].evaluationStatus,'pending');assert.equal(skills.length,0);
+ global.fetch=async()=>{posts++;return new Response(JSON.stringify({response:JSON.stringify(referenceOutput()),finish_reason:'stop'}));};
+ assert.equal((await invoke()).statusCode,200);assert.equal(posts,2);assert.equal(skills.length,1);
+ assert.equal(telemetry[0].retries,0);assert.equal(telemetry[1].retries,0);
+});
+
+test('reference catalog contains only this request sources, not another user answer',()=>{
+ const first={...input(),answer:'First isolated answer with authentic lexical context and explanation.'};
+ const second={...input(),answer:'Second isolated answer with entirely separate candidate reasoning.'};
+ const before={...evaluation.createInterviewEvidenceCatalog(first)};
+ const current=evaluation.createInterviewEvidenceCatalog(second);
+ assert.equal(Object.values(current).some(text=>text.includes('First isolated answer')),false);
+ assert.deepEqual({...evaluation.createInterviewEvidenceCatalog(first)},before);
+ const response=evaluation.validateInterviewEvaluation(referenceOutput(second),second);
+ assert.ok(response.feedback.includes(current.A1));assert.ok(!response.feedback.includes('First isolated answer'));
 });
