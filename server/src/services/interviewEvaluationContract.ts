@@ -28,8 +28,16 @@ export const INTERVIEW_EVIDENCE_FAILURE_REASONS = [
   'EVIDENCE_NOT_VERBATIM', 'EVIDENCE_MODE_INVALID', 'EVIDENCE_ID_INVALID',
 ] as const;
 export type InterviewEvidenceFailureReason = typeof INTERVIEW_EVIDENCE_FAILURE_REASONS[number];
+export const INTERVIEW_EVALUATION_CONTRACT_VERSION = 'interview-evaluation-v4-inline-refs';
+export const INTERVIEW_OBSERVATION_FAILURE_REASONS = [
+  'OBSERVATION_REFERENCES_MISSING', 'OBSERVATION_REFERENCE_COUNT_MISMATCH',
+  'OBSERVATION_REFERENCE_INVALID', 'OBSERVATION_VALUE_INVALID',
+  'OBSERVATION_MARKER_MISSING', 'OBSERVATION_TEXT_REFERENCE_MISSING',
+] as const;
+export type InterviewObservationFailureReason = typeof INTERVIEW_OBSERVATION_FAILURE_REASONS[number];
+export type InterviewEvaluationFailureReason = InterviewEvidenceFailureReason | InterviewObservationFailureReason;
 export class InterviewEvaluationError extends Error {
-  constructor(public readonly code: InterviewEvaluationFailureCode, public readonly reason?: InterviewEvidenceFailureReason) {
+  constructor(public readonly code: InterviewEvaluationFailureCode, public readonly reason?: InterviewEvaluationFailureReason) {
     super(code);
     this.name = 'InterviewEvaluationError';
   }
@@ -42,10 +50,13 @@ export function classifyInterviewEvaluationFailure(error: unknown) {
   const failure: {
     failureCode: InterviewEvaluationFailureCode;
     failureStage: typeof INTERVIEW_EVALUATION_FAILURES[InterviewEvaluationFailureCode];
-    failureReason?: InterviewEvidenceFailureReason;
+    failureReason?: InterviewEvaluationFailureReason;
   } = { failureCode: code, failureStage: INTERVIEW_EVALUATION_FAILURES[code] };
   if (code === 'EVALUATION_EVIDENCE_INVALID' && error instanceof InterviewEvaluationError &&
     INTERVIEW_EVIDENCE_FAILURE_REASONS.includes(error.reason as InterviewEvidenceFailureReason))
+    failure.failureReason = error.reason;
+  if (code === 'EVALUATION_OBSERVATION_GROUNDING_INVALID' && error instanceof InterviewEvaluationError &&
+    INTERVIEW_OBSERVATION_FAILURE_REASONS.includes(error.reason as InterviewObservationFailureReason))
     failure.failureReason = error.reason;
   return failure;
 }

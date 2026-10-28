@@ -1,7 +1,8 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { randomUUID } from 'node:crypto';
-import { classifyInterviewEvaluationFailure } from './interviewEvaluationContract';
+import { classifyInterviewEvaluationFailure, INTERVIEW_EVALUATION_CONTRACT_VERSION } from './interviewEvaluationContract';
 export interface InterviewMetrics {
+  evaluationContractVersion: string; evaluationProtocol?: 'legacy-literal' | 'refs-v1' | 'refs-v2' | 'unknown'; buildRevision?: string;
   correlationId: string; totalMs: number; success: boolean; status: number;
   contextMs: number; validationMs: number; persistenceMs: number; coordinationMs: number;
   qwenRoundtripMs: number; attempts: number; retries: number;
@@ -28,6 +29,11 @@ export function recordInterviewProxyDiagnostics(value: unknown): boolean | undef
     if (typeof item.code === 'string' && proxyCodes.has(item.code)) scope.proxyFailureCode = item.code;
   }
   return item.inferenceDispatched;
+}
+export function recordInterviewEvaluationProtocol(version: unknown): void {
+  const scope = scopes.getStore();
+  if (scope) scope.evaluationProtocol = version === undefined ? 'legacy-literal'
+    : version === 'refs-v1' || version === 'refs-v2' ? version : 'unknown';
 }
 export function recordInterviewEvaluationFailure(error: unknown) {
   const failure = classifyInterviewEvaluationFailure(error);
@@ -73,7 +79,8 @@ export async function timeInterviewStage<T>(stage: 'contextMs'|'validationMs'|'p
 }
 export async function withInterviewMetrics<T>(work:()=>Promise<T>,status:()=>number=()=>200,observe?:(value:InterviewMetrics)=>void):Promise<T>{
   if(scopes.getStore())return work();
-  const value:InterviewMetrics={correlationId:randomUUID(),totalMs:0,success:false,status:0,contextMs:0,validationMs:0,persistenceMs:0,coordinationMs:0,qwenRoundtripMs:0,attempts:0,retries:0,transportUncertain:false,inferenceDispatched:false};
+  const value:InterviewMetrics={evaluationContractVersion:INTERVIEW_EVALUATION_CONTRACT_VERSION,
+    ...(/^[a-f0-9]{40}$/i.test(process.env.RENDER_GIT_COMMIT || '') ? {buildRevision:process.env.RENDER_GIT_COMMIT} : {}),correlationId:randomUUID(),totalMs:0,success:false,status:0,contextMs:0,validationMs:0,persistenceMs:0,coordinationMs:0,qwenRoundtripMs:0,attempts:0,retries:0,transportUncertain:false,inferenceDispatched:false};
   return scopes.run(value,async()=>{const start=performance.now();try{const result=await work();value.status=status();value.success=value.status<400;return result;}
     finally{value.totalMs=performance.now()-start;try{const snapshot=structuredClone(value);if(observe)observe(snapshot);else console.info('[Interview Evaluation Performance]',JSON.stringify(snapshot));}catch{/* Telemetry never changes evaluation. */}}});
 }

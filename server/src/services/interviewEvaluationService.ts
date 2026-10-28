@@ -1,6 +1,6 @@
 import { requireInterviewScoreFields } from './skillEvidenceAssessment';
 import { InterviewEvaluationError, INTERVIEW_EVALUATION_LIMITS as limits } from './interviewEvaluationContract';
-import { timeInterviewStage } from './interviewEvaluationMetrics';
+import { timeInterviewStage, recordInterviewEvaluationProtocol } from './interviewEvaluationMetrics';
 /* =========================================================
    INTERVIEW EVALUATION SERVICE
 
@@ -181,9 +181,16 @@ const validateAssessmentBasis = (
     ['weaknesses', weaknesses, input.question, 3],
   ] as const) {
     const references = item[key];
-    if (!Array.isArray(references) || references.length !== observations.length ||
-      references.some((quote, index) => !literal(quote, source, min) || !observations[index]?.includes(normalizeText(quote))))
-      throw new InterviewEvaluationError('EVALUATION_OBSERVATION_GROUNDING_INVALID');
+    if (!Array.isArray(references))
+      throw new InterviewEvaluationError('EVALUATION_OBSERVATION_GROUNDING_INVALID', 'OBSERVATION_REFERENCES_MISSING');
+    if (references.length !== observations.length)
+      throw new InterviewEvaluationError('EVALUATION_OBSERVATION_GROUNDING_INVALID', 'OBSERVATION_REFERENCE_COUNT_MISMATCH');
+    for (const [index, quote] of references.entries()) {
+      if (!literal(quote, source, min))
+        throw new InterviewEvaluationError('EVALUATION_OBSERVATION_GROUNDING_INVALID', 'OBSERVATION_REFERENCE_INVALID');
+      if (!observations[index]?.includes(normalizeText(quote)))
+        throw new InterviewEvaluationError('EVALUATION_OBSERVATION_GROUNDING_INVALID', 'OBSERVATION_TEXT_REFERENCE_MISSING');
+    }
   }
 };
 
@@ -213,6 +220,7 @@ export const validateInterviewEvaluation = (
         unknown
       >;
 
+  recordInterviewEvaluationProtocol(data.evidenceVersion);
   const missing = (keys: string[]) => keys.some(key => !Object.hasOwn(data, key) || data[key] === undefined);
   if (missing(['score', 'technicalAccuracy', 'completeness', 'communication']))
     throw new InterviewEvaluationError('EVALUATION_REQUIRED_FIELDS_MISSING');
@@ -369,14 +377,46 @@ export const createInterviewEvidenceCatalog = (input: EvaluateInterviewAnswerInp
   return catalog;
 };
 
+/** Inline references remove duplicate parallel arrays; they never supply missing prose or citations. */
+const deriveInlineReferences = (data: Record<string, unknown>, catalog: Record<string, string>): Record<string, unknown> => {
+  if (Object.hasOwn(data, 'answerEvidence') || Object.hasOwn(data, 'assessmentBasis'))
+    throw new InterviewEvaluationError('EVALUATION_EVIDENCE_INVALID', 'EVIDENCE_MODE_INVALID');
+  const markers = (text: unknown): string[] => typeof text === 'string'
+    ? [...new Set([...text.matchAll(/\[([AQ]\d+)\]/g)].map(match => match[1]!))] : [];
+  const observationRefs: Record<string, string[]> = {};
+  for (const [field, prefix] of [['strengths', 'A'], ['weaknesses', 'Q']] as const) {
+    const observations = data[field];
+    if (!Array.isArray(observations) || observations.some(text => typeof text !== 'string'))
+      throw new InterviewEvaluationError('EVALUATION_OBSERVATION_GROUNDING_INVALID', 'OBSERVATION_VALUE_INVALID');
+    observationRefs[field] = observations.map(text => {
+      const ids = markers(text);
+      if (ids.some(id => !Object.hasOwn(catalog, id)))
+        throw new InterviewEvaluationError('EVALUATION_OBSERVATION_GROUNDING_INVALID', 'OBSERVATION_REFERENCE_INVALID');
+      const source = ids.find(id => id.startsWith(prefix));
+      if (!source) throw new InterviewEvaluationError('EVALUATION_OBSERVATION_GROUNDING_INVALID',
+        ids.length ? 'OBSERVATION_REFERENCE_INVALID' : 'OBSERVATION_MARKER_MISSING');
+      return source;
+    });
+  }
+  const feedbackRefs = markers(data.feedback), improvedRefs = markers(data.improvedAnswer);
+  const selected = feedbackRefs.filter(id => id.startsWith('A'));
+  if (!selected.length) throw new InterviewEvaluationError('EVALUATION_FEEDBACK_UNGROUNDED');
+  const question = feedbackRefs.find(id => id.startsWith('Q') && improvedRefs.includes(id));
+  if (!question) throw new InterviewEvaluationError('EVALUATION_QUESTION_GROUNDING_INVALID');
+  // All IDs and expanded prose still pass the existing strict resolver and literal validators.
+  return {...data, answerEvidence: selected,
+    assessmentBasis: {questionQuote: question, strengths: observationRefs.strengths, weaknesses: observationRefs.weaknesses}};
+};
+
 /** Resolve explicit references only. Never guess, fuzzy-match, or append missing evidence. */
 const resolveEvidenceReferences = (data: Record<string, unknown>, input: EvaluateInterviewAnswerInput): Record<string, unknown> => {
   if (data.evidenceVersion === undefined) return data; // Strict legacy literal contract below.
   const evidenceError = (reason: 'EVIDENCE_MODE_INVALID' | 'EVIDENCE_ID_INVALID'): never => {
     throw new InterviewEvaluationError('EVALUATION_EVIDENCE_INVALID', reason);
   };
-  if (data.evidenceVersion !== 'refs-v1') return evidenceError('EVIDENCE_MODE_INVALID');
+  if (data.evidenceVersion !== 'refs-v1' && data.evidenceVersion !== 'refs-v2') return evidenceError('EVIDENCE_MODE_INVALID');
   const catalog = createInterviewEvidenceCatalog(input);
+  if (data.evidenceVersion === 'refs-v2') data = deriveInlineReferences(data, catalog);
   const valid = (id: unknown, prefix: 'A' | 'Q'): id is string =>
     typeof id === 'string' && new RegExp(`^${prefix}[1-3]$`).test(id) && Object.hasOwn(catalog, id);
   const selected = data.answerEvidence;
@@ -391,9 +431,20 @@ const resolveEvidenceReferences = (data: Record<string, unknown>, input: Evaluat
   for (const [field, prefix] of [['strengths', 'A'], ['weaknesses', 'Q']] as const) {
     const ids = refs[field];
     const observations = data[field];
-    if (!Array.isArray(ids) || !Array.isArray(observations) || ids.length !== observations.length ||
-      ids.some((id, index) => !valid(id, prefix) || typeof observations[index] !== 'string' || !observations[index].includes(`[${id}]`)))
-      throw new InterviewEvaluationError('EVALUATION_OBSERVATION_GROUNDING_INVALID');
+    if (!Array.isArray(ids))
+      throw new InterviewEvaluationError('EVALUATION_OBSERVATION_GROUNDING_INVALID', 'OBSERVATION_REFERENCES_MISSING');
+    if (!Array.isArray(observations))
+      throw new InterviewEvaluationError('EVALUATION_OBSERVATION_GROUNDING_INVALID', 'OBSERVATION_VALUE_INVALID');
+    if (ids.length !== observations.length)
+      throw new InterviewEvaluationError('EVALUATION_OBSERVATION_GROUNDING_INVALID', 'OBSERVATION_REFERENCE_COUNT_MISMATCH');
+    for (const [index, id] of ids.entries()) {
+      if (!valid(id, prefix))
+        throw new InterviewEvaluationError('EVALUATION_OBSERVATION_GROUNDING_INVALID', 'OBSERVATION_REFERENCE_INVALID');
+      if (typeof observations[index] !== 'string')
+        throw new InterviewEvaluationError('EVALUATION_OBSERVATION_GROUNDING_INVALID', 'OBSERVATION_VALUE_INVALID');
+      if (!observations[index].includes(`[${id}]`))
+        throw new InterviewEvaluationError('EVALUATION_OBSERVATION_GROUNDING_INVALID', 'OBSERVATION_MARKER_MISSING');
+    }
   }
   const feedback = data.feedback;
   if (typeof feedback !== 'string' || !selected.some(id => feedback.includes(`[${id}]`)))
@@ -425,13 +476,12 @@ export const createInterviewEvaluationPrompt = (input: EvaluateInterviewAnswerIn
   if (!catalog.A1 || !catalog.Q1) throw new InterviewEvaluationError('EVALUATION_INPUT_INVALID');
   // Types/references only: no sample scores or unrelated sample judgments to copy.
   const shape = {
-    evidenceVersion: 'refs-v1', score: 'number 0..100', technicalAccuracy: 'number 0..100', completeness: 'number 0..100', communication: 'number 0..100',
+    evidenceVersion: 'refs-v2', score: 'number 0..100', technicalAccuracy: 'number 0..100', completeness: 'number 0..100', communication: 'number 0..100',
     strengths: ['observation including [A#]'], weaknesses: ['actual omission/error against [Q#]'],
     feedback: 'reasoning including selected [A#] and [Q#]', improvedAnswer: 'direct improved answer including [Q#]',
-    answerEvidence: ['A#'], assessmentBasis: {questionQuote: 'Q#', strengths: ['A# per strength'], weaknesses: ['Q# per weakness']},
   };
   return `Evaluate this interview answer. Return one JSON object only. No markdown.
-Rubric: interview-answer-v3-source-refs.
+Rubric: interview-evaluation-v4-inline-refs.
 Career Field: ${formatRoleLabel(roleIdentifier)}
 Question Category: ${normalizeText(input.category) || roleIdentifier}
 Difficulty: ${input.difficulty}
@@ -447,15 +497,13 @@ Technical: correctness/reasoning. Behavioral: relevance, structure, ownership an
 Scores: 0-24 incorrect/off-topic; 25-49 fragmentary; 50-74 material omissions; 75-89 minor omissions; 90-100 complete.
 Use four independent JSON numbers, consistent with explained errors; no default score, invented praise, faults, expertise or personal history.
 
-Use evidenceVersion="refs-v1". A IDs refer ONLY to this answer; Q IDs ONLY to this question.
-Select existing IDs from SOURCE REFERENCES, never invent IDs or copy/paraphrase excerpts into evidence fields.
-answerEvidence is REQUIRED: a JSON array of ${limits.evidence.minItems}-${limits.evidence.maxItems} unique A IDs.
-assessmentBasis.questionQuote: one Q ID, included as [Q#] in BOTH feedback and improvedAnswer.
-assessmentBasis.strengths: one A ID per strength, in order; each strength must include that [A#].
-assessmentBasis.weaknesses: one Q ID per weakness, in order; each weakness must include that [Q#].
-Reference arrays must match observation counts. Empty strengths/weaknesses and their reference arrays are valid.
-feedback must include at least one selected [A#], the chosen [Q#], and explain the judgment.
-Replace # with an actual catalog number, e.g. [A1]. The server expands markers to authentic excerpts.
+Use evidenceVersion="refs-v2". Select only existing SOURCE REFERENCES; A IDs are answer sources, Q IDs question sources.
+Each strength must contain an authentic [A#] reference and explain why it is a strength.
+Each weakness must contain an authentic [Q#] reference and explain the actual error/omission against that requirement.
+feedback must contain at least one [A#] and a [Q#]; improvedAnswer must contain the same [Q#].
+Replace # with an actual catalog number, e.g. [A1]. The server expands markers to original source text.
+Do NOT output answerEvidence or assessmentBasis: source links are derived from these inline markers.
+Empty strengths/weaknesses are valid. Never invent source IDs, additional criteria, or personal achievements.
 Explain WHY the source supports the observation: an ID alone is not proof. Do not append unrelated mandatory criteria.
 Weaknesses must concern actual errors/omissions against the question; improvedAnswer must directly answer it, correcting any false premise.
 Prefer 0-2 observations per array. After reference expansion: each observation ${limits.observations.minChars}-${limits.observations.maxChars} chars (max ${limits.observations.maxItems});

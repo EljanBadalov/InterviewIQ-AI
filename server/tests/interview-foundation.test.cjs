@@ -75,7 +75,7 @@ for(const sample of [answer,'1234567890','An answer with "quotes", backslash \\ 
 test('prompt type-only shape avoids illustrative judgments: '+sample.length,()=>{
  const context={...input(),answer:sample};const prompt=evaluation.createInterviewEvaluationPrompt(context);
  const shape=JSON.parse(prompt.slice(prompt.lastIndexOf('\n{')+1));
- assert.equal(shape.score,'number 0..100');assert.ok(shape.assessmentBasis);
+ assert.equal(shape.score,'number 0..100');assert.equal(shape.evidenceVersion,'refs-v2');assert.equal('assessmentBasis' in shape,false);
  assert.ok(!prompt.includes('JSON FORMAT EXAMPLE'));assert.ok(!prompt.includes('score: 25'));
  assert.ok(prompt.includes('40-2400'));assert.ok(prompt.includes('8-240'));assert.equal(posts,0);
 });
@@ -125,8 +125,8 @@ for(const type of ['technical','behavioral'])test('bounded prompt evidence is li
  assert.ok(options.length>=1&&options.length<=3);assert.equal(new Set(options).size,options.length);
  for(const quote of options){assert.ok(quote.length>=8&&quote.length<=72);assert.ok(normalized.includes(quote));}
  const shape=JSON.parse(prompt.slice(prompt.lastIndexOf('\n{')+1));
- assert.ok(shape.assessmentBasis);assert.ok(prompt.includes('The exact QUESTION is the assessment scope'));
- assert.ok(prompt.includes('answerEvidence is REQUIRED: a JSON array'));
+ assert.equal(shape.evidenceVersion,'refs-v2');assert.equal('assessmentBasis' in shape,false);assert.ok(prompt.includes('The exact QUESTION is the assessment scope'));
+ assert.ok(prompt.includes('Do NOT output answerEvidence or assessmentBasis'));
  assert.ok(prompt.includes('Difficulty: advanced'));assert.ok(prompt.includes('Interview Type: '+type));
  assert.equal(posts,0);
 });
@@ -570,9 +570,9 @@ for(const [name,overrides,code,reason] of [
  ['padded ID',{answerEvidence:[' A1 ']},'EVALUATION_EVIDENCE_INVALID','EVIDENCE_ID_INVALID'],
  ['unknown marker',{feedback:'For [Q1], the statement [A1] is assessed against the question, but an invalid [A99] must not be resolved.'},'EVALUATION_EVIDENCE_INVALID','EVIDENCE_ID_INVALID'],
  ['question from answer',{assessmentBasis:{questionQuote:'A1',strengths:['A1'],weaknesses:['Q1']}},'EVALUATION_QUESTION_GROUNDING_INVALID'],
- ['strength from question',{assessmentBasis:{questionQuote:'Q1',strengths:['Q1'],weaknesses:['Q1']}},'EVALUATION_OBSERVATION_GROUNDING_INVALID'],
- ['weakness from answer',{assessmentBasis:{questionQuote:'Q1',strengths:['A1'],weaknesses:['A1']}},'EVALUATION_OBSERVATION_GROUNDING_INVALID'],
- ['unlinked strength',{strengths:['The answer contains a description without its required source marker.']},'EVALUATION_OBSERVATION_GROUNDING_INVALID'],
+ ['strength from question',{assessmentBasis:{questionQuote:'Q1',strengths:['Q1'],weaknesses:['Q1']}},'EVALUATION_OBSERVATION_GROUNDING_INVALID','OBSERVATION_REFERENCE_INVALID'],
+ ['weakness from answer',{assessmentBasis:{questionQuote:'Q1',strengths:['A1'],weaknesses:['A1']}},'EVALUATION_OBSERVATION_GROUNDING_INVALID','OBSERVATION_REFERENCE_INVALID'],
+ ['unlinked strength',{strengths:['The answer contains a description without its required source marker.']},'EVALUATION_OBSERVATION_GROUNDING_INVALID','OBSERVATION_MARKER_MISSING'],
  ['missing feedback link',{feedback:'For [Q1], the answer should contain a concrete example, but no source reference is present here.'},'EVALUATION_FEEDBACK_UNGROUNDED'],
  ['missing improved scope',{improvedAnswer:'Explain a completely different mechanism with a detailed concrete example and a limitation.'},'EVALUATION_QUESTION_GROUNDING_INVALID'],
  ['markers-only feedback',{feedback:'[A1] [Q1]'},'EVALUATION_FEEDBACK_INVALID'],
@@ -664,4 +664,108 @@ test('reference catalog contains only this request sources, not another user ans
  assert.deepEqual({...evaluation.createInterviewEvidenceCatalog(first)},before);
  const response=evaluation.validateInterviewEvaluation(referenceOutput(second),second);
  assert.ok(response.feedback.includes(current.A1));assert.ok(!response.feedback.includes('First isolated answer'));
+});
+
+
+function inlineOutput(context=input(),overrides={}){
+ const raw=referenceOutput(context);delete raw.answerEvidence;delete raw.assessmentBasis;
+ return {...raw,evidenceVersion:'refs-v2',...overrides};
+}
+
+for(const [name,version,overrides,reason] of [
+ ['literal references absent','legacy',{assessmentBasis:{questionQuote:'JavaScript',weaknesses:['example']}},'OBSERVATION_REFERENCES_MISSING'],
+ ['literal count mismatch','legacy',{assessmentBasis:{questionQuote:'JavaScript',strengths:[],weaknesses:['example']}},'OBSERVATION_REFERENCE_COUNT_MISMATCH'],
+ ['literal fabricated source','legacy',{assessmentBasis:{questionQuote:'JavaScript',strengths:['invented evidence'],weaknesses:['example']}},'OBSERVATION_REFERENCE_INVALID'],
+ ['literal quote missing from observation','legacy',{assessmentBasis:{questionQuote:'JavaScript',strengths:['outer function returns'],weaknesses:['example']}},'OBSERVATION_TEXT_REFERENCE_MISSING'],
+ ['v1 references absent','refs-v1',{assessmentBasis:{questionQuote:'Q1',weaknesses:['Q1']}},'OBSERVATION_REFERENCES_MISSING'],
+ ['v1 incorrect count','refs-v1',{assessmentBasis:{questionQuote:'Q1',strengths:[],weaknesses:['Q1']}},'OBSERVATION_REFERENCE_COUNT_MISMATCH'],
+ ['v1 invalid source','refs-v1',{assessmentBasis:{questionQuote:'Q1',strengths:['Q1'],weaknesses:['Q1']}},'OBSERVATION_REFERENCE_INVALID'],
+ ['v1 non-string observation','refs-v1',{strengths:[null]},'OBSERVATION_VALUE_INVALID'],
+ ['v1 missing marker','refs-v1',{strengths:['The observation gives reasoning but omits the required reference marker.']},'OBSERVATION_MARKER_MISSING'],
+ ['v1 reordered references','refs-v1',{strengths:['This observation is supported by [A1] and explains its meaning.','This second observation is supported by [A2] with concrete reasoning.'],assessmentBasis:{questionQuote:'Q1',strengths:['A2','A1'],weaknesses:['Q1']}},'OBSERVATION_MARKER_MISSING'],
+])test('observation branch diagnostic is exact and privacy-safe: '+name,async()=>{
+ const raw=version==='legacy'?output(overrides):referenceOutput(input(),overrides);
+ global.fetch=async()=>{posts++;return new Response(JSON.stringify({response:JSON.stringify(raw),finish_reason:'stop'}));};
+ const response=await invoke();assert.equal(response.statusCode,503);assert.equal(posts,1);
+ assert.equal(telemetry[0].failureCode,'EVALUATION_OBSERVATION_GROUNDING_INVALID');assert.equal(telemetry[0].failureReason,reason);
+ assert.equal(telemetry[0].evaluationProtocol,version==='legacy'?'legacy-literal':version);
+ assert.equal(telemetry[0].evaluationContractVersion,'interview-evaluation-v4-inline-refs');
+ assert.equal(telemetry[0].persistenceMs,0);assert.equal(telemetry[0].retries,0);
+ assert.equal(records.get(interview).answers[0].answerText,undefined);assert.equal(records.get(interview).evaluationLease,undefined);assert.deepEqual(skills,[]);
+ for(const secret of [answer,questionText,owner])assert.ok(!JSON.stringify(telemetry).includes(secret));
+});
+
+for(const type of ['technical','behavioral'])test('inline protocol derives source links and commits the unchanged public response: '+type,async()=>{
+ records.set(interview,row(interview,owner,type));const raw=inlineOutput(),before=clone(raw);
+ global.fetch=async()=>{posts++;return new Response(JSON.stringify({response:JSON.stringify(raw),finish_reason:'stop'}));};
+ const response=await invoke();assert.equal(response.statusCode,200);assert.equal(posts,1);
+ assert.equal(telemetry[0].evaluationProtocol,'refs-v2');assert.equal(telemetry[0].attempts,1);assert.equal(telemetry[0].retries,0);
+ assert.deepEqual(raw,before);assert.equal(skills.length,type==='technical'?1:0);
+ assert.deepEqual(response.body.data.evaluation,evaluation.validateInterviewEvaluation(referenceOutput(),input()));
+ for(const key of ['assessmentBasis','answerEvidence','evidenceVersion']){
+  assert.equal(key in response.body.data.evaluation,false);assert.equal(key in records.get(interview).answers[0],false);
+ }
+});
+
+for(const [name,changes,code,reason] of [
+ ['missing inline marker',{strengths:['The answer describes the relevant mechanism but has no source reference.']},'EVALUATION_OBSERVATION_GROUNDING_INVALID','OBSERVATION_MARKER_MISSING'],
+ ['wrong source',{strengths:['The explanation [Q1] is not answer evidence supporting a strength.']},'EVALUATION_OBSERVATION_GROUNDING_INVALID','OBSERVATION_REFERENCE_INVALID'],
+ ['unknown inline source',{weaknesses:['The missing mandatory audit logs are required by [Q99].']},'EVALUATION_OBSERVATION_GROUNDING_INVALID','OBSERVATION_REFERENCE_INVALID'],
+ ['unrelated event-sourcing reference',{weaknesses:['The candidate should discuss event sourcing for [A1].']},'EVALUATION_OBSERVATION_GROUNDING_INVALID','OBSERVATION_REFERENCE_INVALID'],
+ ['invalid observation',{strengths:[{}]},'EVALUATION_OBSERVATION_GROUNDING_INVALID','OBSERVATION_VALUE_INVALID'],
+ ['mixed protocol',{assessmentBasis:{questionQuote:'Q1'}},'EVALUATION_EVIDENCE_INVALID','EVIDENCE_MODE_INVALID'],
+ ['no feedback answer source',{feedback:'For [Q1], this evaluation explains a concept but omits any answer evidence reference.'},'EVALUATION_FEEDBACK_UNGROUNDED',undefined],
+ ['no improved question source',{improvedAnswer:'An improved answer without the actual question reference remains invalid despite substantive text.'},'EVALUATION_QUESTION_GROUNDING_INVALID',undefined],
+ ['only marker strength',{strengths:['[A1]']},'EVALUATION_OBSERVATIONS_INVALID',undefined],
+ ['only marker feedback',{feedback:'[A1] [Q1]'},'EVALUATION_FEEDBACK_INVALID',undefined],
+])test('inline protocol rejects unsupported output without persistence: '+name,async()=>{
+ global.fetch=async()=>{posts++;return new Response(JSON.stringify({response:JSON.stringify(inlineOutput(input(),changes)),finish_reason:'stop'}));};
+ const response=await invoke();assert.equal(response.statusCode,503);assert.equal(posts,1);
+ assert.equal(telemetry[0].failureCode,code);assert.equal(telemetry[0].failureReason,reason);assert.equal(telemetry[0].evaluationProtocol,'refs-v2');
+ assert.equal(telemetry[0].persistenceMs,0);assert.equal(telemetry[0].retries,0);assert.deepEqual(skills,[]);
+ assert.equal(records.get(interview).answers[0].evaluationStatus,'pending');
+});
+
+test('inline observations can be reordered without maintaining duplicate reference arrays',()=>{
+ const raw=inlineOutput(input(),{strengths:['The first statement [A1] explains the mechanism in the answer.','The second statement [A2] supplies further context from the answer.']});
+ const forward=evaluation.validateInterviewEvaluation(raw,input());
+ const reversed=evaluation.validateInterviewEvaluation({...raw,strengths:[...raw.strengths].reverse()},input());
+ assert.deepEqual(reversed.strengths,[...forward.strengths].reverse());
+});
+
+test('inline protocol allows empty observations, still requires substantive grounded feedback',()=>{
+ const result=evaluation.validateInterviewEvaluation(inlineOutput(input(),{strengths:[],weaknesses:[]}),input());
+ assert.deepEqual(result.strengths,[]);assert.deepEqual(result.weaknesses,[]);assert.ok(result.feedback.length>=40);
+});
+
+test('inline CAP/DI premise challenge preserves the technically relevant feedback',async()=>{
+ const context={...input(),question:flawedQuestion,answer:premiseAnswer};
+ const raw=inlineOutput(context,{score:94,technicalAccuracy:96,completeness:94,communication:92,
+  strengths:['The statement [A1] correctly identifies network partitions rather than assuming dependency injection creates a cluster.'],weaknesses:[],
+  feedback:'For [Q1], the explanation [A1] correctly challenges the premise and distinguishes distributed-system trade-offs from dependency injection.',
+  improvedAnswer:'For [Q1], a network partition in a distributed system is the relevant condition. Hilt and Dagger concern dependency injection and do not themselves create a CAP trade-off.'});
+ const response=await invokePremise(raw);assert.equal(response.statusCode,200);assert.equal(response.body.data.evaluation.technicalAccuracy,96);
+ assert.deepEqual(response.body.data.evaluation.weaknesses,[]);assert.equal(posts,1);assert.equal(telemetry[0].evaluationProtocol,'refs-v2');
+});
+
+test('inline concurrent duplicates dispatch once and preserve lease fencing',async()=>{
+ global.fetch=async()=>{posts++;await new Promise(resolve=>setTimeout(resolve,8));return new Response(JSON.stringify({response:JSON.stringify(inlineOutput()),finish_reason:'stop'}));};
+ const responses=await Promise.all([invoke(),invoke()]);assert.deepEqual(responses.map(r=>r.statusCode).sort(),[200,409]);assert.equal(posts,1);
+});
+
+test('observation subreasons cannot log forged private text or cross-category reasons',async()=>{
+ for(const error of [new contract.InterviewEvaluationError('EVALUATION_OBSERVATION_GROUNDING_INVALID',answer),
+  new contract.InterviewEvaluationError('EVALUATION_OBSERVATION_GROUNDING_INVALID','EVIDENCE_NOT_VERBATIM'),
+  new contract.InterviewEvaluationError('EVALUATION_JSON_INVALID','OBSERVATION_MARKER_MISSING')]){
+  let value;await metric.withInterviewMetrics(async()=>metric.recordInterviewEvaluationFailure(error),()=>503,result=>value=result);
+  assert.equal(value.failureReason,undefined);assert.ok(!JSON.stringify(value).includes(answer));
+ }
+ const original=process.env.RENDER_GIT_COMMIT;
+ try{
+  for(const [revision,expected] of [['a'.repeat(40),'a'.repeat(40)],['PRIVATE credential',undefined]]){
+   process.env.RENDER_GIT_COMMIT=revision;let value;
+   await metric.withInterviewMetrics(async()=>metric.recordInterviewEvaluationProtocol('PRIVATE token'),()=>200,result=>value=result);
+   assert.equal(value.buildRevision,expected);assert.equal(value.evaluationProtocol,'unknown');assert.ok(!JSON.stringify(value).includes('PRIVATE'));
+  }
+ }finally{if(original===undefined)delete process.env.RENDER_GIT_COMMIT;else process.env.RENDER_GIT_COMMIT=original;}
 });
