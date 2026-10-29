@@ -1,10 +1,101 @@
 {
   "id": "bir-careers",
   "name": "Bir Careers",
-  "updatedAt": "2026-10-29T04:38:55.964Z",
+  "updatedAt": "2026-10-29T15:01:24.539Z",
   "success": true,
-  "count": 77,
+  "count": 79,
   "jobs": [
+    {
+      "externalId": "8642",
+      "title": "Komplayens departamentinin Komplayens hesabatlığı şöbəsinin aparıcı mütəxəssisi",
+      "company": "Kapital Bank / Bir",
+      "brand": "Birbank",
+      "location": "Bakı",
+      "summary": "Birbank-ın strateji fəaliyyətində mühüm rol oynayan Komplayens hesabatlığı şöbəsinə komanda yoldaşı axtarırıq. Bu rol Bankın komplayens hesabatlarının hazırlanması, müvafiq daxili strukturları və dövlət qurumlarına dəqiq və vaxtında təqdim olunmasını əhatə edir. Bu vəzifədə Siz həm gündəlik hesabatların hazırlanmasında, həm də yeni regulyativ tələblərə uyğun proseslərin qurulmasında iştirak edəcəksiniz. Sizin işiniz yalnız hesabatların hazırlanması ilə məhdudlaşmayacaq, həm də Bankın sabit fəaliyyətinə və risklərin effektiv idarə olunmasına mühüm töhfə verəcək.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
+      "description": "Birbank-ın strateji fəaliyyətində mühüm rol oynayan Komplayens hesabatlığı şöbəsinə komanda yoldaşı axtarırıq. Bu rol Bankın komplayens hesabatlarının hazırlanması, müvafiq daxili strukturları və dövlət qurumlarına dəqiq və vaxtında təqdim olunmasını əhatə edir. Bu vəzifədə Siz həm gündəlik hesabatların hazırlanmasında, həm də yeni regulyativ tələblərə uyğun proseslərin qurulmasında iştirak edəcəksiniz. Sizin işiniz yalnız hesabatların hazırlanması ilə məhdudlaşmayacaq, həm də Bankın sabit fəaliyyətinə və risklərin effektiv idarə olunmasına mühüm töhfə verəcək.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
+      "requirements": [
+        "İT, İqtisadiyyat, Maliyyə və ya əlaqəli sahələr üzrə ali təhsilin olması;",
+        "Bank sektorunda, xüsusilə hesabatlıq və ya data analitika sahəsində ən azı 2 il iş təcrübəsinin olması;",
+        "Verilənlər bazaları ilə işləmə təcrübəsinin olması;",
+        "SQL, PL/SQL və MS Excel üzrə qabaqcıl səviyyədə biliklərin olması;",
+        "HTML, CSS, XML və JSON formatları ilə işləmə bacarığının olması;",
+        "Python proqramlaşdırma dilini bilməyin üstünlük hesab edilməsi;",
+        "Hesabat sənədləşməsi və texniki tapşırıqlarla işləmək üçün texniki səviyyədə ingilis dili biliklərinin olması."
+      ],
+      "responsibilities": [
+        "Bankın məlumat bazalarından zəruri məlumatların sorğulanması, analizi və tənzimləyici/daxili hesabatların hazırlanması;",
+        "Mövcud hesabatlıq skriptlərinin optimallaşdırılması və yeni biznes tələblərinin (reportinq meyarlarının) skriptlərə tətbiq edilməsi;",
+        "AML və ya risklərin idarə edilməsi çərçivəsində yeni şübhəlilik indikatorları üzrə (monitoring/screening) skriptlərin işlənib hazırlanması;",
+        "Nəzarətedici qurumlar tərəfindən tələb olunan hesabat məlumatlarının müvafiq proqram təminatında toplanmasına və onların dəqiqliyinə nəzarət edilməsi."
+      ],
+      "benefits": [],
+      "skills": [
+        "Python",
+        "SQL",
+        "Excel",
+        "Monitoring",
+        "HTML",
+        "CSS"
+      ],
+      "employmentType": "full-time",
+      "experienceLevel": "senior",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": "03.11.2026",
+      "postedAt": null,
+      "url": "https://careers.bir.az/vacancies/8642",
+      "applyUrl": "https://careers.bir.az/vacancies/8642#attachFile",
+      "source": "Bir Careers"
+    },
+    {
+      "externalId": "8805",
+      "title": "Model risklərinin idarəedilməsi üzrə baş mütəxəssis",
+      "company": "Kapital Bank / Bir",
+      "brand": "Bir",
+      "location": "Bakı",
+      "summary": "Bu rol model risklərinin idarə edilməsi çərçivəsinin hazırlanması və tətbiqi, model inventarına və validasiya nəticələrinə nəzarət, risk göstəricilərinin monitorinqi və müvafiq hesabatların hazırlanmasını əhatə edir.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
+      "description": "Bu rol model risklərinin idarə edilməsi çərçivəsinin hazırlanması və tətbiqi, model inventarına və validasiya nəticələrinə nəzarət, risk göstəricilərinin monitorinqi və müvafiq hesabatların hazırlanmasını əhatə edir.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
+      "requirements": [
+        "İqtisadiyyat, maliyyə, riyaziyyat, statistika və ya oxşar ixtisas üzrə ali təhsil;",
+        "Risklərin idarə edilməsi, model validasiyası, audit və ya model hazırlanması sahəsində ən azı 5 il iş təcrübəsi;",
+        "Model riskinin idarə edilməsi üzrə tənzimləyici tələblər və beynəlxalq təcrübə haqqında dərin bilik;",
+        "Data analitika alətləri ilə iş bacarığı (Python/Excel/SQL/DataIku/Tableau);",
+        "GenAI və LLM əsaslı tətbiqlərin (chatbotlar, agentlər) əsas prinsipləri və istifadə riskləri barədə dərin bilik;",
+        "Yüksək səviyyədə ünsiyyətqurma bacarıqları;",
+        "Dil bilikləri: Azərbaycan, İngilis (B2/C1), (əlavə xarici dil bilikləri alqışlanır)."
+      ],
+      "responsibilities": [
+        "Model riski üzrə siyasət, metodologiya və prosedurların işlənib hazırlanması, yenilənməsi və bank üzrə tətbiqinin təmin edilməsi;",
+        "Model inventarının aparılmasına ümumi nəzarət: inventarın tamlığı, aktuallığı və keyfiyyəti üzrə dövri yoxlamaların aparılması;",
+        "Validasiya tapıntılarının və tədbirlər planlarının icrasına nəzarət, gecikmələrin rəhbərliyə və müvafiq komitələrə eskalasiyası;",
+        "Model riski üzrə göstəricilərin (KPI, SLA, risk iştahası limitləri) müəyyən edilməsi, onlara dair təkliflərin hazırlanması və monitorinqi;",
+        "Model riski üzrə dövri hesabatların və modellərin monitorinq hesabatlarının hazırlanması, nəticələrin təhlili və rəhbərliyə təqdim edilməsi;",
+        "MRM Komissiyasının iclaslarının təşkili, materiallarının və qərar layihələrinin hazırlanması;",
+        "Modellərlə bağlı risklər üzrə nəzarət (assurance) işlərinin aparılması, digər struktur bölmələrin sənədlərinə rəylərin hazırlanması;",
+        "AI/Gen AI modelləri ilə bağlı model risklərinin idarəetmə çərçivəsinə inteqrasiyasını həyata keçirmək."
+      ],
+      "benefits": [],
+      "skills": [
+        "LLM",
+        "Python",
+        "SQL",
+        "Excel",
+        "Tableau"
+      ],
+      "employmentType": "full-time",
+      "experienceLevel": "senior",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": "30.11.2026",
+      "postedAt": null,
+      "url": "https://careers.bir.az/vacancies/8805",
+      "applyUrl": "https://careers.bir.az/vacancies/8805#attachFile",
+      "source": "Bir Careers"
+    },
     {
       "externalId": "8705",
       "title": "Sumqayıt Regional İnkassasiya Mərkəzi üzrə Kassir-İnkassator",
@@ -2671,34 +2762,30 @@
       "company": "Kapital Bank / Bir",
       "brand": "Bir",
       "location": "Bakı",
-      "summary": "Bu rolun əsas məqsədi, Bir ekosisteminin məlumatların effektiv idarə olunması və təhlili vasitəsilə biznes qərar qəbuletməni dəstəkləmək, və analitik yanaşmalarla strateji fəaliyyətin optimallaşdırılmasına töhfə verməkdir.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
-      "description": "Bu rolun əsas məqsədi, Bir ekosisteminin məlumatların effektiv idarə olunması və təhlili vasitəsilə biznes qərar qəbuletməni dəstəkləmək, və analitik yanaşmalarla strateji fəaliyyətin optimallaşdırılmasına töhfə verməkdir.\nBir ekosistemində işləmək texnologiya ilə dəyər yaratmaq, insanlara real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Komandalarımız açıq müzakirələr, sürətli qərarlar və davamlı təkmilləşmə üzərində qurulub. Ofislərimizdə ideyalar yaranır, məhsullar formalaşır, texnologiya isə bu ideyaların reallığa çevrilməsinə xidmət edir. Bir ekosistemində biz sadə, etibarlı və innovativ həllərlə milyonlarla insanın və minlərlə biznesin gündəlik həyatına toxunuruq. Fintek biznesi (Birbank), Ödənişlər biznesi (m10/MilliÖn) və E-ticarət biznesi (Birmarket) bir araya gələrək ölkənin ilk tam inteqrasiyalı rəqəmsal ekosistemini formalaşdırır. Komandamızın peşəkarlığı sayəsində təqdim etdiyimiz məhsullar yeni vərdişlər yaradır və ölkədə rəqəmsal mədəniyyətin formalaşmasına töhfə verir. Burada işləmək geniş fürsətlərə malik Bir ekosistemində böyümək deməkdir. Fərqli sahələr, müxtəlif məhsullar və tükənməyən öyrənmə imkanları potensialınızı üzə çıxarmağa və karyeranızı inkişaf etdirməyə şərait yaradır.",
+      "summary": "Bu rolun əsas məqsədi, Bir ekosisteminin məlumatların effektiv idarə olunması və təhlili vasitəsilə biznes qərar qəbuletməni dəstəkləmək, və analitik yanaşmalarla strateji fəaliyyətin optimallaşdırılmasına töhfə verməkdir.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
+      "description": "Bu rolun əsas məqsədi, Bir ekosisteminin məlumatların effektiv idarə olunması və təhlili vasitəsilə biznes qərar qəbuletməni dəstəkləmək, və analitik yanaşmalarla strateji fəaliyyətin optimallaşdırılmasına töhfə verməkdir.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
       "requirements": [
-        "Ali təhsil (Riyaziyyat, İT, Kompüter Elmləri və ya müvafiq sahə üzrə);",
-        "İri həcmli məlumat bazaları və Advanced SQL sorğu dili ilə işləmək bacarığı;",
-        "Vizuallaşdırma alətlərindən ən azı biri ilə işləmə bacarığı",
-        "Data analitika alətlərindən (Python, R və s.) ən azı biri ilə işləmə bacarığı;",
-        "Yaxşı səviyyədə MS Excel bilikləri;",
-        "Əla səviyyədə Azərbaycan, yaxşı səviyyədə İngilis və Rus dili bilikləri;",
-        "Analitik düşünmə, böyük həcmli məlumatlarla işləmə, məsuliyyətlilik və komanda ilə işləmək bacarığı."
+        "Məhsul analitikası, biznes analitikası və ya oxşar sahədə ən azı 2 il iş təcrübəsi (fintex, bankçılıq, elektron ticarət və ya texnoloji məhsullar sahəsində təcrübəyə üstünlük verilir);",
+        "Güclü biznes düşüncəsi və məhsul göstəricilərinin gəlir, xərclər və müştəri dəyəri ilə əlaqəsini anlamaq bacarığı;",
+        "A/B testləri üzrə praktiki təcrübə: eksperimentlərin planlaşdırılması, nümunə həcminin müəyyən edilməsi, statistik əhəmiyyətliliyin qiymətləndirilməsi, nəticələrin şərhi və mümkün metodoloji səhvlərin müəyyənləşdirilməsi;",
+        "Statistika və fərziyyələrin yoxlanılması üzrə yaxşı biliklər;",
+        "SQL üzrə güclü biliklər; təhlillərin aparılması üçün Python və ya R biliklərinə üstünlük verilir;",
+        "Tableau və ya oxşar BI alətləri ilə iş təcrübəsi; Dataiku biliklərinə üstünlük verilir;",
+        "Strukturlaşdırılmış düşünmə və mürəkkəb analitik nəticələri texniki bilikləri olmayan şəxslərə aydın şəkildə izah etmək bacarığı;",
+        "İngilis dili biliyi; Azərbaycan və/və ya rus dili bilikləri əlavə üstünlükdür."
       ],
       "responsibilities": [
-        "Fərqli verilənlər bazalarından data çəkərək Oracle BI mühitində mərkəzləşdirilmiş hesabatlar və idarəetmə panelləri (Dashboards) hazırlamaq;",
-        "Böyük data həcmi ilə işləyən, gecikən və yüksək resurs aparan hesabatların SQL sorğularını analiz etmək və performansını (Performance Tuning) təmin etmək;",
-        "Biznes tərəfindən daxil olan müraciətlər əsasında mövcud SQL skriptlərində dəyişikliklər etmək, xətaları diaqnostika edib aradan qaldırmaq;",
-        "Toplanmış məlumatların ümumi və keyfiyyət analizini təşkil etmək, aparılmış analizlər əsasında hesabat və təkliflər hazırlamaq;",
-        "Data analitikası sahəsindəki yenilikləri izləmək, innovativ həlləri tətbiq etmək və data əsaslı fəaliyyət strategiyaları üzrə təkliflər vermək;",
-        "Vəzifəsi üzrə rəhbərlik tərəfindən verilən digər tapşırıqları yerinə yetirmək."
+        "Məhsul və biznes komandaları ilə əməkdaşlıq edərək biznes suallarını aydın və yoxlanıla bilən fərziyyələrə çevirmək;",
+        "A/B testlərini və digər eksperimentləri planlaşdırmaq, həyata keçirmək və nəticələrini təhlil edərək məhsulla bağlı qərarların qəbulunda istifadə etmək;",
+        "Müştəri axınını, müştəri saxlama, konversiya və vahid iqtisadiyyat göstəricilərini təhlil edərək inkişaf imkanlarını müəyyənləşdirmək;",
+        "Məhsul üzrə əsas fəaliyyət göstəricilərini (KPI) müəyyənləşdirmək və izləmək, istifadəyə verilmiş funksionallıqların biznesə təsirini qiymətləndirmək;",
+        "Təhlillərin nəticələrini və tövsiyələri maraqlı tərəflərə aydın, qərarverməyə yönəlmiş şəkildə təqdim etmək."
       ],
       "benefits": [],
       "skills": [
         "Python",
         "SQL",
-        "Excel",
-        "Dashboards",
-        "Oracle",
-        "Performance Tuning",
-        "Performance"
+        "Tableau"
       ],
       "employmentType": "full-time",
       "experienceLevel": "senior",
@@ -3865,9 +3952,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 77,
-    "detailPagesFetched": 77,
-    "acceptedJobs": 77,
+    "discoveredLinks": 79,
+    "detailPagesFetched": 79,
+    "acceptedJobs": 79,
     "rejectedJobs": 0,
     "errors": []
   }
