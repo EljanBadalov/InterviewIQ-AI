@@ -1,9 +1,9 @@
 {
   "id": "bir-careers",
   "name": "Bir Careers",
-  "updatedAt": "2026-11-04T11:56:11.348Z",
+  "updatedAt": "2026-11-04T19:28:16.038Z",
   "success": true,
-  "count": 76,
+  "count": 75,
   "jobs": [
     {
       "externalId": "8823",
@@ -3008,67 +3008,6 @@
       "source": "Bir Careers"
     },
     {
-      "externalId": "8677",
-      "title": "QA mühəndis - təcrübəçi",
-      "company": "Kapital Bank / Bir",
-      "brand": "Birbank",
-      "location": "Bakı",
-      "summary": "Keyfiyyətə önəm verən, test proseslərini öyrənməyə və texnologiya sahəsində inkişaf etməyə həvəsli birisinizsə, sizi komandamıza təcrübə keçməyə dəvət edirik.Bu rolda proqram təminatının test edilməsi proseslərini öyrənəcək, avtomatlaşdırılmış testlərin hazırlanması və icrasında iştirak edəcək, real layihələr üzərində praktiki təcrübə qazanaraq məhsulların keyfiyyətinin təmin olunmasına töhfə verəcəksiniz.Əgər öyrənməyə həvəsli, diqqətli və analitik düşüncəyə sahibsinizsə, sizi komandamızda görməkdən məmnun olarıq!\nKeyfiyyətə önəm verən, test proseslərini öyrənməyə və texnologiya sahəsində inkişaf etməyə həvəsli birisinizsə, sizi komandamıza təcrübə keçməyə dəvət edirik.",
-      "description": "Keyfiyyətə önəm verən, test proseslərini öyrənməyə və texnologiya sahəsində inkişaf etməyə həvəsli birisinizsə, sizi komandamıza təcrübə keçməyə dəvət edirik.Bu rolda proqram təminatının test edilməsi proseslərini öyrənəcək, avtomatlaşdırılmış testlərin hazırlanması və icrasında iştirak edəcək, real layihələr üzərində praktiki təcrübə qazanaraq məhsulların keyfiyyətinin təmin olunmasına töhfə verəcəksiniz.Əgər öyrənməyə həvəsli, diqqətli və analitik düşüncəyə sahibsinizsə, sizi komandamızda görməkdən məmnun olarıq!\nKeyfiyyətə önəm verən, test proseslərini öyrənməyə və texnologiya sahəsində inkişaf etməyə həvəsli birisinizsə, sizi komandamıza təcrübə keçməyə dəvət edirik.",
-      "requirements": [
-        "Kompüter elmləri, İnformasiya texnologiyaları və ya əlaqəli sahə üzrə ali təhsil (davam edən və ya tamamlanmış);",
-        "Java üzrə əsas biliklər (OOP prinsipləri, metodlar və siniflər);",
-        "UI testlərinin avtomatlaşdırılması üçün Selenium WebDriver üzrə əsas biliklər;",
-        "API testləşdirməsi üzrə anlayış və Postman ilə işləmə təcrübəsi;",
-        "API testlərinin avtomatlaşdırılması üçün Rest Assured üzrə əsas biliklər;",
-        "Git və ya digər versiyaya nəzarət sistemləri üzrə əsas biliklər;",
-        "SQL üzrə əsas biliklər (SELECT, WHERE, JOIN);",
-        "Jira, Xray və ya digər test idarəetmə alətləri ilə tanışlıq;",
-        "Maven və ya Gradle üzrə əsas biliklər;",
-        "CI/CD prinsipləri haqqında anlayış (Jenkins biliyi üstünlükdür);",
-        "Manual testləşdirmə üzrə əsas təcrübə;",
-        "Agile/Scrum metodologiyaları ilə tanışlıq;",
-        "Məsuliyyətli və intizamlı olmaq;",
-        "Güclü analitik düşünmə qabiliyyəti;",
-        "Yeni bilikləri tez mənimsəmək və texniki bacarıqları inkişaf etdirmək həvəsi;",
-        "Problemlərin həllinə yönəlmiş düşüncə tərzi;",
-        "Həm müstəqil, həm də komanda ilə işləmək bacarığı."
-      ],
-      "responsibilities": [
-        "Tam iş günü iş rejimində çalışmaq.",
-        "Avtomatlaşdırılmış test ssenarilərinin yazılması və dəstəklənməsində iştirak etmək.",
-        "Selenium WebDriver (Java) vasitəsilə UI testlərinin hazırlanmasına dəstək göstərmək.",
-        "Postman və/və ya Rest Assured vasitəsilə API testlərinin aparılmasında iştirak etmək.",
-        "Funksional və reqressiya testlərinin avtomatlaşdırılmasına dəstək göstərmək.",
-        "Test nəticələrini təhlil etmək və aşkar edilmiş problemləri sənədləşdirmək.",
-        "Jira-da xətaları qeydə almaq və izləmək (Xray biliyi üstünlükdür).",
-        "Manual test ssenarilərinin avtomatlaşdırılmış testlərə çevrilməsində iştirak etmək.",
-        "Test strategiyalarının və QA proseslərinin təkmilləşdirilməsi üçün komanda ilə əməkdaşlıq etmək."
-      ],
-      "benefits": [],
-      "skills": [
-        "SQL",
-        "CI/CD",
-        "Git",
-        "Jenkins",
-        "Postman",
-        "Selenium",
-        "Java",
-        "OOP"
-      ],
-      "employmentType": "full-time",
-      "experienceLevel": "intern",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "15.11.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8677",
-      "applyUrl": "https://careers.bir.az/vacancies/8677#attachFile",
-      "source": "Bir Careers"
-    },
-    {
       "externalId": "8088",
       "title": "QA mühəndis - ödənişlər biznesi",
       "company": "Kapital Bank / Bir",
@@ -3845,9 +3784,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 76,
-    "detailPagesFetched": 76,
-    "acceptedJobs": 76,
+    "discoveredLinks": 75,
+    "detailPagesFetched": 75,
+    "acceptedJobs": 75,
     "rejectedJobs": 0,
     "errors": []
   }
