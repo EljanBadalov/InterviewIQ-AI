@@ -1,9 +1,9 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-11-05T11:58:17.894Z",
+  "updatedAt": "2026-11-05T19:48:02.587Z",
   "success": true,
-  "count": 114,
+  "count": 113,
   "jobs": [
     {
       "externalId": "5483",
@@ -702,45 +702,6 @@
       "postedAt": null,
       "url": "https://careers.abb-bank.az/vakansiyalar/v2/5401",
       "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5401",
-      "source": "ABB Careers"
-    },
-    {
-      "externalId": "5349",
-      "title": "Strateji partnyorlarla iş şöbəsinin kiçik mütəxəssisi / mütəxəssisi",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "Strateji tərəfdaşlarla birgə reallaşdırılan layihələrin idarə edilməsində iştirak etmək; Əməkdaşlıq modellərinin və kommersiya şərtlərinin hazırlanması; Ali təhsilli;",
-      "description": "Strateji tərəfdaşlarla birgə reallaşdırılan layihələrin idarə edilməsində iştirak etmək; Əməkdaşlıq modellərinin və kommersiya şərtlərinin hazırlanması; Ali təhsilli;",
-      "requirements": [
-        "Ali təhsilli;",
-        "Satış, tərəfdaşlıq (partnership) və ya B2B əlaqələrinin idarə edilməsi sahəsində minimum 1 il iş təcrübəsi olan;",
-        "Danışıqlar aparmaq və kommersiya təklifləri hazırlamaq bacarığı olan;",
-        "Analitik düşüncə və təşəbbüskarlıq nümayiş etdirən;",
-        "Azərbaycan və rus dillərini sərbəst bilən (ingilis dili arzuolunandır)."
-      ],
-      "responsibilities": [
-        "Strateji tərəfdaşlarla birgə reallaşdırılan layihələrin idarə edilməsində iştirak etmək;",
-        "Əməkdaşlıq modellərinin və kommersiya şərtlərinin hazırlanması;",
-        "\"Co-brand\" kart layihələri üzrə yeni partnyorların cəlb edilməsi;",
-        "Loyallıq proqramları üzrə partnyor şəbəkəsinin inkişaf etdirilməsi;",
-        "Bank ekosisteminin genişləndirilməsi istiqamətində müvafiq işlərin görülməsi;",
-        "Əlavə dəyər xidmətlərinin (sığorta, səhiyyə, turizm, rəqəmsal xidmətlər və s.) bank məhsulları ilə inteqrasiyasının təşkili;",
-        "Brend təsirinin ölçülməsi və strateji təqdimatların hazırlanması;",
-        "Potensial tərəfdaşlar (holdinqlər, iri şirkətlər, dövlət qurumları) üzrə bazar araşdırmalarının aparılması;",
-        "Müştəri davranışı analitikası əsasında strateji təkliflərin hazırlanması."
-      ],
-      "benefits": [],
-      "skills": [],
-      "employmentType": null,
-      "experienceLevel": "junior",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5349",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5349",
       "source": "ABB Careers"
     },
     {
@@ -4712,9 +4673,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 114,
-    "detailPagesFetched": 114,
-    "acceptedJobs": 114,
+    "discoveredLinks": 113,
+    "detailPagesFetched": 113,
+    "acceptedJobs": 113,
     "rejectedJobs": 0,
     "listingFallbacks": 0,
     "errors": []
