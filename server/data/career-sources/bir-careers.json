@@ -1,51 +1,10 @@
 {
   "id": "bir-careers",
   "name": "Bir Careers",
-  "updatedAt": "2026-11-04T19:28:16.038Z",
+  "updatedAt": "2026-11-05T00:47:56.891Z",
   "success": true,
-  "count": 75,
+  "count": 72,
   "jobs": [
-    {
-      "externalId": "8823",
-      "title": "Birbaşa Satışlar Bölməsinin Kiçik Mütəxəssisi",
-      "company": "Kapital Bank / Bir",
-      "brand": "Birbank",
-      "location": "Bakı",
-      "summary": "Birbankın Birbaşa satışlar bölməsində satış şəbəkəsinin genişlənməsində birbaşa iştirak edərək potensial müştərilərlə və tərəfdaşlarla aktiv ünsiyyət quracaqsan. Region üzrə sahə görüşlərinin keçirilməsi, bank məhsullarının birbaşa təqdimatı və satışı, yeni müştərilərin cəlb olunması və satış nöqtələrində xidmət keyfiyyətinin yüksəldilməsi sənin əsas fəaliyyət istiqamətlərin olacaq.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
-      "description": "Birbankın Birbaşa satışlar bölməsində satış şəbəkəsinin genişlənməsində birbaşa iştirak edərək potensial müştərilərlə və tərəfdaşlarla aktiv ünsiyyət quracaqsan. Region üzrə sahə görüşlərinin keçirilməsi, bank məhsullarının birbaşa təqdimatı və satışı, yeni müştərilərin cəlb olunması və satış nöqtələrində xidmət keyfiyyətinin yüksəldilməsi sənin əsas fəaliyyət istiqamətlərin olacaq.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
-      "requirements": [
-        "Ali təhsil;",
-        "Satış bacarığı;",
-        "Dəyişən mühitə çevik adaptasiya;",
-        "Effektiv kommunikasiya və komandaya sürətli uyğunlaşma;",
-        "Sahiblənmə və məsuliyyət hissi;",
-        "Davamlı öyrənmə və inkişaf həvəsi;",
-        "Müştəriyönümlü yanaşma."
-      ],
-      "responsibilities": [
-        "Bankla partnyor, qeyri-partnyor olan təşkilatlara vizitlərin edilməsi və potensial müştərilərlə görüşlərin təşkili;",
-        "Bankın kredit və qeyri-kredit məhsullarını təbliğ etmək üçün müxtəlif mərkəzlərdəki məntəqələrdə fəaliyyət göstərilməsi;",
-        "Bankın kredit və qeyri-kredit məhsullarının təbliğatı məqsədilə müştərilərlə görüşlər keçirilməsi;",
-        "Potensial müştərilərə bank məhsulları barədə təqdimatın keçirilməsi və müştəri tələbinin formalaşdırılması;",
-        "Bank məhsullarını əldə etmək istəyən potensial müştərilərin müəyyən edilməsi, ilkin təhlili, qiymətləndirilməsi;",
-        "Bankın filiallarına yönləndirilməsi;",
-        "Bank məhsullarını əldə etmiş müştərilərin məmnuniyyət dərəcəsinin ölçülməsi və həmin müştərilər vasitəsilə digər potensial müştərilərə çıxış imkanlarının dəyərləndirilməsi;",
-        "Satış prosesi ilə bağlı müvafiq hesabatların aparılması."
-      ],
-      "benefits": [],
-      "skills": [],
-      "employmentType": "full-time",
-      "experienceLevel": "junior",
-      "workMode": "remote",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "04.11.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8823",
-      "applyUrl": "https://careers.bir.az/vacancies/8823#attachFile",
-      "source": "Bir Careers"
-    },
     {
       "externalId": "8774",
       "title": "Metro Stansiyalarda Yerində Xidmət Bölməsinin Kiçik Mütəxəssisi (Yarım Ştat Qrafik)",
@@ -1772,56 +1731,6 @@
       "postedAt": null,
       "url": "https://careers.bir.az/vacancies/8795",
       "applyUrl": "https://careers.bir.az/vacancies/8795#attachFile",
-      "source": "Bir Careers"
-    },
-    {
-      "externalId": "8791",
-      "title": "Kart klirinqi və hesablaşmalar üzrə aparıcı mütəxəssis",
-      "company": "Kapital Bank / Bir",
-      "brand": "Birbank",
-      "location": "Bakı",
-      "summary": "Bu rolda kart əməliyyatları üzrə hesablaşmaların düzgün və vaxtında həyata keçirilməsinə, maliyyə göstəricilərinin dəqiqliyinə və əməliyyat risklərinin minimuma endirilməsinə töhfə verəcəksən. Yerli və beynəlxalq kart ödəniş sistemləri üzrə hesablaşmalara nəzarət etmək, yaranan uyğunsuzluqları aradan qaldırmaq və proseslərin avtomatlaşdırılmasında iştirak etmək sənin əsas fəaliyyət istiqamətlərin olacaq.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
-      "description": "Bu rolda kart əməliyyatları üzrə hesablaşmaların düzgün və vaxtında həyata keçirilməsinə, maliyyə göstəricilərinin dəqiqliyinə və əməliyyat risklərinin minimuma endirilməsinə töhfə verəcəksən. Yerli və beynəlxalq kart ödəniş sistemləri üzrə hesablaşmalara nəzarət etmək, yaranan uyğunsuzluqları aradan qaldırmaq və proseslərin avtomatlaşdırılmasında iştirak etmək sənin əsas fəaliyyət istiqamətlərin olacaq.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
-      "requirements": [
-        "Maliyyə, iqtisadiyyat, mühasibatlıq və ya əlaqəli sahə üzrə ali təhsil;",
-        "Bank sektorunda kart əməliyyatları, klirinq və hesablaşmalar sahəsində minimum 2–3 il iş təcrübəsi;",
-        "Kart əməliyyatları, klirinq və hesablaşma prosesləri üzrə biliklər;",
-        "Visa, Mastercard və yerli kart ödəniş sistemlərinin hesablaşma prinsipləri üzrə biliklər;",
-        "Tranzit hesablar, kart balansları və texniki overdraft əməliyyatları üzrə biliklər;",
-        "MS Excel-də məlumatların təhlili və hesabatların hazırlanması bacarığı;",
-        "Analitik düşüncə və məlumatlara əsaslanan qərarvermə;",
-        "Problem həlletmə bacarığı və nəticəyönümlülük;",
-        "Şöbələrarası əməkdaşlıq qabiliyyəti;",
-        "Sahiblənmə və məsuliyyət hissi;",
-        "RPA və proseslərin avtomatlaşdırılması üzrə bilik və ya iş təcrübəsi üstünlükdür;",
-        "SQL və ya digər məlumatların təhlili alətləri ilə işləmək bacarığı üstünlükdür."
-      ],
-      "responsibilities": [
-        "Əməkhaqqı, təqaüd və sosial layihələr üzrə kartlara mədaxil əməliyyatlarının xidmət haqlarında yaranan fərqləri müəyyən etmək və aradan qaldırılmasına nəzarət etmək;",
-        "Ödəniş kartı hesablarında yaranan texniki overdraft məbləğlərini izləmək və nəzarətdə saxlamaq;",
-        "Plastik kartlar üzrə balans göstəricilərinin düzgünlüyünə nəzarət etmək;",
-        "Ekosistem daxilində kart əməliyyatları üzrə ödənişləri və əlaqəli tranzit hesabların qalıqlarını izləmək;",
-        "Yerli və beynəlxalq kart ödəniş sistemləri üzrə hesablaşmaların düzgün aparılmasına nəzarət etmək;",
-        "Kart əməliyyatları və hesablaşmalar üzrə yaranan uyğunsuzluqları araşdırmaq və həlli üçün müvafiq komandalarla əməkdaşlıq etmək;",
-        "Əməliyyat risklərini minimuma endirmək üçün daxili siyasət və prosedurlara riayət olunmasını təmin etmək;",
-        "Mövcud proseslərin optimallaşdırılması və RPA vasitəsilə avtomatlaşdırılması üçün təkliflər hazırlamaq;",
-        "Avtomatlaşdırılacaq proseslərin biznes məntiqini formalaşdırmaq və tətbiqində iştirak etmək."
-      ],
-      "benefits": [],
-      "skills": [
-        "SQL",
-        "Excel"
-      ],
-      "employmentType": "full-time",
-      "experienceLevel": "senior",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "04.11.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8791",
-      "applyUrl": "https://careers.bir.az/vacancies/8791#attachFile",
       "source": "Bir Careers"
     },
     {
@@ -3734,59 +3643,13 @@
       "url": "https://careers.bir.az/vacancies/8283",
       "applyUrl": "https://careers.bir.az/vacancies/8283#attachFile",
       "source": "Bir Careers"
-    },
-    {
-      "externalId": "8246",
-      "title": "IT Business Analyst",
-      "company": "Kapital Bank / Bir",
-      "brand": "Birbank",
-      "location": "Bakı",
-      "summary": "Biznes ehtiyaclarının təhlili və texniki həllərin formalaşdırılması üzrə çalışacaq IT Business Analyst axtarırıq. Namizəd biznes və texniki komandalar arasında əməkdaşlığın təmin edilməsi, tələblərin toplanması və sənədləşdirilməsi, həmçinin biznes proseslərinin təhlili və təkmilləşdirilməsində iştirak edəcək.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
-      "description": "Biznes ehtiyaclarının təhlili və texniki həllərin formalaşdırılması üzrə çalışacaq IT Business Analyst axtarırıq. Namizəd biznes və texniki komandalar arasında əməkdaşlığın təmin edilməsi, tələblərin toplanması və sənədləşdirilməsi, həmçinin biznes proseslərinin təhlili və təkmilləşdirilməsində iştirak edəcək.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
-      "requirements": [
-        "IT və ya Biznes sahələri üzrə bakalavr dərəcəsi;",
-        "IT Business Analyst rolunda 2+ il iş təcrübəsi;",
-        "BPMN, UML və ya digər modelləşdirmə standartları üzrə bilik;",
-        "Agile metodologiyası üzrə təcrübə üstünlükdür;",
-        "İngilis dilində texniki səviyyədə səriştə;",
-        "Məhsulu həm texniki, həm də biznes baxımından testə hazırlamaqda komandaya dəstək olmaq;",
-        "Jira və Confluence kimi alətlərlə iş təcrübəsi;",
-        "API, Postman və SOAP kimi alətlərlə iş təcrübəsi;",
-        "Kredit məhsulları və əsas bank sistemləri üzrə biznes təcrübəsi arzuolunandır",
-        "Analitik düşüncə və məlumatlara əsaslanan qərarvermə;",
-        "Problem həlletmə bacarığı və nəticəyönümlülük."
-      ],
-      "responsibilities": [
-        "Tələblərin toplanması, təhlili və sənədləşdirilməsi;",
-        "BRD (Business Requirements Document) sənədinin hazırlanması və strukturlaşdırılması;",
-        "FRD (Functional Requirements Document) sənədinin hazırlanması və strukturlaşdırılması;",
-        "Güclü analitik düşüncə və problem həll etmə;",
-        "Biznes process modellərin qurulması;",
-        "Biznes proses metodlarından (BPMN, UML, Use Cases) istifadə;",
-        "Stakeholder engagement – maraqlı tərəflərlə effektiv şifahi və yazılı ünsiyyət."
-      ],
-      "benefits": [],
-      "skills": [
-        "Postman"
-      ],
-      "employmentType": "full-time",
-      "experienceLevel": "senior",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "04.11.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8246",
-      "applyUrl": "https://careers.bir.az/vacancies/8246#attachFile",
-      "source": "Bir Careers"
     }
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 75,
-    "detailPagesFetched": 75,
-    "acceptedJobs": 75,
+    "discoveredLinks": 72,
+    "detailPagesFetched": 72,
+    "acceptedJobs": 72,
     "rejectedJobs": 0,
     "errors": []
   }
