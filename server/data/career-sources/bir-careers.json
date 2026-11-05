@@ -1,10 +1,137 @@
 {
   "id": "bir-careers",
   "name": "Bir Careers",
-  "updatedAt": "2026-11-05T00:47:56.891Z",
+  "updatedAt": "2026-11-05T11:56:44.224Z",
   "success": true,
-  "count": 72,
+  "count": 74,
   "jobs": [
+    {
+      "externalId": "8246",
+      "title": "IT Business Analyst",
+      "company": "Kapital Bank / Bir",
+      "brand": "Birbank",
+      "location": "Bakı",
+      "summary": "Biznes ehtiyaclarının təhlili və texniki həllərin formalaşdırılması üzrə çalışacaq IT Business Analyst axtarırıq. Namizəd biznes və texniki komandalar arasında əməkdaşlığın təmin edilməsi, tələblərin toplanması və sənədləşdirilməsi, həmçinin biznes proseslərinin təhlili və təkmilləşdirilməsində iştirak edəcək.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
+      "description": "Biznes ehtiyaclarının təhlili və texniki həllərin formalaşdırılması üzrə çalışacaq IT Business Analyst axtarırıq. Namizəd biznes və texniki komandalar arasında əməkdaşlığın təmin edilməsi, tələblərin toplanması və sənədləşdirilməsi, həmçinin biznes proseslərinin təhlili və təkmilləşdirilməsində iştirak edəcək.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
+      "requirements": [
+        "IT və ya Biznes sahələri üzrə bakalavr dərəcəsi;",
+        "IT Business Analyst rolunda 2+ il iş təcrübəsi;",
+        "BPMN, UML və ya digər modelləşdirmə standartları üzrə bilik;",
+        "Agile metodologiyası üzrə təcrübə üstünlükdür;",
+        "İngilis dilində texniki səviyyədə səriştə;",
+        "Məhsulu həm texniki, həm də biznes baxımından testə hazırlamaqda komandaya dəstək olmaq;",
+        "Jira və Confluence kimi alətlərlə iş təcrübəsi;",
+        "API, Postman və SOAP kimi alətlərlə iş təcrübəsi;",
+        "Kredit məhsulları və əsas bank sistemləri üzrə biznes təcrübəsi arzuolunandır",
+        "Analitik düşüncə və məlumatlara əsaslanan qərarvermə;",
+        "Problem həlletmə bacarığı və nəticəyönümlülük."
+      ],
+      "responsibilities": [
+        "Tələblərin toplanması, təhlili və sənədləşdirilməsi;",
+        "BRD (Business Requirements Document) sənədinin hazırlanması və strukturlaşdırılması;",
+        "FRD (Functional Requirements Document) sənədinin hazırlanması və strukturlaşdırılması;",
+        "Güclü analitik düşüncə və problem həll etmə;",
+        "Biznes process modellərin qurulması;",
+        "Biznes proses metodlarından (BPMN, UML, Use Cases) istifadə;",
+        "Stakeholder engagement – maraqlı tərəflərlə effektiv şifahi və yazılı ünsiyyət."
+      ],
+      "benefits": [],
+      "skills": [
+        "Postman"
+      ],
+      "employmentType": "full-time",
+      "experienceLevel": "senior",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": "05.12.2026",
+      "postedAt": null,
+      "url": "https://careers.bir.az/vacancies/8246",
+      "applyUrl": "https://careers.bir.az/vacancies/8246#attachFile",
+      "source": "Bir Careers"
+    },
+    {
+      "externalId": "8390",
+      "title": "Maliyyə dayanıqlığı risklərinin idarə edilməsi və requlyativ tədqiqatı şöbəsində Baş/Aparıcı mütəxəssis",
+      "company": "Kapital Bank / Bir",
+      "brand": "Birbank",
+      "location": "Bakı",
+      "summary": "Bu rolda siz makroiqtisadi və maliyyə risklərini təhlil edəcək, stress-testlərin və risk modellərinin tətbiqi, eləcə də tənzimləyici tələblərin araşdırılması ilə bankın maliyyə dayanıqlığının gücləndirilməsinə töhfə verəcəksiniz. Təhlilləriniz risklərin vaxtında qiymətləndirilməsinə və əsaslandırılmış qərarların qəbuluna dəstək olacaq; bu da bank xidmətlərinin etibarlılığını və maliyyə ekosisteminin sabitliyini qorumağa kömək edəcək. Rol makroiqtisadi təhlil, modelləşdirmə və tənzimləyici araşdırmanı bir araya gətirdiyi üçün biliklərinizi real bank qərarlarına təsir edən işdə tətbiq etmək imkanı yaradır.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
+      "description": "Bu rolda siz makroiqtisadi və maliyyə risklərini təhlil edəcək, stress-testlərin və risk modellərinin tətbiqi, eləcə də tənzimləyici tələblərin araşdırılması ilə bankın maliyyə dayanıqlığının gücləndirilməsinə töhfə verəcəksiniz. Təhlilləriniz risklərin vaxtında qiymətləndirilməsinə və əsaslandırılmış qərarların qəbuluna dəstək olacaq; bu da bank xidmətlərinin etibarlılığını və maliyyə ekosisteminin sabitliyini qorumağa kömək edəcək. Rol makroiqtisadi təhlil, modelləşdirmə və tənzimləyici araşdırmanı bir araya gətirdiyi üçün biliklərinizi real bank qərarlarına təsir edən işdə tətbiq etmək imkanı yaradır.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
+      "requirements": [
+        "İqtisadiyyat, maliyyə, ekonometrika, statistika və ya riyaziyyat üzrə ali təhsil;",
+        "Ekonometrik modelləşdirmə sahəsində minimum 3 il iş təcrübəsi;",
+        "SQL və Python üzrə biliklər;",
+        "FRM, CFA və ya CQF sertifikatı, stres-test, model validasiyası və ya model auditi sahəsində təcrübə.",
+        "Güclü analitik düşünmə, liderlik, ünsiyyət və komandada işləmək bacarıqları;"
+      ],
+      "responsibilities": [
+        "Bankın makroiqtisadi şoklara qarşı dayanıqlığını ölçmək məqsədilə əlverişsiz ssenarilər üzrə stres-testlər aparmaq;",
+        "Kapital stres-testi və kapital adekvatlığı çərçivəsini gücləndirən stres-test prosedurlarını hazırlamaq və tətbiq etmək;",
+        "Stres-test və kapital adekvatlığının qiymətləndirilməsi məqsədilə pərakəndə və korporativ kredit portfelləri üzrə makroiqtisadi dəyişənləri PD, LGD, NPL və miqrasiya kimi risk drayverləri ilə əlaqələndirən ekonometrik, zaman sıraları və panel məlumat modelləri qurmaq;",
+        "Stres ssenarilərinin mənfəət və zərər hesabatına, risk üzrə ölçülmüş aktivlərə və kapital adekvatlığına təsirini hesablamaq, kapital və likvidlik riskləri arasında ikinci mərhələ təsirlərini modelləşdirmək, əks-stres testləri və həssaslıq təhlilləri aparmaq;",
+        "Modelləri daxili normativ sənədlər əsasında qurmaq, sənədləşdirmək, ilkin validasiyasını həyata keçirmək və müstəqil validasiya prosesinə dəstək göstərmək;",
+        "Stres-test nəticələrinin risk iştahası limitlərinə, kapital planlamasına və strateji planlaşdırmaya inteqrasiyasını təmin etmək;",
+        "Bazar dinamikasını və requlyativ dəyişiklikləri nəzərə alaraq modelləri davamlı təkmilləşdirmək."
+      ],
+      "benefits": [],
+      "skills": [
+        "Python",
+        "SQL"
+      ],
+      "employmentType": "full-time",
+      "experienceLevel": "senior",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": "12.11.2026",
+      "postedAt": null,
+      "url": "https://careers.bir.az/vacancies/8390",
+      "applyUrl": "https://careers.bir.az/vacancies/8390#attachFile",
+      "source": "Bir Careers"
+    },
+    {
+      "externalId": "8876",
+      "title": "Xidmət Sektorları Üzrə Partnyorluq Şöbəsinin Mütəxəssisi",
+      "company": "Kapital Bank / Bir",
+      "brand": "Birbank",
+      "location": "Bakı",
+      "summary": "Şirkətdaxili loyallıq layihəsinin dəstəklənməsinə və inkişafına töhfə verəcək mütəxəssis axtarırıq.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
+      "description": "Şirkətdaxili loyallıq layihəsinin dəstəklənməsinə və inkişafına töhfə verəcək mütəxəssis axtarırıq.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
+      "requirements": [
+        "Ali təhsil;",
+        "Korporativ və partnyorlarla iş üzrə minimum 2 il iş təcrübəsi;",
+        "Azərbaycan dili əla səviyyədə tələb olunur, Rus və ya İngilis dili biliyi üstünlükdür;",
+        "MS Office proqramı üzrə yüksək səviyyədə biliklər;",
+        "Yüksək səviyyədə ünsiyyət, təqdimat və danışıqlar aparmaq bacarığı;",
+        "Güclü analitik düşüncə və problem həlletmə qabiliyyəti;",
+        "Müstəqil və komandada işləmə qabiliyyəti;",
+        "Məsuliyyətlilik və nəticəyönümlülük;",
+        "Operativlik, eyni anda bir neçə işi planlaşdırmaq, prioritetləşdirmək və paralel şəkildə idarə etmək qabiliyyəti."
+      ],
+      "responsibilities": [
+        "Dəyərlisən layihəsinin inkişafının təmin olunması;",
+        "Strateji əməkdaşlıqların və işçi bağlılığına təsir edən istiqamətlər üzrə partnyorluqların qurulması;",
+        "Partnyorlarla danışıqların aparılması və müqavilələrin imzalanmasına nəzarət edilməsi;",
+        "Portfel ilə bağlı aylıq və rüblük təhlillərin hazırlanması;",
+        "Bazarda yeniliklərin (trendlərin) müəyyən edilməsi və məhsula aid ideyaların verilməsi."
+      ],
+      "benefits": [],
+      "skills": [],
+      "employmentType": "full-time",
+      "experienceLevel": "mid",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": "06.11.2026",
+      "postedAt": null,
+      "url": "https://careers.bir.az/vacancies/8876",
+      "applyUrl": "https://careers.bir.az/vacancies/8876#attachFile",
+      "source": "Bir Careers"
+    },
     {
       "externalId": "8774",
       "title": "Metro Stansiyalarda Yerində Xidmət Bölməsinin Kiçik Mütəxəssisi (Yarım Ştat Qrafik)",
@@ -388,43 +515,6 @@
       "postedAt": null,
       "url": "https://careers.bir.az/vacancies/8758",
       "applyUrl": "https://careers.bir.az/vacancies/8758#attachFile",
-      "source": "Bir Careers"
-    },
-    {
-      "externalId": "8824",
-      "title": "Yerində Xidmət Bölməsinin Kiçik Mütəxəssisi",
-      "company": "Kapital Bank / Bir",
-      "brand": "Birbank",
-      "location": "Bakı",
-      "summary": "Birbankda Yerində xidmət bölməsində müştərilərə yerində operativ və keyfiyyətli bank xidmətlərinin göstərilməsini təmin edəcəksən. Rəqəmsal mərkəzlərdə xidmət prosesinin təşkili, bank məhsul və xidmətlərinin operativ rəsmiləşdirilməsi, müştəri ehtiyaclarının yerində analiz edilərək doğru həllərin təqdim olunması və üstün müştəri təcrübəsinin yaşadılması sənin əsas fəaliyyət istiqamətlərin olacaq.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
-      "description": "Birbankda Yerində xidmət bölməsində müştərilərə yerində operativ və keyfiyyətli bank xidmətlərinin göstərilməsini təmin edəcəksən. Rəqəmsal mərkəzlərdə xidmət prosesinin təşkili, bank məhsul və xidmətlərinin operativ rəsmiləşdirilməsi, müştəri ehtiyaclarının yerində analiz edilərək doğru həllərin təqdim olunması və üstün müştəri təcrübəsinin yaşadılması sənin əsas fəaliyyət istiqamətlərin olacaq.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
-      "requirements": [
-        "Ali təhsil;",
-        "Satış bacarığı;",
-        "Sahiblənmə və məsuliyyət hissi;",
-        "Dəyişən mühitə çevik adaptasiya;",
-        "Davamlı öyrənmə və inkişaf həvəsi;",
-        "Müştəriyönümlü yanaşma."
-      ],
-      "responsibilities": [
-        "Potensial müştərilərə bank məhsulları barədə təqdimatın keçirilməsi və müştəri tələbinin formalaşdırılması;",
-        "Bank məhsullarını əldə etmək istəyən potensial müştərilərin müəyyən edilməsi, ilkin təhlili, qiymətləndirilməsi, rəsmiləşdirilməsi və ya Bankın filiallarına yönləndirilməsi;",
-        "Bankın kredit və qeyri-kredit məhsullarını təbliğ etmək üçün müxtəlif mərkəzlərdəki məntəqələrdə fəaliyyət göstərilməsi;",
-        "Bank məhsullarını əldə etmiş müştərilərin məmnuniyyət dərəcəsinin ölçülməsi və həmin müştərilər vasitəsilə digər potensial müştərilərə çıxış imkanlarının dəyərləndirilməsi;",
-        "Satış prosesi ilə bağlı müvafiq hesabatların aparılması."
-      ],
-      "benefits": [],
-      "skills": [],
-      "employmentType": "full-time",
-      "experienceLevel": "junior",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "31.12.2026",
-      "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8824",
-      "applyUrl": "https://careers.bir.az/vacancies/8824#attachFile",
       "source": "Bir Careers"
     },
     {
@@ -3647,9 +3737,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 72,
-    "detailPagesFetched": 72,
-    "acceptedJobs": 72,
+    "discoveredLinks": 74,
+    "detailPagesFetched": 74,
+    "acceptedJobs": 74,
     "rejectedJobs": 0,
     "errors": []
   }
