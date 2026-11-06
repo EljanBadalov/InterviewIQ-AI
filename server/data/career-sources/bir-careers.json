@@ -1,10 +1,51 @@
 {
   "id": "bir-careers",
   "name": "Bir Careers",
-  "updatedAt": "2026-11-06T11:53:04.310Z",
+  "updatedAt": "2026-11-06T18:59:31.451Z",
   "success": true,
-  "count": 75,
+  "count": 76,
   "jobs": [
+    {
+      "externalId": "8901",
+      "title": "Satışın Təşkili Və Dəstək Şöbəsinin Kiçik Mütəxəssisi",
+      "company": "Kapital Bank / Bir",
+      "brand": "Birbank",
+      "location": "Bakı",
+      "summary": "Ekosistemin partnyor şəbəkəsi departamentinin Satışın təşkili və dəstək şöbəsinin fəaliyyətinin təkminləşməsi üçün aktiv və ünsiyyət bacarığları yüksək olan namizəd axtarırıq. Partnyorlarımıza yüksək səviyyədə xidmət göstərmək əsas məqsədimizdir.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
+      "description": "Ekosistemin partnyor şəbəkəsi departamentinin Satışın təşkili və dəstək şöbəsinin fəaliyyətinin təkminləşməsi üçün aktiv və ünsiyyət bacarığları yüksək olan namizəd axtarırıq. Partnyorlarımıza yüksək səviyyədə xidmət göstərmək əsas məqsədimizdir.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
+      "requirements": [
+        "Ali təhsil;",
+        "Azərbaycan və Rus dili biliyi mütləqdir;",
+        "Müvafiq və ya oxşar sahədə minimum 1 il iş təcrübəsi;",
+        "Microsoft Office proqramları, xüsusilə Excel və Word ilə işləmək bacarığı;",
+        "Böyük həcmli məlumatlarla işləmək, məlumatları sistemləşdirmək və təhlil etmək bacarığı;",
+        "Məlumatlarda xətaları və uyğunsuzluqları müəyyən etmək, onların həlli üçün müstəqil yanaşma nümayiş etdirmək bacarığı;",
+        "Analitik düşünmə, detallara diqqət və yüksək məsuliyyət hissi;",
+        "Komandada işləmək, effektiv kommunikasiya və tapşırıqları müəyyən edilmiş müddətlərdə icra etmək bacarığı."
+      ],
+      "responsibilities": [
+        "Tərəfdaş şirkətlər və onların məhsulları haqqında məlumatların müəyyən edilmiş şablonlara uyğun hazırlanması, yoxlanılması və sistemə daxil edilməsi;",
+        "Admin panel vasitəsilə tərəfdaş və məhsul məlumatlarının əlavə edilməsi, yenilənməsi və redaktə olunması;",
+        "Sistemə daxil edilmiş məlumatların düzgünlüyünün, tamlığının və aktuallığının yoxlanılması, aşkar edilmiş uyğunsuzluqların aradan qaldırılması;",
+        "Tərəfdaş və məhsul məlumatlarının avtomatlaşdırılmış və manual üsullarla sistemə yüklənməsi;",
+        "İş prosesində yaranan texniki və əməliyyat xarakterli problemlərin ilkin təhlili və zəruri hallarda aidiyyəti komandalarla koordinasiyası."
+      ],
+      "benefits": [],
+      "skills": [
+        "Excel"
+      ],
+      "employmentType": "full-time",
+      "experienceLevel": "junior",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": "11.11.2026",
+      "postedAt": null,
+      "url": "https://careers.bir.az/vacancies/8901",
+      "applyUrl": "https://careers.bir.az/vacancies/8901#attachFile",
+      "source": "Bir Careers"
+    },
     {
       "externalId": "8753",
       "title": "İT hüquqlar və texniki dəstək şöbəsində təcrübə",
@@ -819,50 +860,44 @@
       "source": "Bir Careers"
     },
     {
-      "externalId": "8859",
-      "title": "Talent Acquisition & HR Intern",
+      "externalId": "8758",
+      "title": "Birbaşa Satışlar Bölməsinin Kiçik Mütəxəssisi (Qarabağ)",
       "company": "Kapital Bank / Bir",
-      "brand": "Bir",
-      "location": "Bakı",
-      "summary": "We are seeking a motivated and enthusiastic HR Intern to join our Human Resources team. This internship provides an excellent opportunity to gain hands-on experience in various HR functions and develop essential skills for a career in HR. The HR Intern will support the HR department in daily administrative tasks and contribute to ongoing HR projects.\nWorking at Bir ecosystem means creating value through technology, delivering meaningful impact to people, and building the solutions of tomorrow today. Our teams operate through open dialogue, rapid decision-making, and a culture of continuous improvement. Our offices are places where ideas emerge, products take shape, and technology enables those ideas to become reality. At Bir ecosystem, we positively impact the daily lives of millions of individuals and thousands of businesses through simple, reliable, and innovative solutions. The Fintech business (Birbank), Payments business (m10/MilliÖn), and E-commerce business (Birmarket) together form the country’s first fully integrated digital ecosystem. Driven by the professionalism and expertise of our teams, the products we develop help shape new habits and contribute to the growth of the country’s digital culture. Working here means growing within Bir ecosystem — an environment rich with opportunity. Diverse areas of expertise, multiple products, and continuous learning opportunities create the environment to unlock your potential and advance your career.",
-      "description": "We are seeking a motivated and enthusiastic HR Intern to join our Human Resources team. This internship provides an excellent opportunity to gain hands-on experience in various HR functions and develop essential skills for a career in HR. The HR Intern will support the HR department in daily administrative tasks and contribute to ongoing HR projects.",
+      "brand": "Birbank",
+      "location": "Tərtər",
+      "summary": "Birbankın Birbaşa satışlar bölməsində Qarabağ regionunda satış şəbəkəsinin genişlənməsində birbaşa iştirak edərək potensial müştərilərlə və tərəfdaşlarla aktiv ünsiyyət quracaqsan. Region üzrə sahə görüşlərinin keçirilməsi, bank məhsullarının birbaşa təqdimatı və satışı, yeni müştərilərin cəlb olunması və satış nöqtələrində xidmət keyfiyyətinin yüksəldilməsi sənin əsas fəaliyyət istiqamətlərin olacaq.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
+      "description": "Birbankın Birbaşa satışlar bölməsində Qarabağ regionunda satış şəbəkəsinin genişlənməsində birbaşa iştirak edərək potensial müştərilərlə və tərəfdaşlarla aktiv ünsiyyət quracaqsan. Region üzrə sahə görüşlərinin keçirilməsi, bank məhsullarının birbaşa təqdimatı və satışı, yeni müştərilərin cəlb olunması və satış nöqtələrində xidmət keyfiyyətinin yüksəldilməsi sənin əsas fəaliyyət istiqamətlərin olacaq.\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
       "requirements": [
-        "Student or recent graduate in Human Resources, Psychology, Business Administration, or related field",
-        "Strong communication and organizational skills",
-        "Attention to detail and willingness to learn",
-        "Ability to work in a team and manage multiple tasks",
-        "Good command of MS Office (Word, Excel, PowerPoint)",
-        "English level: Intermediate or higher"
+        "Ali təhsil;",
+        "Satış bacarığı;",
+        "Dəyişən mühitə çevik adaptasiya;",
+        "Effektiv kommunikasiya və komandaya sürətli uyğunlaşma;",
+        "Sahiblənmə və məsuliyyət hissi;",
+        "Davamlı öyrənmə və inkişaf həvəsi;",
+        "Müştəriyönümlü yanaşma."
       ],
       "responsibilities": [
-        "Assist in the recruitment process (CV screening, interview scheduling, candidate communication)",
-        "Support employee onboarding and offboarding processes",
-        "Help maintain HR records and documentation",
-        "Participate in organizing internal events and employee engagement activities",
-        "Assist with HR reports and data entry",
-        "Provide general administrative support to the HR team"
+        "Bankla partnyor, qeyri-partnyor olan təşkilatlara vizitlərin edilməsi və potensial müştərilərlə görüşlərin təşkili;",
+        "Bankın kredit və qeyri-kredit məhsullarını təbliğ etmək üçün müxtəlif mərkəzlərdəki məntəqələrdə fəaliyyət göstərilməsi;",
+        "Bankın kredit və qeyri-kredit məhsullarının təbliğatı məqsədilə müştərilərlə görüşlər keçirilməsi;",
+        "Potensial müştərilərə bank məhsulları barədə təqdimatın keçirilməsi və müştəri tələbinin formalaşdırılması;",
+        "Bank məhsullarını əldə etmək istəyən potensial müştərilərin müəyyən edilməsi, ilkin təhlili, qiymətləndirilməsi;",
+        "Bankın filiallarına yönləndirilməsi;",
+        "Bank məhsullarını əldə etmiş müştərilərin məmnuniyyət dərəcəsinin ölçülməsi və həmin müştərilər vasitəsilə digər potensial müştərilərə çıxış imkanlarının dəyərləndirilməsi;",
+        "Satış prosesi ilə bağlı müvafiq hesabatların aparılması."
       ],
-      "benefits": [
-        "Hands-on experience in various HR functions",
-        "Exposure to real-world HR challenges and projects",
-        "Mentorship and guidance from experienced HR professionals",
-        "Networking opportunities with professionals in the industry",
-        "A positive and supportive work environment"
-      ],
-      "skills": [
-        "Excel",
-        "Networking"
-      ],
+      "benefits": [],
+      "skills": [],
       "employmentType": "full-time",
-      "experienceLevel": "intern",
+      "experienceLevel": "junior",
       "workMode": "onsite",
       "salaryMin": null,
       "salaryMax": null,
       "salaryCurrency": null,
-      "deadline": "18.11.2026",
+      "deadline": "31.12.2026",
       "postedAt": null,
-      "url": "https://careers.bir.az/vacancies/8859",
-      "applyUrl": "https://careers.bir.az/vacancies/8859#attachFile",
+      "url": "https://careers.bir.az/vacancies/8758",
+      "applyUrl": "https://careers.bir.az/vacancies/8758#attachFile",
       "source": "Bir Careers"
     },
     {
@@ -3863,9 +3898,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 75,
-    "detailPagesFetched": 75,
-    "acceptedJobs": 75,
+    "discoveredLinks": 76,
+    "detailPagesFetched": 76,
+    "acceptedJobs": 76,
     "rejectedJobs": 0,
     "errors": []
   }
