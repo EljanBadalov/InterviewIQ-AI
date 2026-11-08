@@ -1,10 +1,42 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-11-08T04:45:56.710Z",
+  "updatedAt": "2026-11-08T14:51:53.548Z",
   "success": true,
   "count": 113,
   "jobs": [
+    {
+      "externalId": "5426",
+      "title": "Əlaqə mərkəzi şöbəsinin məlumat mərkəzi üzrə kiçik təmsilçi",
+      "company": "ABB",
+      "location": "Azerbaijan",
+      "summary": "Ali və ya texniki təhsilə sahib olan;",
+      "description": "Ali və ya texniki təhsilə sahib olan;",
+      "requirements": [
+        "Ali və ya texniki təhsilə sahib olan;",
+        "Azərbaycan dilini mükəmməl bilən (rus və ingilis dillərini bilmək arzuolunandır);",
+        "MS Excel, Word və Outlook proqramlarında işləmək bacarığına sahib olan;",
+        "Ünsiyyətcil və səlis danışıq qabiliyyətinə sahib olan;",
+        "Komandada işləmək bacarığına sahib olan;",
+        "Analitik düşünmə qabiliyyətinə və müştərilərlə yüksək səviyyədə işləmək motivasiyasına sahib olan şəxsdir."
+      ],
+      "responsibilities": [],
+      "benefits": [],
+      "skills": [
+        "Excel"
+      ],
+      "employmentType": null,
+      "experienceLevel": null,
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": null,
+      "postedAt": null,
+      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5426",
+      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5426",
+      "source": "ABB Careers"
+    },
     {
       "externalId": "5422",
       "title": "Stend üzrə kiçik satış mütəxəssisi",
@@ -1676,29 +1708,6 @@
       "postedAt": null,
       "url": "https://careers.abb-bank.az/vakansiyalar/v2/5428",
       "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5428",
-      "source": "ABB Careers"
-    },
-    {
-      "externalId": "5426",
-      "title": "Əlaqə mərkəzi şöbəsinin məlumat mərkəzi üzrə kiçik təmsilçi",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "Əlaqə mərkəzi şöbəsinin məlumat mərkəzi üzrə kiçik təmsilçi",
-      "description": "",
-      "requirements": [],
-      "responsibilities": [],
-      "benefits": [],
-      "skills": [],
-      "employmentType": null,
-      "experienceLevel": null,
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5426",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5426",
       "source": "ABB Careers"
     },
     {
