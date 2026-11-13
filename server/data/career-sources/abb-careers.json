@@ -1,10 +1,52 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-11-13T00:58:23.571Z",
+  "updatedAt": "2026-11-13T11:56:48.450Z",
   "success": true,
   "count": 111,
   "jobs": [
+    {
+      "externalId": "5488",
+      "title": "Rəqəmsal kanallar sahəsinə biznes analitika üzrə aparıcı mütəxəssis",
+      "company": "ABB",
+      "location": "Azerbaijan",
+      "summary": "Biznes proseslərin texniki analizini detallaşdırmaq; Biznes proseslər üzrə texniki sənədi (istifadəçi və texniki səviyyədə -use case) hazırlamaq; Ali təhsilə;",
+      "description": "Biznes proseslərin texniki analizini detallaşdırmaq; Biznes proseslər üzrə texniki sənədi (istifadəçi və texniki səviyyədə -use case) hazırlamaq; Ali təhsilə;",
+      "requirements": [
+        "Ali təhsilə;",
+        "Bank sahəsində minimum 3 il təcrübəyə;",
+        "Bank məhsulları haqqında biliklərə;",
+        "Texniki tapşırıq (istifadəçi və texniki səviyyədə sənəd hazırlama, ardıcıllıq alqoritmi qurma) hazırlama bacarığına;",
+        "Verilənlər bazasının (SQL) sorğulanması üzrə biliklərə;",
+        "Xarici dil biliklərinə (Texniki tapşırığı anlamaq,tərtib etmək və komandalarla kommunikasiya etmək səviyyəsində);",
+        "Agile (Scrum) metodologiyası üzrə biliklərə sahib olan şəxsdir."
+      ],
+      "responsibilities": [
+        "Biznes proseslərin texniki analizini detallaşdırmaq;",
+        "Biznes proseslər üzrə texniki sənədi (istifadəçi və texniki səviyyədə -use case) hazırlamaq;",
+        "Texniki tapşırıq üzrə dəyişikliyi icra dövründə monitorinq etmək və dəyişikliyin tələblərə uyğunluğunu yoxlamaq;",
+        "Biznes prosesi\\arxitekturanı\\dəyişikliyi əlaqəli bütün Steykholderlərlə razılaşdırmaq;",
+        "Agile metodalogiya üzrə işləyərək proseslərin scrum-a uyğun şəkildə aparılmasını təmin etmək;",
+        "Groominglərin və planning-lərin təşkil olunması;",
+        "Epiklərin taskların yaradılması, detallandırılması və Acceptance criteria\\Definition of done müəyyən olunması;",
+        "Prosesin və ya dəyişikliyin texniki dəsdək komandasına ötürülməsi;"
+      ],
+      "benefits": [],
+      "skills": [
+        "SQL"
+      ],
+      "employmentType": null,
+      "experienceLevel": "mid",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": null,
+      "postedAt": null,
+      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5488",
+      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5488",
+      "source": "ABB Careers"
+    },
     {
       "externalId": "5304",
       "title": "Xəzinə bölməsi üzrə kiçik mütəxəssis - İsmayıllı",
@@ -2574,53 +2616,6 @@
       "postedAt": null,
       "url": "https://careers.abb-bank.az/vakansiyalar/v2/5394",
       "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5394",
-      "source": "ABB Careers"
-    },
-    {
-      "externalId": "5393",
-      "title": "Korporativ və KOS məhsullar sahəsinin biznes analitika üzrə aparıcı mütəxəssisi",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "Biznes proseslərin texniki analizinin verilənlər bazası modelinin tərtibatı səviyyəsinə qədər detallaşdırılması; Biznes proseslər üzrə texniki sənəd (istifadəçi və texniki səviyyədə -use case) hazırlanması; Ali təhsilə;",
-      "description": "Biznes proseslərin texniki analizinin verilənlər bazası modelinin tərtibatı səviyyəsinə qədər detallaşdırılması; Biznes proseslər üzrə texniki sənəd (istifadəçi və texniki səviyyədə -use case) hazırlanması; Ali təhsilə;",
-      "requirements": [
-        "Ali təhsilə;",
-        "Sahə üzrə minimum 3-5 il təcrübəyə;",
-        "Bank məhsulları haqqında biliklərə;",
-        "Bank modulları (Flexcube arzuolunandır), Mobile application ilə bağlı iş təcrübəsinə( minimum 1 il);",
-        "Texniki tapşırıq (istifadəçi və texniki səviyyədə sənəd hazırlama, ardıcıllıq alqoritmi qurma) hazırlama bacarığına;",
-        "Verilənlər bazasının (SQL) sorğulanması üzrə biliyə;",
-        "Xarici dil biliklərinə (Texniki tapşırığı anlamaq və tərtib etmək səviyyəsində);",
-        "Web servis üzrə biliklərə sahib: Arxitektura növü (Rest/Soap), APİ Server-lərin sorğulanması bacarığı, Sorğulama formatları (JSON / XML) barədə anlayışa malik;",
-        "Agile (Scrum) metodologiyası və blok sxemlər (BPMN) üzrə biliklərə sahib olan şəxsdir."
-      ],
-      "responsibilities": [
-        "Biznes proseslərin texniki analizinin verilənlər bazası modelinin tərtibatı səviyyəsinə qədər detallaşdırılması;",
-        "Biznes proseslər üzrə texniki sənəd (istifadəçi və texniki səviyyədə -use case) hazırlanması;",
-        "Biznes proses üzrə minimal test planların və test ssenarilərinin hazırlanmasında iştirak;",
-        "Texniki tapşırıq üzrə dəyişikliyin icra dövründə monitorinq edilməsi və dəyişikliyin tələblərə uyğunluğunun yoxlanılması;",
-        "Biznes prosesi\\arxitekturanı\\dəyişikliyi əlaqəli bütün steykholderlərlə razılaşdırmaq;",
-        "Biznes prosesin proqramlaşdırma (Flex, BPM, Rəhbərlik) komandası ilə razılaşdırılması və görülən işlər barədə hesabatların təqdim edilməsi;",
-        "Analiz zamanı report hazırlanmasının mümkünlüyünün təmin edilməsi və yarana biləcək potensial risklərin müəyyən edilməsi;",
-        "Deployment ve reliz proseslərinin hazırlanması və izlənməsi, deadline-lara uyğun getməsi üçün teamə dəsdək olmaq;",
-        "Prosesin və ya dəyişikliyin texniki dəsdək komandasına ötürülməsi;",
-        "İT, sifarişçi struktur və digər tərəfdaşlarla (3-cü şəxslər) texniki məsələlərin müzakirə edilməsi və uyğunluğun təmin edilməsi"
-      ],
-      "benefits": [],
-      "skills": [
-        "SQL",
-        "Deployment"
-      ],
-      "employmentType": null,
-      "experienceLevel": "mid",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5393",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5393",
       "source": "ABB Careers"
     },
     {
