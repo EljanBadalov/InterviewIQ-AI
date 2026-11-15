@@ -1,10 +1,77 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-11-15T15:27:22.657Z",
+  "updatedAt": "2026-11-15T20:55:01.007Z",
   "success": true,
-  "count": 111,
+  "count": 113,
   "jobs": [
+    {
+      "externalId": "5493",
+      "title": "Regional inkassasiya şöbəsinin baş mütəxəssisi - Qazax RİŞ",
+      "company": "ABB",
+      "location": "Azerbaijan",
+      "summary": "Məxfilik və təhlükəsizlik tələblərinə riayət olunmaqla kassa xidmətləri göstərmək; Bankomatların inkassasiya üçün nağd vəsaitlərin bölgüsündə iştirak etmək; Ali təhsili olan;",
+      "description": "Məxfilik və təhlükəsizlik tələblərinə riayət olunmaqla kassa xidmətləri göstərmək; Bankomatların inkassasiya üçün nağd vəsaitlərin bölgüsündə iştirak etmək; Ali təhsili olan;",
+      "requirements": [
+        "Ali təhsili olan;",
+        "Orta səviyyədə ingilis və rus dili bilikləri olan;",
+        "Komandada işləmək bacarığı olan;",
+        "Riyazi hesablama aparmaq qabiliyyəti olan;",
+        "İşdə dəqiqlik, detallara fikir vermək və yüksək məsuliyyət qabiliyyəti olan şəxsdir."
+      ],
+      "responsibilities": [
+        "Məxfilik və təhlükəsizlik tələblərinə riayət olunmaqla kassa xidmətləri göstərmək;",
+        "Bankomatların inkassasiya üçün nağd vəsaitlərin bölgüsündə iştirak etmək;",
+        "Əməliyyat günün sonunda inkassasiya olunmuş bankomatlar üzrə yazılı şəkildə hesabatı tərtib etmək, qiymətlilərin qalıqları ilə birlikdə xəzinəyə məsul şəxsə təhvil verilməsini təmin etmək;",
+        "Bankomata yüklənmiş və boşaldılmış nağd pulun uçotunun aparılmasını təmin etmək;",
+        "Aşkar edilmiş dövriyyəyə yararsız nağd pulun dövriyyədən çıxarılması və dəyişdirilməsi üçün müvafiq sənədləşməni aparılması və Mərkəzi Banka təhvil verilməsini təmin etmək."
+      ],
+      "benefits": [],
+      "skills": [],
+      "employmentType": null,
+      "experienceLevel": "senior",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": null,
+      "postedAt": null,
+      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5493",
+      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5493",
+      "source": "ABB Careers"
+    },
+    {
+      "externalId": "5492",
+      "title": "İnkassasiya və qiymətlilərin daşınması şöbəsinin inkassatoru",
+      "company": "ABB",
+      "location": "Azerbaijan",
+      "summary": "Nağd pul və digər qiymətlilərin təhvil-təslimi zamanı bağlamaların və qablaşdırılmanın bütövlüyünü, zədəsiz olmasını və rekvizitlərin mövcudluğunu yoxlamaq; Nağd pul və digər qiymətlilərin təhvil-təslimi zamanı inkassasiya prosesini müşayət edən sənədləşmənin düzgünlüyünün yoxlanılması; Ali və ya orta ixtisas təhsili olan;",
+      "description": "Nağd pul və digər qiymətlilərin təhvil-təslimi zamanı bağlamaların və qablaşdırılmanın bütövlüyünü, zədəsiz olmasını və rekvizitlərin mövcudluğunu yoxlamaq; Nağd pul və digər qiymətlilərin təhvil-təslimi zamanı inkassasiya prosesini müşayət edən sənədləşmənin düzgünlüyünün yoxlanılması; Ali və ya orta ixtisas təhsili olan;",
+      "requirements": [
+        "Ali və ya orta ixtisas təhsili olan;",
+        "Komandada işləmək bacarığı olan;",
+        "İşdə dəqiqlik, detallara fikir vermək və yüksək məsuliyyət qabiliyyəti olan şəxsdir.",
+        "Hərbi qulluqçular, hüquq-mühafizə və xüsusi xidmət orqanlarının əməkdaşlarına üstünlük verilir."
+      ],
+      "responsibilities": [
+        "Nağd pul və digər qiymətlilərin təhvil-təslimi zamanı bağlamaların və qablaşdırılmanın bütövlüyünü, zədəsiz olmasını və rekvizitlərin mövcudluğunu yoxlamaq;",
+        "Nağd pul və digər qiymətlilərin təhvil-təslimi zamanı inkassasiya prosesini müşayət edən sənədləşmənin düzgünlüyünün yoxlanılması;",
+        "Nağd pul və digər qiymətlilərin inkassasiyası prosesləri zamanı qiymətlilərin bütövlüyünün və təhlükəsizliyinin təmin edilməsi."
+      ],
+      "benefits": [],
+      "skills": [],
+      "employmentType": null,
+      "experienceLevel": null,
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": null,
+      "postedAt": null,
+      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5492",
+      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5492",
+      "source": "ABB Careers"
+    },
     {
       "externalId": "5491",
       "title": "Arxiv şöbəsi üzrə kiçik mütəxəssis / mütəxəssis",
@@ -4606,9 +4673,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 111,
-    "detailPagesFetched": 111,
-    "acceptedJobs": 111,
+    "discoveredLinks": 113,
+    "detailPagesFetched": 113,
+    "acceptedJobs": 113,
     "rejectedJobs": 0,
     "listingFallbacks": 0,
     "errors": []
