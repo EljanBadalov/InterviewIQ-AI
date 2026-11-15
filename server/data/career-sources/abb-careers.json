@@ -1,10 +1,48 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-11-15T05:04:15.235Z",
+  "updatedAt": "2026-11-15T15:27:22.657Z",
   "success": true,
-  "count": 110,
+  "count": 111,
   "jobs": [
+    {
+      "externalId": "5491",
+      "title": "Arxiv şöbəsi üzrə kiçik mütəxəssis / mütəxəssis",
+      "company": "ABB",
+      "location": "Azerbaijan",
+      "summary": "Bankda arxiv işinin təşkilində iştirak etmək; Sənədlərin təlimata uyğun olaraq arxivə qəbulu, qeydiyyatı, sistemləşdirilməsi, mühafizəsi və istifadəsi prosesində iştirak etmək; Ali və ya orta təhsilli;",
+      "description": "Bankda arxiv işinin təşkilində iştirak etmək; Sənədlərin təlimata uyğun olaraq arxivə qəbulu, qeydiyyatı, sistemləşdirilməsi, mühafizəsi və istifadəsi prosesində iştirak etmək; Ali və ya orta təhsilli;",
+      "requirements": [
+        "Ali və ya orta təhsilli;",
+        "B və C kateqoriyalı sürücülük vəsiqəsinə sahib;",
+        "MS Office proqramlarında sərbəst işləmək bacarığına sahib;",
+        "Yüksək ünsiyyət, təşkilatçılıq və problemləri həll etmə bacarıqlarına sahib olan şəxsdir."
+      ],
+      "responsibilities": [
+        "Bankda arxiv işinin təşkilində iştirak etmək;",
+        "Sənədlərin təlimata uyğun olaraq arxivə qəbulu, qeydiyyatı, sistemləşdirilməsi, mühafizəsi və istifadəsi prosesində iştirak etmək;",
+        "Arxivdə saxlanılan və əhəmiyyətini itirmiş sənədləri məhv edilmək üçün hazırlamaq, ekspert-yoxlama və məhv etmə komissiyalarının işində iştirak etmək;",
+        "Sənədlərin arxivə təhvil alınması məqsədilə region MXS-lərinə ezam olunmaq;",
+        "Qanunvericiliklə və bankdaxili qaydalarla müəyyən edilmiş formada arxivə verilməli olan sənədləri Bankın aidiyyəti struktur bölmələrindən akt əsasında təhvil almaq;",
+        "Arxivə təhvil verilmiş sənədləri tarixə və aidiyyətinə görə qruplaşdırmaq, qovluqlara yerləşdirmək və onların reyestrini yeniləmək;",
+        "Arxivləşdirilmiş sənədləri aidiyyəti struktur bölmələrin rəsmi müraciəti (sorğusu) əsasında elektron və ya kağız daşıyıcıda təqdim etmək;",
+        "Respublikanın regionlarında yerləşən Bank strukturlarına ezam olunarkən Bankın təqdim etdiyi avtomobili idarə etmək, ezam olunmuş əməkdaşları daşımaq, bu funksiyadan irəli gələn vəzifələri yerinə yetirmək və məsuliyyət daşımaq;",
+        "Aparat rəhbərliyi tərəfindən vəzifənin əsas məqsədinə uyğun verilən digər tapşırıqları yerinə yetirmək."
+      ],
+      "benefits": [],
+      "skills": [],
+      "employmentType": null,
+      "experienceLevel": "junior",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": null,
+      "postedAt": null,
+      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5491",
+      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5491",
+      "source": "ABB Careers"
+    },
     {
       "externalId": "5488",
       "title": "Rəqəmsal kanallar sahəsinə biznes analitika üzrə aparıcı mütəxəssis",
@@ -4568,9 +4606,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 110,
-    "detailPagesFetched": 110,
-    "acceptedJobs": 110,
+    "discoveredLinks": 111,
+    "detailPagesFetched": 111,
+    "acceptedJobs": 111,
     "rejectedJobs": 0,
     "listingFallbacks": 0,
     "errors": []
