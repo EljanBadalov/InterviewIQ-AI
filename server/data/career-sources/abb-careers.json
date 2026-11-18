@@ -1,10 +1,84 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-11-18T06:09:32.975Z",
+  "updatedAt": "2026-11-18T17:02:23.244Z",
   "success": true,
-  "count": 113,
+  "count": 111,
   "jobs": [
+    {
+      "externalId": "5504",
+      "title": "Kart mərkəzinin fəaliyyətinə dair asisstent",
+      "company": "ABB",
+      "location": "Azerbaijan",
+      "summary": "Kart və sənədlərin müştərilərə fiziki olaraq çatdırılması; Planşet üzərindən müştərilərə təklif olunacaq xidmət və məhsullar barədə ətraflı məlumatın verilməsi; Orta təhsilli;",
+      "description": "Kart və sənədlərin müştərilərə fiziki olaraq çatdırılması; Planşet üzərindən müştərilərə təklif olunacaq xidmət və məhsullar barədə ətraflı məlumatın verilməsi; Orta təhsilli;",
+      "requirements": [
+        "Orta təhsilli;",
+        "Ünsiyyət qabiliyyəti yüksək;",
+        "Məsuliyyətli;",
+        "Şəxsi avtomobili və motosikleti olan şəxsdir."
+      ],
+      "responsibilities": [
+        "Kart və sənədlərin müştərilərə fiziki olaraq çatdırılması;",
+        "Planşet üzərindən müştərilərə təklif olunacaq xidmət və məhsullar barədə ətraflı məlumatın verilməsi;",
+        "İmtiyazlı müştərilərin Bank məhsullarına aid suallarının cavablandırılması;",
+        "Gündəlik çatdırılma işləri ilə bağlı hesabatın Excel üzərindən hazırlanması."
+      ],
+      "benefits": [],
+      "skills": [
+        "Excel"
+      ],
+      "employmentType": null,
+      "experienceLevel": null,
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": null,
+      "postedAt": null,
+      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5504",
+      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5504",
+      "source": "ABB Careers"
+    },
+    {
+      "externalId": "4727",
+      "title": "Data sahəsinə data scientist",
+      "company": "ABB",
+      "location": "Azerbaijan",
+      "summary": "Bankın biznes/risk departamentləri tərəfindən müəyyən edilən problemlərin (Kredit hesablanması (Credit scoring), Növbəti alınacaq məhsul (Next Product to Buy), Churn analizi, Qiymət optimizasiyası (Pricing optimization), Məhsul tövsiyəsi (Product recommendation), Saxtakarlığın aşkarlanması (Fraud detection) və s) həll edilməsi üçün Machine learning, Statistik metodlar və Məlumatların analitikası sahəsində ekspert biliklərini istifadə edərək yeni nəsil analitik modellərinin dizaynı, prototipləşdirilməsi, qurulması və tətbiqini həyata keçirmək; “Advanced analytics” sahəsində ən qabaqcıl təcrübələri araşdırmaq, biznes/risk departamentləri ilə birgə eksperimentləri həyata keçirməkdir. Ali texnik",
+      "description": "Bankın biznes/risk departamentləri tərəfindən müəyyən edilən problemlərin (Kredit hesablanması (Credit scoring), Növbəti alınacaq məhsul (Next Product to Buy), Churn analizi, Qiymət optimizasiyası (Pricing optimization), Məhsul tövsiyəsi (Product recommendation), Saxtakarlığın aşkarlanması (Fraud detection) və s) həll edilməsi üçün Machine learning, Statistik metodlar və Məlumatların analitikası sahəsində ekspert biliklərini istifadə edərək yeni nəsil analitik modellərinin dizaynı, prototipləşdirilməsi, qurulması və tətbiqini həyata keçirmək; “Advanced analytics” sahəsində ən qabaqcıl təcrübələri araşdırmaq, biznes/risk departamentləri ilə birgə eksperimentləri həyata keçirməkdir. Ali texniki və ya iqtisadi təhsilə;",
+      "requirements": [
+        "Ali texniki və ya iqtisadi təhsilə;",
+        "Müvafiq sahədə minimum 2 il iş təcrübəsinə;",
+        "Machine learning, Statistika, Optimizasiya və ya əlaqəli sahələr üzrə dərin biliklərə;",
+        "Python/R və ya SQL proqramlaşdırma dillərində iş təcrübəsinə;",
+        "Böyük həcmli datasetlər və ya simulyasiya və ya optimizasiya alətləri ilə bağlı iş təcrübəsinə;",
+        "Problem həll etmə bacarığına,",
+        "Ünsiyyət və komandada işləmə bacarığına;",
+        "Həvəsli və müstəqil öyrənmək kimi güclü qabiliyyətə sahib olan şəxsdir."
+      ],
+      "responsibilities": [
+        "Bankın biznes/risk departamentləri tərəfindən müəyyən edilən problemlərin (Kredit hesablanması (Credit scoring), Növbəti alınacaq məhsul (Next Product to Buy), Churn analizi, Qiymət optimizasiyası (Pricing optimization), Məhsul tövsiyəsi (Product recommendation), Saxtakarlığın aşkarlanması (Fraud detection) və s) həll edilməsi üçün Machine learning, Statistik metodlar və Məlumatların analitikası sahəsində ekspert biliklərini istifadə edərək yeni nəsil analitik modellərinin dizaynı, prototipləşdirilməsi, qurulması və tətbiqini həyata keçirmək;",
+        "“Advanced analytics” sahəsində ən qabaqcıl təcrübələri araşdırmaq, biznes/risk departamentləri ilə birgə eksperimentləri həyata keçirməkdir."
+      ],
+      "benefits": [],
+      "skills": [
+        "Machine Learning",
+        "Python",
+        "SQL"
+      ],
+      "employmentType": null,
+      "experienceLevel": "mid",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": null,
+      "postedAt": null,
+      "url": "https://careers.abb-bank.az/vakansiyalar/v2/4727",
+      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/4727",
+      "source": "ABB Careers"
+    },
     {
       "externalId": "5502",
       "title": "Strategiya ofisi – Konsaltinq ekspert mərkəzinin konsultantı / baş konsultantı",
@@ -693,55 +767,6 @@
       "postedAt": null,
       "url": "https://careers.abb-bank.az/vakansiyalar/v2/5422",
       "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5422",
-      "source": "ABB Careers"
-    },
-    {
-      "externalId": "5416",
-      "title": "Məhsul marketinqi ekspert mərkəzinə mütəxəssis / aparıcı mütəxəssis",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "• Bankın məhsul və xidmətləri üzrə marketinq kommunikasiya planlarının hazırlanması və icrasında iştirak etmək; • Təyin edildiyi sahə üzrə bank məhsullarının (kart, kredit, kampaniyalar, biznes və s.) rəqəmsal kanallar (Google Ads, sosial media reklamları, programmatic reklamlar, e-mail marketinq kanalları) vasitəsilə bank brendinin və məhsullarının potensial hədəf kütləsinə çatdırılmasını təmin etmək; • Ali təhsilə sahib olan (iqtisadiyyat, marketinq, biznesin təşkili, reklam və ya əlaqəli sahələr üzrə təhsil arzuolunandır, yüksək akademik göstəricilər üstünlükdür);",
-      "description": "• Bankın məhsul və xidmətləri üzrə marketinq kommunikasiya planlarının hazırlanması və icrasında iştirak etmək; • Təyin edildiyi sahə üzrə bank məhsullarının (kart, kredit, kampaniyalar, biznes və s.) rəqəmsal kanallar (Google Ads, sosial media reklamları, programmatic reklamlar, e-mail marketinq kanalları) vasitəsilə bank brendinin və məhsullarının potensial hədəf kütləsinə çatdırılmasını təmin etmək; • Ali təhsilə sahib olan (iqtisadiyyat, marketinq, biznesin təşkili, reklam və ya əlaqəli sahələr üzrə təhsil arzuolunandır, yüksək akademik göstəricilər üstünlükdür);",
-      "requirements": [
-        "• Ali təhsilə sahib olan (iqtisadiyyat, marketinq, biznesin təşkili, reklam və ya əlaqəli sahələr üzrə təhsil arzuolunandır, yüksək akademik göstəricilər üstünlükdür);",
-        "• Azərbaycan və ingilis dillərində mükəmməl danışıq və yazı bacarıqlarına sahib olan;",
-        "• Rəqəmsal marketinq sahəsində minimum 2 il iş təcrübəsinə sahib olan;",
-        "• Google Ads, Meta Business, Google Analytics və digər rəqəmsal platformalarla sərbəst işləmə, reklam kampaniyalarının planlaşdırılması, idarə edilməsi, A/B testlərinin aparılması və optimallaşdırılması bacarığına sahib olan;",
-        "• Google Tag Manager üzrə fundamental biliklərə sahib olan;",
-        "• WordPress, Strapi və digər CMS-lərlə işləmə bacarığına sahib olan;",
-        "• AI alətləri, ofis proqramları və analitik hesabatlılıq alətləri ilə sərbəst işləmə bacarığına sahib olan;",
-        "• Ünsiyyət və təqdimat bacarıqlarına sahib olan;",
-        "• Analitik düşünmə və kampaniya nəticələrini şərh etmə bacarığına sahib olan;",
-        "• Ünsiyyət, təqdimat və komanda ilə işləmə bacarıqlarına sahib olan;",
-        "• Strateji düşünmə, problem həll etmə və prioritetləşdirmə bacarığına sahib olan;",
-        "• Kreativ yanaşmanı məhsul və biznes məqsədləri ilə əlaqələndirə bilən şəxsdir."
-      ],
-      "responsibilities": [
-        "• Bankın məhsul və xidmətləri üzrə marketinq kommunikasiya planlarının hazırlanması və icrasında iştirak etmək;",
-        "• Təyin edildiyi sahə üzrə bank məhsullarının (kart, kredit, kampaniyalar, biznes və s.) rəqəmsal kanallar (Google Ads, sosial media reklamları, programmatic reklamlar, e-mail marketinq kanalları) vasitəsilə bank brendinin və məhsullarının potensial hədəf kütləsinə çatdırılmasını təmin etmək;",
-        "• Ənənəvi kanallar üzrə marketinq layihələrinin koordinasiyasında iştirak etmək;",
-        "• Kampaniya və kommunikasiya fəaliyyətlərinin biznes məqsədləri, məhsul strategiyası və hədəf auditoriya ehtiyacları ilə uyğunluğunu izləmək;",
-        "• Kampaniya nəticələrini analitik göstəricilər əsasında izləmək, hesabatlar hazırlamaq və nəticələrə uyğun optimizasiya tədbirləri həyata keçirmək;",
-        "• Məhsul təqdimatları, kampaniyalar və digər marketinq təşəbbüsləri üçün kreativ konseptlərin, kontent istiqamətlərinin və kommunikasiya mesajlarının hazırlanmasını koordinasiya etmək;",
-        "• Dizayn, kontent, SMM, media, məhsul və satış komandaları ilə işləyərək kampaniyaların vaxtında və keyfiyyətli icrasını təmin etmək;",
-        "• Bankın məhsul səhifələrinin aktuallığını izləmək, kontentin hazırlanması və yenilənməsi prosesinə ümumi nəzarət etmək;",
-        "• Marketinq trendlərini və yeni rəqəmsal alətləri izləmək, onların tətbiqi ilə bağlı təkliflər hazırlamaq."
-      ],
-      "benefits": [],
-      "skills": [
-        "Google Ads",
-        "Google Analytics"
-      ],
-      "employmentType": null,
-      "experienceLevel": "senior",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5416",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5416",
       "source": "ABB Careers"
     },
     {
@@ -1826,63 +1851,6 @@
       "postedAt": null,
       "url": "https://careers.abb-bank.az/vakansiyalar/v2/5443",
       "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5443",
-      "source": "ABB Careers"
-    },
-    {
-      "externalId": "5447",
-      "title": "Məhsul marketinqi ekspert mərkəzinə mütəxəssis / aparıcı mütəxəssis",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "• Veb-saytın inkişaf planını hazırlamaq, prioritetləri müəyyənləşdirmək və icrasını koordinasiya etmək; • Saytın gündəlik fəaliyyətini və inkişafını idarə etmək, kontentin mütəmadi dərcini və aktuallığını təmin etmək; • Ali təhsilə sahib olan (marketinq, kommunikasiya, biznesin idarə edilməsi, informasiya texnologiyaları və ya əlaqəli sahələr üzrə təhsil arzuolunandır);",
-      "description": "• Veb-saytın inkişaf planını hazırlamaq, prioritetləri müəyyənləşdirmək və icrasını koordinasiya etmək; • Saytın gündəlik fəaliyyətini və inkişafını idarə etmək, kontentin mütəmadi dərcini və aktuallığını təmin etmək; • Ali təhsilə sahib olan (marketinq, kommunikasiya, biznesin idarə edilməsi, informasiya texnologiyaları və ya əlaqəli sahələr üzrə təhsil arzuolunandır);",
-      "requirements": [
-        "• Ali təhsilə sahib olan (marketinq, kommunikasiya, biznesin idarə edilməsi, informasiya texnologiyaları və ya əlaqəli sahələr üzrə təhsil arzuolunandır);",
-        "• SEO və veb-saytların idarə edilməsi sahəsində minimum 2 il praktiki iş təcrübəsinə sahib olan;",
-        "• SEO üzrə həyata keçirdiyi layihələri, şəxsi töhfəsini və əldə etdiyi ölçülə bilən nəticələri əks etdirən portfolioya sahib olan — müraciət zamanı portfolionun təqdim edilməsi mütləqdir;",
-        "• Ahrefs və Google Search Console alətləri ilə sərbəst işləmə bacarığına sahib olan;",
-        "• Açar söz araşdırması, axtarış niyyətinin təhlili, texniki SEO, səhifədaxili və səhifədənkənar optimallaşdırma üzrə praktiki biliklərə sahib olan;",
-        "• SEO əsaslı kontent planları və məqalə brifləri hazırlamaq, mövcud kontentin effektivliyini qiymətləndirmək bacarığına sahib olan;",
-        "• Vendorlarla işləmək, tapşırıqların icrasını koordinasiya etmək və bir neçə iş istiqamətini paralel idarə etmək təcrübəsinə sahib olan;",
-        "• WordPress, Strapi və ya digər CMS platformaları ilə işləmə bacarığına sahib olan;",
-        "• Google Tag Manager üzrə fundamental biliklərə sahib olan;",
-        "• Azərbaycan və ingilis dillərində sərbəst yazılı və şifahi ünsiyyət bacarıqlarına sahib olan;",
-        "• Analitik düşünmə, təşəbbüskarlıq, detallara diqqət, planlaşdırma və prioritetləşdirmə bacarıqlarına sahib olan;",
-        "• Bloq, onlayn jurnal və ya geniş kontent bazası olan platformalarda orqanik trafikin artırılması təcrübəsinə sahib olan namizədlərə üstünlük verilir;",
-        "• Google Ads və Meta Ads üzrə bilik və praktiki təcrübəyə sahib olan şəxsdir."
-      ],
-      "responsibilities": [
-        "• Veb-saytın inkişaf planını hazırlamaq, prioritetləri müəyyənləşdirmək və icrasını koordinasiya etmək;",
-        "• Saytın gündəlik fəaliyyətini və inkişafını idarə etmək, kontentin mütəmadi dərcini və aktuallığını təmin etmək;",
-        "• Saytın inkişaf layihələri üzrə tələbləri və tapşırıqları formalaşdırmaq, yeni funksionallıqların tətbiqini, müxtəlif komandalar və xarici tərəfdaşlarla əməkdaşlığı, icra müddətlərini və nəticələrin keyfiyyətini idarə etmək;",
-        "• Orqanik trafikin və oxucu auditoriyasının artırılması üçün SEO strategiyasını və fəaliyyət planını hazırlamaq, icrasını izləmək;",
-        "• Açar söz, axtarış niyyəti və rəqib təhlilləri apararaq trafik potensialı olan mövzuları müəyyənləşdirmək;",
-        "• İstifadəçilərin maraqları, axtarış tələbi və mövsümi trendlər əsasında kontent planı hazırlamaq, əlaqəli mövzular üzrə məqalə qrupları formalaşdırmaq;",
-        "• Kopirayterlərə və kontent vendorlarına məqalə brifləri hazırlamaq, materialların keyfiyyətinə, oxunaqlılığına və SEO tələblərinə uyğunluğuna nəzarət etmək;",
-        "• Mövcud məqalələrin nəticələrini təhlil etmək, yenilənməsi və optimallaşdırılması üçün imkanları müəyyənləşdirmək;",
-        "• Səhifə başlıqları, meta təsvirlər, başlıq strukturu, şəkillər və daxili keçidlər daxil olmaqla səhifədaxili SEO işlərini həyata keçirmək;",
-        "• Texniki SEO auditləri aparmaq, aşkarlanan problemlərin aradan qaldırılması üçün proqramçılar və vendorlarla işi koordinasiya etmək;",
-        "• Ahrefs, Google Search Console və Google Analytics 4 vasitəsilə orqanik trafik, axtarış görünürlüyü, kliklər, CTR və oxucu davranışlarını təhlil etmək, mütəmadi hesabatlar hazırlamaq;",
-        "• Saytda naviqasiyanı, əlaqəli məqalələrin təqdimatını və istifadəçi təcrübəsini yaxşılaşdırmaq üçün təkliflər vermək;",
-        "• Saytın inkişaf layihələri üzrə tələbləri və tapşırıqları formalaşdırmaq, yeni funksionallıqların tətbiqini, müxtəlif komandalar və xarici tərəfdaşlarla əməkdaşlığı, icra müddətlərini və nəticələrin keyfiyyətini idarə etmək."
-      ],
-      "benefits": [],
-      "skills": [
-        "SEO",
-        "Google Ads",
-        "Meta Ads",
-        "Google Analytics",
-        "CTR"
-      ],
-      "employmentType": null,
-      "experienceLevel": "senior",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5447",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5447",
       "source": "ABB Careers"
     },
     {
@@ -3353,39 +3321,6 @@
       "source": "ABB Careers"
     },
     {
-      "externalId": "5332",
-      "title": "İcra orqanları ilə iş şöbəsinin kiçik hüquqşünası / hüquqşünası",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "Problemli kreditlərlə bağlı Bankın xeyrinə çıxarılan məhkəmə qərarlarının icra olunması üçün lazımi tədbirləri həyata keçirmək; Problemli kreditlərlə bağlı Bankın maraqlarına uyğun olmayan məhkəmə və icra şöbələrinin qərarları ilə bağlı vəsatətlər vermək, bu cür qərarlardan şikayət vermək; Ali hüquqi təhsilə;",
-      "description": "Problemli kreditlərlə bağlı Bankın xeyrinə çıxarılan məhkəmə qərarlarının icra olunması üçün lazımi tədbirləri həyata keçirmək; Problemli kreditlərlə bağlı Bankın maraqlarına uyğun olmayan məhkəmə və icra şöbələrinin qərarları ilə bağlı vəsatətlər vermək, bu cür qərarlardan şikayət vermək; Ali hüquqi təhsilə;",
-      "requirements": [
-        "Ali hüquqi təhsilə;",
-        "Azərbaycan dilində yüksək, rus dilində orta səviyyədə biliklərə;",
-        "MS Office yüksək səviyyədə iş bacarığına sahib olan şəxsdir."
-      ],
-      "responsibilities": [
-        "Problemli kreditlərlə bağlı Bankın xeyrinə çıxarılan məhkəmə qərarlarının icra olunması üçün lazımi tədbirləri həyata keçirmək;",
-        "Problemli kreditlərlə bağlı Bankın maraqlarına uyğun olmayan məhkəmə və icra şöbələrinin qərarları ilə bağlı vəsatətlər vermək, bu cür qərarlardan şikayət vermək;",
-        "Problemli kreditlərlə bağlı qüvvəyə minmiş məhkəmə qərarlarının icrası ilə bağlı verilən tapşırıqları yerinə yetirmək;",
-        "Tələbin borcluların gəlirlərinə və əmlaklarına yönəldilməsi üçün zəruri hüquqi addımların atılmasını təmin etmək;",
-        "Problemli kreditlərlə bağlı keçirilən hərraclarda qanunvericiliyə müvafiq olaraq iştirak etmək və zəruri tədbirləri görmək."
-      ],
-      "benefits": [],
-      "skills": [],
-      "employmentType": null,
-      "experienceLevel": null,
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5332",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5332",
-      "source": "ABB Careers"
-    },
-    {
       "externalId": "5331",
       "title": "Korporativ və KOS seqment sahəsinin front-end üzrə baş proqramçısı",
       "company": "ABB",
@@ -4278,45 +4213,6 @@
       "source": "ABB Careers"
     },
     {
-      "externalId": "4727",
-      "title": "Data sahəsinə data scientist",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "Bankın biznes/risk departamentləri tərəfindən müəyyən edilən problemlərin (Kredit hesablanması (Credit scoring), Növbəti alınacaq məhsul (Next Product to Buy), Churn analizi, Qiymət optimizasiyası (Pricing optimization), Məhsul tövsiyəsi (Product recommendation), Saxtakarlığın aşkarlanması (Fraud detection) və s) həll edilməsi üçün Machine learning, Statistik metodlar və Məlumatların analitikası sahəsində ekspert biliklərini istifadə edərək yeni nəsil analitik modellərinin dizaynı, prototipləşdirilməsi, qurulması və tətbiqini həyata keçirmək; “Advanced analytics” sahəsində ən qabaqcıl təcrübələri araşdırmaq, biznes/risk departamentləri ilə birgə eksperimentləri həyata keçirməkdir. Ali texnik",
-      "description": "Bankın biznes/risk departamentləri tərəfindən müəyyən edilən problemlərin (Kredit hesablanması (Credit scoring), Növbəti alınacaq məhsul (Next Product to Buy), Churn analizi, Qiymət optimizasiyası (Pricing optimization), Məhsul tövsiyəsi (Product recommendation), Saxtakarlığın aşkarlanması (Fraud detection) və s) həll edilməsi üçün Machine learning, Statistik metodlar və Məlumatların analitikası sahəsində ekspert biliklərini istifadə edərək yeni nəsil analitik modellərinin dizaynı, prototipləşdirilməsi, qurulması və tətbiqini həyata keçirmək; “Advanced analytics” sahəsində ən qabaqcıl təcrübələri araşdırmaq, biznes/risk departamentləri ilə birgə eksperimentləri həyata keçirməkdir. Ali texniki və ya iqtisadi təhsilə;",
-      "requirements": [
-        "Ali texniki və ya iqtisadi təhsilə;",
-        "Müvafiq sahədə minimum 2 il iş təcrübəsinə;",
-        "Machine learning, Statistika, Optimizasiya və ya əlaqəli sahələr üzrə dərin biliklərə;",
-        "Python/R və ya SQL proqramlaşdırma dillərində iş təcrübəsinə;",
-        "Böyük həcmli datasetlər və ya simulyasiya və ya optimizasiya alətləri ilə bağlı iş təcrübəsinə;",
-        "Problem həll etmə bacarığına,",
-        "Ünsiyyət və komandada işləmə bacarığına;",
-        "Həvəsli və müstəqil öyrənmək kimi güclü qabiliyyətə sahib olan şəxsdir."
-      ],
-      "responsibilities": [
-        "Bankın biznes/risk departamentləri tərəfindən müəyyən edilən problemlərin (Kredit hesablanması (Credit scoring), Növbəti alınacaq məhsul (Next Product to Buy), Churn analizi, Qiymət optimizasiyası (Pricing optimization), Məhsul tövsiyəsi (Product recommendation), Saxtakarlığın aşkarlanması (Fraud detection) və s) həll edilməsi üçün Machine learning, Statistik metodlar və Məlumatların analitikası sahəsində ekspert biliklərini istifadə edərək yeni nəsil analitik modellərinin dizaynı, prototipləşdirilməsi, qurulması və tətbiqini həyata keçirmək;",
-        "“Advanced analytics” sahəsində ən qabaqcıl təcrübələri araşdırmaq, biznes/risk departamentləri ilə birgə eksperimentləri həyata keçirməkdir."
-      ],
-      "benefits": [],
-      "skills": [
-        "Machine Learning",
-        "Python",
-        "SQL"
-      ],
-      "employmentType": null,
-      "experienceLevel": "mid",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/4727",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/4727",
-      "source": "ABB Careers"
-    },
-    {
       "externalId": "4940",
       "title": "Data sahəsinə data analitik",
       "company": "ABB",
@@ -4623,9 +4519,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 113,
-    "detailPagesFetched": 113,
-    "acceptedJobs": 113,
+    "discoveredLinks": 111,
+    "detailPagesFetched": 111,
+    "acceptedJobs": 111,
     "rejectedJobs": 0,
     "listingFallbacks": 0,
     "errors": []
