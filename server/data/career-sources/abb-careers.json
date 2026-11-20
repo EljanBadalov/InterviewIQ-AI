@@ -1,10 +1,46 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-11-20T05:58:11.617Z",
+  "updatedAt": "2026-11-20T16:48:17.102Z",
   "success": true,
-  "count": 108,
+  "count": 109,
   "jobs": [
+    {
+      "externalId": "5315",
+      "title": "Satınalmalar departamentinin müqavilələr üzrə kiçik mütəxəssisi/mütəxəssisi",
+      "company": "ABB",
+      "location": "Azerbaijan",
+      "summary": "Bank ilə podratçılar arasında imzalanması nəzərdə tutulan satınalma müqavilələri (əlavələr və razılaşmalar) üzrə proseslərin idarə edilməsi; Müqavilələrdən irəli gələn xərclərin bankın xərc siyasətinə uyğun olmasına nəzarətin həyata keçirilməsi; Ali təhsilə;",
+      "description": "Bank ilə podratçılar arasında imzalanması nəzərdə tutulan satınalma müqavilələri (əlavələr və razılaşmalar) üzrə proseslərin idarə edilməsi; Müqavilələrdən irəli gələn xərclərin bankın xərc siyasətinə uyğun olmasına nəzarətin həyata keçirilməsi; Ali təhsilə;",
+      "requirements": [
+        "Ali təhsilə;",
+        "Səlis Azərbaycan və İngilis dili biliyinə (Rus dili arzuolunandır) ;",
+        "Yüksək səviyyədə MS Office proqramlarında işləmək bacarığına;",
+        "Sahə üzrə minimum 1 il iş təcrübəsinə;",
+        "İnduktiv və analitik təhlil bacarığına;",
+        "Komandada işləmək bacarığına;",
+        "Təqdimat və ünsiyyət bacarığına sahib olan şəxsdir."
+      ],
+      "responsibilities": [
+        "Bank ilə podratçılar arasında imzalanması nəzərdə tutulan satınalma müqavilələri (əlavələr və razılaşmalar) üzrə proseslərin idarə edilməsi;",
+        "Müqavilələrdən irəli gələn xərclərin bankın xərc siyasətinə uyğun olmasına nəzarətin həyata keçirilməsi;",
+        "Mövcud müqavilələrdə əlavə və dəyişikliklərə ehtiyacı müəyyən etmək və təkliflər vermək üçün podratçının (malgöndərən) fəaliyyətini qiymətləndirmə nəticələrindən istifadə olunması;",
+        "Müqavilələrdə müəyyən olunmuş öhdəliklərin icrasına nəzarətin təşkil edilməsi və müqavilələrdən irəli gələn digər zəruri tədbirlərin aidiyyəti strukturlarla razılaşdırmaqla həyata keçirilməsi."
+      ],
+      "benefits": [],
+      "skills": [],
+      "employmentType": "contract",
+      "experienceLevel": "junior",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": null,
+      "postedAt": null,
+      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5315",
+      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5315",
+      "source": "ABB Careers"
+    },
     {
       "externalId": "5505",
       "title": "Pərakəndə kart biznesi sahəsinə Müştəri təcrübələri üzrə aparıcı mütəxəssis",
@@ -4385,9 +4421,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 108,
-    "detailPagesFetched": 108,
-    "acceptedJobs": 108,
+    "discoveredLinks": 109,
+    "detailPagesFetched": 109,
+    "acceptedJobs": 109,
     "rejectedJobs": 0,
     "listingFallbacks": 0,
     "errors": []
