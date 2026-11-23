@@ -1,10 +1,98 @@
 {
   "id": "abb-careers",
   "name": "ABB Careers",
-  "updatedAt": "2026-11-23T06:01:45.910Z",
+  "updatedAt": "2026-11-23T19:56:57.016Z",
   "success": true,
-  "count": 109,
+  "count": 108,
   "jobs": [
+    {
+      "externalId": "5545",
+      "title": "Əməliyyat risklərinin idarə edilməsi şöbəsinin (IT risklər qrupu) qrup rəhbəri",
+      "company": "ABB",
+      "location": "Azerbaijan",
+      "summary": "Bank üzrə İT və texnoloji risklərin müəyyən edilməsi, qeydiyyatı, qiymətləndirilməsi, monitorinqi və idarə edilməsi prosesinə rəhbərlik etmək; COBIT, NIST, ISO 27001/27005, ISO 22301, CIS, PCI DSS, DORA və digər beynəlxalq standart və çərçivələrin tətbiqini qiymətləndirmək, müvafiq metodoloji yanaşmaların formalaşdırılmasını təmin etmək; Ali təhsilli (İT mühəndislik, İnformasiya Texnologiyaları, İnformasiya Təhlükəsizliyi və ya Kompüter Elmləri sahələri üzrə)",
+      "description": "Bank üzrə İT və texnoloji risklərin müəyyən edilməsi, qeydiyyatı, qiymətləndirilməsi, monitorinqi və idarə edilməsi prosesinə rəhbərlik etmək; COBIT, NIST, ISO 27001/27005, ISO 22301, CIS, PCI DSS, DORA və digər beynəlxalq standart və çərçivələrin tətbiqini qiymətləndirmək, müvafiq metodoloji yanaşmaların formalaşdırılmasını təmin etmək; Ali təhsilli (İT mühəndislik, İnformasiya Texnologiyaları, İnformasiya Təhlükəsizliyi və ya Kompüter Elmləri sahələri üzrə)",
+      "requirements": [
+        "Ali təhsilli (İT mühəndislik, İnformasiya Texnologiyaları, İnformasiya Təhlükəsizliyi və ya Kompüter Elmləri sahələri üzrə)",
+        "Müvafiq sahə üzrə minimum 5 il iş təcrübəsinə malik olan (İT risklərin idarə edilməsi və ya əlaqəli sahədə minimum 7 illik təcrübə - Bu müddətdən ən azı 2 ili qrup və ya komanda rəhbərliyi təcrübəsi olan;",
+        "Azərbaycan, ingilis və rus dillərini yüksək səviyyədə bilən;",
+        "CRISC, CISA, CISSP və ya CISM sertifikatlarından ən azı biri olan;",
+        "COBIT, ISO 27001 Lead Implementer/Auditor, ISO 22301, IT Risk Fundamentals, ITIL və s. peşəkar sertifikatların olması arzu olunandırEffektiv ünsiyyət qurmaq və müxtəlif maraqlı tərəflərlə əməkdaşlıq etmək bacarığına malik olan;",
+        "Mərkəzi Bankın normativ aktları və Bank fəaliyyətini tənzimləyən qanunvericilik bazası ilə tanışlığı olan;",
+        "Bank sektorunun İT infrastrukturu, informasiya sistemləri, şəbəkə və verilənlər bazaları üzrə hərtərəfli bilikləri olan;",
+        "İT risklərin idarə edilməsi, qiymətləndirilməsi, azaldılması və beynəlxalq standartların (COBIT, NIST, ISO 27001 və s.) tətbiqi üzrə ekspert bilikləri olan;",
+        "BCP/DRP, üçüncü tərəf risklərinin idarə edilməsi (TPRM) və rəqəmsal əməliyyat dayanıqlığı (DORA) üzrə bilikləri olan;",
+        "Bulud texnologiyaları və süni intellekt (AI) həllərindən irəli gələn texnoloji risklərin qiymətləndirilməsi üzrə bilikləri olan;",
+        "Güclü liderlik və komanda idarəetmə bacarıqları olan;",
+        "Təşəbbüskar, nəticəyönümlü və məsuliyyətli şəxsdir."
+      ],
+      "responsibilities": [
+        "Bank üzrə İT və texnoloji risklərin müəyyən edilməsi, qeydiyyatı, qiymətləndirilməsi, monitorinqi və idarə edilməsi prosesinə rəhbərlik etmək;",
+        "COBIT, NIST, ISO 27001/27005, ISO 22301, CIS, PCI DSS, DORA və digər beynəlxalq standart və çərçivələrin tətbiqini qiymətləndirmək, müvafiq metodoloji yanaşmaların formalaşdırılmasını təmin etmək;",
+        "Bankın İT, İnformasiya Təhlükəsizliyi və Rəqəmsal istiqamətləri üzrə risklərin qiymətləndirilməsi prosesinə metodoloji dəstək göstərmək və birinci müdafiə xəttinin risklərin idarə edilməsi üzrə fəaliyyətinə nəzarət etmək;",
+        "İT risk insidentlərinin təhlilini, kök səbəb analizinin (RCA) qiymətləndirilməsini, risklərin təkrarlanmasının qarşısının alınması üzrə tədbirlərin hazırlanmasını və icrasına nəzarəti təmin etmək;",
+        "Rəqəmsal transformasiya, innovativ layihələr, bulud texnologiyaları, İT infrastruktur və informasiya sistemləri üzrə texnoloji risklərin qiymətləndirilməsini təşkil etmək;",
+        "İKT xidmət təminatçıları və üçüncü tərəflər üzrə texnoloji, informasiya təhlükəsizliyi və əməliyyat davamlılığı risklərinin qiymətləndirilməsinə nəzarət etmək;",
+        "İT risklərinin azaldılması, biznesin davamlılığı (BCP), fəlakətdən qurtarma (DRP) və rəqəmsal əməliyyat dayanıqlığı (DORA) istiqamətləri üzrə risklərin idarə edilməsini və müvafiq nəzarət mexanizmlərinin effektivliyini qiymətləndirmək;",
+        "İT riskləri üzrə risk iştahası limitlərinin, əsas risk göstəricilərinin (KRI) müəyyənləşdirilməsi, monitorinqi, kənarlaşmaların eskalasiyası və rəhbərlik üçün hesabatların hazırlanmasını təmin etmək;",
+        "İT risklərinin idarə edilməsi üzrə daxili normativ sənədlərin, metodologiyaların, siyasət və prosedurların hazırlanmasına və mütəmadi yenilənməsinə rəhbərlik etmək;",
+        "Daxili və xarici audit yoxlamaları nəticəsində müəyyən edilmiş İT riskləri üzrə tədbirlərin icrasına nəzarət etmək, risklərin azaldılması istiqamətində müvafiq tövsiyələr vermək;",
+        "İT riskləri üzrə Bankın struktur bölmələri ilə əməkdaşlığı, risk sahibləri ilə qarşılıqlı fəaliyyəti və əməkdaşların risk məlumatlılığının artırılmasını təmin etmək;",
+        "Qrupun fəaliyyətini planlaşdırmaq, əməkdaşlar arasında iş bölgüsünü və iş yükünün balanslaşdırılmasını təmin etmək, fəaliyyət nəticələrini qiymətləndirmək və komandanın peşəkar inkişafına dəstək göstərmək."
+      ],
+      "benefits": [],
+      "skills": [],
+      "employmentType": null,
+      "experienceLevel": "senior",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": null,
+      "postedAt": null,
+      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5545",
+      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5545",
+      "source": "ABB Careers"
+    },
+    {
+      "externalId": "5542",
+      "title": "Təlim və performansın idarə edilməsi şöbəsinin mütəxəssisi/aparıcı mütəxəssisi",
+      "company": "ABB",
+      "location": "Azerbaijan",
+      "summary": "Məsul olduğu struktur bölmələr üzrə təlim və perfomans proseslərinin təşkili, struktur bölmələrlə effektiv kommunikasiya və əməkdaşlığın təmin edilməsi; Təlim, inkişaf və performansın idarə edilməsi istiqamətində layihələrin idarə olunması və icrasının təmin edilməsi; Ali təhsilli;",
+      "description": "Məsul olduğu struktur bölmələr üzrə təlim və perfomans proseslərinin təşkili, struktur bölmələrlə effektiv kommunikasiya və əməkdaşlığın təmin edilməsi; Təlim, inkişaf və performansın idarə edilməsi istiqamətində layihələrin idarə olunması və icrasının təmin edilməsi; Ali təhsilli;",
+      "requirements": [
+        "Ali təhsilli;",
+        "Müvafiq sahə üzrə minimum 2 il iş təcrübəsinə malik olan;",
+        "Azərbaycan, ingilis və rus dillərini yüksək səviyyədə bilən;",
+        "MS Excel proqramında yüksək səviyyədə işləmək, məlumatları təhlil etmək və hesabatlar hazırlamaq bacarığına malik olan;",
+        "Layihələrin idarə edilməsi və işlərin koordinasiyası üzrə bacarıqlara sahib olan;",
+        "Effektiv ünsiyyət qurmaq və müxtəlif maraqlı tərəflərlə əməkdaşlıq etmək bacarığına malik olan;",
+        "Təşəbbüskar, nəticəyönümlü və məsuliyyətli şəxsdir."
+      ],
+      "responsibilities": [
+        "Məsul olduğu struktur bölmələr üzrə təlim və perfomans proseslərinin təşkili, struktur bölmələrlə effektiv kommunikasiya və əməkdaşlığın təmin edilməsi;",
+        "Təlim, inkişaf və performansın idarə edilməsi istiqamətində layihələrin idarə olunması və icrasının təmin edilməsi;",
+        "Təlim və layihələrlə bağlı sorğuların təşkili, nəticələrinin təhlili və müvafiq təkmilləşdirmə təkliflərinin hazırlanması;",
+        "Öyrənmə və inkişaf portalının (LMS) fəaliyyətinin təşkili, effektiv istifadəsinin təmin edilməsi və mütəmadi təkmilləşdirilməsi;",
+        "Təlim və performansın idarə edilməsi üzrə hesabatların hazırlanması, müvafiq göstəricilərin təhlili və nəticələrin təqdim edilməsi."
+      ],
+      "benefits": [],
+      "skills": [
+        "Excel"
+      ],
+      "employmentType": null,
+      "experienceLevel": "mid",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": null,
+      "postedAt": null,
+      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5542",
+      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5542",
+      "source": "ABB Careers"
+    },
     {
       "externalId": "5315",
       "title": "Satınalmalar departamentinin müqavilələr üzrə kiçik mütəxəssisi/mütəxəssisi",
@@ -39,48 +127,6 @@
       "postedAt": null,
       "url": "https://careers.abb-bank.az/vakansiyalar/v2/5315",
       "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5315",
-      "source": "ABB Careers"
-    },
-    {
-      "externalId": "5505",
-      "title": "Pərakəndə kart biznesi sahəsinə Müştəri təcrübələri üzrə aparıcı mütəxəssis",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "Web3 və rəqəmsal məhsulların biznes məntiqini, tokenomika modellərini və təkmilləşdirmə imkanlarını müəyyən etmək; Yeni məhsul və funksionallıqların ideyadan bazara çıxarılmasına (Go-to-Market) qədər bütün mərhələlərini idarə etmək; Ali təhsilə;",
-      "description": "Web3 və rəqəmsal məhsulların biznes məntiqini, tokenomika modellərini və təkmilləşdirmə imkanlarını müəyyən etmək; Yeni məhsul və funksionallıqların ideyadan bazara çıxarılmasına (Go-to-Market) qədər bütün mərhələlərini idarə etmək; Ali təhsilə;",
-      "requirements": [
-        "Ali təhsilə;",
-        "Müvafiq sahədə minimum 1–3 il iş təcrübəsinə;",
-        "Web3 (DeFi, GameFi, SocialFi, NFT), rəqəmsal məhsulların yaradılması, satış və ya biznesin inkişafı sahəsində iş təcrübəsinə;",
-        "Tokenomika dizaynı, Launchpad əməliyyatları və fandreyzinq (IDO) prosesləri üzrə praktik biliklərə;",
-        "Strateji araşdırma, bazar təhlili və hesabatlıq istiqamətlərində iş təcrübəsinə (üstünlükdür);",
-        "Brendinq, icma idarəçiliyi üzrə biliklərə;",
-        "İngilis dili və Rus dili biliklərinə (arzuolunandır);",
-        "Geniş tərəfdaş və kommunikasiya şəbəkəsi qurmaq bacarığına (üstünlükdür);",
-        "Komandada (Scrum/Agile) işləmək bacarığı və yeni texnologiyaları (Web3, AI və s.) öyrənmə həvəsinə;",
-        "Kreativ düşüncə, təşəbbüskarlıq və problemlərin həllərinə innovativ yanaşma bacarığına sahib olan şəxsdir."
-      ],
-      "responsibilities": [
-        "Web3 və rəqəmsal məhsulların biznes məntiqini, tokenomika modellərini və təkmilləşdirmə imkanlarını müəyyən etmək;",
-        "Yeni məhsul və funksionallıqların ideyadan bazara çıxarılmasına (Go-to-Market) qədər bütün mərhələlərini idarə etmək;",
-        "Bazar tendensiyalarını, rəqibləri, istifadəçi davranışını və ekosistem göstəricilərini araşdıraraq strateji təhlillər hazırlamaq;",
-        "Potensial tərəfdaşlarla, layihələrlə işgüzar əlaqələr qurmaq və biznesin inkişafı proseslərini aparmaq;",
-        "Araşdırma nəticələrini aydın təqdim etmək və biznes qərarları üçün əsaslandırılmış təkliflər hazırlamaqdır."
-      ],
-      "benefits": [],
-      "skills": [
-        "Go"
-      ],
-      "employmentType": null,
-      "experienceLevel": "mid",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5505",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5505",
       "source": "ABB Careers"
     },
     {
@@ -148,41 +194,6 @@
       "postedAt": null,
       "url": "https://careers.abb-bank.az/vakansiyalar/v2/5506",
       "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5506",
-      "source": "ABB Careers"
-    },
-    {
-      "externalId": "5504",
-      "title": "Kart mərkəzinin fəaliyyətinə dair asisstent",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "Kart və sənədlərin müştərilərə fiziki olaraq çatdırılması; Planşet üzərindən müştərilərə təklif olunacaq xidmət və məhsullar barədə ətraflı məlumatın verilməsi; Orta təhsilli;",
-      "description": "Kart və sənədlərin müştərilərə fiziki olaraq çatdırılması; Planşet üzərindən müştərilərə təklif olunacaq xidmət və məhsullar barədə ətraflı məlumatın verilməsi; Orta təhsilli;",
-      "requirements": [
-        "Orta təhsilli;",
-        "Ünsiyyət qabiliyyəti yüksək;",
-        "Məsuliyyətli;",
-        "Şəxsi avtomobili və motosikleti olan şəxsdir."
-      ],
-      "responsibilities": [
-        "Kart və sənədlərin müştərilərə fiziki olaraq çatdırılması;",
-        "Planşet üzərindən müştərilərə təklif olunacaq xidmət və məhsullar barədə ətraflı məlumatın verilməsi;",
-        "İmtiyazlı müştərilərin Bank məhsullarına aid suallarının cavablandırılması;",
-        "Gündəlik çatdırılma işləri ilə bağlı hesabatın Excel üzərindən hazırlanması."
-      ],
-      "benefits": [],
-      "skills": [
-        "Excel"
-      ],
-      "employmentType": null,
-      "experienceLevel": null,
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5504",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5504",
       "source": "ABB Careers"
     },
     {
@@ -3491,52 +3502,6 @@
       "source": "ABB Careers"
     },
     {
-      "externalId": "5313",
-      "title": "Beynəlxalq əqdlər və vergitutma şöbəsi üzrə hüquqşünas",
-      "company": "ABB",
-      "location": "Azerbaijan",
-      "summary": "ABB-nin fəaliyyəti ilə bağlı müqavilələrin, o cümlədən digər zəruri sənədlərin hazırlanmasında, təkmilləşdirilməsində iştirak etmək, qeyri-rezidentlərlə bağlanması nəzərdə tutulan müqavilələrin və hüquqi əhəmiyyətə malik olan digər sənədlərin hüquqi ekspertizasını həyata keçirmək; ABB-nin fəaliyyətinə təsiri olan beynəlxalq hüquq normalarının tətbiqi və daim izlənilməsi ilə bağlı lazımi işləri görmək; Hüquqşünaslıq ixtisası üzrə bakalavr dərəcəsi;",
-      "description": "ABB-nin fəaliyyəti ilə bağlı müqavilələrin, o cümlədən digər zəruri sənədlərin hazırlanmasında, təkmilləşdirilməsində iştirak etmək, qeyri-rezidentlərlə bağlanması nəzərdə tutulan müqavilələrin və hüquqi əhəmiyyətə malik olan digər sənədlərin hüquqi ekspertizasını həyata keçirmək; ABB-nin fəaliyyətinə təsiri olan beynəlxalq hüquq normalarının tətbiqi və daim izlənilməsi ilə bağlı lazımi işləri görmək; Hüquqşünaslıq ixtisası üzrə bakalavr dərəcəsi;",
-      "requirements": [
-        "Hüquqşünaslıq ixtisası üzrə bakalavr dərəcəsi;",
-        "Hüquq sahəsində minimum 1 il iş təcrübəsi;",
-        "Azərbaycan Respublikasının qanunvericiliyinin, xüsusilə bankların fəaliyyəti ilə bağlı zəruri qanunvericilik aktları üzrə biliklər;",
-        "Hüquq sahəsində praktiki və nəzəri biliklər;",
-        "Yüksək səviyyədə Azərbaycan, rus və ingilis dili bilikləri (hər üç dili işgüzar münasibətlərdə sərbəst şəkildə istifadə edə bilmək);",
-        "MS Office proqramları üzrə praktiki biliklər;",
-        "İşgüzar müstəvidə yüksək səviyyədə yazılı və şifahi ünsiyyət, analitik təhlil, vaxtın düzgün idarə olunması üzrə zəruri bacarıqlar;",
-        "Təşəbbüskar, məsuliyyətli olmaq;",
-        "Araşdırma və komanda ilə effektiv işləmə bacarıqları."
-      ],
-      "responsibilities": [
-        "ABB-nin fəaliyyəti ilə bağlı müqavilələrin, o cümlədən digər zəruri sənədlərin hazırlanmasında, təkmilləşdirilməsində iştirak etmək, qeyri-rezidentlərlə bağlanması nəzərdə tutulan müqavilələrin və hüquqi əhəmiyyətə malik olan digər sənədlərin hüquqi ekspertizasını həyata keçirmək;",
-        "ABB-nin fəaliyyətinə təsiri olan beynəlxalq hüquq normalarının tətbiqi və daim izlənilməsi ilə bağlı lazımi işləri görmək;",
-        "ABB-nin gündəlik fəaliyyətində ortaya çıxan hüquqi məsələlərin araşdırılması və hüquqi rəylərin verilməsi istiqamətində ona verilən tapşırıqları yerinə yetirmək;",
-        "ABB-nin mənafelərinin qorunması üçün xarici elementli iddia ərizələrinin yazılması, müraciətlərin edilməsi, məhkəmə proseslərində iştirak, habelə qeyd edilən məqsədlər üçün xarici hüquq firmaları ilə əməkdaşlıq istiqamətində zəruri tədbirləri görmək, müvafiq tapşırıqları icra etmək;",
-        "Qeyri-rezidentlər, o cümlədən xarici dövlətlər və onların diplomatik nümayəndəlikləri ilə bağlanılan bütün əqdlərə hüquqi rəy verilməsi və əlaqədar yazışmaların aparılması istiqamətində verilən tapşırıqları icra etmək;",
-        "Qeyri-rezidentlərlə əlaqədar yaranan vergi münasibətlərinin tənzimlənməsində iştirak etmək, bu istiqamətdə zəruri tədbirlər görmək;",
-        "ABB-nin fəaliyyəti üzrə əhəmiyyətli hesab edilən xarici qanunvericilik aktları ilə tanış olmaq, spesifik məsələlərlə bağlı yerli və xarici qanunvericilik araşdırmaları etmək;",
-        "Zəruri hallarda, tələb olunan sənədlərin notarial qaydada təsdiq olunması, leqallaşdırılması və apostil olunması ilə bağlı işlərin görülməsi üçün verilən tapşırıqları yerinə yetirmək;",
-        "Şöbənin fəaliyyət istiqamətlərinə aid məsələlər üzrə daxil olmuş məktublara qanunvericiliyə və bankdaxili qaydalara müvafiq olaraq baxılmasında və tələb olunduğu halda, cavablar hazırlanmasında iştirak etmək;",
-        "ABB-nin təsisçiliyi ilə ölkədən kənarda yaradılmış qurumlar və bank arasında hüquqi məsələlərlə bağlı kommunikasiya qurmaq və müvafiq istiqamətdə zəruri hüquqi araşdırmalar aparmaq, rəylər vermək;",
-        "Bankdaxili qaydalara uyğun olaraq, işinə dair hesabatların hazırlanmasını və təqdim edilməsini təmin etmək;",
-        "İş prosesində ortaya çıxan digər məsələlərin vaxtında və keyfiyyətli həllini təmin emək."
-      ],
-      "benefits": [],
-      "skills": [],
-      "employmentType": "contract",
-      "experienceLevel": "junior",
-      "workMode": "onsite",
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": null,
-      "postedAt": null,
-      "url": "https://careers.abb-bank.az/vakansiyalar/v2/5313",
-      "applyUrl": "https://careers.abb-bank.az/vakansiyalar/v2/5313",
-      "source": "ABB Careers"
-    },
-    {
       "externalId": "5296",
       "title": "Bank fəaliyyətinə dəstək bölməsinin müştəri bələdçisi - Naxçıvan",
       "company": "ABB",
@@ -4421,9 +4386,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 109,
-    "detailPagesFetched": 109,
-    "acceptedJobs": 109,
+    "discoveredLinks": 108,
+    "detailPagesFetched": 108,
+    "acceptedJobs": 108,
     "rejectedJobs": 0,
     "listingFallbacks": 0,
     "errors": []
