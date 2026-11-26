@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-26T00:17:23.331Z",
+  "updatedAt": "2026-11-26T08:16:46.743Z",
   "sourceCount": 3,
   "successfulSources": 3,
   "failedSources": 0,
@@ -9,22 +9,22 @@
       "id": "bir-careers",
       "name": "Bir Careers",
       "success": true,
-      "count": 80,
-      "updatedAt": "2026-11-26T00:02:42.737Z"
+      "count": 78,
+      "updatedAt": "2026-11-26T08:04:42.582Z"
     },
     {
       "id": "abb-careers",
       "name": "ABB Careers",
       "success": true,
       "count": 111,
-      "updatedAt": "2026-11-26T00:04:10.228Z"
+      "updatedAt": "2026-11-26T08:06:15.152Z"
     },
     {
       "id": "glorri",
       "name": "Glorri",
       "success": true,
-      "count": 225,
-      "updatedAt": "2026-11-26T00:17:23.323Z"
+      "count": 227,
+      "updatedAt": "2026-11-26T08:16:46.736Z"
     }
   ]
 }
