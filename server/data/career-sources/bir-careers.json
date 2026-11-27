@@ -1,9 +1,9 @@
 {
   "id": "bir-careers",
   "name": "Bir Careers",
-  "updatedAt": "2026-11-26T21:01:37.519Z",
+  "updatedAt": "2026-11-27T06:59:45.221Z",
   "success": true,
-  "count": 78,
+  "count": 79,
   "jobs": [
     {
       "externalId": "9093",
@@ -96,6 +96,45 @@
       "postedAt": null,
       "url": "https://careers.bir.az/vacancies/9092",
       "applyUrl": "https://careers.bir.az/vacancies/9092#attachFile",
+      "source": "Bir Careers"
+    },
+    {
+      "externalId": "9086",
+      "title": "Mühəndislik və texnoloji platformalar ekspert mərkəzi - Funksional lider",
+      "company": "Kapital Bank / Bir",
+      "brand": "Bir",
+      "location": "Bakı",
+      "summary": "Biz Backend, Web və Mobile istiqamətləri üzrə bir neçə məhsul komandasında proqram təminatının hazırlanması sahəsinə rəhbərlik edəcək, mühəndislik təcrübələrinin inkişafına, əməkdaşların peşəkar inkişafına və işlərin yüksək keyfiyyətlə icrasına cavabdeh olacaq təcrübəli rəhbər axtarırıq\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
+      "description": "Biz Backend, Web və Mobile istiqamətləri üzrə bir neçə məhsul komandasında proqram təminatının hazırlanması sahəsinə rəhbərlik edəcək, mühəndislik təcrübələrinin inkişafına, əməkdaşların peşəkar inkişafına və işlərin yüksək keyfiyyətlə icrasına cavabdeh olacaq təcrübəli rəhbər axtarırıq\nBir Azərbaycanda gündəlik həyatı daha rahat və əlçatan etmək məqsədilə bankçılıq, ödənişlər, e-ticarət və innovativ rəqəmsal xidmətləri bir araya gətirən Qafqazın ilk tam inteqrasiya olunmuş ekosistemidir. Bir ekosistemi Birbank, Birmarket, m10, Milliön və Future Lab kimi əsas brendləri vahid çətir altında birləşdirərək Azərbaycanın maliyyə xidmətləri, rəqəmsal ödənişlər, e-ticarət və innovasiya sahələrinin inkişafında aparıcı rol oynayır. Burada işləmək texnologiya ilə dəyər yaratmaq, milyonlarla insana real fayda vermək və gələcəyin həllərini bu gündən qurmaqdır. Bir ekosistemində ideyalar real məhsullara çevrilir, fərqli biznes və sahələr isə öyrənmək, inkişaf etmək və karyeranı istədiyin istiqamətdə qurmaq üçün geniş fürsətlər yaradır.",
+      "requirements": [
+        "Proqram təminatının hazırlanması sahəsində 7-9 il və ya daha çox iş təcrübəsi, o cümlədən mühəndislərə rəhbərlik üzrə 4-5 il və ya daha çox təcrübə.",
+        "Məhsul komandalarında iş təcrübəsi və nəticələrin əldə olunmasına görə birbaşa məsuliyyət daşımaq təcrübəsi mütləqdir.",
+        "Əsas texnoloji steklərdən ən azı biri üzrə dərin texniki bilik və təcrübə (Java biliyinə üstünlük verilir), digər texnologiyalar üzrə isə geniş biliklər.",
+        "Əməkdaşların peşəkar inkişafı və mühəndislik təcrübələrinin bir neçə komanda üzrə tətbiqi və inkişaf etdirilməsi sahəsində uğurlu təcrübə.",
+        "İngilis dilində işgüzar səviyyədə ünsiyyət bacarığı."
+      ],
+      "responsibilities": [
+        "Backend, Web və Mobile istiqamətləri üzrə Funksional liderlərə rəhbərlik etmək və onların peşəkar inkişafını təmin etmək.",
+        "Proqram təminatının hazırlanması istiqamətləri və platforma komandası üzrə işə qəbul və əməkdaşların fəaliyyətinin qiymətləndirilməsi proseslərinə rəhbərlik etmək.",
+        "Mühəndislik standartlarını müəyyənləşdirmək və inkişaf etdirmək: arxitektura, kodun keyfiyyəti, kodun yoxlanılması (code review) təcrübələri və keyfiyyətə nəzarət meyarları (quality gates).",
+        "Daxili proqramçı platformasının inkişaf istiqamətini müəyyənləşdirmək və tətbiqini təmin etmək; standartlaşdırılmış iş axınlarını (golden paths), şablonları və proqramçıların müstəqil istifadə edə biləcəyi alət və xidmətləri (self-service) inkişaf etdirmək.",
+        "Buraxılışların planlaşdırılan vaxtda və proqnozlaşdırıla bilən şəkildə həyata keçirilməsi, texniki risklərin idarə olunması və işlərin icra keyfiyyətinin təmin edilməsi məsələlərində Tribe Lead-lərlə əməkdaşlıq etmək.",
+        "Müxtəlif komandalar arasında texniki təcrübə və yanaşmaların uyğunlaşdırılmasını təmin edən mühəndislik icmalarının (engineering guilds) fəaliyyətinə rəhbərlik etmək və onların inkişafına töhfə vermək."
+      ],
+      "benefits": [],
+      "skills": [
+        "Java"
+      ],
+      "employmentType": "full-time",
+      "experienceLevel": "manager",
+      "workMode": "onsite",
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": "05.12.2026",
+      "postedAt": null,
+      "url": "https://careers.bir.az/vacancies/9086",
+      "applyUrl": "https://careers.bir.az/vacancies/9086#attachFile",
       "source": "Bir Careers"
     },
     {
@@ -3861,9 +3900,9 @@
   ],
   "diagnostics": {
     "fetchedPages": 1,
-    "discoveredLinks": 78,
-    "detailPagesFetched": 78,
-    "acceptedJobs": 78,
+    "discoveredLinks": 79,
+    "detailPagesFetched": 79,
+    "acceptedJobs": 79,
     "rejectedJobs": 0,
     "errors": []
   }
