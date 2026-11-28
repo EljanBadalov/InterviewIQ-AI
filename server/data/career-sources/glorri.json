@@ -1,7 +1,7 @@
 {
   "id": "glorri",
   "name": "Glorri",
-  "updatedAt": "2026-11-28T02:43:20.108Z",
+  "updatedAt": "2026-11-28T13:04:37.224Z",
   "success": true,
   "count": 223,
   "jobs": [
@@ -371,7 +371,7 @@
       "salaryMax": null,
       "salaryCurrency": null,
       "deadline": "December 20, 2026",
-      "postedAt": "Ноябрь 20, 2026",
+      "postedAt": "Noyabr 20, 2026",
       "url": "https://jobs.glorri.az/vacancies/unibank/unibank-xarici-maliyye-hesabatligi-sobesinin-mutexessisiaparici-mutexessisi-33535082",
       "applyUrl": "https://jobs.glorri.az/vacancies/unibank/unibank-xarici-maliyye-hesabatligi-sobesinin-mutexessisiaparici-mutexessisi-33535082/apply?",
       "source": "Glorri"
@@ -1552,6 +1552,67 @@
       "postedAt": "Oktyabr 29, 2026",
       "url": "https://jobs.glorri.az/vacancies/idda/idda-anbar-idareetmesi-ve-ucot-uzre-bas-mutexessis-17684013",
       "applyUrl": "https://jobs.glorri.az/vacancies/idda/idda-anbar-idareetmesi-ve-ucot-uzre-bas-mutexessis-17684013/apply?",
+      "source": "Glorri"
+    },
+    {
+      "externalId": "idda:24588902",
+      "title": "Data Arxitektor",
+      "company": "IDDA",
+      "location": "",
+      "summary": "Rəqəmsal Hökumət Arxitekturasının formalaşdırılması çərçivəsində məlumat arxitekturasının (Data Architecture) hazırlanması və inkişaf etdirilməsi; Dövlət informasiya sistemləri və rəqəmsal platformalar üzrə mövcud (AS-IS) və hədəf (TO-BE) məlumat arxitekturasının təhlili, modelləşdirilməsi və sənədləşdirilməsi; Dövlət informasiya sistemləri arasında məlumatların idarə olunmasına, saxlanılmasına, paylaşılmasına və istifadəsinə dair vahid memarlıq prinsiplərinin, standartların və metodoloji yanaşmaların hazırlanması; Məlumat arxitekturası üzrə konsepsiyanın, inkişaf strategiyasının və mərhələli ",
+      "description": "Rəqəmsal Hökumət Arxitekturasının formalaşdırılması çərçivəsində məlumat arxitekturasının (Data Architecture) hazırlanması və inkişaf etdirilməsi;\nDövlət informasiya sistemləri və rəqəmsal platformalar üzrə mövcud (AS-IS) və hədəf (TO-BE) məlumat arxitekturasının təhlili, modelləşdirilməsi və sənədləşdirilməsi;\nDövlət informasiya sistemləri arasında məlumatların idarə olunmasına, saxlanılmasına, paylaşılmasına və istifadəsinə dair vahid memarlıq prinsiplərinin, standartların və metodoloji yanaşmaların hazırlanması;\nMəlumat arxitekturası üzrə konsepsiyanın, inkişaf strategiyasının və mərhələli tətbiq planının hazırlanması və aktuallaşdırılması;\nMəlumat arxitekturasının Korporativ Arxitektura (Enterprise Architecture) çərçivəsinə uyğunlaşdırılması və digər memarlıq domenləri ilə əlaqələndirilməsi;\nRəqəmsal Hökumət Arxitekturası çərçivəsində məlumat arxitekturasının konseptual və məntiqi səviyyədə modelləşdirilməsi, informasiya sistemləri arasında məlumat asılılıqlarının və məlumat axınlarının arxitektura baxımından təhlili və hədəf arxitektura həllərinin formalaşdırılması;\nDövlət informasiya sistemləri arasında məlumatların təkrarlanması, uyğunsuzluğu, parçalanması və izolyasiyası ilə bağlı problemlərin müəyyənləşdirilməsi və optimallaşdırma təkliflərinin hazırlanması.\nStandartların müəyyən edilməsi: Dövlət qurumları üzrə məlumatların idarə edilməsi (Data Governance), məlumat keyfiyyəti, metadataların idarə edilməsi və normativ tələblərə uyğunluq sahələrində standartların, siyasətlərin və qaydaların müəyyən edilməsi və onlara riayət olunmasının təmin edilməsi.\nDövlət informasiya sistemləri arasında məlumat mübadiləsinin və inteqrasiya mexanizmlərinin memarlıq baxımından qiymətləndirilməsi;\nAPI, ETL/ELT, CDC, event-driven architecture və digər məlumat inteqrasiyası yanaşmalarının tətbiqi üzrə memarlıq tələblərinin müəyyənləşdirilməsi;\nMəlumat anbarları (Data Warehouse), Data Lake, Data Lakehouse, məlumat kataloqları, məlumat reyestrləri və Data Product yanaşmaları üzrə həllərin qiymətləndirilməsi;\nRəqəmsal Hökumət Arxitekturasının əsas komponentləri, o cümlədən məlumat mübadiləsi platformaları və dövlət reyestrləri arasında məlumatların əlaqələndirilməsi üzrə memarlıq təkliflərinin hazırlanması;\nMəlumat təhlükəsizliyi, fərdi məlumatların qorunması, giriş hüquqlarının idarə olunması və audit tələblərinin məlumat arxitekturasına inteqrasiyası.\nDövlət qurumlarının Rəqəmsallaşma üzrə Diaqnostikası (DMA) və informasiya sistemlərinin qiymətləndirilməsi (İSQ) proseslərində məlumat arxitekturası üzrə ekspert kimi iştirak;\nYeni informasiya sistemlərinin yaradılması və mövcud sistemlərin modernləşdirilməsi üzrə memarlıq həllərinin qiymətləndirilməsi;\nQiymətləndirmə nəticələri əsasında memarlıq rəylərinin, tövsiyələrin və təkmilləşdirmə tədbirlərinin hazırlanması;\nDövlət qurumlarının rəqəmsallaşma üzrə yol xəritələrinin hazırlanmasında və həyata keçirilməsinin monitorinqində iştirak;\nDövlət qurumlarına məlumat arxitekturası və məlumatların idarə edilməsi məsələləri üzrə metodoloji və əməli dəstəyin göstərilməsi;\nDövlət qurumları, texniki komandalar, biznes nümayəndələri və digər maraqlı tərəflərlə koordinasiyanın təmin edilməsi;\nMüvafiq beynəlxalq təcrübələrin, standartların və texnoloji tendensiyaların araşdırılması;\nGörülmüş işlər üzrə hesabatların, təqdimatların və analitik materialların hazırlanması;\nMüvafiq işçi qruplarında, görüşlərdə və texniki müzakirələrdə iştirak.",
+      "requirements": [
+        "İnformasiya texnologiyaları, kompüter elmləri və ya əlaqəli sahə üzrə ali təhsil;",
+        "Məlumat arxitekturası və əlaqəli sahələr üzrə minimum 5 il iş təcrübəsi;",
+        "AS-IS və TO-BE məlumat arxitekturalarının hazırlanması, məlumat modelləşdirilməsi və sistemlərarası inteqrasiya üzrə təcrübə;",
+        "TOGAF, DAMA-DMBOK, Enterprise Architecture və Data Governance prinsipləri üzrə biliklər;",
+        "Məlumat modelləşdirilməsi, verilənlər bazaları və məlumat platformalarının arxitekturası üzrə təcrübə;",
+        "Məlumat inteqrasiyası, təhlükəsizliyi və interoperabellik prinsipləri üzrə biliklər;",
+        "Arxitektura həllərinin təhlili, modelləşdirilməsi, sənədləşdirilməsi və qiymətləndirilməsi bacarığı;",
+        "Dövlət informasiya sistemləri, rəqəmsal transformasiya və Enterprise Architecture layihələrində təcrübə;",
+        "Legacy sistemlərin modernləşdirilməsi və müasir məlumat platformaları üzrə biliklər;",
+        "DAMA CDMP, TOGAF və ya müvafiq texnoloji sertifikatların olması.",
+        "Azərbaycan dili – əla, ingilis dili – peşəkar səviyyədə, rus dili – arzuolunandır;",
+        "Analitik düşüncə, sistemli yanaşma, sənədləşdirmə və effektiv kommunikasiya bacarıqları."
+      ],
+      "responsibilities": [
+        "Rəqəmsal Hökumət Arxitekturasının formalaşdırılması çərçivəsində məlumat arxitekturasının (Data Architecture) hazırlanması və inkişaf etdirilməsi;",
+        "Dövlət informasiya sistemləri və rəqəmsal platformalar üzrə mövcud (AS-IS) və hədəf (TO-BE) məlumat arxitekturasının təhlili, modelləşdirilməsi və sənədləşdirilməsi;",
+        "Dövlət informasiya sistemləri arasında məlumatların idarə olunmasına, saxlanılmasına, paylaşılmasına və istifadəsinə dair vahid memarlıq prinsiplərinin, standartların və metodoloji yanaşmaların hazırlanması;",
+        "Məlumat arxitekturası üzrə konsepsiyanın, inkişaf strategiyasının və mərhələli tətbiq planının hazırlanması və aktuallaşdırılması;",
+        "Məlumat arxitekturasının Korporativ Arxitektura (Enterprise Architecture) çərçivəsinə uyğunlaşdırılması və digər memarlıq domenləri ilə əlaqələndirilməsi;",
+        "Rəqəmsal Hökumət Arxitekturası çərçivəsində məlumat arxitekturasının konseptual və məntiqi səviyyədə modelləşdirilməsi, informasiya sistemləri arasında məlumat asılılıqlarının və məlumat axınlarının arxitektura baxımından təhlili və hədəf arxitektura həllərinin formalaşdırılması;",
+        "Dövlət informasiya sistemləri arasında məlumatların təkrarlanması, uyğunsuzluğu, parçalanması və izolyasiyası ilə bağlı problemlərin müəyyənləşdirilməsi və optimallaşdırma təkliflərinin hazırlanması.",
+        "Standartların müəyyən edilməsi: Dövlət qurumları üzrə məlumatların idarə edilməsi (Data Governance), məlumat keyfiyyəti, metadataların idarə edilməsi və normativ tələblərə uyğunluq sahələrində standartların, siyasətlərin və qaydaların müəyyən edilməsi və onlara riayət olunmasının təmin edilməsi.",
+        "Dövlət informasiya sistemləri arasında məlumat mübadiləsinin və inteqrasiya mexanizmlərinin memarlıq baxımından qiymətləndirilməsi;",
+        "API, ETL/ELT, CDC, event-driven architecture və digər məlumat inteqrasiyası yanaşmalarının tətbiqi üzrə memarlıq tələblərinin müəyyənləşdirilməsi;",
+        "Məlumat anbarları (Data Warehouse), Data Lake, Data Lakehouse, məlumat kataloqları, məlumat reyestrləri və Data Product yanaşmaları üzrə həllərin qiymətləndirilməsi;",
+        "Rəqəmsal Hökumət Arxitekturasının əsas komponentləri, o cümlədən məlumat mübadiləsi platformaları və dövlət reyestrləri arasında məlumatların əlaqələndirilməsi üzrə memarlıq təkliflərinin hazırlanması;",
+        "Məlumat təhlükəsizliyi, fərdi məlumatların qorunması, giriş hüquqlarının idarə olunması və audit tələblərinin məlumat arxitekturasına inteqrasiyası.",
+        "Dövlət qurumlarının Rəqəmsallaşma üzrə Diaqnostikası (DMA) və informasiya sistemlərinin qiymətləndirilməsi (İSQ) proseslərində məlumat arxitekturası üzrə ekspert kimi iştirak;",
+        "Yeni informasiya sistemlərinin yaradılması və mövcud sistemlərin modernləşdirilməsi üzrə memarlıq həllərinin qiymətləndirilməsi;",
+        "Qiymətləndirmə nəticələri əsasında memarlıq rəylərinin, tövsiyələrin və təkmilləşdirmə tədbirlərinin hazırlanması;",
+        "Dövlət qurumlarının rəqəmsallaşma üzrə yol xəritələrinin hazırlanmasında və həyata keçirilməsinin monitorinqində iştirak;",
+        "Dövlət qurumlarına məlumat arxitekturası və məlumatların idarə edilməsi məsələləri üzrə metodoloji və əməli dəstəyin göstərilməsi;",
+        "Dövlət qurumları, texniki komandalar, biznes nümayəndələri və digər maraqlı tərəflərlə koordinasiyanın təmin edilməsi;",
+        "Müvafiq beynəlxalq təcrübələrin, standartların və texnoloji tendensiyaların araşdırılması;",
+        "Görülmüş işlər üzrə hesabatların, təqdimatların və analitik materialların hazırlanması;"
+      ],
+      "benefits": [],
+      "skills": [
+        "ETL",
+        "ELT"
+      ],
+      "employmentType": "Full-time",
+      "experienceLevel": "Senior",
+      "workMode": null,
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": "November 28, 2026",
+      "postedAt": "Oktyabr 29, 2026",
+      "url": "https://jobs.glorri.az/vacancies/idda/idda-data-arxitektor-24588902",
+      "applyUrl": "https://jobs.glorri.az/vacancies/idda/idda-data-arxitektor-24588902/apply?",
       "source": "Glorri"
     },
     {
@@ -3354,43 +3415,6 @@
       "source": "Glorri"
     },
     {
-      "externalId": "expressbank:33290924",
-      "title": "Mikro kreditlər üzrə kiçik kredit mütəxəssisi (Bakı və Sumqayıt filialları üzrə)",
-      "company": "Expressbank",
-      "location": "Bakı, Azərbaycan",
-      "summary": "Kredit bazarının təhlil edilməsi və sahibkarlıq fəaliyyəti ilə məşğul olan fiziki və hüquqi şəxslərin cəlb olunması; Mikro kreditlər üzrə sifarişlərin qəbul edilməsi, kreditlərin bankın daxili prosedur və qaydalarına uyğun verilməsi və sənədləşdirilməsi üçün sənədlərin toplanması; Mikro kreditlərin təhlil edilməsi, maliyyə hesabatlarının hazırlanması, girovun qiymətləndirilməsi məqsədilə ilkin monitorinqin keçirilməsi; Kredit memorandumunun tərtib olunması və digər sənədlərlə birgə kredit komitəsinin müzakirəsinə çıxarılması üçün Qrup rəhbərinə və ya Koordinatora təqdim olunması; Kredit verilm",
-      "description": "Kredit bazarının təhlil edilməsi və sahibkarlıq fəaliyyəti ilə məşğul olan fiziki və hüquqi şəxslərin cəlb olunması;\nMikro kreditlər üzrə sifarişlərin qəbul edilməsi, kreditlərin bankın daxili prosedur və qaydalarına uyğun verilməsi və sənədləşdirilməsi üçün sənədlərin toplanması;\nMikro kreditlərin təhlil edilməsi, maliyyə hesabatlarının hazırlanması, girovun qiymətləndirilməsi məqsədilə ilkin monitorinqin keçirilməsi;\nKredit memorandumunun tərtib olunması və digər sənədlərlə birgə kredit komitəsinin müzakirəsinə çıxarılması üçün Qrup rəhbərinə və ya Koordinatora təqdim olunması;\nKredit verilməsinə müsbət rəy alındıqda kredit məlumatlarını ABİS-ə daxil edilməsi üçün müvafiq əməkdaşa təqdim olunması;\nKredit müqaviləsi və ödəniş cədvəli üzrə borcların vaxtında ödənilməsini təmin olunması;\nMüqavilə şərtlərini pozmuş müştərilərlə daimi işin aparılması və borcların ödənilməsi istiqamətində tədbirlərin görülməsi.",
-      "requirements": [
-        "Ali təhsil;",
-        "Təhliletmə qabiliyyəti və ünsiyyətqurma bacarığı;",
-        "Microsoft Office proqramlarının istifadəçi səviyyəsində biliyi;",
-        "Azərbaycan dilində sərbəst danışıq qabiliyyəti;",
-        "Komandada işləmək bacarığı."
-      ],
-      "responsibilities": [
-        "Kredit bazarının təhlil edilməsi və sahibkarlıq fəaliyyəti ilə məşğul olan fiziki və hüquqi şəxslərin cəlb olunması;",
-        "Mikro kreditlər üzrə sifarişlərin qəbul edilməsi, kreditlərin bankın daxili prosedur və qaydalarına uyğun verilməsi və sənədləşdirilməsi üçün sənədlərin toplanması;",
-        "Mikro kreditlərin təhlil edilməsi, maliyyə hesabatlarının hazırlanması, girovun qiymətləndirilməsi məqsədilə ilkin monitorinqin keçirilməsi;",
-        "Kredit memorandumunun tərtib olunması və digər sənədlərlə birgə kredit komitəsinin müzakirəsinə çıxarılması üçün Qrup rəhbərinə və ya Koordinatora təqdim olunması;",
-        "Kredit verilməsinə müsbət rəy alındıqda kredit məlumatlarını ABİS-ə daxil edilməsi üçün müvafiq əməkdaşa təqdim olunması;",
-        "Kredit müqaviləsi və ödəniş cədvəli üzrə borcların vaxtında ödənilməsini təmin olunması;",
-        "Müqavilə şərtlərini pozmuş müştərilərlə daimi işin aparılması və borcların ödənilməsi istiqamətində tədbirlərin görülməsi."
-      ],
-      "benefits": [],
-      "skills": [],
-      "employmentType": "Full-time",
-      "experienceLevel": null,
-      "workMode": null,
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "November 29, 2026",
-      "postedAt": "November 25, 2026",
-      "url": "https://jobs.glorri.az/vacancies/expressbank/expressbank-mikro-kreditler-uzre-kicik-kredit-mutexessisi-baki-ve-sumqayit-filiallar-33290924",
-      "applyUrl": "https://jobs.glorri.az/vacancies/expressbank/expressbank-mikro-kreditler-uzre-kicik-kredit-mutexessisi-baki-ve-sumqayit-filiallar-33290924/apply?",
-      "source": "Glorri"
-    },
-    {
       "externalId": "expressbank:69221542",
       "title": "Əməliyyatlar üzrə nəzarətçi (aparıcı mütəxəssis /böyük mütəxəssis) (Bakı filialları üzrə)",
       "company": "Expressbank",
@@ -3422,9 +3446,46 @@
       "salaryMax": null,
       "salaryCurrency": null,
       "deadline": "December 23, 2026",
-      "postedAt": "Ноябрь 23, 2026",
+      "postedAt": "Noyabr 23, 2026",
       "url": "https://jobs.glorri.az/vacancies/expressbank/expressbank-emeliyyatlar-uzre-nezaretci-aparici-mutexessis-boyuk-mutexessis-baki-fil-69221542",
       "applyUrl": "https://jobs.glorri.az/vacancies/expressbank/expressbank-emeliyyatlar-uzre-nezaretci-aparici-mutexessis-boyuk-mutexessis-baki-fil-69221542/apply?",
+      "source": "Glorri"
+    },
+    {
+      "externalId": "expressbank:78160498",
+      "title": "Mikro kreditlər üzrə kiçik kredit mütəxəssisi (Bərdə, Mingəçevir, Xaçmaz, Lənkəran, Şirvan və Gəncə filialları üzrə)",
+      "company": "Expressbank",
+      "location": "Gəncə, Azərbaycan",
+      "summary": "Kredit bazarının təhlil edilməsi və sahibkarlıq fəaliyyəti ilə məşğul olan fiziki və hüquqi şəxslərin cəlb olunması; Mikro kreditlər üzrə sifarişlərin qəbul edilməsi, kreditlərin bankın daxili prosedur və qaydalarına uyğun verilməsi və sənədləşdirilməsi üçün sənədlərin toplanması; Mikro kreditlərin təhlil edilməsi, maliyyə hesabatlarının hazırlanması, girovun qiymətləndirilməsi məqsədilə ilkin monitorinqin keçirilməsi; Kredit memorandumunun tərtib olunması və digər sənədlərlə birgə kredit komitəsinin müzakirəsinə çıxarılması üçün Qrup rəhbərinə və ya Koordinatora təqdim olunması; Kredit verilm",
+      "description": "Kredit bazarının təhlil edilməsi və sahibkarlıq fəaliyyəti ilə məşğul olan fiziki və hüquqi şəxslərin cəlb olunması;\nMikro kreditlər üzrə sifarişlərin qəbul edilməsi, kreditlərin bankın daxili prosedur və qaydalarına uyğun verilməsi və sənədləşdirilməsi üçün sənədlərin toplanması;\nMikro kreditlərin təhlil edilməsi, maliyyə hesabatlarının hazırlanması, girovun qiymətləndirilməsi məqsədilə ilkin monitorinqin keçirilməsi;\nKredit memorandumunun tərtib olunması və digər sənədlərlə birgə kredit komitəsinin müzakirəsinə çıxarılması üçün Qrup rəhbərinə və ya Koordinatora təqdim olunması;\nKredit verilməsinə müsbət rəy alındıqda kredit məlumatlarını ABİS-ə daxil edilməsi üçün müvafiq əməkdaşa təqdim olunması;\nKredit müqaviləsi və ödəniş cədvəli üzrə borcların vaxtında ödənilməsini təmin olunması;\nMüqavilə şərtlərini pozmuş müştərilərlə daimi işin aparılması və borcların ödənilməsi istiqamətində tədbirlərin görülməsi.",
+      "requirements": [
+        "Ali təhsil;",
+        "Təhliletmə qabiliyyəti və ünsiyyətqurma bacarığı;",
+        "Microsoft Office proqramlarının istifadəçi səviyyəsində biliyi;",
+        "Azərbaycan dilində sərbəst danışıq qabiliyyəti;",
+        "Komandada işləmək bacarığı."
+      ],
+      "responsibilities": [
+        "Kredit bazarının təhlil edilməsi və sahibkarlıq fəaliyyəti ilə məşğul olan fiziki və hüquqi şəxslərin cəlb olunması;",
+        "Mikro kreditlər üzrə sifarişlərin qəbul edilməsi, kreditlərin bankın daxili prosedur və qaydalarına uyğun verilməsi və sənədləşdirilməsi üçün sənədlərin toplanması;",
+        "Mikro kreditlərin təhlil edilməsi, maliyyə hesabatlarının hazırlanması, girovun qiymətləndirilməsi məqsədilə ilkin monitorinqin keçirilməsi;",
+        "Kredit memorandumunun tərtib olunması və digər sənədlərlə birgə kredit komitəsinin müzakirəsinə çıxarılması üçün Qrup rəhbərinə və ya Koordinatora təqdim olunması;",
+        "Kredit verilməsinə müsbət rəy alındıqda kredit məlumatlarını ABİS-ə daxil edilməsi üçün müvafiq əməkdaşa təqdim olunması;",
+        "Kredit müqaviləsi və ödəniş cədvəli üzrə borcların vaxtında ödənilməsini təmin olunması;",
+        "Müqavilə şərtlərini pozmuş müştərilərlə daimi işin aparılması və borcların ödənilməsi istiqamətində tədbirlərin görülməsi."
+      ],
+      "benefits": [],
+      "skills": [],
+      "employmentType": "Full-time",
+      "experienceLevel": null,
+      "workMode": null,
+      "salaryMin": null,
+      "salaryMax": null,
+      "salaryCurrency": null,
+      "deadline": "December 23, 2026",
+      "postedAt": "Noyabr 23, 2026",
+      "url": "https://jobs.glorri.az/vacancies/expressbank/expressbank-mikro-kreditler-uzre-kicik-kredit-mutexessisi-berde-mingecevir-xacmaz-le-78160498",
+      "applyUrl": "https://jobs.glorri.az/vacancies/expressbank/expressbank-mikro-kreditler-uzre-kicik-kredit-mutexessisi-berde-mingecevir-xacmaz-le-78160498/apply?",
       "source": "Glorri"
     },
     {
@@ -3853,44 +3914,6 @@
       "postedAt": "Noyabr 12, 2026",
       "url": "https://jobs.glorri.az/vacancies/expressbank/expressbank-kassir-emeliyyatci-baki-filiali-14869471",
       "applyUrl": "https://jobs.glorri.az/vacancies/expressbank/expressbank-kassir-emeliyyatci-baki-filiali-14869471/apply?",
-      "source": "Glorri"
-    },
-    {
-      "externalId": "expressbank:6232",
-      "title": "Biznes satış üzrə mütəxəssis/aparıcı mütəxəssis (SME kreditləri)",
-      "company": "Expressbank",
-      "location": "Bakı, Azərbaycan",
-      "summary": "Potensial müştərilər ilə birbaşa əlaqə yaradaraq, onların banka müştəri kimi cəlb edilməsinin təmin edilməsi; Müştərilərin bankın məhsul və xidmətlərinin xüsusiyyətləri və üstünlükləri barədə məlumatlandırılması; Müştərilərin ehtiyaclarının müəyyən edilməsi və uzunmüddətli iş perspektivində maliyyə məsləhətlərinin verilməsi; Mövcud müştəri portfelinin idarə edilməsi və bank məhsullarının satışı; Müştəriləri sorğularının lazımi struktur orqanlarla koordinasiya edilməsi, əməkdaşlıq və müraciət zamanı prosesin təqib edilməsi, yarana biləcək problemlərin həll olunması; Kreditlərin geri ödənilməsin",
-      "description": "Potensial müştərilər ilə birbaşa əlaqə yaradaraq, onların banka müştəri kimi cəlb edilməsinin təmin edilməsi;\nMüştərilərin bankın məhsul və xidmətlərinin xüsusiyyətləri və üstünlükləri barədə məlumatlandırılması;\nMüştərilərin ehtiyaclarının müəyyən edilməsi və uzunmüddətli iş perspektivində maliyyə məsləhətlərinin verilməsi;\nMövcud müştəri portfelinin idarə edilməsi və bank məhsullarının satışı;\nMüştəriləri sorğularının lazımi struktur orqanlarla koordinasiya edilməsi, əməkdaşlıq və müraciət zamanı prosesin təqib edilməsi, yarana biləcək problemlərin həll olunması;\nKreditlərin geri ödənilməsinə nəzarət edilməsi.",
-      "requirements": [
-        "Maliyyə, iqtisadiyyat və ya digər müvafiq sahə üzrə bakalavr təhsili;",
-        "KOS Bankçılıq (kreditlərin təhlili və satışı) sahəsində minimum 6 ay iş təcrübəsi;",
-        "Satış və müştəri bazası ilə işləmək bacarığı;",
-        "Təhlil etmə bacarığı;",
-        "Yüksək ünsiyyət, komandada işləmək bacarığı;",
-        "Problem həll etmə bacarığı;",
-        "Məsuliyyət və dəqiqlik."
-      ],
-      "responsibilities": [
-        "Potensial müştərilər ilə birbaşa əlaqə yaradaraq, onların banka müştəri kimi cəlb edilməsinin təmin edilməsi;",
-        "Müştərilərin bankın məhsul və xidmətlərinin xüsusiyyətləri və üstünlükləri barədə məlumatlandırılması;",
-        "Müştərilərin ehtiyaclarının müəyyən edilməsi və uzunmüddətli iş perspektivində maliyyə məsləhətlərinin verilməsi;",
-        "Mövcud müştəri portfelinin idarə edilməsi və bank məhsullarının satışı;",
-        "Müştəriləri sorğularının lazımi struktur orqanlarla koordinasiya edilməsi, əməkdaşlıq və müraciət zamanı prosesin təqib edilməsi, yarana biləcək problemlərin həll olunması;",
-        "Kreditlərin geri ödənilməsinə nəzarət edilməsi."
-      ],
-      "benefits": [],
-      "skills": [],
-      "employmentType": "Full-time",
-      "experienceLevel": "Junior",
-      "workMode": null,
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "December 12, 2026",
-      "postedAt": "Noyabr 12, 2026",
-      "url": "https://jobs.glorri.az/vacancies/expressbank/expressbank-biznes-satis-uzre-mutexessisaparici-mutexessis-sme-kreditleri-6232",
-      "applyUrl": "https://jobs.glorri.az/vacancies/expressbank/expressbank-biznes-satis-uzre-mutexessisaparici-mutexessis-sme-kreditleri-6232/apply?",
       "source": "Glorri"
     },
     {
@@ -4690,7 +4713,7 @@
       "company": "Rabitabank",
       "location": "",
       "summary": "Vakansiyalar Şirkətlər Kateqoriyalar Ana səhifə / Şirkətlər / \"Rabitəbank\" Açıq Səhmdar Cəmiyyəti / Əməliyyat Risklərinin İdarə edilməsi Şöbəsinə Mütəxəssis/Aparıcı/Baş mütəxəssis Əməliyyat Risklərinin İdarə edilməsi Şöbəsinə Mütəxəssis/Aparıcı/Baş mütəxəssis \"Rabitəbank\" Açıq Səhmdar Cəmiyyəti Fizuli 71 Tam ştat 18-11-2026 5.3K Müraciət et Təsvir Vəzifə öhdəlikləri: Risklərin idarə edilməsi üzrə Bankın daxili qaydalarının hazırlanmasında və təkmilləşdirilməsində iştirak; Əməliyyat risklərinin idarə edilməsi prosesində lazımi hesabatlıqların tərtib edilməsi, əsas risk indikatorlarına dair məlu",
-      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\n\"Rabitəbank\" Açıq Səhmdar Cəmiyyəti\n/\nƏməliyyat Risklərinin İdarə edilməsi Şöbəsinə Mütəxəssis/Aparıcı/Baş mütəxəssis\nƏməliyyat Risklərinin İdarə edilməsi Şöbəsinə Mütəxəssis/Aparıcı/Baş mütəxəssis\n\"Rabitəbank\" Açıq Səhmdar Cəmiyyəti\nFizuli 71\nTam ştat\n18-11-2026\n5.3K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nRisklərin idarə edilməsi üzrə Bankın daxili qaydalarının hazırlanmasında və təkmilləşdirilməsində iştirak;\nƏməliyyat risklərinin idarə edilməsi prosesində lazımi hesabatlıqların tərtib edilməsi, əsas risk indikatorlarına dair məlumatların toplanması və analizlərin həyata keçirilməsi;\nƏməliyyat risklərinin azaldılması və aradan qaldırılması üçün qabaqlayıcı tədbirlər planı, əməliyyatlar üzrə limitlər hazırlamaq və tövsiyyələr vermək;\nBank risk iştahasını ifadə edən və təyin edilmiş riskləri qiymətləndirən əmsallara nəzarəti təmin etmək;\nBankın baş ofisi və filiallarında həyata keçirilən biznes proseslərin qiymətləndirilməsi, risklərin optimallaşdırılması məqsədi ilə monitorinqlərin aparılması, nəticələrinin sənədləşdirilməsi və təkliflərin verilməsində iştirak;\nBankda risk mədəniyyətinin yüksəldilməsi istiqamətində iştirak;\nBankın struktur bölmələrindən insidentlər barədə məlumatların toplanması və səbəblərinin araşdırılmasının təmin edilməsi;\nYeni məhsul və xidmətlərin risk qiymətləndirilməsində iştirak;\nİlkin Sorğular və üzbəüz görüşlər keçirtmək;\nBirbaşa özünün habelə strukturun fəaliyyətinə aid olan digər vəzifələri həyata keçirmək;\nTələblər\nAli təhsil (Risk menecment,maliyyə,iqtisadiyyat və s. oxşar sahələr);\nXarici dil bilikləri üstünlük sayılır (İngilis dili və Rus dili);\nMS Office proqramları ilə işləmək bacarığı;\nTəqdimatların formalaşmasında, iri həcmli məlumatın yığımında, təhlilində işləmə bacarığı;\nAnalitik təfəkkür və yüksək təhliletmə qabiliyyəti;\nYüksək kommunikasiya və təqdim etmə bacarığı.\nVakansiya haqqında\nSon tarix\nDecember 18, 2026\nPaylaşılıb\nNoyabr 18, 2026\nVakansiya növü\nTam ştat\nKateqoriya\nMaliyyə, Biznes və idarəetmə\nOxşar vakansiyalar\nBütün vakansiyalar\nY\nSatış üzrə mütəxəssis\nPro\nYunik Furniture MMC ● Bakı, Azərbaycan\n18-11-2026\n2K\nMüraciət et\nПеший специалист/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n28-10-2026\n3.7K\nMüraciət et\nСпециалист по сбору информации/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n20-11-2026\n1.5K\nMüraciət et\nHiring with",
+      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\n\"Rabitəbank\" Açıq Səhmdar Cəmiyyəti\n/\nƏməliyyat Risklərinin İdarə edilməsi Şöbəsinə Mütəxəssis/Aparıcı/Baş mütəxəssis\nƏməliyyat Risklərinin İdarə edilməsi Şöbəsinə Mütəxəssis/Aparıcı/Baş mütəxəssis\n\"Rabitəbank\" Açıq Səhmdar Cəmiyyəti\nFizuli 71\nTam ştat\n18-11-2026\n5.3K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nRisklərin idarə edilməsi üzrə Bankın daxili qaydalarının hazırlanmasında və təkmilləşdirilməsində iştirak;\nƏməliyyat risklərinin idarə edilməsi prosesində lazımi hesabatlıqların tərtib edilməsi, əsas risk indikatorlarına dair məlumatların toplanması və analizlərin həyata keçirilməsi;\nƏməliyyat risklərinin azaldılması və aradan qaldırılması üçün qabaqlayıcı tədbirlər planı, əməliyyatlar üzrə limitlər hazırlamaq və tövsiyyələr vermək;\nBank risk iştahasını ifadə edən və təyin edilmiş riskləri qiymətləndirən əmsallara nəzarəti təmin etmək;\nBankın baş ofisi və filiallarında həyata keçirilən biznes proseslərin qiymətləndirilməsi, risklərin optimallaşdırılması məqsədi ilə monitorinqlərin aparılması, nəticələrinin sənədləşdirilməsi və təkliflərin verilməsində iştirak;\nBankda risk mədəniyyətinin yüksəldilməsi istiqamətində iştirak;\nBankın struktur bölmələrindən insidentlər barədə məlumatların toplanması və səbəblərinin araşdırılmasının təmin edilməsi;\nYeni məhsul və xidmətlərin risk qiymətləndirilməsində iştirak;\nİlkin Sorğular və üzbəüz görüşlər keçirtmək;\nBirbaşa özünün habelə strukturun fəaliyyətinə aid olan digər vəzifələri həyata keçirmək;\nTələblər\nAli təhsil (Risk menecment,maliyyə,iqtisadiyyat və s. oxşar sahələr);\nXarici dil bilikləri üstünlük sayılır (İngilis dili və Rus dili);\nMS Office proqramları ilə işləmək bacarığı;\nTəqdimatların formalaşmasında, iri həcmli məlumatın yığımında, təhlilində işləmə bacarığı;\nAnalitik təfəkkür və yüksək təhliletmə qabiliyyəti;\nYüksək kommunikasiya və təqdim etmə bacarığı.\nVakansiya haqqında\nSon tarix\nDecember 18, 2026\nPaylaşılıb\nNoyabr 18, 2026\nVakansiya növü\nTam ştat\nKateqoriya\nMaliyyə, Biznes və idarəetmə\nOxşar vakansiyalar\nBütün vakansiyalar\nB2B Satış üzrə Mütəxəssis\nPro\nECOMAG ● Xırdalan, Azərbaycan\n11-11-2026\n2.5K\nMüraciət et\nПеший специалист/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n13-11-2026\n1.8K\nMüraciət et\nC\nInside Sales\nPro\nCeta Project Logistics ● Bakı, Azərbaycan\n09-11-2026\n2.4K\nMüraciət et\nHiring with",
       "requirements": [
         "Ali təhsil (Risk menecment,maliyyə,iqtisadiyyat və s. oxşar sahələr);",
         "Xarici dil bilikləri üstünlük sayılır (İngilis dili və Rus dili);",
@@ -4731,7 +4754,7 @@
       "company": "Rabitabank",
       "location": "Bakı Fizuli küçəsi 71 Rabitabank Baş Ofis 28 May [rəsmi, Bakı 1000, Azərbaycan",
       "summary": "Vakansiyalar Şirkətlər Kateqoriyalar Ana səhifə / Şirkətlər / \"Rabitəbank\" Açıq Səhmdar Cəmiyyəti / Riteyl Bankçılıq Departamenti, Alternativ Satış Kanalları şöbəsinə, Online kreditləri üzrə mütəxəssis və aparıcı mütəxəssis Riteyl Bankçılıq Departamenti, Alternativ Satış Kanalları şöbəsinə, Online kreditləri üzrə mütəxəssis və aparıcı mütəxəssis \"Rabitəbank\" Açıq Səhmdar Cəmiyyəti Bakı Fizuli küçəsi 71 Rabitabank Baş Ofis 28 May [rəsmi, Bakı 1000, Azerbaijan Tam ştat 16-11-2026 6.6K Müraciət et Təsvir Vəzifə öhdəlikləri : Online satış kanalları vasitəsilə daxil olan sifarişlər üzrə sifarişçilə",
-      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\n\"Rabitəbank\" Açıq Səhmdar Cəmiyyəti\n/\nRiteyl Bankçılıq Departamenti, Alternativ Satış Kanalları şöbəsinə, Online kreditləri üzrə mütəxəssis və aparıcı mütəxəssis\nRiteyl Bankçılıq Departamenti, Alternativ Satış Kanalları şöbəsinə, Online kreditləri üzrə mütəxəssis və aparıcı mütəxəssis\n\"Rabitəbank\" Açıq Səhmdar Cəmiyyəti\nBakı Fizuli küçəsi 71 Rabitabank Baş Ofis 28 May [rəsmi, Bakı 1000, Azerbaijan\nTam ştat\n16-11-2026\n6.6K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri :\nOnline satış kanalları vasitəsilə daxil olan sifarişlər üzrə sifarişçilərlə əlaqə saxlayır, sifariş barədə məlumatlar əldə edir;\nBankın istehlak kredit məhsulu barədə sifarişçiyə ətraflı məlumat verir;\nKredit müraciətlərini qiymətləndirir və borcalanın ödəniş qabililiyyətinin müəyyən edir;\nMüştərinin maliyyə analizini həyata keçirir;\nARMB-nın, bankdaxili prosedur və qaydalara əsasən Fiziki şəxslərə yüksək səviyyədə xidmət göstərmək;\nBank məhsulu və xidmət satışını həyata keçirtmək;\nPotensial müştərilərə bankın xidmət və məhsulları barədə məlumat vermək;\nBankın tələblərinə uyğun olan müştəriləri banka cəlb edilməsini təmin etmək;\nTələblər\nTələblər :\nAli təhsil;\nKredit sahəsində ən azı 2-3 il iş təcrübəsi;\nMS Office proqramlarından istifadə qabiliyyəti;\nƏla səviyyədə Azərbaycan dili biliyi;\nOperativ və düzgün qərarvermə qabiliyyəti;\nAnalitik düşünmə qabiliyyəti;\nKomanda tərkibində işləmə bacarığı.\nVakansiya haqqında\nSon tarix\nDecember 16, 2026\nPaylaşılıb\nNoyabr 16, 2026\nVakansiya növü\nTam ştat\nKateqoriya\nMaliyyə, Biznes və idarəetmə\nOxşar vakansiyalar\nBütün vakansiyalar\nQrafik Dizayner\nPro\nARI GLOBAL MMC ● Bakı, Azərbaycan\nDünən\n312\nMüraciət et\nПеший специалист/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n13-11-2026\n1.8K\nMüraciət et\nSatış üzrə Mütəxəssis\nPro\nKaraca ● Bakı, Azərbaycan\n21-11-2026\n2.2K\nMüraciət et\nİT Təhlükəsizliyi Departamentinin, Kiberdələduzluğa qarşı mübarizə şöbəsində Kiçik mütəxəssis\n\"Rabitəbank\" Açıq Səhmdar Cəmiyyəti ● Bakı, Azərbaycan\n26-11-2026\n1.1K\nMüraciət et\nŞəmkir filialı üzrə Xəzinədar\n\"Rabitəbank\" Açıq Səhmdar Cəmiyyəti ● Şəmkir, Azərbaycan\n25-11-2026\n2.7K\nMüraciət et\nHiring with",
+      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\n\"Rabitəbank\" Açıq Səhmdar Cəmiyyəti\n/\nRiteyl Bankçılıq Departamenti, Alternativ Satış Kanalları şöbəsinə, Online kreditləri üzrə mütəxəssis və aparıcı mütəxəssis\nRiteyl Bankçılıq Departamenti, Alternativ Satış Kanalları şöbəsinə, Online kreditləri üzrə mütəxəssis və aparıcı mütəxəssis\n\"Rabitəbank\" Açıq Səhmdar Cəmiyyəti\nBakı Fizuli küçəsi 71 Rabitabank Baş Ofis 28 May [rəsmi, Bakı 1000, Azerbaijan\nTam ştat\n16-11-2026\n6.6K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri :\nOnline satış kanalları vasitəsilə daxil olan sifarişlər üzrə sifarişçilərlə əlaqə saxlayır, sifariş barədə məlumatlar əldə edir;\nBankın istehlak kredit məhsulu barədə sifarişçiyə ətraflı məlumat verir;\nKredit müraciətlərini qiymətləndirir və borcalanın ödəniş qabililiyyətinin müəyyən edir;\nMüştərinin maliyyə analizini həyata keçirir;\nARMB-nın, bankdaxili prosedur və qaydalara əsasən Fiziki şəxslərə yüksək səviyyədə xidmət göstərmək;\nBank məhsulu və xidmət satışını həyata keçirtmək;\nPotensial müştərilərə bankın xidmət və məhsulları barədə məlumat vermək;\nBankın tələblərinə uyğun olan müştəriləri banka cəlb edilməsini təmin etmək;\nTələblər\nTələblər :\nAli təhsil;\nKredit sahəsində ən azı 2-3 il iş təcrübəsi;\nMS Office proqramlarından istifadə qabiliyyəti;\nƏla səviyyədə Azərbaycan dili biliyi;\nOperativ və düzgün qərarvermə qabiliyyəti;\nAnalitik düşünmə qabiliyyəti;\nKomanda tərkibində işləmə bacarığı.\nVakansiya haqqında\nSon tarix\nDecember 16, 2026\nPaylaşılıb\nNoyabr 16, 2026\nVakansiya növü\nTam ştat\nKateqoriya\nMaliyyə, Biznes və idarəetmə\nOxşar vakansiyalar\nBütün vakansiyalar\nB2B Satış üzrə Mütəxəssis\nPro\nECOMAG ● Xırdalan, Azərbaycan\n11-11-2026\n2.5K\nMüraciət et\nПеший специалист/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n13-11-2026\n1.8K\nMüraciət et\nC\nInside Sales\nPro\nCeta Project Logistics ● Bakı, Azərbaycan\n09-11-2026\n2.4K\nMüraciət et\nHiring with",
       "requirements": [
         "Ali təhsil;",
         "Kredit sahəsində ən azı 2-3 il iş təcrübəsi;",
@@ -4801,46 +4824,6 @@
       "postedAt": "Noyabr 13, 2026",
       "url": "https://jobs.glorri.az/vacancies/rabitabank/rabitabank-berde-filiali-uzre-universal-isci-30616523",
       "applyUrl": "https://jobs.glorri.az/vacancies/rabitabank/rabitabank-berde-filiali-uzre-universal-isci-30616523/apply?",
-      "source": "Glorri"
-    },
-    {
-      "externalId": "rabitabank:83593",
-      "title": "Ağsu filialı üzrə Xəzinədar",
-      "company": "Rabitabank",
-      "location": "",
-      "summary": "Ölkənin aparıcı banklarından biri olan \"Rabitəbank\" ASC əməkdaşlarına uğurlu karyera qurmaq, peşəkar inkişaf etmək və dinamik komandanın üzvü olmaq imkanı yaradır.",
-      "description": "Ölkənin aparıcı banklarından biri olan \"Rabitəbank\" ASC əməkdaşlarına uğurlu karyera qurmaq, peşəkar inkişaf etmək və dinamik komandanın üzvü olmaq imkanı yaradır.",
-      "requirements": [
-        "Bu sahə üzrə 1 il iş təcrübəsi (Bank və ya kredit təşkilatlarında iş təcrübəsinə üstünlük verilir)",
-        "Vətəndaş qüsürsuzluğuna malik olmaq",
-        "Kollektivdə işləmə bacarığı",
-        "Diqqət və nəzarət etmə xüsusiyyətlərinə malik olmaq",
-        "Nəzakətli, gülərüz olmaq"
-      ],
-      "responsibilities": [
-        "Nağd pul və qiymətlilərlə aparılan əməliyyatların Mərkəzi Bankın normativ göstəricilərinə və bankın daxili qaydalarına uyğun aparılmasını təmin edir",
-        "Xəzinədə olan tələbatdan və limitdən artıq nağd pul və qiymətliləri bankın ehtiyyat fonduna təhvil verir",
-        "Müştərilərə xəzinə xidməti göstərir",
-        "Kassa dövriyyəsi və kassa simvolları haqqında hesabat hazırlayıb aidiyyatı struktura təqdim edir",
-        "Filialdaxili xəzinədə həyata keçirilən mədaxil-məxaric əməliyyatlarını bankdaxili bank sisteminə daxil edir",
-        "Filialın nəzdində olan mübadilə məntəqələrini nağd pul ilə təmin edir",
-        "Filialın pul anbarının açılması, bağlanması, oraya nağd pulun və digər qiymətlilərin qoyulub götürülməsini qaydalara uyğun həyata keçirir",
-        "Nağd pul və digər qiymətlilərlə bağlı aparılmış əməliyyatlar barədə müəyyən olunmuş formalarda hesabatları təqdim edir",
-        "Mərkəzi Bankın qaydalarına uyğun olaraq dövriyyəyə yararsız nağd pulun və digər qiymətlilərin dövriyyədən çıxarılmasını, dəyişdirilməsinı icra edir",
-        "Xəzinədə olan nağd pul vasitəsini bandrollaşdırır."
-      ],
-      "benefits": [],
-      "skills": [],
-      "employmentType": "Full-time",
-      "experienceLevel": "Junior",
-      "workMode": null,
-      "salaryMin": null,
-      "salaryMax": null,
-      "salaryCurrency": null,
-      "deadline": "December 11, 2026",
-      "postedAt": "Noyabr 11, 2026",
-      "url": "https://jobs.glorri.az/vacancies/rabitabank/rabitabank-agsu-filiali-uzre-xezinedar-83593",
-      "applyUrl": "https://jobs.glorri.az/vacancies/rabitabank/rabitabank-agsu-filiali-uzre-xezinedar-83593/apply?",
       "source": "Glorri"
     },
     {
@@ -5194,7 +5177,7 @@
       "salaryMax": null,
       "salaryCurrency": null,
       "deadline": "November 29, 2026",
-      "postedAt": "October 30, 2026",
+      "postedAt": "Oktyabr 30, 2026",
       "url": "https://jobs.glorri.az/vacancies/rabitabank/rabitabank-rabitebank-asc-reqemsal-sistemlerin-inkisafi-departamenti-aparici-bas-pro-991205",
       "applyUrl": "https://jobs.glorri.az/vacancies/rabitabank/rabitabank-rabitebank-asc-reqemsal-sistemlerin-inkisafi-departamenti-aparici-bas-pro-991205/apply?",
       "source": "Glorri"
@@ -5344,7 +5327,7 @@
       "salaryMax": null,
       "salaryCurrency": null,
       "deadline": "November 28, 2026",
-      "postedAt": "Oktyabr 29, 2026",
+      "postedAt": "October 29, 2026",
       "url": "https://jobs.glorri.az/vacancies/rabitabank/rabitabank-rabitebank-asc-reqemsal-sistemlerin-inkisafi-departamenti-suni-intellekt--3927",
       "applyUrl": "https://jobs.glorri.az/vacancies/rabitabank/rabitabank-rabitebank-asc-reqemsal-sistemlerin-inkisafi-departamenti-suni-intellekt--3927/apply?",
       "source": "Glorri"
@@ -6281,7 +6264,7 @@
       "salaryMax": null,
       "salaryCurrency": null,
       "deadline": "December 6, 2026",
-      "postedAt": "Noyabr 24, 2026",
+      "postedAt": "Ноябрь 24, 2026",
       "url": "https://jobs.glorri.az/vacancies/bankrespublika/bankrespublika-korporativ-musteri-xidmeti-uzre-tecrubeci-baki-filiallari-85768320",
       "applyUrl": "https://jobs.glorri.az/vacancies/bankrespublika/bankrespublika-korporativ-musteri-xidmeti-uzre-tecrubeci-baki-filiallari-85768320/apply?",
       "source": "Glorri"
@@ -7026,7 +7009,7 @@
       "salaryMax": null,
       "salaryCurrency": null,
       "deadline": "November 29, 2026",
-      "postedAt": "November 16, 2026",
+      "postedAt": "Noyabr 16, 2026",
       "url": "https://jobs.glorri.az/vacancies/ateshgah/ateshgah-hekim-koordinator-10418",
       "applyUrl": "https://jobs.glorri.az/vacancies/ateshgah/ateshgah-hekim-koordinator-10418/apply?",
       "source": "Glorri"
@@ -7765,7 +7748,7 @@
       "company": "ABC Telecom",
       "location": "Binəqədi, Bakı, Azərbaycan",
       "summary": "Vakansiyalar Şirkətlər Kateqoriyalar Ana səhifə / Şirkətlər / Kontakt Home / Fəhlə (Məişət anbarı) Fəhlə (Məişət anbarı) Kontakt Home Binəqədi, Bakı, Azərbaycan Tam ştat 23-11-2026 12.5K Müraciət et Təsvir Vəzifə öhdəlikləri: Anbara qəbul olunan yüklərin boşaldılması, çeşidlənməsi və rəflərə yerləşdirilməsi; Göndəriləcək sifarişlər üzrə məhsulların yığımı, lazımi yerə daşınması və nəqliyyat vasitəsinə yüklənməsi; Məhsulların daşınmasında və anbar daxilində təhlükəsizlik qaydasına riayyət olunması; Rəhbərin tapşırığı ilə işə aid digər əməliyyatların icrası. İş şəraiti: İş günləri: 6 gün iş, 1 g",
-      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\nKontakt Home\n/\nFəhlə (Məişət anbarı)\nFəhlə (Məişət anbarı)\nKontakt Home\nBinəqədi, Bakı, Azərbaycan\nTam ştat\n23-11-2026\n12.5K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nAnbara qəbul olunan yüklərin boşaldılması, çeşidlənməsi və rəflərə yerləşdirilməsi;\nGöndəriləcək sifarişlər üzrə məhsulların yığımı, lazımi yerə daşınması və nəqliyyat vasitəsinə yüklənməsi;\nMəhsulların daşınmasında və anbar daxilində təhlükəsizlik qaydasına riayyət olunması;\nRəhbərin tapşırığı ilə işə aid digər əməliyyatların icrası.\nİş şəraiti:\nİş günləri: 6 gün iş, 1 gün istirahət;\nNövbəli iş qrafiki: 09:00-17:00 / 13:00-21:00\nQeyd: İş yeri Binəqədi ərazisindədir.\nTələblər\nTələblər:\nAğır çəkili və iri qabaritli yükləri, o cümlədən məişət texnikasını qaldıra və daşıya bilməli;\nNizam-intizamlı;\nFiziki cəhətdən sağlam;\nMəişət texnikalarının yüklənmə və daşınma qaydalarına riayət edilməsi;\nVakansiya haqqında\nSon tarix\nDecember 23, 2026\nPaylaşılıb\nNoyabr 23, 2026\nVakansiya növü\nTam ştat\nTəcrübə\n1 ilədək\nVəzifə dərəcəsi\nGənc mütəxəssis\nƏmək haqqı\n600 - 800 AZN\nKateqoriya\nLogistika və nəqliyyat\nOxşar vakansiyalar\nBütün vakansiyalar\nПеший специалист/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n13-11-2026\n1.8K\nMüraciət et\nY\nSatış üzrə mütəxəssis\nPro\nYunik Furniture MMC ● Bakı, Azərbaycan\n18-11-2026\n2K\nMüraciət et\nB2B Satış Meneceri/ Менеджер по продажам B2B\nPro\n2GİS ● Bakı, Azərbaycan\n23-11-2026\n1K\nMüraciət et\nFəhlə (mebel anbarı)\nKontakt Home ● Bakı, Azərbaycan\n18-11-2026\n7.2K\nMüraciət et\nHiring with",
+      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\nKontakt Home\n/\nFəhlə (Məişət anbarı)\nFəhlə (Məişət anbarı)\nKontakt Home\nBinəqədi, Bakı, Azərbaycan\nTam ştat\n23-11-2026\n12.5K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nAnbara qəbul olunan yüklərin boşaldılması, çeşidlənməsi və rəflərə yerləşdirilməsi;\nGöndəriləcək sifarişlər üzrə məhsulların yığımı, lazımi yerə daşınması və nəqliyyat vasitəsinə yüklənməsi;\nMəhsulların daşınmasında və anbar daxilində təhlükəsizlik qaydasına riayyət olunması;\nRəhbərin tapşırığı ilə işə aid digər əməliyyatların icrası.\nİş şəraiti:\nİş günləri: 6 gün iş, 1 gün istirahət;\nNövbəli iş qrafiki: 09:00-17:00 / 13:00-21:00\nQeyd: İş yeri Binəqədi ərazisindədir.\nTələblər\nTələblər:\nAğır çəkili və iri qabaritli yükləri, o cümlədən məişət texnikasını qaldıra və daşıya bilməli;\nNizam-intizamlı;\nFiziki cəhətdən sağlam;\nMəişət texnikalarının yüklənmə və daşınma qaydalarına riayət edilməsi;\nVakansiya haqqında\nSon tarix\nDecember 23, 2026\nPaylaşılıb\nNoyabr 23, 2026\nVakansiya növü\nTam ştat\nTəcrübə\n1 ilədək\nVəzifə dərəcəsi\nGənc mütəxəssis\nƏmək haqqı\n600 - 800 AZN\nKateqoriya\nLogistika və nəqliyyat\nOxşar vakansiyalar\nBütün vakansiyalar\nR\nData Analyst\nPro\nRenov' Europe ● London, United Kingdom\n16-11-2026\n24.1K\nMüraciət et\nY\nSatış üzrə mütəxəssis\nPro\nYunik Furniture MMC ● Bakı, Azərbaycan\n18-11-2026\n2.1K\nMüraciət et\nСпециалист по сбору информации/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n20-11-2026\n1.6K\nMüraciət et\nFəhlə (mebel anbarı)\nKontakt Home ● Bakı, Azərbaycan\n18-11-2026\n7.2K\nMüraciət et\nHiring with",
       "requirements": [
         "Ağır çəkili və iri qabaritli yükləri, o cümlədən məişət texnikasını qaldıra və daşıya bilməli;",
         "Nizam-intizamlı;",
@@ -7881,7 +7864,7 @@
       "company": "ABC Telecom",
       "location": "Qusar, Azərbaycan",
       "summary": "Vakansiyalar Şirkətlər Kateqoriyalar Ana səhifə / Şirkətlər / Kontakt Home / Satış məsləhətçisi (Qusar) Satış məsləhətçisi (Qusar) Kontakt Home Qusar, Azərbaycan Tam ştat 23-11-2026 7.3K Müraciət et Təsvir Vəzifə öhdəlikləri: Şirkət tərəfindən göndərilən məhsulların qəbul edilməsi, yoxlanılması, müvafiq olaraq yerləşdirilməsi; Satışla bağlı müxtəlif qayda və prosedurlar, o cümlədən kampaniyalar haqqında məlumatın vaxtında öyrənilməsi və tədbiq edilməsi; Müştərilərin mağazada qarşılanması, onların tələbatının öyrənilməsi, məhsullar haqqında ətraflı və doğru məlumatın verilməsi; Müştərinin tələb",
-      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\nKontakt Home\n/\nSatış məsləhətçisi (Qusar)\nSatış məsləhətçisi (Qusar)\nKontakt Home\nQusar, Azərbaycan\nTam ştat\n23-11-2026\n7.3K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nŞirkət tərəfindən göndərilən məhsulların qəbul edilməsi, yoxlanılması, müvafiq olaraq yerləşdirilməsi;\nSatışla bağlı müxtəlif qayda və prosedurlar, o cümlədən kampaniyalar haqqında məlumatın vaxtında öyrənilməsi və tədbiq edilməsi;\nMüştərilərin mağazada qarşılanması, onların tələbatının öyrənilməsi, məhsullar haqqında ətraflı və doğru məlumatın verilməsi;\nMüştərinin tələbatına uyğun olaraq müştəriyə düzgün seçim etməkdə köməklik göstərilməsi;\nMağaza direktorunun tapşırıqlarının vaxtında və tələb olunan qaydada yerinə yetirilməsi.\nİş şəraiti:\nİş qrafiki: Növbəli;\nŞirkət məhsullarını endirimlə əldə etmək imkanı;\nŞirkət daxili təlim və inkişaf imkanları;\nKaryera yüksəlişi imkanı;\nSatış sahəsində nailiyyətlərə görə bonus və mükafatlar.\nTələblər\nTələblər:\nAzərbaycan dilini səlis, rus dili arzu olunandır;\nSatış təcrübəsi arzu olunandır;\nAktiv, çevik, ünsiyyətcil və məsuliyyətli;\nSatış qabiliyyəti.\nVakansiya haqqında\nSon tarix\nDecember 23, 2026\nPaylaşılıb\nNoyabr 23, 2026\nVakansiya növü\nTam ştat\nKateqoriya\nSatış və müştəri xidmətləri\nOxşar vakansiyalar\nBütün vakansiyalar\nR\nData Analyst\nPro\nRenov' Europe ● London, United Kingdom\n16-11-2026\n23.8K\nMüraciət et\nB2B Satış Meneceri/ Менеджер по продажам B2B\nPro\n2GİS ● Bakı, Azərbaycan\n23-11-2026\n1K\nMüraciət et\nDigital Marketing Specialist\nPro\nDORI - Digitally Optimized Robotic Intelligence ● Bakı, Azərbaycan\n03-11-2026\n3.6K\nMüraciət et\nƏlavə xidmətlər üzrə operator (Şamaxı)\nKontakt Home ● Şamaxı, Azərbaycan\n23-11-2026\n1.2K\nMüraciət et\nHiring with",
+      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\nKontakt Home\n/\nSatış məsləhətçisi (Qusar)\nSatış məsləhətçisi (Qusar)\nKontakt Home\nQusar, Azərbaycan\nTam ştat\n23-11-2026\n7.3K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nŞirkət tərəfindən göndərilən məhsulların qəbul edilməsi, yoxlanılması, müvafiq olaraq yerləşdirilməsi;\nSatışla bağlı müxtəlif qayda və prosedurlar, o cümlədən kampaniyalar haqqında məlumatın vaxtında öyrənilməsi və tədbiq edilməsi;\nMüştərilərin mağazada qarşılanması, onların tələbatının öyrənilməsi, məhsullar haqqında ətraflı və doğru məlumatın verilməsi;\nMüştərinin tələbatına uyğun olaraq müştəriyə düzgün seçim etməkdə köməklik göstərilməsi;\nMağaza direktorunun tapşırıqlarının vaxtında və tələb olunan qaydada yerinə yetirilməsi.\nİş şəraiti:\nİş qrafiki: Növbəli;\nŞirkət məhsullarını endirimlə əldə etmək imkanı;\nŞirkət daxili təlim və inkişaf imkanları;\nKaryera yüksəlişi imkanı;\nSatış sahəsində nailiyyətlərə görə bonus və mükafatlar.\nTələblər\nTələblər:\nAzərbaycan dilini səlis, rus dili arzu olunandır;\nSatış təcrübəsi arzu olunandır;\nAktiv, çevik, ünsiyyətcil və məsuliyyətli;\nSatış qabiliyyəti.\nVakansiya haqqında\nSon tarix\nDecember 23, 2026\nPaylaşılıb\nNoyabr 23, 2026\nVakansiya növü\nTam ştat\nKateqoriya\nSatış və müştəri xidmətləri\nOxşar vakansiyalar\nBütün vakansiyalar\nСпециалист по сбору информации/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n20-11-2026\n1.6K\nMüraciət et\nB2B Satış üzrə Mütəxəssis\nPro\nECOMAG ● Xırdalan, Azərbaycan\n11-11-2026\n2.5K\nMüraciət et\nB2B Satış Meneceri/ Менеджер по продажам B2B\nPro\n2GİS ● Bakı, Azərbaycan\n23-11-2026\n1.1K\nMüraciət et\nHiring with",
       "requirements": [
         "Azərbaycan dilini səlis, rus dili arzu olunandır;",
         "Satış təcrübəsi arzu olunandır;",
@@ -8143,7 +8126,7 @@
       "company": "ABC Telecom",
       "location": "Binagadi, Baku, Azərbaycan",
       "summary": "Vakansiyalar Şirkətlər Kateqoriyalar Ana səhifə / Şirkətlər / Kontakt Home / Fəhlə (mebel anbarı) Fəhlə (mebel anbarı) Kontakt Home Binagadi, Baku, Azerbaijan Tam ştat 18-11-2026 7.2K Müraciət et Təsvir Vəzifə öhdəlikləri: Anbara şirkətdaxili və müxtəlif təchizatçılardan göndərilmiş yüklərin boşaldılmasının, uyğun rəflərə yerləşdirilməsinin, yerdəyişməsinin və qablaşdırılmasının həyata keçirilməsi; Mağaza, topdan, pərakəndə və korporativ sifarişlərin nəqliyyat vasitələrinə yüklənməsi, sifariş olunmuş məkanda məhsulların boşaldılması və daşınması; Daşıma zamanı məhsulların təhlükəsizliyinin , m",
-      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\nKontakt Home\n/\nFəhlə (mebel anbarı)\nFəhlə (mebel anbarı)\nKontakt Home\nBinagadi, Baku, Azerbaijan\nTam ştat\n18-11-2026\n7.2K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nAnbara şirkətdaxili və müxtəlif təchizatçılardan göndərilmiş yüklərin boşaldılmasının, uyğun rəflərə yerləşdirilməsinin, yerdəyişməsinin və qablaşdırılmasının həyata keçirilməsi;\nMağaza, topdan, pərakəndə və korporativ sifarişlərin nəqliyyat vasitələrinə yüklənməsi, sifariş olunmuş məkanda məhsulların boşaldılması və daşınması;\nDaşıma zamanı məhsulların təhlükəsizliyinin , müxtəlif zədələrdən qorunmasının təmin edilməsi;\nAnbarda həyata keçirilən inventarizasiya, sayım zamanı daşıma və yerdəyişmələrin həyata keçirilməsi.\nİş şəraiti:\nİş günləri: 6 gün iş, 1 gün istirahət.\nTələblər\nTələblər:\nFiziki cəhətdən sağlam;\nKollektivdə komanda şəklində işləmə bacarığı;\nNizam intizamlı, məsuliyyətli;\nŞirkət daxili qayda və tələblərə riayət olunması.\nVakansiya haqqında\nSon tarix\nDecember 18, 2026\nPaylaşılıb\nNoyabr 18, 2026\nVakansiya növü\nTam ştat\nKateqoriya\nLogistika və nəqliyyat\nOxşar vakansiyalar\nBütün vakansiyalar\nПеший специалист/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n13-11-2026\n1.8K\nMüraciət et\nY\nSatış üzrə mütəxəssis\nPro\nYunik Furniture MMC ● Bakı, Azərbaycan\n18-11-2026\n2K\nMüraciət et\nB2B Satış Meneceri/ Менеджер по продажам B2B\nPro\n2GİS ● Bakı, Azərbaycan\n23-11-2026\n1K\nMüraciət et\nHiring with",
+      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\nKontakt Home\n/\nFəhlə (mebel anbarı)\nFəhlə (mebel anbarı)\nKontakt Home\nBinagadi, Baku, Azerbaijan\nTam ştat\n18-11-2026\n7.2K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nAnbara şirkətdaxili və müxtəlif təchizatçılardan göndərilmiş yüklərin boşaldılmasının, uyğun rəflərə yerləşdirilməsinin, yerdəyişməsinin və qablaşdırılmasının həyata keçirilməsi;\nMağaza, topdan, pərakəndə və korporativ sifarişlərin nəqliyyat vasitələrinə yüklənməsi, sifariş olunmuş məkanda məhsulların boşaldılması və daşınması;\nDaşıma zamanı məhsulların təhlükəsizliyinin , müxtəlif zədələrdən qorunmasının təmin edilməsi;\nAnbarda həyata keçirilən inventarizasiya, sayım zamanı daşıma və yerdəyişmələrin həyata keçirilməsi.\nİş şəraiti:\nİş günləri: 6 gün iş, 1 gün istirahət.\nTələblər\nTələblər:\nFiziki cəhətdən sağlam;\nKollektivdə komanda şəklində işləmə bacarığı;\nNizam intizamlı, məsuliyyətli;\nŞirkət daxili qayda və tələblərə riayət olunması.\nVakansiya haqqında\nSon tarix\nDecember 18, 2026\nPaylaşılıb\nNoyabr 18, 2026\nVakansiya növü\nTam ştat\nKateqoriya\nLogistika və nəqliyyat\nOxşar vakansiyalar\nBütün vakansiyalar\nR\nData Analyst\nPro\nRenov' Europe ● London, United Kingdom\n16-11-2026\n24.1K\nMüraciət et\nY\nSatış üzrə mütəxəssis\nPro\nYunik Furniture MMC ● Bakı, Azərbaycan\n18-11-2026\n2.1K\nMüraciət et\nСпециалист по сбору информации/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n20-11-2026\n1.6K\nMüraciət et\nHiring with",
       "requirements": [
         "Fiziki cəhətdən sağlam;",
         "Kollektivdə komanda şəklində işləmə bacarığı;",
@@ -8206,8 +8189,8 @@
       "title": "Satış məsləhətçisi (Oğuz)",
       "company": "ABC Telecom",
       "location": "Oğuz, Azərbaycan",
-      "summary": "Vakansiyalar Şirkətlər Kateqoriyalar Ana səhifə / Şirkətlər / Kontakt Home / Satış məsləhətçisi (Oğuz) Satış məsləhətçisi (Oğuz) Kontakt Home Oğuz, Azərbaycan Tam ştat 18-11-2026 3.5K Müraciət et Təsvir Vəzifə öhdəlikləri: Şirkət tərəfindən göndərilən məhsulların qəbul edilməsi, yoxlanılması, müvafiq olaraq yerləşdirilməsi; Satışla bağlı müxtəlif qayda və prosedurlar, o cümlədən kampaniyalar haqqında məlumatın vaxtında öyrənilməsi və tədbiq edilməsi; Müştərilərin mağazada qarşılanması, onların tələbatının öyrənilməsi, məhsullar haqqında ətraflı və doğru məlumatın verilməsi; Müştərinin tələbatı",
-      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\nKontakt Home\n/\nSatış məsləhətçisi (Oğuz)\nSatış məsləhətçisi (Oğuz)\nKontakt Home\nOğuz, Azərbaycan\nTam ştat\n18-11-2026\n3.5K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nŞirkət tərəfindən göndərilən məhsulların qəbul edilməsi, yoxlanılması, müvafiq olaraq yerləşdirilməsi;\nSatışla bağlı müxtəlif qayda və prosedurlar, o cümlədən kampaniyalar haqqında məlumatın vaxtında öyrənilməsi və tədbiq edilməsi;\nMüştərilərin mağazada qarşılanması, onların tələbatının öyrənilməsi, məhsullar haqqında ətraflı və doğru məlumatın verilməsi;\nMüştərinin tələbatına uyğun olaraq müştəriyə düzgün seçim etməkdə köməklik göstərilməsi;\nMağaza direktorunun tapşırıqlarının vaxtında və tələb olunan qaydada yerinə yetirilməsi.\nİş şəraiti:\nİş qrafiki: Növbəli;\nŞirkət məhsullarını endirimlə əldə etmək imkanı;\nŞirkət daxili təlim və inkişaf imkanları;\nKaryera yüksəlişi imkanı;\nSatış sahəsində nailiyyətlərə görə bonus və mükafatlar.\nTələblər\nTələblər:\nAzərbaycan dilini səlis, rus dili arzuolunandır;\nSatış təcrübəsi arzuolunandır;\nAktiv, çevik, ünsiyyətcil və məsuliyyətli;\nSatış qabiliyyəti.\nVakansiya haqqında\nSon tarix\nDecember 18, 2026\nPaylaşılıb\nNoyabr 18, 2026\nVakansiya növü\nTam ştat\nKateqoriya\nSatış və müştəri xidmətləri\nOxşar vakansiyalar\nBütün vakansiyalar\nR\nData Analyst\nPro\nRenov' Europe ● London, United Kingdom\n16-11-2026\n23.8K\nMüraciət et\nB2B Satış Meneceri/ Менеджер по продажам B2B\nPro\n2GİS ● Bakı, Azərbaycan\n23-11-2026\n1K\nMüraciət et\nDigital Marketing Specialist\nPro\nDORI - Digitally Optimized Robotic Intelligence ● Bakı, Azərbaycan\n03-11-2026\n3.6K\nMüraciət et\nHiring with",
+      "summary": "Vakansiyalar Şirkətlər Kateqoriyalar Ana səhifə / Şirkətlər / Kontakt Home / Satış məsləhətçisi (Oğuz) Satış məsləhətçisi (Oğuz) Kontakt Home Oğuz, Azərbaycan Tam ştat 18-11-2026 3.6K Müraciət et Təsvir Vəzifə öhdəlikləri: Şirkət tərəfindən göndərilən məhsulların qəbul edilməsi, yoxlanılması, müvafiq olaraq yerləşdirilməsi; Satışla bağlı müxtəlif qayda və prosedurlar, o cümlədən kampaniyalar haqqında məlumatın vaxtında öyrənilməsi və tədbiq edilməsi; Müştərilərin mağazada qarşılanması, onların tələbatının öyrənilməsi, məhsullar haqqında ətraflı və doğru məlumatın verilməsi; Müştərinin tələbatı",
+      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\nKontakt Home\n/\nSatış məsləhətçisi (Oğuz)\nSatış məsləhətçisi (Oğuz)\nKontakt Home\nOğuz, Azərbaycan\nTam ştat\n18-11-2026\n3.6K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nŞirkət tərəfindən göndərilən məhsulların qəbul edilməsi, yoxlanılması, müvafiq olaraq yerləşdirilməsi;\nSatışla bağlı müxtəlif qayda və prosedurlar, o cümlədən kampaniyalar haqqında məlumatın vaxtında öyrənilməsi və tədbiq edilməsi;\nMüştərilərin mağazada qarşılanması, onların tələbatının öyrənilməsi, məhsullar haqqında ətraflı və doğru məlumatın verilməsi;\nMüştərinin tələbatına uyğun olaraq müştəriyə düzgün seçim etməkdə köməklik göstərilməsi;\nMağaza direktorunun tapşırıqlarının vaxtında və tələb olunan qaydada yerinə yetirilməsi.\nİş şəraiti:\nİş qrafiki: Növbəli;\nŞirkət məhsullarını endirimlə əldə etmək imkanı;\nŞirkət daxili təlim və inkişaf imkanları;\nKaryera yüksəlişi imkanı;\nSatış sahəsində nailiyyətlərə görə bonus və mükafatlar.\nTələblər\nTələblər:\nAzərbaycan dilini səlis, rus dili arzuolunandır;\nSatış təcrübəsi arzuolunandır;\nAktiv, çevik, ünsiyyətcil və məsuliyyətli;\nSatış qabiliyyəti.\nVakansiya haqqında\nSon tarix\nDecember 18, 2026\nPaylaşılıb\nNoyabr 18, 2026\nVakansiya növü\nTam ştat\nKateqoriya\nSatış və müştəri xidmətləri\nOxşar vakansiyalar\nBütün vakansiyalar\nСпециалист по сбору информации/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n20-11-2026\n1.6K\nMüraciət et\nB2B Satış üzrə Mütəxəssis\nPro\nECOMAG ● Xırdalan, Azərbaycan\n11-11-2026\n2.5K\nMüraciət et\nB2B Satış Meneceri/ Менеджер по продажам B2B\nPro\n2GİS ● Bakı, Azərbaycan\n23-11-2026\n1.1K\nMüraciət et\nHiring with",
       "requirements": [
         "Azərbaycan dilini səlis, rus dili arzuolunandır;",
         "Satış təcrübəsi arzuolunandır;",
@@ -8434,7 +8417,7 @@
       "company": "ABC Telecom",
       "location": "Göyçay, Azərbaycan",
       "summary": "Vakansiyalar Şirkətlər Kateqoriyalar Ana səhifə / Şirkətlər / Kontakt Home / Satış məsləhətçisi (Göyçay) Satış məsləhətçisi (Göyçay) Kontakt Home Göyçay, Azərbaycan Tam ştat 16-11-2026 4.5K Müraciət et Təsvir Vəzifə öhdəlikləri: Şirkət tərəfindən göndərilən məhsulların qəbul edilməsi, yoxlanılması, müvafiq olaraq yerləşdirilməsi; Satışla bağlı müxtəlif qayda və prosedurlar, o cümlədən kampaniyalar haqqında məlumatın vaxtında öyrənilməsi və tədbiq edilməsi; Müştərilərin mağazada qarşılanması, onların tələbatının öyrənilməsi, məhsullar haqqında ətraflı və doğru məlumatın verilməsi; Müştərinin tə",
-      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\nKontakt Home\n/\nSatış məsləhətçisi (Göyçay)\nSatış məsləhətçisi (Göyçay)\nKontakt Home\nGöyçay, Azərbaycan\nTam ştat\n16-11-2026\n4.5K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nŞirkət tərəfindən göndərilən məhsulların qəbul edilməsi, yoxlanılması, müvafiq olaraq yerləşdirilməsi;\nSatışla bağlı müxtəlif qayda və prosedurlar, o cümlədən kampaniyalar haqqında məlumatın vaxtında öyrənilməsi və tədbiq edilməsi;\nMüştərilərin mağazada qarşılanması, onların tələbatının öyrənilməsi, məhsullar haqqında ətraflı və doğru məlumatın verilməsi;\nMüştərinin tələbatına uyğun olaraq müştəriyə düzgün seçim etməkdə köməklik göstərilməsi;\nMağaza direktorunun tapşırıqlarının vaxtında və tələb olunan qaydada yerinə yetirilməsi.\nİş şəraiti:\nİş qrafiki: Növbəli;\nŞirkət məhsullarını endirimlə əldə etmək imkanı;\nŞirkət daxili təlim və inkişaf imkanları;\nKaryera yüksəlişi imkanı;\nSatış sahəsində nailiyyətlərə görə bonus və mükafatlar.\nTələblər\nTələblər:\nAzərbaycan dilini səlis, rus dili arzuolunandır;\nSatış təcrübəsi arzuolunandır;\nAktiv, çevik, ünsiyyətcil və məsuliyyətli;\nSatış qabiliyyəti.\nVakansiya haqqında\nSon tarix\nDecember 16, 2026\nPaylaşılıb\nNoyabr 16, 2026\nVakansiya növü\nTam ştat\nKateqoriya\nSatış və müştəri xidmətləri\nOxşar vakansiyalar\nBütün vakansiyalar\nПеший специалист/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n13-11-2026\n1.8K\nMüraciət et\nB2B Satış üzrə Mütəxəssis\nPro\nECOMAG ● Xırdalan, Azərbaycan\n11-11-2026\n2.5K\nMüraciət et\nПеший специалист/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n28-10-2026\n3.7K\nMüraciət et\nSatış Məsləhətçisi (Qaradağ / Sahil qəsəbəsi)\nKontakt Home ● Bakı, Azərbaycan\n25-11-2026\n4.8K\nMüraciət et\nƏlavə xidmətlər üzrə operator (Şamaxı)\nKontakt Home ● Şamaxı, Azərbaycan\n23-11-2026\n1.2K\nMüraciət et\nHiring with",
+      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\nKontakt Home\n/\nSatış məsləhətçisi (Göyçay)\nSatış məsləhətçisi (Göyçay)\nKontakt Home\nGöyçay, Azərbaycan\nTam ştat\n16-11-2026\n4.5K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nŞirkət tərəfindən göndərilən məhsulların qəbul edilməsi, yoxlanılması, müvafiq olaraq yerləşdirilməsi;\nSatışla bağlı müxtəlif qayda və prosedurlar, o cümlədən kampaniyalar haqqında məlumatın vaxtında öyrənilməsi və tədbiq edilməsi;\nMüştərilərin mağazada qarşılanması, onların tələbatının öyrənilməsi, məhsullar haqqında ətraflı və doğru məlumatın verilməsi;\nMüştərinin tələbatına uyğun olaraq müştəriyə düzgün seçim etməkdə köməklik göstərilməsi;\nMağaza direktorunun tapşırıqlarının vaxtında və tələb olunan qaydada yerinə yetirilməsi.\nİş şəraiti:\nİş qrafiki: Növbəli;\nŞirkət məhsullarını endirimlə əldə etmək imkanı;\nŞirkət daxili təlim və inkişaf imkanları;\nKaryera yüksəlişi imkanı;\nSatış sahəsində nailiyyətlərə görə bonus və mükafatlar.\nTələblər\nTələblər:\nAzərbaycan dilini səlis, rus dili arzuolunandır;\nSatış təcrübəsi arzuolunandır;\nAktiv, çevik, ünsiyyətcil və məsuliyyətli;\nSatış qabiliyyəti.\nVakansiya haqqında\nSon tarix\nDecember 16, 2026\nPaylaşılıb\nNoyabr 16, 2026\nVakansiya növü\nTam ştat\nKateqoriya\nSatış və müştəri xidmətləri\nOxşar vakansiyalar\nBütün vakansiyalar\nСпециалист по сбору информации/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n20-11-2026\n1.6K\nMüraciət et\nB2B Satış üzrə Mütəxəssis\nPro\nECOMAG ● Xırdalan, Azərbaycan\n11-11-2026\n2.5K\nMüraciət et\nB2B Satış Meneceri/ Менеджер по продажам B2B\nPro\n2GİS ● Bakı, Azərbaycan\n23-11-2026\n1.1K\nMüraciət et\nHiring with",
       "requirements": [
         "Azərbaycan dilini səlis, rus dili arzuolunandır;",
         "Satış təcrübəsi arzuolunandır;",
@@ -8460,6 +8443,42 @@
       "postedAt": "Noyabr 16, 2026",
       "url": "https://jobs.glorri.az/vacancies/abc-telecom/abc-telecom-satis-meslehetcisi-goycay-10702",
       "applyUrl": "https://jobs.glorri.az/vacancies/abc-telecom/abc-telecom-satis-meslehetcisi-goycay-10702/apply?",
+      "source": "Glorri"
+    },
+    {
+      "externalId": "abc-telecom:633",
+      "title": "Sürücü- ekspeditor (Servis)",
+      "company": "ABC Telecom",
+      "location": "Bakı, Azərbaycan",
+      "summary": "Şirkət tərəfindən təmin olunmuş avtomobilin düzgün idarəolunmasını; Təhkim olunmuş nəqliyyat vasitəsinin təmizliyinə və səliqəli olmasına nəzarət edilməsi; Nəqliyyat vasitəsinə müvafiq texniki xidmətin vaxtı-vaxtında göstərilməsi, ehtimal olunan nasazlıq zamanı rəhbərliyə öncədən məlumat verilməsi və nasazlıqların aradan qaldırılması; Məhsulların anbardan təhvil alınması və yük maşınına yüklənməsi; Məhsulların ərazi üzrə müvafiq ünvanlara təhlükəsiz, səliqəli və vaxtında çatdırılması; Rəhbərlik tərəfindən verilən tapşırıqların operativ şəkildə yerinə yetirməsi. İş grafiki: Həftə içi 09:00-17:0",
+      "description": "Şirkət tərəfindən təmin olunmuş avtomobilin düzgün idarəolunmasını;\nTəhkim olunmuş nəqliyyat vasitəsinin təmizliyinə və səliqəli olmasına nəzarət edilməsi;\nNəqliyyat vasitəsinə müvafiq texniki xidmətin vaxtı-vaxtında göstərilməsi, ehtimal olunan nasazlıq zamanı rəhbərliyə öncədən məlumat verilməsi və nasazlıqların aradan qaldırılması;\nMəhsulların anbardan təhvil alınması və yük maşınına yüklənməsi;\nMəhsulların ərazi üzrə müvafiq ünvanlara təhlükəsiz, səliqəli və vaxtında çatdırılması;\nRəhbərlik tərəfindən verilən tapşırıqların operativ şəkildə yerinə yetirməsi.\nİş grafiki: Həftə içi 09:00-17:00; Şənbə 09:00-16:00;\nƏmək haqqı: 840 Azn Gross;\nİş yeri: Qarayev metrosunun yaxınlığı.",
+      "requirements": [
+        "B,C kateqoriyalı sürücülük vəsiqəsi;",
+        "Minimum 3 il sürücülük təcrübəsi;",
+        "Sərbəst avtomobil idarə etməli və yol hərəkət qaydalarını normal bilməli;",
+        "Bakı-Sumqayıt ərazisini yaxşı tanımalı;",
+        "Dəqiq, intizamlı, məsuliyyətli olmalı;"
+      ],
+      "responsibilities": [
+        "Şirkət tərəfindən təmin olunmuş avtomobilin düzgün idarəolunmasını;",
+        "Təhkim olunmuş nəqliyyat vasitəsinin təmizliyinə və səliqəli olmasına nəzarət edilməsi;",
+        "Nəqliyyat vasitəsinə müvafiq texniki xidmətin vaxtı-vaxtında göstərilməsi, ehtimal olunan nasazlıq zamanı rəhbərliyə öncədən məlumat verilməsi və nasazlıqların aradan qaldırılması;",
+        "Məhsulların anbardan təhvil alınması və yük maşınına yüklənməsi;",
+        "Məhsulların ərazi üzrə müvafiq ünvanlara təhlükəsiz, səliqəli və vaxtında çatdırılması;",
+        "Rəhbərlik tərəfindən verilən tapşırıqların operativ şəkildə yerinə yetirməsi."
+      ],
+      "benefits": [],
+      "skills": [],
+      "employmentType": "Full-time",
+      "experienceLevel": "Junior",
+      "workMode": null,
+      "salaryMin": 840,
+      "salaryMax": 840,
+      "salaryCurrency": "AZN",
+      "deadline": "December 16, 2026",
+      "postedAt": "Noyabr 16, 2026",
+      "url": "https://jobs.glorri.az/vacancies/abc-telecom/abc-telecom-surucu-ekspeditor-servis-633",
+      "applyUrl": "https://jobs.glorri.az/vacancies/abc-telecom/abc-telecom-surucu-ekspeditor-servis-633/apply?",
       "source": "Glorri"
     },
     {
@@ -8763,7 +8782,7 @@
       "company": "ABC Telecom",
       "location": "Quba, Azərbaycan",
       "summary": "Vakansiyalar Şirkətlər Kateqoriyalar Ana səhifə / Şirkətlər / Kontakt Home / Anbardar (Quba) Anbardar (Quba) Kontakt Home Quba, Azərbaycan Tam ştat 12-11-2026 3.7K Müraciət et Təsvir Vəzifə öhdəlikləri: Mağaza anbarında olan məhsulların təhlükəsizliyini, düzgün yerləşdirilməsini, müvafiq proqram təminatına məlumatlarının işlənməsini təmin edilməsi; Mağaza anbarından çıxan məhsulların təhvil-təslim qaydalara uyğun olaraq təmin edilməsinə nəzarət; Aylıq mağaza anbar qalığının yoxlanılması; Mağaza anbarında itən və ya yararsız hala düşən, həmçinin qüsurlu məhsullar haqqında vaxtında məlumatın ötü",
-      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\nKontakt Home\n/\nAnbardar (Quba)\nAnbardar (Quba)\nKontakt Home\nQuba, Azərbaycan\nTam ştat\n12-11-2026\n3.7K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nMağaza anbarında olan məhsulların təhlükəsizliyini, düzgün yerləşdirilməsini, müvafiq proqram təminatına məlumatlarının işlənməsini təmin edilməsi;\nMağaza anbarından çıxan məhsulların təhvil-təslim qaydalara uyğun olaraq təmin edilməsinə nəzarət;\nAylıq mağaza anbar qalığının yoxlanılması;\nMağaza anbarında itən və ya yararsız hala düşən, həmçinin qüsurlu məhsullar haqqında vaxtında məlumatın ötürülməsinə nəzarət etməsi;\nMəsuliyyətində olan anbarın təmiz, səliqəli və nizamlı olmasına nəzarətin edilməsi;\nTəhvil-təslim sənədlərinin aktlaşdırılması və arxivləşdirilməsinə nəzarət etməsi;\nDigər struktur bölmələrdən gələn sorğuların cavablandırılması.\nİş şəraiti:\n6 günlük iş günü;\nTələblər\nTələblər:\nAli təhsil;\nMüvafiq sahədə 1 il iş təcrübəsi;\nAzərbaycan dili səlis, Rus dili arzuolunandır;\nKomandada işləmə bacarığı;\n1C proqramında işləmə bacarığı zəruridir, MS Excel arzuolunandır;\nDetallara diqqət, dəqiqlik, məsuliyyətlilik;\nProblem həll etmə bacarığı.\nVakansiya haqqında\nSon tarix\nDecember 12, 2026\nPaylaşılıb\nNoyabr 12, 2026\nVakansiya növü\nTam ştat\nKateqoriya\nSatış və müştəri xidmətləri\nOxşar vakansiyalar\nBütün vakansiyalar\nПеший специалист/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n13-11-2026\n1.8K\nMüraciət et\nB2B Satış üzrə Mütəxəssis\nPro\nECOMAG ● Xırdalan, Azərbaycan\n11-11-2026\n2.5K\nMüraciət et\nПеший специалист/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n28-10-2026\n3.7K\nMüraciət et\nSatış Məsləhətçisi (Qaradağ / Sahil qəsəbəsi)\nKontakt Home ● Bakı, Azərbaycan\n25-11-2026\n4.8K\nMüraciət et\nƏlavə xidmətlər üzrə operator (Şamaxı)\nKontakt Home ● Şamaxı, Azərbaycan\n23-11-2026\n1.2K\nMüraciət et\nHiring with",
+      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\nKontakt Home\n/\nAnbardar (Quba)\nAnbardar (Quba)\nKontakt Home\nQuba, Azərbaycan\nTam ştat\n12-11-2026\n3.7K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nMağaza anbarında olan məhsulların təhlükəsizliyini, düzgün yerləşdirilməsini, müvafiq proqram təminatına məlumatlarının işlənməsini təmin edilməsi;\nMağaza anbarından çıxan məhsulların təhvil-təslim qaydalara uyğun olaraq təmin edilməsinə nəzarət;\nAylıq mağaza anbar qalığının yoxlanılması;\nMağaza anbarında itən və ya yararsız hala düşən, həmçinin qüsurlu məhsullar haqqında vaxtında məlumatın ötürülməsinə nəzarət etməsi;\nMəsuliyyətində olan anbarın təmiz, səliqəli və nizamlı olmasına nəzarətin edilməsi;\nTəhvil-təslim sənədlərinin aktlaşdırılması və arxivləşdirilməsinə nəzarət etməsi;\nDigər struktur bölmələrdən gələn sorğuların cavablandırılması.\nİş şəraiti:\n6 günlük iş günü;\nTələblər\nTələblər:\nAli təhsil;\nMüvafiq sahədə 1 il iş təcrübəsi;\nAzərbaycan dili səlis, Rus dili arzuolunandır;\nKomandada işləmə bacarığı;\n1C proqramında işləmə bacarığı zəruridir, MS Excel arzuolunandır;\nDetallara diqqət, dəqiqlik, məsuliyyətlilik;\nProblem həll etmə bacarığı.\nVakansiya haqqında\nSon tarix\nDecember 12, 2026\nPaylaşılıb\nNoyabr 12, 2026\nVakansiya növü\nTam ştat\nKateqoriya\nSatış və müştəri xidmətləri\nOxşar vakansiyalar\nBütün vakansiyalar\nСпециалист по сбору информации/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n20-11-2026\n1.6K\nMüraciət et\nB2B Satış üzrə Mütəxəssis\nPro\nECOMAG ● Xırdalan, Azərbaycan\n11-11-2026\n2.5K\nMüraciət et\nB2B Satış Meneceri/ Менеджер по продажам B2B\nPro\n2GİS ● Bakı, Azərbaycan\n23-11-2026\n1.1K\nMüraciət et\nHiring with",
       "requirements": [
         "Ali təhsil;",
         "Müvafiq sahədə 1 il iş təcrübəsi;",
@@ -9076,7 +9095,7 @@
       "company": "ABC Telecom",
       "location": "Cəlilabad, Azərbaycan",
       "summary": "Vakansiyalar Şirkətlər Kateqoriyalar Ana səhifə / Şirkətlər / Kontakt Home / Satış Məsləhətçisi (Cəlilabad) Satış Məsləhətçisi (Cəlilabad) Kontakt Home Cəlilabad, Azərbaycan Tam ştat 05-11-2026 8.7K Müraciət et Təsvir Vəzifə öhdəlikləri: Şirkət tərəfindən göndərilən məhsulların qəbul edilməsi, yoxlanılması, müvafiq olaraq yerləşdirilməsi; Satışla bağlı müxtəlif qayda və prosedurlar, o cümlədən kampaniyalar haqqında məlumatın vaxtında öyrənilməsi və tədbiq edilməsi; Müştərilərin mağazada qarşılanması, onların tələbatının öyrənilməsi, məhsullar haqqında ətraflı və doğru məlumatın verilməsi; Müşt",
-      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\nKontakt Home\n/\nSatış Məsləhətçisi (Cəlilabad)\nSatış Məsləhətçisi (Cəlilabad)\nKontakt Home\nCəlilabad, Azərbaycan\nTam ştat\n05-11-2026\n8.7K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nŞirkət tərəfindən göndərilən məhsulların qəbul edilməsi, yoxlanılması, müvafiq olaraq yerləşdirilməsi;\nSatışla bağlı müxtəlif qayda və prosedurlar, o cümlədən kampaniyalar haqqında məlumatın vaxtında öyrənilməsi və tədbiq edilməsi;\nMüştərilərin mağazada qarşılanması, onların tələbatının öyrənilməsi, məhsullar haqqında ətraflı və doğru məlumatın verilməsi;\nMüştərinin tələbatına uyğun olaraq müştəriyə düzgün seçim etməkdə köməklik göstərilməsi;\nMağaza direktorunun tapşırıqlarının vaxtında və tələb olunan qaydada yerinə yetirilməsi.\nİş şəraiti:\nİş qrafiki: Növbəli;\nŞirkət məhsullarını endirimlə əldə etmək imkanı;\nŞirkət daxili təlim və inkişaf imkanları;\nKaryera yüksəlişi imkanı;\nSatış sahəsində nailiyyətlərə görə bonus və mükafatlar.\nTələblər\nAzərbaycan dilini səlis, rus dili arzu olunandır;\nSatış təcrübəsi arzu olunandır;\nAktiv, çevik, ünsiyyətcil və məsuliyyətli;\nSatış qabiliyyəti.\nVakansiya haqqında\nSon tarix\nDecember 5, 2026\nPaylaşılıb\nNoyabr 5, 2026\nVakansiya növü\nTam ştat\nKateqoriya\nSatış və müştəri xidmətləri\nOxşar vakansiyalar\nBütün vakansiyalar\nПеший специалист/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n13-11-2026\n1.8K\nMüraciət et\nB2B Satış üzrə Mütəxəssis\nPro\nECOMAG ● Xırdalan, Azərbaycan\n11-11-2026\n2.5K\nMüraciət et\nПеший специалист/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n28-10-2026\n3.7K\nMüraciət et\nSatış Məsləhətçisi (Qaradağ / Sahil qəsəbəsi)\nKontakt Home ● Bakı, Azərbaycan\n25-11-2026\n4.8K\nMüraciət et\nƏlavə xidmətlər üzrə operator (Şamaxı)\nKontakt Home ● Şamaxı, Azərbaycan\n23-11-2026\n1.2K\nMüraciət et\nHiring with",
+      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\nKontakt Home\n/\nSatış Məsləhətçisi (Cəlilabad)\nSatış Məsləhətçisi (Cəlilabad)\nKontakt Home\nCəlilabad, Azərbaycan\nTam ştat\n05-11-2026\n8.7K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nŞirkət tərəfindən göndərilən məhsulların qəbul edilməsi, yoxlanılması, müvafiq olaraq yerləşdirilməsi;\nSatışla bağlı müxtəlif qayda və prosedurlar, o cümlədən kampaniyalar haqqında məlumatın vaxtında öyrənilməsi və tədbiq edilməsi;\nMüştərilərin mağazada qarşılanması, onların tələbatının öyrənilməsi, məhsullar haqqında ətraflı və doğru məlumatın verilməsi;\nMüştərinin tələbatına uyğun olaraq müştəriyə düzgün seçim etməkdə köməklik göstərilməsi;\nMağaza direktorunun tapşırıqlarının vaxtında və tələb olunan qaydada yerinə yetirilməsi.\nİş şəraiti:\nİş qrafiki: Növbəli;\nŞirkət məhsullarını endirimlə əldə etmək imkanı;\nŞirkət daxili təlim və inkişaf imkanları;\nKaryera yüksəlişi imkanı;\nSatış sahəsində nailiyyətlərə görə bonus və mükafatlar.\nTələblər\nAzərbaycan dilini səlis, rus dili arzu olunandır;\nSatış təcrübəsi arzu olunandır;\nAktiv, çevik, ünsiyyətcil və məsuliyyətli;\nSatış qabiliyyəti.\nVakansiya haqqında\nSon tarix\nDecember 5, 2026\nPaylaşılıb\nNoyabr 5, 2026\nVakansiya növü\nTam ştat\nKateqoriya\nSatış və müştəri xidmətləri\nOxşar vakansiyalar\nBütün vakansiyalar\nSatış üzrə Mütəxəssis\nPro\nKaraca ● Bakı, Azərbaycan\n21-11-2026\n2.3K\nMüraciət et\nСпециалист по сбору информации/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n20-11-2026\n1.6K\nMüraciət et\nRəqəmsal Marketinq və Onlayn Satış üzrə Menecer\nPro\nKaraca ● Bakı, Azərbaycan\nBu gün\n236\nMüraciət et\nSatış Məsləhətçisi (Qaradağ / Sahil qəsəbəsi)\nKontakt Home ● Bakı, Azərbaycan\n25-11-2026\n4.8K\nMüraciət et\nƏlavə xidmətlər üzrə operator (Şamaxı)\nKontakt Home ● Şamaxı, Azərbaycan\n23-11-2026\n1.3K\nMüraciət et\nHiring with",
       "requirements": [
         "Azərbaycan dilini səlis, rus dili arzu olunandır;",
         "Satış təcrübəsi arzu olunandır;",
@@ -9178,7 +9197,7 @@
       "company": "ABC Telecom",
       "location": "Samux, Azərbaycan",
       "summary": "Vakansiyalar Şirkətlər Kateqoriyalar Ana səhifə / Şirkətlər / Kontakt Home / Satış məsləhətçisi (Samux) Satış məsləhətçisi (Samux) Kontakt Home Samux, Azərbaycan Tam ştat 03-11-2026 3.1K Müraciət et Təsvir Vəzifə öhdəlikləri: Şirkət tərəfindən göndərilən məhsulların qəbul edilməsi, yoxlanılması, müvafiq olaraq yerləşdirilməsi; Satışla bağlı müxtəlif qayda və prosedurlar, o cümlədən kampaniyalar haqqında məlumatın vaxtında öyrənilməsi və tədbiq edilməsi; Müştərilərin mağazada qarşılanması, onların tələbatının öyrənilməsi, məhsullar haqqında ətraflı və doğru məlumatın verilməsi; Müştərinin tələb",
-      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\nKontakt Home\n/\nSatış məsləhətçisi (Samux)\nSatış məsləhətçisi (Samux)\nKontakt Home\nSamux, Azərbaycan\nTam ştat\n03-11-2026\n3.1K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nŞirkət tərəfindən göndərilən məhsulların qəbul edilməsi, yoxlanılması, müvafiq olaraq yerləşdirilməsi;\nSatışla bağlı müxtəlif qayda və prosedurlar, o cümlədən kampaniyalar haqqında məlumatın vaxtında öyrənilməsi və tədbiq edilməsi;\nMüştərilərin mağazada qarşılanması, onların tələbatının öyrənilməsi, məhsullar haqqında ətraflı və doğru məlumatın verilməsi;\nMüştərinin tələbatına uyğun olaraq müştəriyə düzgün seçim etməkdə köməklik göstərilməsi;\nMağaza direktorunun tapşırıqlarının vaxtında və tələb olunan qaydada yerinə yetirilməsi.\nİş şəraiti:\nİş qrafiki: Növbəli;\nŞirkət məhsullarını endirimlə əldə etmək imkanı;\nŞirkət daxili təlim və inkişaf imkanları;\nKaryera yüksəlişi imkanı;\nSatış sahəsində nailiyyətlərə görə bonus və mükafatlar.\nTələblər\nTələblər:\nAzərbaycan dilini səlis, rus dili arzu olunandır;\nSatış təcrübəsi arzu olunandır;\nAktiv, çevik, ünsiyyətcil və məsuliyyətli;\nSatış qabiliyyəti.\nVakansiya haqqında\nSon tarix\nDecember 3, 2026\nPaylaşılıb\nNoyabr 3, 2026\nVakansiya növü\nTam ştat\nKateqoriya\nSatış və müştəri xidmətləri\nOxşar vakansiyalar\nBütün vakansiyalar\nПеший специалист/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n13-11-2026\n1.8K\nMüraciət et\nB2B Satış üzrə Mütəxəssis\nPro\nECOMAG ● Xırdalan, Azərbaycan\n11-11-2026\n2.5K\nMüraciət et\nПеший специалист/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n28-10-2026\n3.7K\nMüraciət et\nSatış Məsləhətçisi (Qaradağ / Sahil qəsəbəsi)\nKontakt Home ● Bakı, Azərbaycan\n25-11-2026\n4.8K\nMüraciət et\nƏlavə xidmətlər üzrə operator (Şamaxı)\nKontakt Home ● Şamaxı, Azərbaycan\n23-11-2026\n1.2K\nMüraciət et\nHiring with",
+      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\nKontakt Home\n/\nSatış məsləhətçisi (Samux)\nSatış məsləhətçisi (Samux)\nKontakt Home\nSamux, Azərbaycan\nTam ştat\n03-11-2026\n3.1K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nŞirkət tərəfindən göndərilən məhsulların qəbul edilməsi, yoxlanılması, müvafiq olaraq yerləşdirilməsi;\nSatışla bağlı müxtəlif qayda və prosedurlar, o cümlədən kampaniyalar haqqında məlumatın vaxtında öyrənilməsi və tədbiq edilməsi;\nMüştərilərin mağazada qarşılanması, onların tələbatının öyrənilməsi, məhsullar haqqında ətraflı və doğru məlumatın verilməsi;\nMüştərinin tələbatına uyğun olaraq müştəriyə düzgün seçim etməkdə köməklik göstərilməsi;\nMağaza direktorunun tapşırıqlarının vaxtında və tələb olunan qaydada yerinə yetirilməsi.\nİş şəraiti:\nİş qrafiki: Növbəli;\nŞirkət məhsullarını endirimlə əldə etmək imkanı;\nŞirkət daxili təlim və inkişaf imkanları;\nKaryera yüksəlişi imkanı;\nSatış sahəsində nailiyyətlərə görə bonus və mükafatlar.\nTələblər\nTələblər:\nAzərbaycan dilini səlis, rus dili arzu olunandır;\nSatış təcrübəsi arzu olunandır;\nAktiv, çevik, ünsiyyətcil və məsuliyyətli;\nSatış qabiliyyəti.\nVakansiya haqqında\nSon tarix\nDecember 3, 2026\nPaylaşılıb\nNoyabr 3, 2026\nVakansiya növü\nTam ştat\nKateqoriya\nSatış və müştəri xidmətləri\nOxşar vakansiyalar\nBütün vakansiyalar\nSatış üzrə Mütəxəssis\nPro\nKaraca ● Bakı, Azərbaycan\n21-11-2026\n2.3K\nMüraciət et\nСпециалист по сбору информации/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n20-11-2026\n1.6K\nMüraciət et\nRəqəmsal Marketinq və Onlayn Satış üzrə Menecer\nPro\nKaraca ● Bakı, Azərbaycan\nBu gün\n236\nMüraciət et\nSatış Məsləhətçisi (Qaradağ / Sahil qəsəbəsi)\nKontakt Home ● Bakı, Azərbaycan\n25-11-2026\n4.8K\nMüraciət et\nƏlavə xidmətlər üzrə operator (Şamaxı)\nKontakt Home ● Şamaxı, Azərbaycan\n23-11-2026\n1.3K\nMüraciət et\nHiring with",
       "requirements": [
         "Azərbaycan dilini səlis, rus dili arzu olunandır;",
         "Satış təcrübəsi arzu olunandır;",
@@ -9330,7 +9349,7 @@
       "company": "ABC Telecom",
       "location": "Binəqədi, Bakı, Azərbaycan",
       "summary": "Vakansiyalar Şirkətlər Kateqoriyalar Ana səhifə / Şirkətlər / Kontakt Home / Sürücü (Çatdırılma xidmətləri üzrə - İsuzu / Yük avtomobili ) Sürücü (Çatdırılma xidmətləri üzrə - İsuzu / Yük avtomobili ) Kontakt Home Binəqədi, Bakı, Azərbaycan Tam ştat 02-11-2026 30.3K Müraciət et Təsvir Vəzifə öhdəlikləri: Məişət və mebel məhsullarının çatdırılmasının həyata keçirilməsi; Müştəri ilə təhvil-təslim prosesinin həyata keçirilməsi; Yol hərəkəti və təhlükəsizlik qaydalarına əməl edilməsi; Rəhbərlik tərəfindən verilən digər tapşırıqların yerinə yetirilməsi. İş şəraiti İş qrafiki: 6 gün iş, 1 gün istira",
-      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\nKontakt Home\n/\nSürücü (Çatdırılma xidmətləri üzrə - İsuzu / Yük avtomobili )\nSürücü (Çatdırılma xidmətləri üzrə - İsuzu / Yük avtomobili )\nKontakt Home\nBinəqədi, Bakı, Azərbaycan\nTam ştat\n02-11-2026\n30.3K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nMəişət və mebel məhsullarının çatdırılmasının həyata keçirilməsi;\nMüştəri ilə təhvil-təslim prosesinin həyata keçirilməsi;\nYol hərəkəti və təhlükəsizlik qaydalarına əməl edilməsi;\nRəhbərlik tərəfindən verilən digər tapşırıqların yerinə yetirilməsi.\nİş şəraiti\nİş qrafiki: 6 gün iş, 1 gün istirahət;\nİş rejimi: Növbəli iş qrafiki;\nServis: 20 Yanvar və Koroğlu metro stansiyalarından şirkət tərəfindən servis təmin olunur;\nİş yeri: Abşeron Logistika Mərkəzi.\nTələblər\nTələblər:\nSürücülük vəsiqəsi (BC kateqoriya);\nSürücülük təcrübəsi (minimüm 5il);\nYük avtomobili idarəetməsi təcrübəsi (minimal 2 il)\nYükləmə, boşaltma və daşınma qaydaları üzrə biliklər;\nSəlis Azərbaycan dili bilikləri, Rus dili biliyi arzu olunandır;\nƏrazini yaxşı tanıması vacibdir;\nFiziki cəhətdən sağlam;\nMəsulliyyətli, punktual, komandada işləmək bacarığı.\nVakansiya haqqında\nSon tarix\nDecember 2, 2026\nPaylaşılıb\nNoyabr 2, 2026\nVakansiya növü\nTam ştat\nTəcrübə\n5-8 il\nƏmək haqqı\n600 - AZN\nKateqoriya\nXidmət sahələri\nOxşar vakansiyalar\nBütün vakansiyalar\nB2B Satış üzrə Mütəxəssis\nPro\nECOMAG ● Xırdalan, Azərbaycan\n11-11-2026\n2.5K\nMüraciət et\nСпециалист по сбору информации/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n20-11-2026\n1.5K\nMüraciət et\nQrafik Dizayner\nPro\nARI GLOBAL MMC ● Bakı, Azərbaycan\nDünən\n312\nMüraciət et\nXadimə\nKontakt Home ● Bakı, Azərbaycan\n25-11-2026\n2.3K\nMüraciət et\nAnbar işçisi (Mərkəz anbarda)/Olivia\nKontakt Home ● Bakı, Azərbaycan\n18-11-2026\n1.2K\nMüraciət et\nHiring with",
+      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\nKontakt Home\n/\nSürücü (Çatdırılma xidmətləri üzrə - İsuzu / Yük avtomobili )\nSürücü (Çatdırılma xidmətləri üzrə - İsuzu / Yük avtomobili )\nKontakt Home\nBinəqədi, Bakı, Azərbaycan\nTam ştat\n02-11-2026\n30.3K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nMəişət və mebel məhsullarının çatdırılmasının həyata keçirilməsi;\nMüştəri ilə təhvil-təslim prosesinin həyata keçirilməsi;\nYol hərəkəti və təhlükəsizlik qaydalarına əməl edilməsi;\nRəhbərlik tərəfindən verilən digər tapşırıqların yerinə yetirilməsi.\nİş şəraiti\nİş qrafiki: 6 gün iş, 1 gün istirahət;\nİş rejimi: Növbəli iş qrafiki;\nServis: 20 Yanvar və Koroğlu metro stansiyalarından şirkət tərəfindən servis təmin olunur;\nİş yeri: Abşeron Logistika Mərkəzi.\nTələblər\nTələblər:\nSürücülük vəsiqəsi (BC kateqoriya);\nSürücülük təcrübəsi (minimüm 5il);\nYük avtomobili idarəetməsi təcrübəsi (minimal 2 il)\nYükləmə, boşaltma və daşınma qaydaları üzrə biliklər;\nSəlis Azərbaycan dili bilikləri, Rus dili biliyi arzu olunandır;\nƏrazini yaxşı tanıması vacibdir;\nFiziki cəhətdən sağlam;\nMəsulliyyətli, punktual, komandada işləmək bacarığı.\nVakansiya haqqında\nSon tarix\nDecember 2, 2026\nPaylaşılıb\nNoyabr 2, 2026\nVakansiya növü\nTam ştat\nTəcrübə\n5-8 il\nƏmək haqqı\n600 - AZN\nKateqoriya\nXidmət sahələri\nOxşar vakansiyalar\nBütün vakansiyalar\nRəqəmsal Marketinq və Onlayn Satış üzrə Menecer\nPro\nKaraca ● Bakı, Azərbaycan\nBu gün\n236\nMüraciət et\nQrafik Dizayner\nPro\nARI GLOBAL MMC ● Bakı, Azərbaycan\nDünən\n394\nMüraciət et\nİnsan Resursları üzrə Mütəxəssis\nPro\nQalan AZ ● Bakı, Azərbaycan\n02-11-2026\n7K\nMüraciət et\nXadimə\nKontakt Home ● Bakı, Azərbaycan\n25-11-2026\n2.3K\nMüraciət et\nAnbar işçisi (Mərkəz anbarda)/Olivia\nKontakt Home ● Bakı, Azərbaycan\n18-11-2026\n1.3K\nMüraciət et\nHiring with",
       "requirements": [
         "Sürücülük vəsiqəsi (BC kateqoriya);",
         "Sürücülük təcrübəsi (minimüm 5il);",
@@ -9507,7 +9526,7 @@
       "company": "ABC Telecom",
       "location": "Bakı, Azərbaycan",
       "summary": "Vakansiyalar Şirkətlər Kateqoriyalar Ana səhifə / Şirkətlər / Kontakt Home / Anbar əməliyyatları üzrə operator (Mebel anbarı) Anbar əməliyyatları üzrə operator (Mebel anbarı) Kontakt Home Bakı, Azərbaycan Tam ştat 30-10-2026 5K Müraciət et Təsvir Vəzifə öhdəlikləri: Məhsulların qəbulu və yoxlanılmasına nəzarətin edilməsi; Məhsulların növlərinə görə səliqə ilə anbarda yığılmasının təmin edilməsi; Qüsurlu məhsulların aktlaşdırılması və struktur rəhbərinə məlumatın verilməsi; Müvafiq proqram vasitəsi ilə məhsulların uçotunun aparılması; Anbardan çıxan məhsulların təhvil-təslim qaydalarına uyğun o",
-      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\nKontakt Home\n/\nAnbar əməliyyatları üzrə operator (Mebel anbarı)\nAnbar əməliyyatları üzrə operator (Mebel anbarı)\nKontakt Home\nBakı, Azərbaycan\nTam ştat\n30-10-2026\n5K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nMəhsulların qəbulu və yoxlanılmasına nəzarətin edilməsi;\nMəhsulların növlərinə görə səliqə ilə anbarda yığılmasının təmin edilməsi;\nQüsurlu məhsulların aktlaşdırılması və struktur rəhbərinə məlumatın verilməsi;\nMüvafiq proqram vasitəsi ilə məhsulların uçotunun aparılması;\nAnbardan çıxan məhsulların təhvil-təslim qaydalarına uyğun olaraq aparılması;\nAnbarda yararsız hala düşən məhsullar barəsində struktur rəhbərinin məlumatlandırılması;\nHəftəlik və aylıq olaraq anbar sayımının aparılması və uyğunsuzluq aşkar etdikdə struktur rəhbərinə məlumatın verilməsi\nTələblər\nTələblər:\nAli təhsil;\nMüvafiq sahə üzrə 6 ay iş təcrübəsi;\nEtibarlılıq və dürüstlük;\nDetallara diqqət;\n1C, Micro Fly və MS Excel proqramıları ilə işləmə bacarığının olması;\nAzərbaycan dili (səlis), Rus dili (arzuolunan);\nDəqiq və məsuliyyətlilik.\nVakansiya haqqında\nSon tarix\nNovember 29, 2026\nPaylaşılıb\nOktyabr 30, 2026\nVakansiya növü\nTam ştat\nKateqoriya\nLogistika və nəqliyyat\nOxşar vakansiyalar\nBütün vakansiyalar\nQrafik Dizayner\nPro\nARI GLOBAL MMC ● Bakı, Azərbaycan\nDünən\n312\nMüraciət et\nПеший специалист/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n13-11-2026\n1.8K\nMüraciət et\nСпециалист по сбору информации/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n20-11-2026\n1.5K\nMüraciət et\nFəhlə (Məişət anbarı)\nKontakt Home ● Bakı, Azərbaycan\n23-11-2026\n12.5K\nMüraciət et\nFəhlə (mebel anbarı)\nKontakt Home ● Bakı, Azərbaycan\n18-11-2026\n7.2K\nMüraciət et\nHiring with",
+      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\nKontakt Home\n/\nAnbar əməliyyatları üzrə operator (Mebel anbarı)\nAnbar əməliyyatları üzrə operator (Mebel anbarı)\nKontakt Home\nBakı, Azərbaycan\nTam ştat\n30-10-2026\n5K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nMəhsulların qəbulu və yoxlanılmasına nəzarətin edilməsi;\nMəhsulların növlərinə görə səliqə ilə anbarda yığılmasının təmin edilməsi;\nQüsurlu məhsulların aktlaşdırılması və struktur rəhbərinə məlumatın verilməsi;\nMüvafiq proqram vasitəsi ilə məhsulların uçotunun aparılması;\nAnbardan çıxan məhsulların təhvil-təslim qaydalarına uyğun olaraq aparılması;\nAnbarda yararsız hala düşən məhsullar barəsində struktur rəhbərinin məlumatlandırılması;\nHəftəlik və aylıq olaraq anbar sayımının aparılması və uyğunsuzluq aşkar etdikdə struktur rəhbərinə məlumatın verilməsi\nTələblər\nTələblər:\nAli təhsil;\nMüvafiq sahə üzrə 6 ay iş təcrübəsi;\nEtibarlılıq və dürüstlük;\nDetallara diqqət;\n1C, Micro Fly və MS Excel proqramıları ilə işləmə bacarığının olması;\nAzərbaycan dili (səlis), Rus dili (arzuolunan);\nDəqiq və məsuliyyətlilik.\nVakansiya haqqında\nSon tarix\nNovember 29, 2026\nPaylaşılıb\nOktyabr 30, 2026\nVakansiya növü\nTam ştat\nKateqoriya\nLogistika və nəqliyyat\nOxşar vakansiyalar\nBütün vakansiyalar\nQrafik Dizayner\nPro\nARI GLOBAL MMC ● Bakı, Azərbaycan\nDünən\n394\nMüraciət et\nDigital Marketing Specialist\nPro\nDORI - Digitally Optimized Robotic Intelligence ● Bakı, Azərbaycan\n03-11-2026\n3.6K\nMüraciət et\nСпециалист по сбору информации/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n20-11-2026\n1.6K\nMüraciət et\nFəhlə (Məişət anbarı)\nKontakt Home ● Bakı, Azərbaycan\n23-11-2026\n12.5K\nMüraciət et\nFəhlə (mebel anbarı)\nKontakt Home ● Bakı, Azərbaycan\n18-11-2026\n7.2K\nMüraciət et\nHiring with",
       "requirements": [
         "Ali təhsil;",
         "Müvafiq sahə üzrə 6 ay iş təcrübəsi;",
@@ -9548,7 +9567,7 @@
       "company": "ABC Telecom",
       "location": "Ucar, Azərbaycan",
       "summary": "Vakansiyalar Şirkətlər Kateqoriyalar Ana səhifə / Şirkətlər / Kontakt Home / Satış məsləhətçisi (Ucar) Satış məsləhətçisi (Ucar) Kontakt Home Ucar, Azərbaycan Tam ştat 29-10-2026 3.3K Müraciət et Təsvir Vəzifə öhdəlikləri: Şirkət tərəfindən göndərilən məhsulların qəbul edilməsi, yoxlanılması, müvafiq olaraq yerləşdirilməsi; Satışla bağlı müxtəlif qayda və prosedurlar, o cümlədən kampaniyalar haqqında məlumatın vaxtında öyrənilməsi və tədbiq edilməsi; Müştərilərin mağazada qarşılanması, onların tələbatının öyrənilməsi, məhsullar haqqında ətraflı və doğru məlumatın verilməsi; Müştərinin tələbatı",
-      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\nKontakt Home\n/\nSatış məsləhətçisi (Ucar)\nSatış məsləhətçisi (Ucar)\nKontakt Home\nUcar, Azərbaycan\nTam ştat\n29-10-2026\n3.3K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nŞirkət tərəfindən göndərilən məhsulların qəbul edilməsi, yoxlanılması, müvafiq olaraq yerləşdirilməsi;\nSatışla bağlı müxtəlif qayda və prosedurlar, o cümlədən kampaniyalar haqqında məlumatın vaxtında öyrənilməsi və tədbiq edilməsi;\nMüştərilərin mağazada qarşılanması, onların tələbatının öyrənilməsi, məhsullar haqqında ətraflı və doğru məlumatın verilməsi;\nMüştərinin tələbatına uyğun olaraq müştəriyə düzgün seçim etməkdə köməklik göstərilməsi;\nMağaza direktorunun tapşırıqlarının vaxtında və tələb olunan qaydada yerinə yetirilməsi.\nİş şəraiti:\nİş qrafiki: Növbəli 09:00-18:00 / ; 11:00-20:00;\nŞirkət məhsullarını endirimlə əldə etmək imkanı;\nŞirkət daxili təlim və inkişaf imkanları;\nKaryera yüksəlişi imkanı;\nSatış sahəsində nailiyyətlərə görə bonus və mükafatlar.\nTələblər\nTələblər:\nAzərbaycan dilini səlis, rus dili arzu olunandır;\nSatış təcrübəsi arzu olunandır;\nAktiv, çevik, ünsiyyətcil və məsuliyyətli;\nSatış qabiliyyəti.\nVakansiya haqqında\nSon tarix\nNovember 28, 2026\nPaylaşılıb\nOktyabr 29, 2026\nVakansiya növü\nTam ştat\nKateqoriya\nSatış və müştəri xidmətləri\nOxşar vakansiyalar\nBütün vakansiyalar\nПеший специалист/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n13-11-2026\n1.8K\nMüraciət et\nB2B Satış üzrə Mütəxəssis\nPro\nECOMAG ● Xırdalan, Azərbaycan\n11-11-2026\n2.5K\nMüraciət et\nПеший специалист/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n28-10-2026\n3.7K\nMüraciət et\nSatış Məsləhətçisi (Qaradağ / Sahil qəsəbəsi)\nKontakt Home ● Bakı, Azərbaycan\n25-11-2026\n4.8K\nMüraciət et\nƏlavə xidmətlər üzrə operator (Şamaxı)\nKontakt Home ● Şamaxı, Azərbaycan\n23-11-2026\n1.2K\nMüraciət et\nHiring with",
+      "description": "Vakansiyalar\nŞirkətlər\nKateqoriyalar\nAna səhifə\n/\nŞirkətlər\n/\nKontakt Home\n/\nSatış məsləhətçisi (Ucar)\nSatış məsləhətçisi (Ucar)\nKontakt Home\nUcar, Azərbaycan\nTam ştat\n29-10-2026\n3.3K\nMüraciət et\nTəsvir\nVəzifə öhdəlikləri:\nŞirkət tərəfindən göndərilən məhsulların qəbul edilməsi, yoxlanılması, müvafiq olaraq yerləşdirilməsi;\nSatışla bağlı müxtəlif qayda və prosedurlar, o cümlədən kampaniyalar haqqında məlumatın vaxtında öyrənilməsi və tədbiq edilməsi;\nMüştərilərin mağazada qarşılanması, onların tələbatının öyrənilməsi, məhsullar haqqında ətraflı və doğru məlumatın verilməsi;\nMüştərinin tələbatına uyğun olaraq müştəriyə düzgün seçim etməkdə köməklik göstərilməsi;\nMağaza direktorunun tapşırıqlarının vaxtında və tələb olunan qaydada yerinə yetirilməsi.\nİş şəraiti:\nİş qrafiki: Növbəli 09:00-18:00 / ; 11:00-20:00;\nŞirkət məhsullarını endirimlə əldə etmək imkanı;\nŞirkət daxili təlim və inkişaf imkanları;\nKaryera yüksəlişi imkanı;\nSatış sahəsində nailiyyətlərə görə bonus və mükafatlar.\nTələblər\nTələblər:\nAzərbaycan dilini səlis, rus dili arzu olunandır;\nSatış təcrübəsi arzu olunandır;\nAktiv, çevik, ünsiyyətcil və məsuliyyətli;\nSatış qabiliyyəti.\nVakansiya haqqında\nSon tarix\nNovember 28, 2026\nPaylaşılıb\nOktyabr 29, 2026\nVakansiya növü\nTam ştat\nKateqoriya\nSatış və müştəri xidmətləri\nOxşar vakansiyalar\nBütün vakansiyalar\nSatış üzrə Mütəxəssis\nPro\nKaraca ● Bakı, Azərbaycan\n21-11-2026\n2.3K\nMüraciət et\nСпециалист по сбору информации/ Ərazilərin təyini üzrə piyada mütəxəssis\nPro\n2GİS ● Bakı, Azərbaycan\n20-11-2026\n1.6K\nMüraciət et\nRəqəmsal Marketinq və Onlayn Satış üzrə Menecer\nPro\nKaraca ● Bakı, Azərbaycan\nBu gün\n236\nMüraciət et\nSatış Məsləhətçisi (Qaradağ / Sahil qəsəbəsi)\nKontakt Home ● Bakı, Azərbaycan\n25-11-2026\n4.8K\nMüraciət et\nƏlavə xidmətlər üzrə operator (Şamaxı)\nKontakt Home ● Şamaxı, Azərbaycan\n23-11-2026\n1.3K\nMüraciət et\nHiring with",
       "requirements": [
         "Azərbaycan dilini səlis, rus dili arzu olunandır;",
         "Satış təcrübəsi arzu olunandır;",
@@ -9780,9 +9799,9 @@
     "acceptedJobs": 223,
     "rejectedJobs": 3,
     "errors": [
-      "https://jobs.glorri.az/vacancies/idda/idda-data-arxitektor-24588902: Glorri security verification page remained after retry.",
-      "https://jobs.glorri.az/vacancies/expressbank/expressbank-mikro-kreditler-uzre-kicik-kredit-mutexessisi-berde-mingecevir-xacmaz-le-78160498: Glorri security verification page remained after retry.",
-      "https://jobs.glorri.az/vacancies/abc-telecom/abc-telecom-surucu-ekspeditor-servis-633: Glorri security verification page remained after retry."
+      "https://jobs.glorri.az/vacancies/expressbank/expressbank-mikro-kreditler-uzre-kicik-kredit-mutexessisi-baki-ve-sumqayit-filiallar-33290924: Glorri security verification page remained after retry.",
+      "https://jobs.glorri.az/vacancies/expressbank/expressbank-biznes-satis-uzre-mutexessisaparici-mutexessis-sme-kreditleri-6232: Glorri security verification page remained after retry.",
+      "https://jobs.glorri.az/vacancies/rabitabank/rabitabank-agsu-filiali-uzre-xezinedar-83593: Glorri security verification page remained after retry."
     ],
     "companyResults": [
       {
@@ -9795,7 +9814,7 @@
         "slug": "idda",
         "name": "IDDA",
         "discovered": 16,
-        "accepted": 15
+        "accepted": 16
       },
       {
         "slug": "pashabank",
@@ -9813,13 +9832,13 @@
         "slug": "expressbank",
         "name": "Expressbank",
         "discovered": 29,
-        "accepted": 28
+        "accepted": 27
       },
       {
         "slug": "rabitabank",
         "name": "Rabitabank",
         "discovered": 27,
-        "accepted": 27
+        "accepted": 26
       },
       {
         "slug": "atb",
@@ -9855,7 +9874,7 @@
         "slug": "abc-telecom",
         "name": "ABC Telecom",
         "discovered": 59,
-        "accepted": 58
+        "accepted": 59
       }
     ]
   }
